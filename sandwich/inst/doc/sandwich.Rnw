@@ -6,9 +6,9 @@
 
 \title{Econometric Computing with HC and HAC Covariance Matrix Estimators}
 
-\Keywords{covariance matrix estimator, heteroskedasticity, autocorrelation,
+\Keywords{covariance matrix estimators, heteroskedasticity, autocorrelation,
   estimating functions, econometric computing, \proglang{R}}
-\Plainkeywords{covariance matrix estimator, heteroskedasticity, autocorrelation,
+\Plainkeywords{covariance matrix estimators, heteroskedasticity, autocorrelation,
   estimating functions, econometric computing, R}
 
 \Abstract{
@@ -33,22 +33,56 @@ library(lmtest)
 
 \section{Introduction} \label{sec:intro}
 
-important for applied econometrics
+This paper combines two topics that play an important role in 
+applied econometrics: computational tools and robust covariance
+estimation.
 
-\cite{hac:R:2004}
+Without the aid of statistical and econometric software
+modern data analysis would not be possible: hence, both practitioners
+and (applied) researchers rely on computational tools that should 
+preferably implement state-of-the-art methodology and be numerically reliable,
+easy to use, flexible and extensible. 
+
+In many situations, economic data arises from time-series or cross-sectional
+studies which typically exhibit some form of autocorrelation and/or heteroskedasticity.
+If the covariance structure were known, it could be taken into account in
+a (parametric) model, but more often than not the form of autocorrelation
+and heteroskedasticity is unknown. In such cases, model parameters can typically
+still be estimated consistently using the usual estimating functions, but for
+valid inference in such models a consistent covariance matrix estimate is essential.
+Over the last 20 years several procedures for heteroskedasticity consistent (HC)
+and for heteroskedasticity and autocorrelation consistent (HAC) covariance estimation
+have been suggested in the econometrics literature
+\citep[among others]{hac:White:1980,hac:MacKinnon+White:1985,hac:Newey+West:1987,hac:Andrews:1991}
+and are now routinely used in econometric analyses.
+
+Many statistical and econometric software packages implement various HC and HAC
+estimators for certain inference procedures, so why is there a need for a paper about 
+econometric computing with HC and HAC estimators?
+
+covariance matrices not only as options to certain test but 
+as stand-alone functions which can be plugged into various 
+inference procedures
+
 \cite{hac:Cribari-Neto+Zarkos:2003}
 
 stress econometric computing
 
 reusable components
 
-covariance matrices not only as options to certain test but 
-as stand-alone functions which can be plugged into various 
-inference procedures
 
-explain heteroskedasticity consistent (HC) and
-heteroskedasticity and autocorrelation consistent (HAC)
-of unknown form
+
+focus on lm() but conceptually extensible.
+usually: \code{lm} + \code{vcov} (and \code{summary})\\
+now: \code{lm} + \code{vcovHC} or \code{vcovHAC}
+
+functions are first-level objects -- used repeatedly for flexible 
+computations (\code{weights}, \code{omega})
+
+Here, linear model, but due to OOP easily extensible. Already applicable
+to glm and rlm.
+
+\cite{hac:R:2004}
 
 \pkg{sandwich} provides functions \code{vcovHC} and \code{vcovHAC}
 implementing general classes of HC and HAC estimators.
@@ -56,17 +90,19 @@ The names of the functions are chosen to correspond to
 \code{vcov}, \proglang{R}'s generic function for extracting
 covariance matrices from fitted model objects.
 
-kurzer literatur review um daraus die Fkt zu motivieren
+fix notation plus kurzer literatur review um daraus die Fkt zu motivieren
 
-ein paar Sachen in Fox (aber nicht so flexibel), sonst nix
-\cite{hac:Fox:2002}
+ein paar Sachen in \cite{hac:Fox:2002} (aber nicht so flexibel,
+extensible), sonst nix
+
+
 
 
 \section{The linear regression model} \label{sec:model}
 
 To fix notations, we consider the linear regression model
 \begin{equation} \label{eq:lm}
-  y_i \quad = \quad x_i^\top \beta + u_i \qquad (i = 1, \dots, n),
+  y_i \quad = \quad x_i^\top \beta \; + \; u_i \qquad (i = 1, \dots, n),
 \end{equation}
 with dependent variable $y_i$, $k$-dimensional regressor
 $x_i$ with coefficient vector $\beta$ and error term $u_i$.
@@ -84,8 +120,8 @@ estimator $\hat \beta$ with corresponding OLS residuals $\hat u_i$:
   \hat u & = & (I_n - H) \, u \; = \; (I_n - X \left( X^\top X \right)^{-1} X^\top) \, u
 \end{eqnarray}
 where $I_n$ is the $n$-dimensional identity matrix and $H$ is usually 
-called hat matrix. The estimates $\hat \beta$ are unbiased and are
-asymptotically normal with covariance matrix $\Psi$ which is usually
+called hat matrix. The estimates $\hat \beta$ are unbiased and
+asymptotically normal. Their covariance matrix $\Psi$ is usually
 denoted in one of the two following ways:
 
 \begin{eqnarray}
@@ -100,14 +136,12 @@ matrix of the estimating functions $V_i(\beta) = x_i (y_i - x_i^\top \beta)$.
 The estimating functions evaluated at the parameter estimates
 $\hat V_i = V_i(\hat \beta)$ have then sum zero.
 
-For doing inference in the linear regression model, it is essential
-to have a consistent estimator for $\Psi$---the most common inferential
-task being to test whether one of the coefficients $\beta_j$ is zero which is is usually
-assessed using the $t$ ratio $\beta_j/\sqrt{\hat \Psi_{jj}}$. What kind of 
-estimator is used for $\Psi$ depends on the assumptions about $\Omega$ that
-are used: In the classical linear model independent and homoskedastic
+For inference in the linear regression model, it is essential
+to have a consistent estimator for $\Psi$. What kind of 
+estimator should be used for $\Psi$ depends on the assumptions about $\Omega$:
+In the classical linear model independent and homoskedastic
 errors with variance $\sigma^2$ are assumed yielding $\Omega = \sigma^2 I_n$
-and $\Psi = \sigma^2 (X^\top X)^{-1}$ which can be easily estimated by
+and $\Psi = \sigma^2 (X^\top X)^{-1}$ which can be consistently estimated by
 plugging in the usual OLS estimator
 ${\hat \sigma}^2 = (n-k)^{-1} \sum_{i = 1}^n {\hat u_i}^2$.
 But if the independence and/or homoskedasticity assumption is violated,
@@ -124,15 +158,15 @@ section.
 
 \subsection{Dealing with heteroskedasticity}
 
-If it is assumed that the errors $u_i$ are independent but not 
-necessary homoskedastic---a situation which typically arises with
+If it is assumed that the errors $u_i$ are independent but
+potentially heteroskedastic---a situation which typically arises with
 cross-sectional data---their covariance matrix $\Omega$ is diagonal
 but has nonconstant diagonal elements. Therefore, various HC estimators
 $\hat \Psi_{\mathrm{HC}}$ have been suggested which are constructed
 by plugging an estimate of type $\hat \Omega = \mathrm{diag}(\omega_1, \dots, \omega_n)$
 into Equation~(\ref{eq:PsiHC}). These estimators differ in their
 choice of the $\omega_i$, an overview of the most important cases
-is giving in the following:
+is given in the following:
 \begin{eqnarray*}
   \mathrm{const:} \quad \omega_i & = & \hat \sigma^2 \\
     \mathrm{HC0:} \quad \omega_i & = & {\hat u_i}^2 \\
@@ -157,12 +191,14 @@ Recently, \cite{hac:Cribari-Neto:2004} suggested the estimator HC4
 to further improve small sample performance, especially in the presence
 of influential observations.
 
-To translate the conceptual properties---determining the covariance matrix estimator
-$\hat \Psi_{\mathrm{HC}}$ by $\omega = (\omega_1, \dots, \omega_n)^\top$---of 
-this class of HC estimators into
+All of these HC estimators $\hat \Psi_{\mathrm{HC}}$ have in common that 
+they are determined by $\omega = (\omega_1, \dots, \omega_n)^\top$ which in turn can
+be computed based on the residuals $\hat u$, the diagonal of the hat matrix $h$
+and the degrees of freedom $n-k$.
+To translate these conceptual properties of  this class of HC estimators into
 a computational tool, a function is required which takes 
-a fitted regression and the diagonal elements $\omega$ as
-input and returns $\hat \Psi_{\mathrm{HC}}$. In \pkg{sandwich}
+a fitted regression model and the diagonal elements $\omega$ as
+inputs and returns the corresponding $\hat \Psi_{\mathrm{HC}}$. In \pkg{sandwich},
 this is implemented in the function \code{vcovHC} which takes
 the following arguments:
 \begin{verbatim}
@@ -172,18 +208,17 @@ The first argument \code{lmobj} is an object as returned by \code{lm()},
 \proglang{R}'s standard function for fitting linear regression models
 via OLS. The argument \code{omega} can either be the vector $\omega$ or
 a function for data-driven computation of $\omega$ based on
-the residuals $\hat u$, the diagonal elements of the hat matrix $h$ 
+the residuals $\hat u$, the diagonal of the hat matrix $h$ 
 and the residual degrees of freedom $n-k$. Thus, it has to be
-of the form \code{omega(residuals, diaghat, df)}. As an example,
+of the form \code{omega(residuals, diaghat, df)}: e.g.,
 for computing HC3 \code{omega} would have to be set to
 \verb+function(residuals, diaghat, df) residuals^2/(1 - diaghat)^2+.
 
-As a convenience interface, a \code{type} argument can be set to
+As a convenience option, a \code{type} argument can be set to
 \code{"const"}, \code{"HC0"} (or equivalently \code{"HC"}),
 \code{"HC1"}, \code{"HC2"}, \code{"HC3"} (the default) or
 \code{"HC4"} and then \code{vcovHC} uses the corresponding \code{omega}
-functions. As soon as %% fixme?
-\code{omega} is set, \code{type} is ignored.
+function. As soon as \code{omega} is specified by the user, \code{type} is ignored.
 
 In summary, by specfying $\omega$---either as a vector or as a
 function---\code{vcovHC} can compute arbitrary HC covariance matrix estimates
@@ -194,38 +229,40 @@ block when doing inference in linear regression models.
 
 \subsection{Dealing with autocorrelation}
 
-If the error terms are not independent, $\Omega$ is not diagonal and without
+If the error terms $u_i$ are not independent, $\Omega$ is not diagonal and without
 further specification of a parametic model for the type of dependence it is
 typically burdensome to estimate $\Omega$ directly. However, if the form of 
 heteroskedasticity and autocorrelation is unknown,
 a solution to this problem is to estimate $\Phi$ instead which is 
-essentially the covariance matrix of the estimating functions\footnote{As the
-estimating functions are used, this approach is not only feasible in linear 
+essentially the covariance matrix of the estimating functions\footnote{Due to 
+the use of estimating functions, this approach is not only feasible in linear 
 models estimated by OLS, but also in nonlinear models using other estimating functions
 such as maximum likelihood (ML), generalized methods of moments (GMM)
 or Quasi-ML.}. This is what HAC estimators do: $\hat \Psi_{\mathrm{HAC}}$ is
 computed by plugging an estimate $\hat \Phi$ into Equation~(\ref{eq:PsiHAC}) with
 \begin{equation} \label{eq:HAC}
   \hat \Phi \quad = \quad \frac{1}{n}
-  \sum_{i,j = 1}^n w_{|i-j|} \hat V_i \hat V_j^\top
+  \sum_{i, j = 1}^n w_{|i-j|} \, {\hat V}_i {{\hat V}_j}^\top
 \end{equation}
 where $w = (w_0, \dots, w_{n-1})^\top$ is a vector of weights. An additional
 finite sample adjustment can be applied by multiplication with $n/(n-k)$.
-The motivation for this approach is that the autocorrelations should decrease
+For many data structures, it is a reasonable assumption that the autocorrelations should decrease
 with increasing lag $\ell = |i-j|$---otherwise $\beta$ can typically not be
-estimated consistently by OLS---such that the absolute weights $|w_\ell|$ should
+estimated consistently by OLS---so that it is rather intuitive that the weights $w_\ell$ should
 also decrease. Starting from \cite{hac:White+Domowitz:1984} and 
 \cite{hac:Newey+West:1987}, different choices for the vector of weights $w$ have
 been suggested in the econometrics literature which have been placed by
 \cite{hac:Andrews:1991} in a more general framework of choosing the weights
 by kernel functions with automatic bandwidth selection. \cite{hac:Andrews+Monahan:1992}
 show that the bias of the estimators can be reduced by prewhitening the estimating
-functions $\hat V_i$ using a vector autoregression (VAR) of order $p$.
-\cite{hac:Lumley+Heagerty:1999} suggest an adaptive weighting scheme where the
+functions $\hat V_i$ using a vector autoregression (VAR) of order $p$
+and applying the estimator in Equation~(\ref{eq:HAC}) to the VAR($p$) residuals
+subsequently. \cite{hac:Lumley+Heagerty:1999} suggest an adaptive weighting scheme where the
 weights are chosen based on the estimated autocorrelations of the residuals $\hat u_i$.
 
-As all the estimators mentioned above are of the form (\ref{eq:HAC}), a natural
-implementation for this class of HAC estimators is the following:
+All the estimators mentioned above are of the form (\ref{eq:HAC}), i.e., a weighted 
+sum of lagged products of the estimating functions corresponding to a fitted regression
+model. Therefore, a natural implementation for this class of HAC estimators is the following:
 
 \begin{verbatim}
 vcovHAC(lmobj, weights, 
@@ -233,14 +270,21 @@ vcovHAC(lmobj, weights,
   order.by, ar.method, data)
 \end{verbatim}
 
-where the most important arguments are again the fitted \code{lmobj} from which
+The most important arguments are again the fitted linear model\footnote{Note, that not only
+HAC estimators for fitted \emph{linear} models can be computed with \code{vcovHAC}. If
+there is an \code{estfun} method for extracting the estimating functions from the fitted
+model supplied, the estimate $\hat \Phi$ can be computed for arbitrary fitted models. To compute 
+the full sandwich $\hat \Psi_{\mathrm{HAC}}$, the \code{summary} method has to 
+have a slot \code{cov.unscaled} in addition.} \code{lmobj}---from which
 the estimating functions $\hat V_i$ can easily be extracted using the generic
-function \code{estfun(lmobj)} and the argument \code{weights} which specifys $w$.
-This can be either the vector $w$ directly or a function to compute it from
-\code{lmobj}. If \code{weights} is a vector shorter than $n$, it is assumed that
-the remaining weights are zero. The argument \code{prewhite} specifies wether 
-prewhitening should be used or not---the order $p$ is set to
-\code{as.numeric(prewhite)}---and \code{adjust} determines wether a finite sample
+function \code{estfun(lmobj)}---and the argument \code{weights} which specifys $w$.
+The latter can be either the vector $w$ directly or a function to compute it from
+\code{lmobj}.\footnote{If \code{weights} is a vector shorter than $n$, it is assumed that
+the remaining weights are zero.} The argument \code{prewhite} specifies wether 
+prewhitening should be used or not\footnote{The order $p$ is set to
+\code{as.numeric(prewhite)}, hence both \code{prewhite = 1} and \code{prewhite = TRUE}
+lead to a VAR(1) model, but also \code{prewhite = 2} is possible.}
+and \code{adjust} determines wether a finite sample
 correction by multiplication with $n/(n-k)$ should be made or not. By setting
 \code{sandwich} it can be controlled wether the full sandwich estimator 
 $\hat \Psi_{\mathrm{HAC}}$ or only the ``meat'' $\hat \Phi$ of the sandwich should
@@ -249,15 +293,13 @@ specifies by which variable the data should be ordered (the default is that they
 are already ordered, as is natural with time series data), which \code{ar.method}
 should be used for fitting the VAR($p$) model (the default is OLS) and \code{data}
 provides a data frame from which \code{order.by} can be taken (the default is the
-environment from which \code{vcovHAC} is called).\footnote{Note, that not only
-HAC estimators for fitted linear models can be computed with \code{vcovHAC}. If there is an \code{estfun}
-method extracting the estimating functions from the fitted model supplied, the
-estimate $\hat \Phi$ can be computed for arbitrary fitted models. To compute 
-the full sandwich $\hat \Psi_{\mathrm{HAC}}$, the \code{summary} method has to 
-have a slot \code{cov.unscaled} in addition.} More detailed technical documentation
-of these and other arguments of the functions described in this section are
-available in the reference manual included in \pkg{sandwich}.
+environment from which \code{vcovHAC} is called).\footnote{More detailed technical documentation
+of these and other arguments of the functions described are
+available in the reference manual included in \pkg{sandwich}.}
 
+As already pointed out above, all that is required for specifying an estimator
+$\hat \Psi_{\mathrm{HAC}}$ is the appropriate vector of weights (or a function
+for data-driven computation of the weights). 
 For the most important estimators from the literature mentioned above there are
 functions for computing the corresponding weights readily available in \pkg{sandwich}.
 They are all of the form \code{weights(lmobj, order.by, prewhite, ar.method, data)},
@@ -267,12 +309,12 @@ for ordering and prewhitening. The function \code{weightsAndrews} implements the
 of weights of \cite{hac:Andrews:1991} and \code{weightsLumley} implements the class of
 weights of \cite{hac:Lumley+Heagerty:1999}. Both functions have convenience interfaces:
 \code{kernHAC} calls \code{vcovHAC} with \code{weightsAndrews} (and different defaults
-for some parameters) and \code{weave} calls \code{vcovHAC} with \code{weightsLumley}
-(where \code{weave} stands for \underline{w}eighted \underline{e}mpirical \underline{a}daptive
-\underline{v}ariance \underline{e}stimators). Finally, a third convenience interface
+for some parameters) and \code{weave} calls \code{vcovHAC} with \code{weightsLumley}.
+Finally, a third convenience interface
 to \code{vcovHAC} is available for computing the estimator of \cite{hac:Newey+West:1987}.
 
-\cite{hac:Newey+West:1987} suggested to use linearly decaying weights
+\begin{itemize}
+\item \cite{hac:Newey+West:1987} suggested to use linearly decaying weights
 \begin{equation} \label{eq:NeweyWest}
   w_\ell \quad = \quad 1 - \frac{\ell}{L + 1}
 \end{equation}
@@ -296,6 +338,8 @@ curve(kweights(x, kernel = "Tukey", normalize = TRUE),
 lines(c(0, 0.5), c(1, 1), col = 6)
 lines(c(0.5, 0.5), c(1, 0), lty = 3, col = 6)
 lines(c(0.5, 3.2), c(0, 0), col = 6)
+curve(kweights(x, kernel = "Quadratic", normalize = TRUE),
+      from = 0, to = 3.2, col = 1, add = TRUE)
 
 text(0.5, 0.98, "Truncated", pos = 4)
 text(0.8, kweights(0.8, "Bartlett", normalize = TRUE), "Bartlett", pos = 4)
@@ -309,7 +353,7 @@ arrows(1.32, 0.2, 1.1, kweights(1.1, "Tukey", normalize = TRUE), length = 0.1)
 \end{center}
 \end{figure}
 
-\cite{hac:Andrews:1991} placed this and other estimators in a more general class 
+\item \cite{hac:Andrews:1991} placed this and other estimators in a more general class 
 of kernel-based HAC estimators with weights of the form $w_\ell = K(\ell/B)$
 where $K(\cdot)$ is a kernel function and $B$ the bandwidth parameter used.
 The kernel functions considered are the truncated, Bartlett, Parzen, Tukey-Hanning
@@ -321,8 +365,8 @@ literature is the quadratic spectral kernel which leads to the following weights
 \begin{equation}
   w_\ell \quad = \quad \frac{3}{z^2} \, \left(\frac{\sin(z)}{z} - \cos (z) \right),
 \end{equation}
-where $z = 6 \pi/5 \cdot \ell/B$.
-
+where $z = 6 \pi/5 \cdot \ell/B$. The formulas for the remaining kernels can be
+found in \cite{hac:Andrews:1991}.
 All of the kernel weights mentioned above are available in \code{weightsAndrews(lmobj, kernel, bw, ...)}
 where \code{kernel} specifies one of the kernels via a character string 
 (\code{"Truncated"}, \code{"Bartlett"}, \code{"Parzen"}, \code{"Tukey-Hanning"}
@@ -333,36 +377,42 @@ approximations is implemented in a function \code{bwAndrews} which is set
 as the default in \code{weightsAndrews}. As the flexibility of this conceptual framework
 of estimators leads to a lot of knobs and switches in the computational tools,
 a convenience function \code{kernHAC} for kernel-based HAC estimation has been added to \pkg{sandwich} that
-calls \code{vcovHAC} with \code{weightsAndrews} and \code{bwAndrews} with defaults
+calls \code{vcovHAC} based on \code{weightsAndrews} and \code{bwAndrews} with defaults
 as motivated by \cite{hac:Andrews:1991} and \cite{hac:Andrews+Monahan:1992}:
 by default, it computes a quadratic spectral kernel HAC estimator with VAR(1) prewhitening
-and automatic bandwidth selection based on an AR(1) approximation. Of course,
+and automatic bandwidth selection based on an AR(1) approximation. But of course,
 all the options described above can also be changed by the user when calling \code{kernHAC}.
 
-\cite{hac:Lumley+Heagerty:1999} suggested a different approach for specifying 
+\item \cite{hac:Lumley+Heagerty:1999} suggested a different approach for specifying 
 the weights in (\ref{eq:HAC}) based on some estimate $\hat \varrho_\ell$ of
-the autocorrelation of the residuals $\hat u_i$ at lag $l = 1, \dots, n-1$.
+the autocorrelation of the residuals $\hat u_i$ at lag $0 = 1, \dots, n-1$.
 They suggest either to use truncated weights $w_\ell = I\{n \, \hat \varrho^2_\ell > C\}$
 (where $I(\cdot)$ is the indicator function) or smoothed weights
 $w_\ell = \min\{1, C \, n \, \hat \varrho^2_\ell\}$, where for both a suitable constant
 $C$ has to be specified. \cite{hac:Lumley+Heagerty:1999} suggest using a default
 of $C = 4$ and $C = 1$ for the truncated and smoothed weights respectively.
 Note, that the truncated weights are equivalent to the truncated kernel from the
-framework of \cite{hac:Andrews:1991} using a different method for computing the
+framework of \cite{hac:Andrews:1991} but using a different method for computing the
 truncation lag. To ensure that the weights $|w_\ell|$ are decreasing, the
 autocorrelations have to be decreasing for increasing lag $\ell$ which can be achieved
 by using isotonic regression methods.
-In \pkg{sandwich} these weighting schemes are implemented in a function
-\code{weightsLumley} with a convenience interface \code{weave} which again sets
+In \pkg{sandwich}, these two weighting schemes are implemented in a function
+\code{weightsLumley} with a convenience interface \code{weave} 
+(which stands for \underline{w}eighted \underline{e}mpirical \underline{a}daptive
+\underline{v}ariance \underline{e}stimators) which again sets
 up the weights and then calls \code{vcovHAC}. Its most important arguments are
-\code{weave(lmobj, method, C, ...)} where \code{method} can be set either to
+\code{weave(lmobj, method, C, ...)} where \code{method} can be either
 \code{"truncate"} or \code{"smooth"} and \code{C} is by default 4 or 1 respectively.
 
+\end{itemize}
+
 To sum up, \code{vcovHAC} provides a simple yet flexible interface for general
-HAC estimation as defined in Equation~(\ref{eq:HAC}) and arbitrary weight vectors
-can be easily supplied. But data-driven computation of these weights and especially
-their bandwidth parameter might not be as simple, therefore two strategies suggested
-in the literature are also readily available in \pkg{strucchange}: First, the weighting scheme
+HAC estimation as defined in Equation~(\ref{eq:HAC}).
+Arbitrary weights can be supplied either as vectors or functions for data-driven
+computation of the weights. As the latter might easily become rather complex,
+in particular due to the automatic choice of bandwidth or lag truncation parameters,
+two strategies suggested in the literature are readily available in \pkg{sandwich}:
+First, the weighting scheme
 introduced by \cite{hac:Andrews:1991} for kernel-based HAC estimation with automatic
 bandwidth selection is implemented in \code{weightsAndrews} and corresponding 
 convenience interface \code{kernHAC}. Second, the weighted empirical adaptive
@@ -379,16 +429,16 @@ In econometric analyses, the practitioner is only seldom interested in the covar
 matrix $\hat \Psi$ (or $\hat \Omega$ or $\hat \Phi$) \emph{per se}, but mainly
 wants to compute them to use them for inferential procedures. Therefore, it is
 important that the functions \code{vcovHC} and \code{vcovHAC} described in the
-previous section can be easily supplied to other procedures such the user does
+previous section can be easily supplied to other procedures such that the user does
 not necessarily have to compute the variances in advance.
 
 A typical field of application for HC and HAC covariances are partial $t$ or $z$ tests
-for test whether a parameter $\beta_j$ is significantly different from zero. These
+for assessing whether a parameter $\beta_j$ is significantly different from zero. These
 tests are based on the $t$ ratio $\beta_j/\sqrt{\hat \Psi_{jj}}$ and either use
 the asymptotic normal distribution or the $t$ distribution with
 $n-k$ degrees of freedom for computing $p$ values. This procedure is available
 in the \proglang{R} package \pkg{lmtest} \citep{hac:Zeileis+Hothorn:2002} in the
-generic function \code{coeftest} with a method applicable to fitted \code{"lm"} objects.
+generic function \code{coeftest} which has a default method applicable to fitted \code{"lm"} objects.
 \begin{verbatim}
 coeftest(lmobj, vcov = NULL, df = NULL, ...)
 \end{verbatim}
@@ -400,15 +450,15 @@ argument determines the degrees of freedom: if \code{df} is finite and positive,
 distribution with \code{df} degrees of freedom is used, otherwise a normal approximation
 is employed. The default is to set \code{df} to $n-k$.
 
-This and other methods will be used using three real-world data sets: testing 
-coefficients in two models from \cite{hac:Greene:1993} and a structural change
-problem from \cite{hac:Bai+Perron:2003}.
+Inference based on HC and HAC estimators is illustrated in the following using three
+real-world data sets: testing coefficients in two models from \cite{hac:Greene:1993}
+and a structural change problem from \cite{hac:Bai+Perron:2003}.
 
 To make the results exactly reproducible for the reader, the commands
 for the inferential procedures is given along with their output
-within the text. All full list of commands, including
+within the text. A full list of commands, including
 those which produce the figures in the text, are provided (without output) in the
-appendix along with the version of \proglang{R} and the packages used.
+appendix along with the versions of \proglang{R} and the packages used.
 Before we start with the examples, the \pkg{sandwich} and \pkg{lmtest} package
 have to be loaded:
 <<loadlibs1>>=
@@ -462,10 +512,9 @@ coeftest(fm.ps, df = Inf, vcov = vcovHC(fm.ps, type = "HC4"))
 @
 The quadratic term is clearly non-significant. The reason for this result is
 depicted in Figure~\ref{fig:hc} which shows the data along with the fitted linear
-and quadratic model---the latter being obviously highly influenced by a single outlier: 
-Alaska. The reason for this improved performance of the HC4 estimator is
-that the HC0 but not the HC4 estimator is highly influenced by high leverage
-points.
+and quadratic model---the latter being obviously heavilyy influenced by a single outlier: 
+Alaska. Thus, the improved performance of the HC4 as compared to
+the HC0 estimator is due to the correction for high leverage points.
 
 \setkeys{Gin}{width=.6\textwidth} 
 \begin{figure}[bth]
@@ -492,7 +541,7 @@ based on robust covariance matrix estimates: his Table 15.1 provides
 data on the nominal gross national product (GNP), nominal gross private
 domestic investment, a price index and an interest rate which is used
 to formulate a model that explains real investment by real GNP and real
-interest. The corresponding transformed variable \code{RealInv}, \code{RalGNP}
+interest. The corresponding transformed variable \code{RealInv}, \code{RealGNP}
 and \code{RealInt} are stored in the data frame \code{Investment} in
 \pkg{sandwich} which can be loaded by:
 <<hac-data>>=
@@ -504,8 +553,8 @@ fm.inv <- lm(RealInv ~ RealGNP + RealInt, data = Investment)
 @
 and the significance of the coefficients can again be assessed
 by partial $z$ tests using \code{coeftest()}. \cite{hac:Greene:1993}
-uses the estimator of \cite{hac:Newey+West:1987} for this purpose
-which is in \proglang{R} passed as a matrix (as opposed to a function)
+uses the estimator of \cite{hac:Newey+West:1987} with lag $L = 4$ for this purpose
+which is here passed as a matrix (as opposed to a function)
 to \code{coeftest}.
 <<hac-test1>>=
 coeftest(fm.inv, df = Inf, vcov = NeweyWest(fm.inv, lag = 4))
@@ -554,16 +603,18 @@ s3d$plane3d(fm.inv, lty.box = "solid", col = 4)
 %% \end{figure}
 
 
-\subsection{Testing and dating structural changes in the presence of heteroskedasticity and autocorrelation}
+\subsection[Testing and dating structural changes in the presence of heteroskedasticity and autocorrelation]{Testing and dating structural changes in the presence of\\ heteroskedasticity and autocorrelation}
 
-To illustrate, that the functionality provided by the covariance estimators implemented
-in \pkg{sandwich} cannot only be used in simple settings, such as partial quasi-$t$~tests
-but also more complicated settings, we employ the real interest time series analyzed
+To illustrate that the functionality provided by the covariance estimators implemented
+in \pkg{sandwich} cannot only be used in simple settings, such as partial quasi-$t$~tests,
+but also for more complicated tasks, we employ the real interest time series analyzed
 by \cite{hac:Bai+Perron:2003}. This series contains changes in the mean (see Figure~\ref{fig:sc},
 right panel) which \cite{hac:Bai+Perron:2003} detect using several structural change tests
-based on $F$ statistics and date using a dynamic programming algorithm. Here, we use the
-same dating procedure but assess the significance using an OLS-based CUSUM test
-\citep{hac:Ploberger+Kraemer:1992} with a robust variance estimator.
+based on $F$ statistics and date using a dynamic programming algorithm. As the visualization suggests,
+this series exhibits both heteroskedasticity and autocorrelation, hence \cite{hac:Bai+Perron:2003}
+use a quadratic spectral kernel HAC estimator in their analysis.
+Here, we use the same dating procedure but assess the significance using an OLS-based CUSUM test
+\citep{hac:Ploberger+Kraemer:1992} with the same HAC estimator.
 The data are available in the package \pkg{strucchange} as the quarterly time series
 \code{RealInt} containing the US ex-post real interest rate from 1961(1) to 1986(3)
 and they are analyzed by a simple regression on the mean.
@@ -596,10 +647,10 @@ the command
 ocus <- gefp(RealInt ~ 1, fit = lm, vcov = kernHAC)
 @
 fits the OLS-based CUSUM process for a regression on the mean (\verb/RealInt ~ 1/),
-fitted by the function \code{lm} and estimating the variance using the function
+using the function \code{lm} and estimating the variance using the function
 \code{kernHAC}. The fitted OLS-based CUSUM process can then be visualized together
 with its 5\% critical value (horizontal lines) by \code{plot(scus)} which leads to
-a similar as in the left panel of Figure~\ref{fig:sc} (see the appendix for more details).
+a similar plot as in the left panel of Figure~\ref{fig:sc} (see the appendix for more details).
 As the process crosses its boundary, there is a significant change in the mean, while
 the clear peak in the process conveys that there is at least one strong break in the
 early 1980s. A formal significance test can also be carried out by \code{sctest(ocus)}
@@ -621,7 +672,10 @@ computing the confidence intervals using a consistent covariance matrix estimato
 is again essential. The \code{confint} method for computing confidence intervals
 takes again a \code{vcov} argument which has to be a function (and not a matrix) because
 it has to be applied to several segments of the data. By default, it computes the
-breakpoints for the minimum BIC partition which gives in this case two breaks.
+breakpoints for the minimum BIC partition which gives in this case two
+breaks.\footnote{By choosing the number of breakpoints with sequential tests 
+and not the BIC, \cite{hac:Bai+Perron:2003} arrive at a model with an additional 
+breakpoint which has rather wide confidence intervals \citep[see also][]{hac:Zeileis+Kleiber:2004}}
 The fitted three-segment model along with the breakpoints and their confidence
 intervals is depicted in the right panel of Figure~\ref{fig:sc}.
 
@@ -647,8 +701,8 @@ lines(confint(bp, vcov = kernHAC))
 \section*{Acknowledgements}
 
 We are grateful to Thomas Lumley for putting his code in the
-\pkg{weave} package at disposal and helping in the design
-of \pkg{sandwich} and to Christian Kleiber for helpful suggestions
+\pkg{weave} package at disposal and for advice in the design
+of \pkg{sandwich}, and to Christian Kleiber for helpful suggestions
 in the development of \pkg{sandwich}.
 
 \bibliography{hac}
@@ -757,7 +811,7 @@ s3d <- scatterplot3d(Investment[,c(5,7,6)],
 s3d$plane3d(fm.inv, lty.box = "solid", col = 4)
 @
 
-\subsection{Testing and dating structural changes in the presence of heteroskedasticity and autocorrelation}
+\subsection[Testing and dating structural changes in the presence of heteroskedasticity and autocorrelation]{Testing and dating structural changes in the presence of\\ heteroskedasticity and autocorrelation}
 
 Load real interest series:
 <<eval=FALSE>>=
@@ -787,7 +841,9 @@ plot(bp)
 
 Visualization:
 <<eval=FALSE>>=
-<<sc-plot>>
+plot(RealInt, ylab = "Real interest rate")
+lines(ts(fitted(bp), start = start(RealInt), freq = 4), col = 4)
+lines(confint(bp, vcov = kernHAC))
 @
 
 \subsection{Integrating covariance matrix estimators in other functions}
