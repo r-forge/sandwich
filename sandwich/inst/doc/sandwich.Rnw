@@ -51,22 +51,25 @@ To fix notations, we consider the linear regression model
 \begin{equation} \label{eq:lm}
   y_i \quad = \quad x_i^\top \beta + u_i \qquad (i = 1, \dots, n),
 \end{equation}
-with dependent variable $y_i$, a $k$-dimensional regressor
+with dependent variable $y_i$, $k$-dimensional regressor
 $x_i$ with coefficient vector $\beta$ and error term $u_i$.
 In the usual matrix notation comprising all $n$ observations 
 this can be formulated as $y = X \beta + u$.
 
-In the general linear model
-
-zero mean and variance $\VAR[u] = \Omega$.
-
-
+In the general linear model, it is typically assumed that the
+errors have zero mean and variance $\VAR[u] = \Omega$. Under
+suitable regularity conditions \citep[see e.g.,][]{hac:Greene:1997},
+the coefficients $\beta$ can be consistently estimated by 
+ordinary least squares (OLS) giving the well-known OLS
+estimator $\hat \beta$ with corresponding OLS residuals $\hat u_i$:
 \begin{eqnarray}
   \hat \beta & = & \left( X^\top X \right)^{-1} X^\top y \\
   \hat u & = & (I_n - H) \, u \; = \; (I_n - X \left( X^\top X \right)^{-1} X^\top) \, u
 \end{eqnarray}
-$H$ is called hat matrix
-
+where $I_n$ is the $n$-dimensional identity matrix and $H$ is usually 
+called hat matrix. The estimates $\hat \beta$ are unbiased and are
+asymptotically normal with covariance matrix $\Psi$ which is usally
+denoted in one of the two forms given below.
 
 \begin{eqnarray}
   \Psi \; = \; \VAR[\hat \beta] & = & 
@@ -75,15 +78,30 @@ $H$ is called hat matrix
           \left( \frac{1}{n} X^\top X \right)^{-1} \label{eq:PsiHAC}
 \end{eqnarray}
 
-$\Phi = n^{-1} X^\top \Omega X^\top$ 
+where $\Phi = n^{-1} X^\top \Omega X^\top$ is essiantlly the covariance
+matrix of the estimating functions $V_i(\beta) = x_i (y_i - x_i^\top \beta)$.
+The estimating functions evaluated at the parameter estimates
+$\hat V_i = V_i(\hat \beta)$ have then sum zero.
 
-estimating functions $V_i(\beta) = x_i (y_i - x_i^\top \beta)$
-
-
+For doing inference in the linear regression model, it is essential
+to have a consistent estimator for $\Psi$---the most common inferential
+task being to test whether one of the coefficients $\beta_j$ is zero which is is usually
+assessed using the $t$ ratio $\beta_j/\sqrt{\hat \Psi_{jj}}$. What kind of 
+estimator is used for $\Psi$ depends on the assumptions about $\Omega$ that
+are used: In the classical linear model independent and homoskedastic
+errors with variance $\sigma^2$ are assumed yielding $\Omega = \sigma^2 I_n$
+and $\Psi = \sigma^2 (X^\top X)^{-1}$ which can be easily estimated by
+plugging in the usual OLS estimate
+${\hat \sigma}^2 = (n-k)^{-1} \sum_{i = 1}^n {\hat u_i}^2$.
+But if the independence and/or homoskedasticity assumption is violated,
+inference based on the estimator for such
 squerical errors $\hat \Psi_{\mathrm{const}} = \hat \sigma (X^\top X)^{-1}$
-
-
-$\hat V_i = V_i(\hat \beta)$
+will be biased. HC and HAC estimators tackle
+this problem by plugging an estimate $\hat \Omega$ or $\hat \Phi$ into
+(\ref{eq:PsiHC}) or (\ref{eq:PsiHAC}) respectively which are consistent
+in the presence of heteroskedasticity and autocorrelation respectively.
+Such estimators and their implementation are described in the following
+section.
 
 
 \section{Estimating covariance matrices}
@@ -105,10 +123,10 @@ $\hat \Omega = \mathrm{diag}(\omega_1, \dots, \omega_n)$
 where $h_i = H_{ii}$ are the diagonal elements of the hat matrix
 and $\delta_i = \min\{4, h_i/\bar h\}$.
 
-\begin{Soutput}
+\begin{verbatim}
 vcovHC(lmobject, omega = NULL, type = "HC3",
   order.by = NULL)
-\end{Soutput}
+\end{verbatim}
 
 \code{"HC3", "const", "HC", "HC0", "HC1", "HC2", "HC4"}
 
@@ -148,10 +166,10 @@ Quadratic spectral kernel
 
 where $x = 6/5 \pi \cdot i/B$ and $B$ is again a bandwidth parameter.
 
-\begin{Soutput}
+\begin{verbatim}
 vcovHAC(lmobject, weights, 
-  order.by = NULL, prewhite = FALSE, adjust = TRUE)
-\end{Soutput}
+  order.by = NULL, prewhite = FALSE, adjust = TRUE, sandwich = TRUE)
+\end{verbatim}
 
 \code{weights(x, order.by, prewhite, ar.method, data)}
 
@@ -162,6 +180,12 @@ vcovHAC(lmobject, weights,
 
 
 \section{Applications and illustrations}
+
+$t$ ratio $\beta_j/\sqrt{\hat \Psi_{jj}}$
+
+For computing
+$p$ values the asymptotic normal distribution or the $t$ distribution with
+$n-k$ degrees of freedom are used.
 
 \subsection{Testing coefficients in cross-sectional data}
 
@@ -249,6 +273,11 @@ s3d$plane3d(fm.inv, lty.box = "solid", col = 4)
 
 \subsection{Testing and dating structural changes in the presence of heteroskedasticity and autocorrelation}
 
+If the first component if $x_i$ is equal to unity
+\begin{equation}
+\sup_{j = 1, \dots, n} \left| \frac{1}{\sqrt{n \, \hat \Phi_{11}}} \; \sum_{i = 1}^{j} \hat u_i  \right|.
+\end{equation}
+
 \cite{sc:Bai+Perron:2003}
 \cite{sc:Andrews:1993}
 \cite{sc:Ploberger+Kraemer:1992}
@@ -309,34 +338,34 @@ lines(confint(bp, vcov = kernHAC))
 
 Load public schools data,
 omit \code{NA} in Wisconsin and scale income:
-\begin{Soutput}
+\begin{verbatim}
 data(PublicSchools)
 ps <- na.omit(PublicSchools)
 ps$Income <- ps$Income * 0.0001
-\end{Soutput}
+\end{verbatim}
 
 Fit quadratic regression model:
-\begin{Soutput}
+\begin{verbatim}
 fm.ps <- lm(Expenditure ~ Income + I(Income^2), data = ps)
-\end{Soutput}
+\end{verbatim}
 
 Compare standard errors:
-\begin{Soutput}
+\begin{verbatim}
 sqrt(diag(vcov(fm.ps)))
 sqrt(diag(vcovHC(fm.ps, type = "const")))
 sqrt(diag(vcovHC(fm.ps, type = "HC0")))
 sqrt(diag(vcovHC(fm.ps, type = "HC3")))
 sqrt(diag(vcovHC(fm.ps, type = "HC4")))
-\end{Soutput}
+\end{verbatim}
 
 Test coefficient of quadratic term:
-\begin{Soutput}
+\begin{verbatim}
 coeftest(fm.ps, df = Inf, vcov = vcovHC(fm.ps, type = "HC0"))
 coeftest(fm.ps, df = Inf, vcov = vcovHC(fm.ps, type = "HC4"))
-\end{Soutput}
+\end{verbatim}
 
 Visualization:
-\begin{Soutput}
+\begin{verbatim}
 plot(Expenditure ~ Income, data = ps,
   xlab = "per capita income",
   ylab = "per capita spending on public schools")
@@ -345,73 +374,73 @@ lines(inc, predict(fm.ps, data.frame(Income = inc)), col = 4, lty = 2)
 fm.ps2 <- lm(Expenditure ~ Income, data = ps)
 abline(fm.ps2, col = 4)
 text(ps[2,2], ps[2,1], rownames(ps)[2], pos = 2)
-\end{Soutput}
+\end{verbatim}
 
 \subsection{Testing coefficients in time-series data}
 
 Load investment equation data:
-\begin{Soutput}
+\begin{verbatim}
 data(Investment)
-\end{Soutput}
+\end{verbatim}
 
 Fit regression model:
-\begin{Soutput}
+\begin{verbatim}
 fm.inv <- lm(RealInv ~ RealGNP + RealInt, data = Investment)
-\end{Soutput}
+\end{verbatim}
 
 Test coefficients using Newey-West HAC estimator:
-\begin{Soutput}
+\begin{verbatim}
 coeftest(fm.inv, df = Inf, vcov = NeweyWest(fm.inv, lag = 4))
-\end{Soutput}
+\end{verbatim}
 
 Visualization:
-\begin{Soutput}
+\begin{verbatim}
 plot(Investment[, "RealInv"], type = "b", pch = 19, ylab = "Real investment")
 lines(ts(fitted(fm.inv), start = 1964), col = 4)
-\end{Soutput}
+\end{verbatim}
 
 3-d visualization:
-\begin{Soutput}
+\begin{verbatim}
 library(scatterplot3d)
 s3d <- scatterplot3d(Investment[,c(5,7,6)],
   type = "b", angle = 65, scale.y = 1, pch = 16)
 s3d$plane3d(fm.inv, lty.box = "solid", col = 4)
-\end{Soutput}
+\end{verbatim}
 
 \subsection{Testing and dating structural changes in the presence of heteroskedasticity and autocorrelation}
 
 Load real interest series:
-\begin{Soutput}
+\begin{verbatim}
 data(RealInt)
-\end{Soutput}
+\end{verbatim}
 
 OLS-based CUSUM test with quadratic spectral kernel HAC estimate:
-\begin{Soutput}
+\begin{verbatim}
 ocus <- gefp(RealInt ~ 1, fit = lm, vcov = kernHAC)
 plot(ocus, aggregate = FALSE)
 sctest(ocus)
-\end{Soutput}
+\end{verbatim}
 
 sup$F$ test with quadratic spectral kernel HAC estimate:
-\begin{Soutput}
+\begin{verbatim}
 fs <- Fstats(RealInt ~ 1, vcov = kernHAC)
 plot(fs)
 sctest(fs)
-\end{Soutput}
+\end{verbatim}
 
 Breakpoint estimation and confidence intervals
 with quadratic spectral kernel HAC estimate:
-\begin{Soutput}
+\begin{verbatim}
 bp <- breakpoints(RealInt ~ 1)
 confint(bp, vcov = kernHAC)
-\end{Soutput}
+\end{verbatim}
 
 Visualization:
-\begin{Soutput}
+\begin{verbatim}
 plot(RealInt, ylab = "Real interest rate")
 lines(ts(fitted(bp), start = start(RealInt), freq = 4), col = 4)
 lines(confint(bp, vcov = kernHAC))
-\end{Soutput}
+\end{verbatim}
 
 \end{appendix}
 
