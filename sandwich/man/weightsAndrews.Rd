@@ -2,6 +2,7 @@
 \alias{weightsAndrews}
 \alias{bwAndrews}
 \alias{kernHAC}
+\alias{NeweyWest}
 \title{Kernel-based HAC Covariance Matrix Estimation}
 \description{
  A set of functions implementing a class of kernel-based heteroskedasticity
@@ -12,8 +13,11 @@
 \usage{
 kernHAC(x, order.by = NULL, prewhite = 1, bw = NULL,
   kernel = c("Quadratic Spectral", "Truncated", "Bartlett", "Parzen", "Tukey-Hanning"),
-  approx = c("AR(1)", "ARMA(1,1)"), diagnostics = FALSE, sandwich = TRUE,
-  ar.method = "ols", tol = 1e-7, data = list(), \dots)
+  approx = c("AR(1)", "ARMA(1,1)"), adjust = TRUE, diagnostics = FALSE,
+  sandwich = TRUE, ar.method = "ols", tol = 1e-7, data = list(), \dots)
+
+NeweyWest(x, lag, order.by = NULL, prewhite = FALSE, adjust = FALSE, 
+  diagnostics = FALSE, sandwich = TRUE, data = list())
 
 weightsAndrews(x, order.by = NULL, bw = NULL,
   kernel = c("Quadratic Spectral", "Truncated", "Bartlett", "Parzen", "Tukey-Hanning"),
@@ -31,6 +35,8 @@ bwAndrews(x, order.by = NULL, kernel = c("Quadratic Spectral", "Truncated",
     are ordered by the size of \code{z}. If set to \code{NULL} (the
     default) the observations are assumed to be ordered (e.g., a
     time series).}
+ \item{lag}{integer specifying the maximum lag with positive 
+    weight for the Newey-West estimator. See also below.}
  \item{prewhite}{logical or integer. Should the estimating functions
     be prewhitened? If \code{TRUE} or greater than 0 a VAR model of
     order \code{as.integer(prewhite)} is fitted via \code{ar} with
@@ -43,6 +49,9 @@ bwAndrews(x, order.by = NULL, kernel = c("Quadratic Spectral", "Truncated",
     are described in Andrews (1991).}
  \item{approx}{a character specifying the approximation method if the
     bandwidth \code{bw} has to be chosen by \code{bwAndrews}.}    
+ \item{adjust}{logical. Should a finite sample adjustment be made?
+    This amounts to multiplication with $n/(n-k)$ where $n$ is the
+    number of observations and $k$ the number of estimated parameters.}
  \item{diagnostics}{logical. Should additional model diagnostics be returned?
    See \code{\link{vcovHAC}} for details.}
  \item{sandwich}{logical. Should the sandwich estimator be computed?
@@ -78,8 +87,12 @@ is no other variable in the model) making the covariance matrix scale invariant.
 
 Further details can be found in Andrews (1991).
 
-The estimator of Newey & West (1987) can be obtained using the \code{"Bartlett"}
-kernel.
+The estimator of Newey & West (1987) is a special case of the class of estimators
+introduced by Andrews (1991). It can be obtained using the \code{"Bartlett"}
+kernel and setting \code{bw} to \code{lag + 1}. A convenience interface is 
+provided in \code{NeweyWest()}. Note, that the defaults for \code{prewhite} and 
+\code{adjust} differ. If automatic bandwidth selection should be used, the
+\code{kernHAC()} interface has to be employed.
 }
 
 \value{

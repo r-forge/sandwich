@@ -57,3 +57,16 @@ estfun.rlm <- function(x, ...)
     return(rval)
 }
 
+# estfun.coxph and estfun.survreg would be nice.
+# This one seems pretty close: note, however, that the
+# intercept score is missing.
+#
+# estfun.coxph <- function(x, ...)
+# {
+#   stopifnot(require(survival))
+#   res <- residuals(x)
+#   rval <- residuals(x, type = "score", ...)
+#   if(is.ts(res)) rval <- ts(rval, start = start(res), frequency = frequency(res))
+#   if(is.zoo(res)) rval <- zoo(rval, time(res))
+#   return(rval)
+# }

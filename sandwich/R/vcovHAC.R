@@ -1,6 +1,6 @@
 vcovHAC <- function(x, order.by = NULL, prewhite = FALSE,
-  weights = weightsAndrews, diagnostics = FALSE, sandwich = TRUE,
-  ar.method = "ols", data = list())
+  weights = weightsAndrews, adjust = TRUE, diagnostics = FALSE,
+  sandwich = TRUE, ar.method = "ols", data = list())
 {
   prewhite <- as.integer(prewhite)
 
@@ -51,8 +51,9 @@ vcovHAC <- function(x, order.by = NULL, prewhite = FALSE,
   }
 
   utu <- utu + t(utu)
+
   ## Andrews: multiply with df n/(n-k)
-  utu <- n.orig/(n.orig-k) * utu
+  if(adjust) utu <- n.orig/(n.orig-k) * utu
   
   if(prewhite > 0) {
     utu <- crossprod(t(D), utu) %*% t(D)
@@ -226,25 +227,35 @@ weightsLumley <- function(x, order.by = NULL, C = NULL,
 
 kernHAC <- function(x, order.by = NULL, prewhite = 1, bw = NULL,
   kernel = c("Quadratic Spectral", "Truncated", "Bartlett", "Parzen", "Tukey-Hanning"),
-  approx = c("AR(1)", "ARMA(1,1)"), diagnostics = FALSE, sandwich = TRUE,
+  approx = c("AR(1)", "ARMA(1,1)"), adjust = TRUE, diagnostics = FALSE, sandwich = TRUE,
   ar.method = "ols", tol = 1e-7, data = list(), ...)
 {
   myweights <- function(x, order.by = NULL, prewhite = FALSE, ar.method = "ols", data = list())
     weightsAndrews(x, order.by = order.by, prewhite = prewhite, bw = bw,
                    kernel = kernel, approx = approx, ar.method = ar.method, tol = tol, data = data, ...)
   vcovHAC(x, order.by = order.by, prewhite = prewhite,
-    weights = myweights, diagnostics = diagnostics, sandwich = sandwich,
-    ar.method = ar.method, data = data)
+    weights = myweights, adjust = adjust, diagnostics = diagnostics,
+    sandwich = sandwich, ar.method = ar.method, data = data)
 }
 
 weave <- function(x, order.by = NULL, prewhite = FALSE, C = NULL,
-  method = c("truncate", "smooth"), acf = isoacf, diagnostics = FALSE, 
-  sandwich = TRUE, data = list(), ...)
+  method = c("truncate", "smooth"), acf = isoacf, adjust = FALSE,
+  diagnostics = FALSE, sandwich = TRUE, data = list(), ...)
 {
   myweights <- function(x, order.by = NULL, prewhite = FALSE, data = list(), ...)
     weightsLumley(x, order.by = order.by, prewhite = prewhite, C = C,
                    method = method, acf = acf, data = data)
   vcovHAC(x, order.by = order.by, prewhite = prewhite,
-    weights = myweights, diagnostics = diagnostics, sandwich = sandwich,
-    data = data)
+    weights = myweights, adjust = adjust, diagnostics = diagnostics,
+    sandwich = sandwich, data = data)
+}
+
+NeweyWest <- function(x, lag,
+  order.by = NULL, prewhite = FALSE, adjust = FALSE, 
+  diagnostics = FALSE, sandwich = TRUE, data = list())
+{
+  myweights <- seq(1, 0, by = -(1/(lag + 1)))
+  vcovHAC(x, order.by = order.by, prewhite = prewhite,
+    weights = myweights, adjust = adjust, diagnostics = diagnostics,
+    sandwich = sandwich, data = data)
 }
