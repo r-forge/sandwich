@@ -2,7 +2,6 @@
 \alias{weightsAndrews}
 \alias{bwAndrews}
 \alias{kernHAC}
-\alias{NeweyWest}
 \title{Kernel-based HAC Covariance Matrix Estimation}
 \description{
  A set of functions implementing a class of kernel-based heteroskedasticity
@@ -11,21 +10,18 @@
 }
 
 \usage{
-kernHAC(x, order.by = NULL, prewhite = 1, bw = NULL,
+kernHAC(x, order.by = NULL, prewhite = 1, bw = bwAndrews,
   kernel = c("Quadratic Spectral", "Truncated", "Bartlett", "Parzen", "Tukey-Hanning"),
   approx = c("AR(1)", "ARMA(1,1)"), adjust = TRUE, diagnostics = FALSE,
-  sandwich = TRUE, ar.method = "ols", tol = 1e-7, data = list(), \dots)
+  sandwich = TRUE, ar.method = "ols", tol = 1e-7, data = list(), verbose = FALSE, \dots)
 
-NeweyWest(x, lag, order.by = NULL, prewhite = FALSE, adjust = FALSE, 
-  diagnostics = FALSE, sandwich = TRUE, data = list())
-
-weightsAndrews(x, order.by = NULL, bw = NULL,
+weightsAndrews(x, order.by = NULL, bw = bwAndrews,
   kernel = c("Quadratic Spectral", "Truncated", "Bartlett", "Parzen", "Tukey-Hanning"),
-  prewhite = 1, ar.method = "ols", tol = 1e-7, data = list(), \dots)
+  prewhite = 1, ar.method = "ols", tol = 1e-7, data = list(), verbose = FALSE, \dots)
 
 bwAndrews(x, order.by = NULL, kernel = c("Quadratic Spectral", "Truncated",
   "Bartlett", "Parzen", "Tukey-Hanning"), approx = c("AR(1)", "ARMA(1,1)"),
-  weights = NULL, prewhite = 1, ar.method = "ols", data = list())
+  weights = NULL, prewhite = 1, ar.method = "ols", data = list(), \dots)
 }
 
 \arguments{
@@ -35,16 +31,14 @@ bwAndrews(x, order.by = NULL, kernel = c("Quadratic Spectral", "Truncated",
     are ordered by the size of \code{z}. If set to \code{NULL} (the
     default) the observations are assumed to be ordered (e.g., a
     time series).}
- \item{lag}{integer specifying the maximum lag with positive 
-    weight for the Newey-West estimator. See also below.}
  \item{prewhite}{logical or integer. Should the estimating functions
     be prewhitened? If \code{TRUE} or greater than 0 a VAR model of
     order \code{as.integer(prewhite)} is fitted via \code{ar} with
     method \code{"ols"} and \code{demean = FALSE}. The default is to
     use VAR(1) prewhitening.}
- \item{bw}{numeric. The bandwidth of the kernel (corresponds to the
-    truncation lag). If set to \code{NULL} (the default) it is adaptively
-    chosen by the function \code{bwAndrews}.}
+ \item{bw}{numeric or a function. The bandwidth of the kernel (corresponds to the
+    truncation lag). If set to to a function (the default is \code{bwAndrews}) it is adaptively
+    chosen.}
  \item{kernel}{a character specifying the kernel used. All kernels used
     are described in Andrews (1991).}
  \item{approx}{a character specifying the approximation method if the
@@ -63,6 +57,8 @@ bwAndrews(x, order.by = NULL, kernel = c("Quadratic Spectral", "Truncated",
  \item{data}{an optional data frame containing the variables in the \code{order.by} 
     model. By default the variables are taken from the environment which
     the function is called from.}
+ \item{verbose}{logical. Should the bandwidth parameter used be
+    printed?}
  \item{\dots}{further arguments passed to \code{bwAndrews}.}
  \item{weights}{numeric. A vector of weights used for weighting the estimated
    coefficients of the approximation model (as specified by \code{approx}). By
@@ -90,9 +86,7 @@ Further details can be found in Andrews (1991).
 The estimator of Newey & West (1987) is a special case of the class of estimators
 introduced by Andrews (1991). It can be obtained using the \code{"Bartlett"}
 kernel and setting \code{bw} to \code{lag + 1}. A convenience interface is 
-provided in \code{NeweyWest()}. Note, that the defaults for \code{prewhite} and 
-\code{adjust} differ. If automatic bandwidth selection should be used, the
-\code{kernHAC()} interface has to be employed.
+provided in \code{\link{NeweyWest}}.
 }
 
 \value{
@@ -117,7 +111,7 @@ which is typically just the covariance matrix.
   703--708.
 }
 
-\seealso{\code{\link{vcovHAC}}, \code{\link{weightsLumley}},
+\seealso{\code{\link{vcovHAC}}, \code{\link{NeweyWest}}, \code{\link{weightsLumley}},
          \code{\link{weave}}}
 
 \examples{
@@ -132,10 +126,20 @@ curve(kweights(x, kernel = "Tukey", normalize = TRUE),
 curve(kweights(x, kernel = "Truncated", normalize = TRUE),
       from = 0, to = 3.2, col = 5, add = TRUE)
 
-x <- sin(1:100)
-y <- 1 + x + rnorm(100)
-fm <- lm(y ~ x)
+## fit investment equation
+data(Investment)
+fm <- lm(RealInv ~ RealGNP + RealInt, data = Investment)
+
+## compute quadratic spectral kernel HAC estimator
 kernHAC(fm)
+kernHAC(fm, verbose = TRUE)
+
+## use Parzen kernel instead, VAR(2) prewhitening, no finite sample
+## adjustment and Newey & West (1994) bandwidth selection
+kernHAC(fm, kernel = "Parzen", prewhite = 2, adjust = FALSE,
+  bw = bwNeweyWest, verbose = TRUE)
+
+## compare with estimate under assumption of spheric errors
 vcov(fm)
 }
 
