@@ -41,20 +41,9 @@ vcovHC <- function(x, order.by = NULL, data = list(),
       "HC3" = { omega <- function(residuals, diaghat, df) residuals^2 / (1 - diaghat)^2 },
       "HC4" = { omega <- function(residuals, diaghat, df) residuals^2 / (1 - diaghat)^pmin(4, length(residuals) * diaghat/as.integer(round(sum(diaghat), digits = 0))) })
   }
-
-##    if(type == "HC3")
-##    {
-##      diaghat <- 1 - diag(X %*% Q1 %*% t(X))
-##      res <- res/diaghat
-##      Xu <- as.vector(t(X) %*% res)
-##    }
-    if(is.null(V)) {
-      VX <- sqrt(omega(res, diaghat, x$df.residual)) * X
-      V <- crossprod(crossprod(t(VX), Q1))
-    }
-##    if(type == "HC1") {V <- V * (n/(n-k))}
-##    if(type == "HC3") {V <- Q1 %*% (crossprod(VX) - (outer(Xu,Xu) /n)) %*% Q1 * (n-1)/n}
-##  }
+  if(is.null(V)) {
+    VX <- sqrt(omega(res, diaghat, x$df.residual)) * X
+    V <- crossprod(crossprod(t(VX), Q1))
+  }
   return(V)
 }
-
