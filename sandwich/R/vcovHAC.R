@@ -102,12 +102,17 @@ bwAndrews <- function(x, order.by = NULL, kernel = c("Quadratic Spectral", "Trun
 
   if(!is.null(order.by))
   {
-    z <- model.matrix(order.by, data = data)
-    z <- as.vector(z[,ncol(z)])
+    if(inherits(order.by, "formula")) {
+      z <- model.matrix(order.by, data = data)
+      z <- as.vector(z[,ncol(z)])
+    } else {
+      z <- order.by
+    }
     index <- order(z)
   } else {
     index <- 1:n
   }
+
   umat <- umat[index, , drop = FALSE]
 
   ## compute weights (try to set the intercept weight to 0)
@@ -187,8 +192,12 @@ weightsLumley <- function(x, order.by = NULL, C = NULL,
 
   if(!is.null(order.by))
   {
-    z <- model.matrix(order.by, data = data)
-    z <- as.vector(z[,ncol(z)])
+    if(inherits(order.by, "formula")) {
+      z <- model.matrix(order.by, data = data)
+      z <- as.vector(z[,ncol(z)])
+    } else {
+      z <- order.by
+    }
     index <- order(z)
   } else {
     index <- 1:n
