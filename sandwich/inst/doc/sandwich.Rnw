@@ -40,7 +40,7 @@ can be integrated into applications.
 
 \SweaveOpts{engine=R,eps=FALSE}
 %\VignetteIndexEntry{Econometric Computing with HC and HAC Covariance Matrix Estimators}
-%\VignetteDepends{sandwich,zoo,lmtest,strucchange,scatterplot3d}
+%\VignetteDepends{sandwich,zoo,lmtest,strucchange}
 %\VignetteKeywords{covariance matrix estimator, heteroskedasticity, autocorrelation, estimating functions, econometric computing, R}
 %\VignettePackage{sandwich}
 
@@ -631,32 +631,24 @@ coeftest(fm.inv, df = Inf, vcov = parzenHAC)
 The three estimators leads to slightly different standard errors, but all
 tests agree that real GNP has a highly significant influence while
 the real interest rate has not. The data along with the fitted regression
-plane are depicted in Figure~\ref{fig:hac}.
+are depicted in Figure~\ref{fig:hac}.
 
 \setkeys{Gin}{width=.6\textwidth} 
 \begin{figure}[tbh]
 \begin{center}
-<<hac-plot,fig=TRUE,height=5,width=6,echo=FALSE>>=
-library(scatterplot3d)
-s3d <- scatterplot3d(Investment[,c(5,7,6)],
-  type = "b", angle = 65, scale.y = 1, pch = 16)
-s3d$plane3d(fm.inv, lty.box = "solid", col = 4)
+<<hac-plot,fig=TRUE,height=5,width=6,echo=FALSE,results=hide>>=
+if(require(scatterplot3d)) {
+  s3d <- scatterplot3d(Investment[,c(5,7,6)],
+    type = "b", angle = 65, scale.y = 1, pch = 16)
+  s3d$plane3d(fm.inv, lty.box = "solid", col = 4)
+} else {
+  plot(Investment[, "RealInv"], type = "b", pch = 19, ylab = "Real investment")
+  lines(ts(fitted(fm.inv), start = 1964), col = 4)
+}
 @
 \caption{\label{fig:hac} Investment equation data with fitted model}
 \end{center}
 \end{figure}
-
-%% \setkeys{Gin}{width=.6\textwidth} 
-%% \begin{figure}[tbh]
-%% \begin{center}
-%% <<hac-plot2,fig=TRUE,height=4,width=6,echo=FALSE>>=
-%% plot(Investment[, "RealInv"], type = "b", pch = 19, ylab = "Real investment")
-%% lines(ts(fitted(fm.inv), start = 1964), col = 4)
-%% @
-%% \caption{\label{fig:hac2} Investment equation data with fitted model}
-%% \end{center}
-%% \end{figure}
-
 
 \subsection[Testing and dating structural changes in the presence of heteroskedasticity and autocorrelation]{Testing and dating structural changes in the presence of\\ heteroskedasticity and autocorrelation}
 
