@@ -24,8 +24,8 @@ vcovHAC(x, order.by = NULL, prewhite = FALSE, weights = weightsAndrews,
     method \code{"ols"} and \code{demean = FALSE}.}
  \item{weights}{Either a vector of weights for the autocovariances or a
     function to compute these weights based on \code{x}, \code{order.by},
-    \code{prewhite} and \code{data}. If \code{weights} is a function
-    it has to take these arguments. See also details.}
+    \code{prewhite}, \code{ar.method} and \code{data}. If \code{weights}
+    is a function it has to take these arguments. See also details.}
  \item{adjust}{logical. Should a finite sample adjustment be made?
     This amounts to multiplication with $n/(n-k)$ where $n$ is the
     number of observations and $k$ the number of estimated parameters.}

@@ -19,7 +19,7 @@
 
 \SweaveOpts{engine=R,eps=FALSE}
 %\VignetteIndexEntry{Econometric Computing with HC and HAC Covariance Matrix Estimators}
-%\VignetteDepends{sandwich,zoo,lmtest,strucchange,car}
+%\VignetteDepends{sandwich,zoo,lmtest,strucchange,scatterplot3d}
 %\VignetteKeywords{covariance matrix estimator, heteroskedasticity, autocorrelation, estimating functions, econometric computing, R}
 %\VignettePackage{sandwich}
 
@@ -47,11 +47,73 @@ inference procedures
 
 \section{The linear regression model} \label{sec:model}
 
-To fix notations,
+To fix notations, we consider the linear regression model
+\begin{equation} \label{eq:lm}
+  y_i \quad = \quad x_i^\top \beta + u_i \qquad (i = 1, \dots, n),
+\end{equation}
+with dependent variable $y_i$, a $k$-dimensional regressor
+$x_i$ with coefficient vector $\beta$ and error term $u_i$.
+In the usual matrix notation comprising all $n$ observations 
+this can be formulated as $y = X \beta + u$.
+
+In the general linear model
+
+zero mean and variance $\VAR[u] = \Omega$.
+
+
+\begin{eqnarray}
+  \hat \beta & = & \left( X^\top X \right)^{-1} X^\top y \\
+  \hat u & = & (I_n - H) \, u \; = \; (I_n - X \left( X^\top X \right)^{-1} X^\top) \, u
+\end{eqnarray}
+$H$ is called hat matrix
+
+
+\begin{eqnarray}
+  \Psi \; = \; \VAR[\hat \beta] & = & 
+    \left( X^\top X \right)^{-1} X^\top \Omega X \left( X^\top X \right)^{-1} \label{eq:PsiHC} \\
+    & = & \frac{1}{n} \left( \frac{1}{n} X^\top X \right)^{-1} \Phi
+          \left( \frac{1}{n} X^\top X \right)^{-1} \label{eq:PsiHAC}
+\end{eqnarray}
+
+$\Phi = n^{-1} X^\top \Omega X^\top$ 
+
+estimating functions $V_i(\beta) = x_i (y_i - x_i^\top \beta)$
+
+
+squerical errors $\hat \Psi_{\mathrm{const}} = \hat \sigma (X^\top X)^{-1}$
+
+
+$\hat V_i = V_i(\hat \beta)$
+
 
 \section{Estimating covariance matrices}
 
 \subsection{Dealing with heteroskedasticity}
+
+$\hat \Psi_{\mathrm{HC}}$ plugging in a 
+$\hat \Omega = \mathrm{diag}(\omega_1, \dots, \omega_n)$
+
+\begin{eqnarray*}
+  \mathrm{const:} \quad \omega_i & = & \hat \sigma^2 \\
+    \mathrm{HC0:} \quad \omega_i & = & {\hat u_i}^2 \\
+    \mathrm{HC1:} \quad \omega_i & = & \frac{n}{n-k} \, {\hat u_i}^2 \\
+    \mathrm{HC2:} \quad \omega_i & = & \frac{{\hat u_i}^2}{1 - h_i} \\
+    \mathrm{HC3:} \quad \omega_i & = & \frac{{\hat u_i}^2}{(1 - h_i)^2} \\
+    \mathrm{HC4:} \quad \omega_i & = & \frac{{\hat u_i}^2}{(1 - h_i)^{\delta_i}}
+\end{eqnarray*}
+
+where $h_i = H_{ii}$ are the diagonal elements of the hat matrix
+and $\delta_i = \min\{4, h_i/\bar h\}$.
+
+\begin{Soutput}
+vcovHC(lmobject, omega = NULL, type = "HC3",
+  order.by = NULL)
+\end{Soutput}
+
+\code{"HC3", "const", "HC", "HC0", "HC1", "HC2", "HC4"}
+
+\code{omega(residuals, diaghat, df)}
+
 
 \cite{hac:White:1980}
 \cite{hac:MacKinnon+White:1985}
@@ -60,6 +122,38 @@ To fix notations,
 
 
 \subsection{Dealing with autocorrelation}
+
+$\hat \Psi_{\mathrm{HAC}}$ plugging in a $\hat \Phi$ with
+
+\begin{equation} \label{eq:HAC}
+  \hat \Phi \quad = \quad \frac{1}{n}
+  \sum_{i,j = 1}^n w_{|i-j|} \hat V_i \hat V_j^\top
+\end{equation}
+
+weights $w_k$ ($k = 0, \dots, n-1$)
+
+finite sample correction $n/(n-k)$
+
+Newey-West or Bartlett kernel
+\begin{equation}
+  w_i \quad = \quad 1 - \frac{i}{L + 1}
+\end{equation}
+where $L$ is the maximum lag, other weights are zero. In terms of
+a generic bandwidth $B$ usually formulated as $B = L + 1$.
+
+Quadratic spectral kernel
+\begin{equation}
+  w_i \quad = \quad \frac{3}{x^2} \, \left(\frac{\sin(x)}{x} - \cos (x) \right)
+\end{equation}
+
+where $x = 6/5 \pi \cdot i/B$ and $B$ is again a bandwidth parameter.
+
+\begin{Soutput}
+vcovHAC(lmobject, weights, 
+  order.by = NULL, prewhite = FALSE, adjust = TRUE)
+\end{Soutput}
+
+\code{weights(x, order.by, prewhite, ar.method, data)}
 
 \cite{hac:Newey+West:1987}
 \cite{hac:Andrews:1991}
@@ -120,7 +214,7 @@ data(Investment)
 @
 
 <<hac-model>>=
-fm.inv <- lm(RealInv ~ RealInt + RealGNP, data = Investment)
+fm.inv <- lm(RealInv ~ RealGNP + RealInt, data = Investment)
 @
 
 <<hac-test>>=
@@ -138,6 +232,19 @@ lines(ts(fitted(fm.inv), start = 1964), col = 4)
 \end{center}
 \end{figure}
 
+
+\setkeys{Gin}{width=.6\textwidth} 
+\begin{figure}[tbh]
+\begin{center}
+<<hac-plot2,fig=TRUE,height=5,width=6,echo=FALSE>>=
+library(scatterplot3d)
+s3d <- scatterplot3d(Investment[,c(5,7,6)],
+  type = "b", angle = 65, scale.y = 1, pch = 16)
+s3d$plane3d(fm.inv, lty.box = "solid", col = 4)
+@
+\caption{\label{fig:hac2} Investment equation data with fitted model (3D)}
+\end{center}
+\end{figure}
 
 
 \subsection{Testing and dating structural changes in the presence of heteroskedasticity and autocorrelation}
@@ -249,7 +356,7 @@ data(Investment)
 
 Fit regression model:
 \begin{Soutput}
-fm.inv <- lm(RealInv ~ RealInt + RealGNP, data = Investment)
+fm.inv <- lm(RealInv ~ RealGNP + RealInt, data = Investment)
 \end{Soutput}
 
 Test coefficients using Newey-West HAC estimator:
@@ -261,6 +368,14 @@ Visualization:
 \begin{Soutput}
 plot(Investment[, "RealInv"], type = "b", pch = 19, ylab = "Real investment")
 lines(ts(fitted(fm.inv), start = 1964), col = 4)
+\end{Soutput}
+
+3-d visualization:
+\begin{Soutput}
+library(scatterplot3d)
+s3d <- scatterplot3d(Investment[,c(5,7,6)],
+  type = "b", angle = 65, scale.y = 1, pch = 16)
+s3d$plane3d(fm.inv, lty.box = "solid", col = 4)
 \end{Soutput}
 
 \subsection{Testing and dating structural changes in the presence of heteroskedasticity and autocorrelation}

@@ -60,8 +60,8 @@ wt.stat <- summary(wt)$r.squared * nrow(ps)
 c(wt.stat, pchisq(wt.stat, df = 3, lower = FALSE))
 
 ## Bresch-Pagan test, p. 395, Example 14.7
-bptest(fmq, data = ps, studentize = FALSE)
-bptest(fmq, data = ps)
+bptest(fmq, studentize = FALSE)
+bptest(fmq)
 
 ## Francisco Cribari-Neto, Asymptotic Inference, CSDA 45
 ## quasi z-tests, p. 229, Table 8
