@@ -231,7 +231,7 @@ kernHAC <- function(x, order.by = NULL, prewhite = 1, bw = NULL,
 {
   myweights <- function(x, order.by = NULL, prewhite = FALSE, ar.method = "ols", data = list())
     weightsAndrews(x, order.by = order.by, prewhite = prewhite, bw = bw,
-                   kernel = kernel, approx = approx, ar.method = ar.method, tol = 1e-7, data = data, ...)
+                   kernel = kernel, approx = approx, ar.method = ar.method, tol = tol, data = data, ...)
   vcovHAC(x, order.by = order.by, prewhite = prewhite,
     weights = myweights, diagnostics = diagnostics, sandwich = sandwich,
     ar.method = ar.method, data = data)
