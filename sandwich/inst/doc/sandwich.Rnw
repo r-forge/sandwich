@@ -1,0 +1,307 @@
+\documentclass{Z}
+%% need no \usepackage{Sweave}
+
+\author{Achim Zeileis\\Wirtschaftsuniversit\"at Wien}
+\Plainauthor{Achim Zeileis}
+
+\title{Econometric Computing with HC and HAC Covariance Matrix Estimators}
+
+\Keywords{covariance matrix estimator, heteroskedasticity, autocorrelation,
+  estimating functions, econometric computing, \proglang{R}}
+\Plainkeywords{covariance matrix estimator, heteroskedasticity, autocorrelation,
+  estimating functions, econometric computing, R}
+
+\Abstract{
+  sandwich
+}
+
+\begin{document}
+
+\SweaveOpts{engine=R,eps=FALSE}
+%\VignetteIndexEntry{Econometric Computing with HC and HAC Covariance Matrix Estimators}
+%\VignetteDepends{sandwich,zoo,lmtest,strucchange,car}
+%\VignetteKeywords{covariance matrix estimator, heteroskedasticity, autocorrelation, estimating functions, econometric computing, R}
+%\VignettePackage{sandwich}
+
+
+<<preliminaries,echo=FALSE,results=hide>>=
+library(zoo)
+library(sandwich)
+library(strucchange)
+library(lmtest)
+@
+
+\section{Introduction} \label{sec:intro}
+
+\cite{hac:R:2004}
+\cite{hac:Cribari-Neto+Zarkos:2003}
+
+
+stress econometric computing
+
+reusable components
+
+covariance matrices not only as options to certain test but 
+as stand-alone functions which can be plugged into various 
+inference procedures
+
+\section{The linear regression model} \label{sec:model}
+
+To fix notations,
+
+\section{Estimating covariance matrices}
+
+\subsection{Dealing with heteroskedasticity}
+
+\cite{hac:White:1980}
+\cite{hac:MacKinnon+White:1985}
+\cite{hac:Long+Ervin:2000}
+\cite{hac:Cribari-Neto:2004}
+
+
+\subsection{Dealing with autocorrelation}
+
+\cite{hac:Newey+West:1987}
+\cite{hac:Andrews:1991}
+\cite{hac:Andrews+Monahan:1992}
+\cite{hac:Lumley+Heagerty:1999}
+
+
+\section{Applications and illustrations}
+
+\subsection{Testing coefficients in cross-sectional data}
+
+\cite{hac:Greene:1997}
+\cite{hac:Cribari-Neto:2004}
+\cite{hac:Zeileis+Hothorn:2002}
+\cite{hac:Fox:2002}
+
+<<hc-data>>=
+data(PublicSchools)
+ps <- na.omit(PublicSchools)
+ps$Income <- ps$Income * 0.0001
+@
+
+<<hc-model>>=
+fm.ps <- lm(Expenditure ~ Income + I(Income^2), data = ps)
+@
+
+<<hc-test>>=
+coeftest(fm.ps, df = Inf, vcov = vcovHC(fm.ps, type = "HC0"))
+coeftest(fm.ps, df = Inf, vcov = vcovHC(fm.ps, type = "HC4"))
+@
+
+\code{vcovHC(fm.ps, type = "HC0")}
+
+\setkeys{Gin}{width=.6\textwidth} 
+\begin{figure}[tbh]
+\begin{center}
+<<hc-plot,fig=TRUE,height=5,width=6,echo=FALSE>>=
+plot(Expenditure ~ Income, data = ps,
+  xlab = "per capita income",
+  ylab = "per capita spending on public schools")
+inc <- seq(0.5, 1.2, by = 0.001)
+lines(inc, predict(fm.ps, data.frame(Income = inc)), col = 4, lty = 2)
+fm.ps2 <- lm(Expenditure ~ Income, data = ps)
+abline(fm.ps2, col = 4)
+text(ps[2,2], ps[2,1], rownames(ps)[2], pos = 2)
+@
+\caption{\label{fig:hc} Expenditure on public schools and income with fitted models}
+\end{center}
+\end{figure}
+
+
+\subsection{Testing coefficients in time-series data}
+
+\cite{hac:Greene:1997}
+
+<<hac-data>>=
+data(Investment)
+@
+
+<<hac-model>>=
+fm.inv <- lm(RealInv ~ RealInt + RealGNP, data = Investment)
+@
+
+<<hac-test>>=
+coeftest(fm.inv, df = Inf, vcov = NeweyWest(fm.inv, lag = 4))
+@
+
+\setkeys{Gin}{width=.6\textwidth} 
+\begin{figure}[tbh]
+\begin{center}
+<<hac-plot,fig=TRUE,height=4,width=6,echo=FALSE>>=
+plot(Investment[, "RealInv"], type = "b", pch = 19, ylab = "Real investment")
+lines(ts(fitted(fm.inv), start = 1964), col = 4)
+@
+\caption{\label{fig:hac} Investment equation data with fitted model}
+\end{center}
+\end{figure}
+
+
+
+\subsection{Testing and dating structural changes in the presence of heteroskedasticity and autocorrelation}
+
+\cite{sc:Bai+Perron:2003}
+\cite{sc:Andrews:1993}
+\cite{sc:Ploberger+Kraemer:1992}
+
+\cite{hac:Zeileis+Leisch+Hornik:2002}
+\cite{hac:Zeileis:2004}
+
+
+<<sc-data>>=
+data(RealInt)
+@
+
+<<sc-ocus>>=
+ocus <- gefp(RealInt ~ 1, fit = lm, vcov = kernHAC)
+@
+
+\code{plot(ocus)}, \code{sctest(ocus)}
+
+
+<<sc-Fstats>>=
+fs <- Fstats(RealInt ~ 1, vcov = kernHAC)
+@
+
+\code{sctest(fs)}, \code{plot(fs)}
+
+<<sc-bp>>=
+bp <- breakpoints(RealInt ~ 1)
+confint(bp, vcov = kernHAC)
+@
+
+
+
+\setkeys{Gin}{width=\textwidth} 
+\begin{figure}[tbh]
+\begin{center}
+<<sc-plot,fig=TRUE,height=4,width=10,echo=FALSE>>=
+par(mfrow = c(1, 2))
+plot(ocus, aggregate = FALSE, main = "")
+plot(RealInt, ylab = "Real interest rate")
+lines(ts(fitted(bp), start = start(RealInt), freq = 4), col = 4)
+lines(confint(bp, vcov = kernHAC))
+@
+\caption{\label{fig:sc} OLS-based CUSUM test (left) and fitted model (right) for real interest data}
+\end{center}
+\end{figure}
+
+
+\section{Summary} \label{sec:summary}
+
+
+\clearpage
+
+\begin{appendix}
+
+\section[R code]{\proglang{R} code}
+
+\subsection{Testing coefficients in cross-sectional data}
+
+Load public schools data,
+omit \code{NA} in Wisconsin and scale income:
+\begin{Soutput}
+data(PublicSchools)
+ps <- na.omit(PublicSchools)
+ps$Income <- ps$Income * 0.0001
+\end{Soutput}
+
+Fit quadratic regression model:
+\begin{Soutput}
+fm.ps <- lm(Expenditure ~ Income + I(Income^2), data = ps)
+\end{Soutput}
+
+Compare standard errors:
+\begin{Soutput}
+sqrt(diag(vcov(fm.ps)))
+sqrt(diag(vcovHC(fm.ps, type = "const")))
+sqrt(diag(vcovHC(fm.ps, type = "HC0")))
+sqrt(diag(vcovHC(fm.ps, type = "HC3")))
+sqrt(diag(vcovHC(fm.ps, type = "HC4")))
+\end{Soutput}
+
+Test coefficient of quadratic term:
+\begin{Soutput}
+coeftest(fm.ps, df = Inf, vcov = vcovHC(fm.ps, type = "HC0"))
+coeftest(fm.ps, df = Inf, vcov = vcovHC(fm.ps, type = "HC4"))
+\end{Soutput}
+
+Visualization:
+\begin{Soutput}
+plot(Expenditure ~ Income, data = ps,
+  xlab = "per capita income",
+  ylab = "per capita spending on public schools")
+inc <- seq(0.5, 1.2, by = 0.001)
+lines(inc, predict(fm.ps, data.frame(Income = inc)), col = 4, lty = 2)
+fm.ps2 <- lm(Expenditure ~ Income, data = ps)
+abline(fm.ps2, col = 4)
+text(ps[2,2], ps[2,1], rownames(ps)[2], pos = 2)
+\end{Soutput}
+
+\subsection{Testing coefficients in time-series data}
+
+Load investment equation data:
+\begin{Soutput}
+data(Investment)
+\end{Soutput}
+
+Fit regression model:
+\begin{Soutput}
+fm.inv <- lm(RealInv ~ RealInt + RealGNP, data = Investment)
+\end{Soutput}
+
+Test coefficients using Newey-West HAC estimator:
+\begin{Soutput}
+coeftest(fm.inv, df = Inf, vcov = NeweyWest(fm.inv, lag = 4))
+\end{Soutput}
+
+Visualization:
+\begin{Soutput}
+plot(Investment[, "RealInv"], type = "b", pch = 19, ylab = "Real investment")
+lines(ts(fitted(fm.inv), start = 1964), col = 4)
+\end{Soutput}
+
+\subsection{Testing and dating structural changes in the presence of heteroskedasticity and autocorrelation}
+
+Load real interest series:
+\begin{Soutput}
+data(RealInt)
+\end{Soutput}
+
+OLS-based CUSUM test with quadratic spectral kernel HAC estimate:
+\begin{Soutput}
+ocus <- gefp(RealInt ~ 1, fit = lm, vcov = kernHAC)
+plot(ocus, aggregate = FALSE)
+sctest(ocus)
+\end{Soutput}
+
+sup$F$ test with quadratic spectral kernel HAC estimate:
+\begin{Soutput}
+fs <- Fstats(RealInt ~ 1, vcov = kernHAC)
+plot(fs)
+sctest(fs)
+\end{Soutput}
+
+Breakpoint estimation and confidence intervals
+with quadratic spectral kernel HAC estimate:
+\begin{Soutput}
+bp <- breakpoints(RealInt ~ 1)
+confint(bp, vcov = kernHAC)
+\end{Soutput}
+
+Visualization:
+\begin{Soutput}
+plot(RealInt, ylab = "Real interest rate")
+lines(ts(fitted(bp), start = start(RealInt), freq = 4), col = 4)
+lines(confint(bp, vcov = kernHAC))
+\end{Soutput}
+
+\end{appendix}
+
+\clearpage
+
+\bibliography{hac}
+
+\end{document}
