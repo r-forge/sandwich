@@ -2,12 +2,6 @@
 \usepackage{thumbpdf}
 %% need no \usepackage{Sweave}
 
-%% \usepackage{statreport}
-%% \fronttitle{Econometric Computing with HC and HAC Covariance Matrix Estimators}
-%% \frontauthor{Achim Zeileis}
-%% \frontdate{October 2004}
-%% \frontnumber{10}
-
 \author{Achim Zeileis\\Wirtschaftsuniversit\"at Wien}
 \Plainauthor{Achim Zeileis}
 
@@ -49,20 +43,16 @@
 }
 
 \Submitdate{2004-11-09}
+\Acceptdate{2004-11-29}
+\Volume{11}
+\Issue{10}
+\Month{November}
+\Year{2004}
 
 
 \begin{document}
 
-%% \frontpage
-%% \maketitle
-
 \SweaveOpts{engine=R,eps=FALSE}
-%\VignetteIndexEntry{Econometric Computing with HC and HAC Covariance Matrix Estimators}
-%\VignetteDepends{sandwich,zoo,lmtest,strucchange,scatterplot3d}
-%\VignetteKeywords{covariance matrix estimator, heteroskedasticity, autocorrelation, estimating functions, econometric computing, R}
-%\VignettePackage{sandwich}
-
-
 <<preliminaries,echo=FALSE,results=hide>>=
 library(zoo)
 library(sandwich)
@@ -126,7 +116,7 @@ used in this paper) are available at no cost under the terms of the general publ
 (GPL) from the comprehensive \proglang{R} archive network (CRAN, \url{http://CRAN.R-project.org/}).
 \proglang{R} has no built-in support for HC and HAC estimation and at the time we
 started writing \pkg{sandwich} there was only one package that implements HC (but not HAC)
-estimtors \citep[the \pkg{car} package, see][]{hac:Fox:2002} but which does not allow for as much 
+estimators \citep[the \pkg{car} package, see][]{hac:Fox:2002} but which does not allow for as much 
 flexibility as the tools presented here. \pkg{sandwich} provides the functions \code{vcovHC} and \code{vcovHAC}
 implementing general classes of HC and HAC estimators. The names of the functions are chosen to correspond to 
 \code{vcov}, \proglang{R}'s generic function for extracting covariance matrices from fitted model objects.
@@ -169,7 +159,7 @@ this can be formulated as $y = X \beta + u$.
 
 In the general linear model, it is typically assumed that the
 errors have zero mean and variance $\VAR[u] = \Omega$. Under
-suitable regularity conditions \citep[see e.g.,][]{hac:Greene:1993},
+suitable regularity conditions \citep[see e.g.,][]{hac:Greene:1993,hac:White:2000},
 the coefficients $\beta$ can be consistently estimated by 
 OLS giving the well-known OLS estimator $\hat \beta$ with corresponding OLS residuals $\hat u_i$:
 \begin{eqnarray}
@@ -178,18 +168,18 @@ OLS giving the well-known OLS estimator $\hat \beta$ with corresponding OLS resi
 \end{eqnarray}
 where $I_n$ is the $n$-dimensional identity matrix and $H$ is usually 
 called hat matrix. The estimates $\hat \beta$ are unbiased and
-asymptotically normal. Their covariance matrix $\Psi$ is usually
+asymptotically normal \citep{hac:White:2000}. Their covariance matrix $\Psi$ is usually
 denoted in one of the two following ways:
 
 \begin{eqnarray}
   \Psi \; = \; \VAR[\hat \beta] & = & 
     \left( X^\top X \right)^{-1} X^\top \Omega X \left( X^\top X \right)^{-1} \label{eq:PsiHC} \\
-    & = & \frac{1}{n} \left( \frac{1}{n} X^\top X \right)^{-1} \Phi
+    & = & \left( \frac{1}{n} X^\top X \right)^{-1} \frac{1}{n} \Phi
           \left( \frac{1}{n} X^\top X \right)^{-1} \label{eq:PsiHAC}
 \end{eqnarray}
 
-where $\Phi = n^{-1} X^\top \Omega X$ is essiantlly the covariance
-matrix of the estimating functions $V_i(\beta) = x_i (y_i - x_i^\top \beta)$.
+where $\Phi = n^{-1} X^\top \Omega X$ is essentially the covariance
+matrix of the scores or estimating functions $V_i(\beta) = x_i (y_i - x_i^\top \beta)$.
 The estimating functions evaluated at the parameter estimates
 $\hat V_i = V_i(\hat \beta)$ have then sum zero.
 
@@ -347,7 +337,7 @@ lead to a VAR(1) model, but also \code{prewhite = p} with \code{p} $> 1$ is poss
 and \code{adjust} determines wether a finite sample
 correction by multiplication with $n/(n-k)$ should be made or not. By setting
 \code{sandwich} it can be controlled wether the full sandwich estimator 
-$\hat \Psi_{\mathrm{HAC}}$ or only the ``meat'' $\hat \Phi$ of the sandwich should
+$\hat \Psi_{\mathrm{HAC}}$ or only the ``meat'' $\hat \Phi/n$ of the sandwich should
 be returned. The remaining arguments are a bit more technical: \code{order.by}
 specifies by which variable the data should be ordered (the default is that they 
 are already ordered, as is natural with time series data), which \code{ar.method}
@@ -431,7 +421,7 @@ literature is the quadratic spectral kernel which leads to the following weights
 \end{equation}
 where $z = 6 \pi/5 \cdot \ell/B$. The definitions for the remaining kernels can be
 found in \cite{hac:Andrews:1991}.
-All of the kernel weights mentioned above are available in \code{weightsAndrews(lmobj, kernel, bw, ...)}
+All kernel weights mentioned above are available in \code{weightsAndrews(lmobj, kernel, bw, ...)}
 where \code{kernel} specifies one of the kernels via a character string 
 (\code{"Truncated"}, \code{"Bartlett"}, \code{"Parzen"}, \code{"Tukey-Hanning"}
 or \code{"Quadratic Spectral"}) and
@@ -504,10 +494,12 @@ previous section can be easily supplied to other procedures such that the user d
 not necessarily have to compute the variances in advance.
 
 A typical field of application for HC and HAC covariances are partial $t$ or $z$ tests
-for assessing whether a parameter $\beta_j$ is significantly different from zero. These
-tests are based on the $t$ ratio $\beta_j/\sqrt{\hat \Psi_{jj}}$ and either use
+for assessing whether a parameter $\beta_j$ is significantly different from zero.
+Exploiting the (asymptotic) normality of the estimates, these
+tests are based on the $t$ ratio $\hat \beta_j/\sqrt{\hat \Psi_{jj}}$ and either use
 the asymptotic normal distribution or the $t$ distribution with
-$n-k$ degrees of freedom for computing $p$ values. This procedure is available
+$n-k$ degrees of freedom for computing $p$ values \citep{hac:White:2000}.
+This procedure is available
 in the \proglang{R} package \pkg{lmtest} \citep{hac:Zeileis+Hothorn:2002} in the
 generic function \code{coeftest} which has a default method applicable to fitted \code{"lm"} objects.
 \begin{verbatim}
@@ -727,7 +719,7 @@ fits the OLS-based CUSUM process for a regression on the mean (\verb/RealInt ~ 1
 using the function \code{lm} and estimating the variance using the function
 \code{kernHAC}. The fitted OLS-based CUSUM process can then be visualized together
 with its 5\% critical value (horizontal lines) by \code{plot(scus)} which leads to
-a similar plot as in the left panel of Figure~\ref{fig:sc} (see the appendix for more details).
+a similar plot as in the left panel of Figure~\ref{fig:sc}.
 As the process crosses its boundary, there is a significant change in the mean, while
 the clear peak in the process conveys that there is at least one strong break in the
 early 1980s. A formal significance test can also be carried out by \code{sctest(ocus)}
@@ -784,7 +776,7 @@ the flexibility and the conceptual ideas of the underlying theoretical
 frameworks. Based on these general tools, a number of special cases of
 HC and HAC estimators is provided including the most popular
 in applied econometric research. All the functions suggested are implemented
-in the package \pkg{sandwich} in the \proglang{R} system for statstical 
+in the package \pkg{sandwich} in the \proglang{R} system for statistical 
 computing and designed in such a way that they build on readily available
 model fitting functions and provide building blocks that can be easily
 integrated into other programs or applications. To achieve this flexibility,
