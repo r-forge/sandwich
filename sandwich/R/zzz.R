@@ -1,1 +1,1 @@
-if(!("package:zio" %in% search() || require(zio))) warning("Could not load package zio")
+if(!("package:zoo" %in% search() || require(zoo))) warning("could not load package zoo")

@@ -17,7 +17,7 @@ estfun.lm <- function(x, ...)
   rval <- as.vector(res) * wts * xmat
   attr(rval, "assign") <- NULL
   if(is.ts(res)) rval <- ts(rval, start = start(res), frequency = frequency(res))
-  if(is.zio(res)) rval <- zio(rval, time(res))
+  if(is.zoo(res)) rval <- zoo(rval, time(res))
   return(rval)
 }
 
@@ -33,7 +33,7 @@ estfun.glm <- function(x, ...)
   attr(rval, "assign") <- NULL
   res <- residuals(x, "pearson")
   if(is.ts(res)) rval <- ts(rval, start = start(res), frequency = frequency(res))
-  if(is.zio(res)) rval <- zio(rval, time(res))
+  if(is.zoo(res)) rval <- zoo(rval, time(res))
   return(rval)
 }
 
@@ -53,7 +53,7 @@ estfun.rlm <- function(x, ...)
     rval <- as.vector(psi(res/x$s)) * wts * xmat
     attr(rval, "assign") <- NULL
     if(is.ts(res)) rval <- ts(rval, start = start(res), frequency = frequency(res))
-    if(is.zio(res)) rval <- zio(rval, time(res))
+    if(is.zoo(res)) rval <- zoo(rval, time(res))
     return(rval)
 }
 
