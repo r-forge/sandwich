@@ -3,7 +3,7 @@ Version: 1.0-0
 Date: 2004-11-29
 Title: Robust Covariance Matrix Estimators
 Author: Thomas Lumley, Achim Zeileis
-Maintainer: Achim Zeileis <Achim.Zeileis@wu-wien.ac.at>
+Maintainer: Achim Zeileis <Achim.Zeileis@R-project.org>
 Description: Model-robust standard error estimators for cross-sectional,
              time series and longitudinal data.
 Depends: zoo, R (>= 1.5.0)
