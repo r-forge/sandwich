@@ -37,7 +37,7 @@ Executive Office of the President (1984), \emph{Economic Report of the
 data(Investment)
 
 ## fit linear model, p. 412, Table 15.2
-fm <- lm(RealInv ~ RealInt + RealGNP, data = Investment)
+fm <- lm(RealInv ~ RealGNP + RealInt, data = Investment)
 summary(fm)
 
 ## visualize residuals, p. 412, Figure 15.1
@@ -61,14 +61,14 @@ bgtest(fm, order = 4)
 
 ## visualize fitted series
 plot(Investment[, "RealInv"], type = "b", pch = 19, ylab = "Real investment")
-lines(ts(fitted(fm.inv), start = 1964), col = 4)
+lines(ts(fitted(fm), start = 1964), col = 4)
 
 
 ## 3-d visualization of fitted model
 if(require(scatterplot3d)) {
 s3d <- scatterplot3d(Investment[,c(5,7,6)],
   type = "b", angle = 65, scale.y = 1, pch = 16)
-s3d$plane3d(fm.inv, lty.box = "solid", col = 4)
+s3d$plane3d(fm, lty.box = "solid", col = 4)
 }
 }
 

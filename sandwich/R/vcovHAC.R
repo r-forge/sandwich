@@ -175,7 +175,7 @@ bwAndrews <- function(x, order.by = NULL, kernel = c("Quadratic Spectral", "Trun
   }
 
   rval <- switch(kernel,
-    "Truncated"          = {stop("no automatic bandwidth selection available for `Truncated' kernel, use weightsLumley() instead")},
+    "Truncated"          = {0.6611 * (n * alpha2)^(1/5)},
     "Bartlett"           = {1.1447 * (n * alpha1)^(1/3)},
     "Parzen"             = {2.6614 * (n * alpha2)^(1/5)},
     "Tukey-Hanning"      = {1.7462 * (n * alpha2)^(1/5)},
