@@ -16,24 +16,8 @@ estfun.lm <- function(x, ...)
   res <- residuals(x)
   rval <- as.vector(res) * wts * xmat
   attr(rval, "assign") <- NULL
-
-  ## since version 2.0-0 lm() does not preserve
-  ## the ts attributes (if any). Therefore, this
-  ## workaround is placed here.
-  if(is.ts(res)) rval <- ts(rval, start = start(res), frequency = frequency(res))
-  else {
-    form <- formula(x)
-    env <- environment(form)
-    data <- x$call[["data"]]
-    if(is.null(data) || class(get(deparse(data))) == "name") data <- env
-      else data <- get(deparse(data))
-    if(is.ts(data)) rval <- ts(rval, start = start(data), frequency = frequency(data))
-    else {
-      orig.y <- eval(attr(terms(form), "variables")[[2]], data, env)
-      if(is.ts(orig.y)) rval <- ts(rval, start = start(orig.y), frequency = frequency(orig.y))
-    }
-  }
   if(is.zoo(res)) rval <- zoo(rval, time(res))
+  if(is.ts(res)) rval <- ts(rval, start = start(res), frequency = frequency(res))
   return(rval)
 }
 
@@ -49,18 +33,6 @@ estfun.glm <- function(x, ...)
   attr(rval, "assign") <- NULL
   res <- residuals(x, "pearson")
   if(is.ts(res)) rval <- ts(rval, start = start(res), frequency = frequency(res))
-  else {
-    form <- formula(x)
-    env <- environment(form)
-    data <- x$call[["data"]]
-    if(is.null(data) || class(get(deparse(data))) == "name") data <- env
-      else data <- get(deparse(data))
-    if(is.ts(data)) rval <- ts(rval, start = start(data), frequency = frequency(data))
-    else {
-      orig.y <- eval(attr(terms(form), "variables")[[2]], data, env)
-      if(is.ts(orig.y)) rval <- ts(rval, start = start(orig.y), frequency = frequency(orig.y))
-    }
-  }
   if(is.zoo(res)) rval <- zoo(rval, time(res))
   return(rval)
 }
@@ -81,18 +53,6 @@ estfun.rlm <- function(x, ...)
   rval <- as.vector(psi(res/x$s)) * wts * xmat
   attr(rval, "assign") <- NULL
   if(is.ts(res)) rval <- ts(rval, start = start(res), frequency = frequency(res))
-  else {
-    form <- formula(x)
-    env <- environment(form)
-    data <- x$call[["data"]]
-    if(is.null(data) || class(get(deparse(data))) == "name") data <- env
-      else data <- get(deparse(data))
-    if(is.ts(data)) rval <- ts(rval, start = start(data), frequency = frequency(data))
-    else {
-      orig.y <- eval(attr(terms(form), "variables")[[2]], data, env)
-      if(is.ts(orig.y)) rval <- ts(rval, start = start(orig.y), frequency = frequency(orig.y))
-    }
-  }
   if(is.zoo(res)) rval <- zoo(rval, time(res))
   return(rval)
 }
