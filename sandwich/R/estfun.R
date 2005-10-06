@@ -91,6 +91,22 @@ estfunDeriv.lm <- function(x, ...)
   return(rval)
 }
 
+estfunDeriv.glm <- function(x, ...)
+{
+  ## extract X
+  xmat <- qr.X(x$qr)
+  attr(xmat, "assign") <- NULL
+  
+  ## compute cross-products for each observation i
+  k <- NCOL(xmat)
+  n <- NROW(xmat)
+  rval <- sapply(1:n, function(i) crossprod(xmat[i,,drop = FALSE]))
+  dim(rval) <- c(k, k, n)
+  dimnames(rval) <- list(colnames(xmat), colnames(xmat), rownames(xmat))
+    
+  return(rval)
+}
+
 bread <- function(x, ...)
 {
   UseMethod("bread")
