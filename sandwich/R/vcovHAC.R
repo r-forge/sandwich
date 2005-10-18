@@ -1,8 +1,29 @@
 ## vcovHAC() is the general workhorse for HAC estimation
+## although the essential part is now moved to meatHAC()
+## interfacing the sandwich() function
 
 vcovHAC <- function(x, order.by = NULL, prewhite = FALSE,
   weights = weightsAndrews, adjust = TRUE, diagnostics = FALSE,
-  sandwich = TRUE, ar.method = "ols", data = list())
+  sandwich = TRUE, ar.method = "ols", data = list(), ...)
+{
+  rval <- meatHAC(x, order.by = order.by, prewhite = prewhite,
+                  weights = weights, adjust = adjust, diagnostics = diagnostics,
+		  ar.method = ar.method, data = data)
+				  
+  if(sandwich) {
+    diagn <- attr(rval, "diagnostics")
+    rval <- sandwich(x, meat = rval, ...)
+    attr(rval, "diagnostics") <- diagn
+  } else {
+    rval <- rval * NROW(estfun(x))
+  }
+
+  return(rval)
+}
+
+meatHAC <- function(x, order.by = NULL, prewhite = FALSE,
+  weights = weightsAndrews, adjust = TRUE, diagnostics = FALSE,
+  ar.method = "ols", data = list())
 {
   prewhite <- as.integer(prewhite)
 
@@ -61,21 +82,16 @@ vcovHAC <- function(x, order.by = NULL, prewhite = FALSE,
     utu <- crossprod(t(D), utu) %*% t(D)
   }
   
-  
   wsum <- 2*wsum
   w2sum <- 2*w2sum
   bc <- n^2/(n^2 - wsum)
   df <- n^2/w2sum
 
-  if(sandwich) {
-    modelv <- summary(x)$cov.unscaled
-    rval <- modelv %*% utu %*% modelv
-  } else rval <- utu/n.orig
+  rval <- utu/(n.orig^2)
 
   if(diagnostics)  attr(rval, "diagnostics") <- list(bias.correction = bc, df = df)
   return(rval)
 }
-
 
 
 ## weightsAndrews() and bwAndrews() implement the HAC estimation
