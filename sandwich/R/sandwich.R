@@ -2,7 +2,8 @@ sandwich <- function(x, bread. = bread, meat. = meat, ...)
 {
   if(is.function(bread.)) bread. <- bread.(x)
   if(is.function(meat.)) meat. <- meat.(x, ...)
-  return(bread. %*% meat. %*% bread.)
+  n <- NROW(estfun(x))
+  return(1/n * (bread. %*% meat. %*% bread.))
 }
 
 bread <- function(x, ...)
@@ -35,7 +36,7 @@ meat.default <- function(x, adjust = FALSE, ...)
   psi <- estfun(x, ...)
   k <- NCOL(psi)
   n <- NROW(psi)
-  rval <- crossprod(as.matrix(psi))/(n^2)
+  rval <- crossprod(as.matrix(psi))/n
   if(adjust) rval <- n/(n-k) * rval
   rownames(rval) <- colnames(rval) <- colnames(psi)
   return(rval)

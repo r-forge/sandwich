@@ -14,8 +14,6 @@ vcovHAC <- function(x, order.by = NULL, prewhite = FALSE,
     diagn <- attr(rval, "diagnostics")
     rval <- sandwich(x, meat = rval, ...)
     attr(rval, "diagnostics") <- diagn
-  } else {
-    rval <- rval * NROW(estfun(x))
   }
 
   return(rval)
@@ -87,7 +85,7 @@ meatHAC <- function(x, order.by = NULL, prewhite = FALSE,
   bc <- n^2/(n^2 - wsum)
   df <- n^2/w2sum
 
-  rval <- utu/(n.orig^2)
+  rval <- utu/n.orig
 
   if(diagnostics)  attr(rval, "diagnostics") <- list(bias.correction = bc, df = df)
   return(rval)
