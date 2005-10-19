@@ -23,8 +23,8 @@ meatHC <- function(x,
   k <- ncol(X)
 
   ## get residuals and hat values  
-  res <- residuals(x)
-  diaghat <- hatvalues(fm)
+  diaghat <- try(hatvalues(x), silent = TRUE)
+  res <- (estfun(x)/X)[,1]
   
   ## if omega not specified, set up using type
   if(is.null(omega)) {
@@ -40,7 +40,7 @@ meatHC <- function(x,
   }
   
   ## process omega
-  if(is.function(omega)) omega <- omega(res, diaghat, x$df.residual)
+  if(is.function(omega)) omega <- omega(res, diaghat, n-k)
   rval <- sqrt(omega) * X
   rval <- crossprod(rval)/n
 

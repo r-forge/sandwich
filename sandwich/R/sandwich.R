@@ -11,14 +11,14 @@ bread <- function(x, ...)
   UseMethod("bread")
 }
 
-bread.default <- function(x, ...)
-{
-  X <- estfunDeriv(x, ...)
-  rval <- apply(X, 1:2, sum)/dim(X)[3]
-  rval <- solve(rval)
-  rownames(rval) <- colnames(rval) <- dimnames(X)[[1]]
-  return(rval)
-}
+## bread.default <- function(x, ...)
+## {
+##   X <- estfunDeriv(x, ...)
+##   rval <- apply(X, 1:2, sum)/dim(X)[3]
+##   rval <- solve(rval)
+##   rownames(rval) <- colnames(rval) <- dimnames(X)[[1]]
+##   return(rval)
+## }
 
 bread.lm <- function(x, ...)
 {
@@ -26,12 +26,13 @@ bread.lm <- function(x, ...)
   return(sx$cov.unscaled * as.vector(sum(sx$df[1:2])))
 }
 
-meat <- function(x, ...)
-{
-  UseMethod("meat")
-}
+## meat <- function(x, ...)
+## {
+##   UseMethod("meat")
+## }
 
-meat.default <- function(x, adjust = FALSE, ...)
+## meat.default <- function(x, adjust = FALSE, ...)
+meat <- function(x, adjust = FALSE, ...)
 {
   psi <- estfun(x, ...)
   k <- NCOL(psi)
@@ -41,4 +42,3 @@ meat.default <- function(x, adjust = FALSE, ...)
   rownames(rval) <- colnames(rval) <- colnames(psi)
   return(rval)
 }
-
