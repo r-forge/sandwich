@@ -12,19 +12,14 @@ meatHC <- function(x,
   omega = NULL, ...)
 {
   ## extract X
-  if(is.matrix(x$x))
-    X <- x$x
-  else {
-    mf <- model.frame(x)
-    X <- model.matrix(terms(x), mf)    
-  }
+  X <- if(is.matrix(x$x)) x$x else model.matrix(terms(x), model.frame(x))
   attr(X, "assign") <- NULL
   n <- nrow(X)
   k <- ncol(X)
 
   ## get residuals and hat values  
   diaghat <- try(hatvalues(x), silent = TRUE)
-  res <- (estfun(x)/X)[,1]
+  res <- if(attr(terms(x), "intercept") > 0) estfun(x)[,1] else rowMeans(estfun(x)/X, na.rm = TRUE)
   
   ## if omega not specified, set up using type
   if(is.null(omega)) {

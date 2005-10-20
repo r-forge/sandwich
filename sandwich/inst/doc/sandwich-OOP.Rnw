@@ -36,27 +36,55 @@ To fix notations, let us assume we have data in a regression setup, i.e.,
 $(y_i, x_i)$ for $i = 1, \dots, n$, that follow some distribution that is 
 controlled by a $k$-dimensional parameter vector $\theta$. In many situations,
 an estimating function $\psi(\cdot)$ is available for this type of models
-such that $\E[\psi(y, x, \theta)]$. Then, under certain weak regularity
+such that $\E[\psi(y, x, \theta)] = 0$. Then, under certain weak regularity
 conditions, $\theta$ can be estimated using an M-estimator $\hat \theta$
 implicitely defined as
-  \[ \sum_{i = 1}^n \psi(y_i, x_i, \theta) \quad = 0. \]
+  \begin{equation}
+    \sum_{i = 1}^n \psi(y_i, x_i, \hat \theta) \quad = 0.
+  \end{equation}
 This includes in particular maximum likelihood (ML) and ordinary least
 squares (OLS) estimation, where the estimating function $\psi(\cdot)$ is
 the derivative of an objective function $\Psi(\cdot)$:
-  \[ \psi(y, x, \theta) \quad = \quad \frac{\partial \Psi(y, x, \theta)}{\partial \theta}. \]
+  \begin{equation}
+    \psi(y, x, \theta) \quad = \quad \frac{\partial \Psi(y, x, \theta)}{\partial \theta}.
+  \end{equation}
 
 Inference about $\theta$ is then typically performed relying on a central
-limit theorem of typ.
-  \[ \sqrt{n} \, (\hat \theta - \theta) \quad \darrow \quad N(0, S(\theta)), \]
+limit theorem of type
+  \begin{equation}
+    \sqrt{n} \, (\hat \theta - \theta) \quad \darrow \quad N(0, S(\theta)),
+  \end{equation}
 where $\darrow$ denotes convergence in distribution. For the covariance matrix
-$S(\theta)$, there is a sandwich formula can be given
-\begin{eqnarray*}
+$S(\theta)$, a sandwich formula can be given
+\begin{eqnarray}
   S(\theta) & = & B(\theta) \, M(\theta) \, B(\theta) \\
   B(\theta) & = & \left( \E[ - \psi'(y, x, \theta) ] \right)^{-1} \\
   M(\theta) & = & \VAR[ \psi(y, x, \theta) ]
-\end{eqnarray*}
+\end{eqnarray}
 i.e., the ``meat'' of the sandwich $M(\theta)$ is the variance of the estimating
-function and the ``bread is the inverse of the expectation of its first derivative.
+function and the ``bread'' is the inverse of the expectation of its first derivative.
+
+In correctly specified models, estimated by ML, this sandwich expression for
+$S(\theta)$ can be simplified because both $B(\theta)^{-1}$ and $M(\theta)$ correspond
+to the Fisher information matrix. However, typically covariance matrix estimates that
+are in some sense robust against misspecification can be computed by using estimators for
+$B(\theta)$ and $M(\theta)$ and plugging them into the sandwich formula.
+
+Many of the models of interest to us, even have a bit more structure: the objective function
+$\Psi(y, x, \theta)$ depends on $x$ and $\theta$ in a special way, namely it does only
+depend on the linear predictor $\eta = x^\top \theta$. The estimating function is then of type
+\begin{equation}
+  \psi(y, x, \theta)
+    \quad = \quad \frac{\partial \Psi}{\partial \eta} \cdot \frac{\partial \eta}{\partial \theta}
+    \quad = \quad \frac{\partial \Psi}{\partial \eta} \cdot x.
+\end{equation}
+The partial derivative $r(y, \eta) = \partial \Psi(y, \eta) / \partial \eta$ is in some models
+also called ``working residual'' correpsonding to the usual residuals in linear regression models.
+In these model, the meat of the sandwich can also be written as
+\begin{equation} \label{eq:meatHC}
+  M(\theta) \quad = \quad x \, \VAR[ r(y, x^\top \theta) ] \, x^\top.
+\end{equation}
+
 
 
 \section{Implementation}
@@ -64,8 +92,8 @@ function and the ``bread is the inverse of the expectation of its first derivati
 There are already many model fitting functions which compute estimates $\hat \theta$
 for a multitude of regression models that can be seen as special cases of the framework
 outlined in the previous section. Many of these functions already have a \code{vcov()}
-method, but this typically relies on the fact that for (correctly specified) models estimated
-via ML, the bread and meat are equal $B(\theta) = M(\theta)$. Therefore, standard inference
+method,which typically relies on the assumption ofcorrectly specified models estimated
+via ML. Therefore, standard inference
 in these models (typically as reported by \code{summary()}) is essentially based on the estimated
 covariance matrix $1/n \, B(\hat \theta)$.
 
@@ -74,36 +102,117 @@ propose the following tools.
 
 \subsubsection*{The meat}
 
-To be able to compute various estimators for $M(\theta)$, we need the empirical values
-for the estimating function: the generic function \code{estfun()} extracts these values
-and should return an $n \times k$ matrix with
+Various estimators for $M(\theta)$ have been suggested in the literature, most of which
+are based on the empirical values of estimating functions. Hence, a natural idea
+for object-oriented implementation of such estimators is the following: provide various 
+functions that compute different estimators for the meat based only on the an
+\code{estfun()} extractor function that extracts the empirical estimating function
+from a fitted model object. The \code{estfun()} method should return
+an $n \times k$ matrix with
  \[ \left( \begin{array}{c} \psi(y_1, x_1, \hat \theta) \\ \vdots \\ \psi(y_n, x_n, \hat \theta)
     \end{array} \right). \]
-From this the function \code{meat()} can simply compute crossproducts for deriving a naive
-estimator of $M(\theta)$. \textit{(does this need to be generic? probably no)}
-Alternative, to this naive estimator \code{meatHAC()} can compute an estimate based on the
-(empirical) autocorrelations of the estimating function.
+Based on this the function \code{meat()} can simply compute crossproducts for deriving a naive
+estimator of $M(\theta)$. A simplified version is
+\begin{Schunk}
+\begin{Sinput}
+meat <- function(x)
+{
+  psi <- estfun(x)
+  crossprod(psi)/nrow(psi)
+}
+\end{Sinput}
+\end{Schunk}
 
-Probably, \code{meatHC()} can also be written in such a way that it utilizes \code{estfun()}
-although I'm not sure what the underlying theoretical assumptions are for this. But I think
-it suffices that the estimating functions are of type $r \cdot X$ where $X$ is the regressor
-matrix and $r$ is the derivative of the objective function with respect to the linear predictor.
-For linear regression models this is simply the vector of residuals and for GLMs it is typically
-referred to as the working residuals.
+More elaborate estimators are also available: \code{meatHAC()} computes an estimate based on the
+weighted (empirical) autocorrelations of the (empirical) estimating function. An extremely simplified
+version of \code{meatHAC()} is
+\begin{Schunk}
+\begin{Sinput}
+meatHAC <- function(x, weights)
+{
+  psi <- estfun(x)
+  n <- nrow(psi)
+
+  rval <- 0.5 * crossprod(psi) * weights[1]
+  for(i in 2:length(weights))
+    rval <- rval + weights[i] * crossprod(psi[1:(n-i+1),], psi[i:n,])
+  
+  (rval + t(rval))/n
+}
+\end{Sinput}
+\end{Schunk}
+
+Now, for \code{meatHC()} we need a bit more infrastructure. Relying on Equation~\ref{eq:meatHC}
+we want to estimate $M(\theta)$ by a matrix of type $1/n \, X^\top \Omega X$ where $X$
+is the regressor matrix and $\Omega$ is a diagonal matrix estimating the variance of $r(y, \eta)$.
+Various forms for this diagonal matrix $\Omega$ have been suggested, they all depend on
+the vector of the observed $(r(y_1, x_1^\top \hat \theta), \dots, r(y_n, x_n^\top \hat \theta))^\top$,
+the hat values and the degrees of freedom. Instead of basing this on a seperate generic
+for this type of residuals, it is also possible to recover it from the estimating function.
+As $\psi(y_i, x_i, \hat \theta) = r(y_i, x_i^\top \hat \theta) \cdot x_i$, we can simply 
+divide the empirical estimating function by $x_i$ and obtain the residual. Even simpler,
+if the model includes an intercept, the residuals are in the first column of the estimating
+function matrix. Consequently, we only need a way to extract the regressor matrix from
+the fitted model (which is simple, there is standardized infrastructure available for
+most models) and get the hat values. For the latter, there is a generic function
+\code{hatvalues()} which has many methods and missing new methods are usually easy to
+write. A condensed version of \code{meatHC()} can then be given as
+\begin{Schunk}
+\begin{Sinput}
+meatHC <- function(x, omega = NULL)
+{
+  X <- if(is.matrix(x$x)) x$x else model.matrix(terms(x), model.frame(x))
+  n <- nrow(X)
+  k <- ncol(X)
+
+  diaghat <- hatvalues(x)
+  res <- if(attr(terms(x), "intercept") > 0) estfun(x)[,1]
+           else rowMeans(estfun(x)/X, na.rm = TRUE)
+  
+  omega <- omega(res, diaghat, n-k)
+  rval <- sqrt(omega) * X
+  
+  crossprod(rval)/n
+}
+\end{Sinput}
+\end{Schunk}
+This works out of the box with ``\code{lm}'' and ``\code{glm}'', for ``\code{gam}'' objects
+we only need a new \code{hatvalues()} method which is trivial to provide:
+\begin{Schunk}
+\begin{Sinput}
+hatvalues.gam <- function(model, ...) model$hat
+\end{Sinput}
+\end{Schunk}
+
 
 \subsubsection*{The bread}
 
 Estimating $B(\theta)$ is typically easier and not dealt with in most of the publications
-(I know) about sandwich estimators. Currently, I've written two approaches how to derive it,
-but maybe one is enough. The first, simpler solution is to provide a generic function
-\code{bread()} which should have a method for each model class. Alternatively, one could
-try to provide an \code{estfunDeriv()} generic which should have a method for each model
-class. It should return an $k \times k \times n$ array with
-  \[ \left( \begin{array} {c} - \psi'(y_1, x_1, \hat \theta) \\ \vdots \\ - \psi'(y_n, x_n, \hat \theta)
-     \end{array} \right). \]
-By taking the mean of the $n$ dimension (via \code{apply()}) and then computing the inverse 
-(via \code{solve()}), one can compute a default estimate for $B(\theta)$ but this is typically
-burdensome as the result is already stored (as slot \code{cov.unscaled}) in many fitted models.
+(I know) about sandwich estimators. My feeling is that it suffices to simply provide a 
+generic function \code{bread()} which has a method for each class of fitted models.
+For ``\code{lm}'' and ``\code{glm}'' all the necessary information can be conveniently
+obtained from the \code{summary()} method:
+\begin{Schunk}
+\begin{Sinput}
+bread.lm <- function(x, ...)
+{
+  sx <- summary(x)
+  return(sx$cov.unscaled * as.vector(sum(sx$df[1:2])))
+}
+\end{Sinput}
+\end{Schunk}
+For ``\code{gam}'' objects, this is almost the same, but the summary does not have a
+\code{df} slot, but a \code{n} slot. Hence, we can use
+\begin{Schunk}
+\begin{Sinput}
+bread.gam <- function(x, ...)
+{
+  sx <- summary(x)
+  return(sx$cov.unscaled * sx$n)
+}
+\end{Sinput}
+\end{Schunk}
+
 
 \subsubsection*{The sandwich}
 
@@ -120,17 +229,26 @@ sandwich <- function(x, bread. = bread, meat. = meat, ...)
 }
 \end{Sinput}
 \end{Schunk}
-and \code{meat.} could be set to \code{meatHAC} or \code{meatHC}. All that a
-use\proglang{R}/develope\proglang{R} would have to do to make a new class of models fit for this
-framework is: provide an \code{estfun()} method and a \code{bread()} method. If the more
-complicated second variant for \code{bread()} is used, an \code{estfunDeriv()} method
-could be provided in addition or as an alternative to the \code{bread()} method.
+and \code{meat.} could also be set to \code{meatHAC} or \code{meatHC}. 
 
+Therefore, all that a
+use\proglang{R}/develope\proglang{R} would have to do to make a new class of models, 
+``\code{foo}'' say, fit for this framework is: 
+provide an \code{estfun()} method \code{estfun.}\emph{foo}\code{()}
+and a \code{bread()} method \code{bread.}\emph{foo}\code{()}. See also Figure~\ref{fig:sandwich}.
+
+Only for HC estimators, it has to be assured in addtion that 
+\begin{itemize}
+  \item the model only depends on a linear predictor (this cannot be easily
+        checked by the software, but has to be done by the user),
+  \item a \code{hatvalues()} method exists (for HC2--HC4), and
+  \item the model matrix $X$ is available, e.g., via a \code{model.matrix()} method.
+\end{itemize}
 
 \setkeys{Gin}{width=.85\textwidth} 
 \begin{figure}[tbh]
 \begin{center}
-<<diagram,fig=TRUE,height=3.5,width=7,echo=FALSE>>=
+<<sandwich,fig=TRUE,height=3.5,width=7,echo=FALSE>>=
 par(mar = rep(0, 4))
 plot(0, 0, xlim = c(0, 85), ylim = c(0, 110), type = "n", axes = FALSE, xlab = "", ylab = "")
 lgrey <- grey(0.88)
@@ -167,7 +285,7 @@ arrows(30, 39, 30, 21, lwd = 1.5, length = 0.15, angle = 20)
 arrows(30, 39, 12.5, 21, lwd = 1.5, length = 0.15, angle = 20)
 arrows(30, 39, 47.5, 21, lwd = 1.5, length = 0.15, angle = 20)
 @
-\caption{\label{fig:diagram} Structure of sandwich estimators}
+\caption{\label{fig:sandwich} Structure of sandwich estimators}
 \end{center}
 \end{figure}
 
