@@ -40,7 +40,7 @@ such that $\E[\psi(y, x, \theta)] = 0$. Then, under certain weak regularity
 conditions, $\theta$ can be estimated using an M-estimator $\hat \theta$
 implicitely defined as
   \begin{equation}
-    \sum_{i = 1}^n \psi(y_i, x_i, \hat \theta) \quad = 0.
+    \sum_{i = 1}^n \psi(y_i, x_i, \hat \theta) \quad = \quad 0.
   \end{equation}
 This includes in particular maximum likelihood (ML) and ordinary least
 squares (OLS) estimation, where the estimating function $\psi(\cdot)$ is
