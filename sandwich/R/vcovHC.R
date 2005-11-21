@@ -12,7 +12,7 @@ meatHC <- function(x,
   omega = NULL, ...)
 {
   ## extract X
-  X <- if(is.matrix(x$x)) x$x else model.matrix(terms(x), model.frame(x))
+  X <- if(is.matrix(x$x)) x$x else model.matrix(x)
   attr(X, "assign") <- NULL
   n <- nrow(X)
   k <- ncol(X)

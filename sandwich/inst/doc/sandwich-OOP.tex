@@ -37,7 +37,7 @@ such that $\E[\psi(y, x, \theta)] = 0$. Then, under certain weak regularity
 conditions, $\theta$ can be estimated using an M-estimator $\hat \theta$
 implicitely defined as
   \begin{equation}
-    \sum_{i = 1}^n \psi(y_i, x_i, \hat \theta) \quad = 0.
+    \sum_{i = 1}^n \psi(y_i, x_i, \hat \theta) \quad = \quad 0.
   \end{equation}
 This includes in particular maximum likelihood (ML) and ordinary least
 squares (OLS) estimation, where the estimating function $\psi(\cdot)$ is
@@ -59,7 +59,8 @@ $S(\theta)$, a sandwich formula can be given
   M(\theta) & = & \VAR[ \psi(y, x, \theta) ]
 \end{eqnarray}
 i.e., the ``meat'' of the sandwich $M(\theta)$ is the variance of the estimating
-function and the ``bread'' is the inverse of the expectation of its first derivative.
+function and the ``bread'' is the inverse of the expectation of its first derivative
+(again with respect to $\theta$).
 
 In correctly specified models, estimated by ML, this sandwich expression for
 $S(\theta)$ can be simplified because both $B(\theta)^{-1}$ and $M(\theta)$ correspond
@@ -89,7 +90,7 @@ In these model, the meat of the sandwich can also be written as
 There are already many model fitting functions which compute estimates $\hat \theta$
 for a multitude of regression models that can be seen as special cases of the framework
 outlined in the previous section. Many of these functions already have a \code{vcov()}
-method,which typically relies on the assumption ofcorrectly specified models estimated
+method,which typically relies on the assumption of correctly specified models estimated
 via ML. Therefore, standard inference
 in these models (typically as reported by \code{summary()}) is essentially based on the estimated
 covariance matrix $1/n \, B(\hat \theta)$.
@@ -102,20 +103,21 @@ propose the following tools.
 Various estimators for $M(\theta)$ have been suggested in the literature, most of which
 are based on the empirical values of estimating functions. Hence, a natural idea
 for object-oriented implementation of such estimators is the following: provide various 
-functions that compute different estimators for the meat based only on the an
+functions that compute different estimators for the meat based only on an
 \code{estfun()} extractor function that extracts the empirical estimating function
 from a fitted model object. The \code{estfun()} method should return
 an $n \times k$ matrix with
  \[ \left( \begin{array}{c} \psi(y_1, x_1, \hat \theta) \\ \vdots \\ \psi(y_n, x_n, \hat \theta)
     \end{array} \right). \]
 Based on this the function \code{meat()} can simply compute crossproducts for deriving a naive
-estimator of $M(\theta)$. A simplified version is
+estimator of $M(\theta)$ which is called outer product of gradients in some communities.
+A simplified version is
 \begin{Schunk}
 \begin{Sinput}
 meat <- function(x)
 {
   psi <- estfun(x)
-  crossprod(psi)/nrow(psi)
+  crossprod(psi)/NROW(psi)
 }
 \end{Sinput}
 \end{Schunk}
@@ -128,7 +130,7 @@ version of \code{meatHAC()} is
 meatHAC <- function(x, weights)
 {
   psi <- estfun(x)
-  n <- nrow(psi)
+  n <- NROW(psi)
 
   rval <- 0.5 * crossprod(psi) * weights[1]
   for(i in 2:length(weights))
@@ -156,30 +158,31 @@ most models) and get the hat values. For the latter, there is a generic function
 write. A condensed version of \code{meatHC()} can then be given as
 \begin{Schunk}
 \begin{Sinput}
-meatHC <- function(x, omega = NULL)
+meatHC <- function(x, omega)
 {
-  X <- if(is.matrix(x$x)) x$x else model.matrix(terms(x), model.frame(x))
-  n <- nrow(X)
-  k <- ncol(X)
+  X <- if(is.matrix(x$x)) x$x else model.matrix(x)
+  n <- NROW(X)
+  k <- NCOL(X)
 
   diaghat <- hatvalues(x)
   res <- if(attr(terms(x), "intercept") > 0) estfun(x)[,1]
            else rowMeans(estfun(x)/X, na.rm = TRUE)
   
-  omega <- omega(res, diaghat, n-k)
+  if(is.function(omega)) omega <- omega(res, diaghat, n-k)
   rval <- sqrt(omega) * X
   
   crossprod(rval)/n
 }
 \end{Sinput}
 \end{Schunk}
-This works out of the box with ``\code{lm}'' and ``\code{glm}'', for ``\code{gam}'' objects
-we only need a new \code{hatvalues()} method which is trivial to provide:
-\begin{Schunk}
-\begin{Sinput}
-hatvalues.gam <- function(model, ...) model$hat
-\end{Sinput}
-\end{Schunk}
+%% %Z% GAM sandwiches
+%% This works out of the box with ``\code{lm}'' and ``\code{glm}'', for ``\code{gam}'' objects
+%% we only need a new \code{hatvalues()} method which is trivial to provide:
+%% \begin{Schunk}
+%% \begin{Sinput}
+%% hatvalues.gam <- function(model, ...) model$hat
+%% \end{Sinput}
+%% \end{Schunk}
 
 
 \subsubsection*{The bread}
@@ -194,21 +197,22 @@ obtained from the \code{summary()} method:
 bread.lm <- function(x, ...)
 {
   sx <- summary(x)
-  return(sx$cov.unscaled * as.vector(sum(sx$df[1:2])))
+  sx$cov.unscaled * as.vector(sum(sx$df[1:2]))
 }
 \end{Sinput}
 \end{Schunk}
-For ``\code{gam}'' objects, this is almost the same, but the summary does not have a
-\code{df} slot, but a \code{n} slot. Hence, we can use
-\begin{Schunk}
-\begin{Sinput}
-bread.gam <- function(x, ...)
-{
-  sx <- summary(x)
-  return(sx$cov.unscaled * sx$n)
-}
-\end{Sinput}
-\end{Schunk}
+%% %Z% GAM sandwiches
+%% For ``\code{gam}'' objects, this is almost the same, but the summary does not have a
+%% \code{df} slot, but a \code{n} slot. Hence, we can use
+%% \begin{Schunk}
+%% \begin{Sinput}
+%% bread.gam <- function(x, ...)
+%% {
+%%   sx <- summary(x)
+%%   sx$cov.unscaled * sx$n
+%% }
+%% \end{Sinput}
+%% \end{Schunk}
 
 
 \subsubsection*{The sandwich}
@@ -221,8 +225,7 @@ sandwich <- function(x, bread. = bread, meat. = meat, ...)
 {
   if(is.function(bread.)) bread. <- bread.(x)
   if(is.function(meat.)) meat. <- meat.(x, ...)
-  n <- NROW(estfun(x))
-  return(1/n * (bread. %*% meat. %*% bread.))
+  1/NROW(estfun(x)) * (bread. %*% meat. %*% bread.)
 }
 \end{Sinput}
 \end{Schunk}
@@ -238,8 +241,8 @@ Only for HC estimators, it has to be assured in addtion that
 \begin{itemize}
   \item the model only depends on a linear predictor (this cannot be easily
         checked by the software, but has to be done by the user),
-  \item a \code{hatvalues()} method exists (for HC2--HC4), and
-  \item the model matrix $X$ is available, e.g., via a \code{model.matrix()} method.
+  \item a \code{hatvalues().}\emph{foo}\code{()} method exists (for HC2--HC4), and
+  \item the model matrix $X$ is available (via a \code{model.matrix().}\emph{foo}\code{()} method).
 \end{itemize}
 
 \setkeys{Gin}{width=.85\textwidth} 
@@ -249,6 +252,61 @@ Only for HC estimators, it has to be assured in addtion that
 \caption{\label{fig:sandwich} Structure of sandwich estimators}
 \end{center}
 \end{figure}
+
+\section{Open questions}
+
+\subsubsection*{\texttt{estfun()} exctractors}
+
+To be able to plug in further models into the framework outlined above, we
+need exractor methods \code{estfun.}\textit{foo}\code{()} for these model
+classes. In particular, it would be nice to provide such methods for ``\code{survreg}''
+and ``\code{coxph}'' objects. As objects from both classes provide some 
+information about their gradients, this seemed to be easy at a first glance.
+However, the results make me somewhat suspicious. 
+
+For ``\code{survreg}'' objects, there is a \code{type = "matrix"} argument
+to \code{residuals()} which returns a matrix with partial derivatives of
+the likelihood. Hence, this seemed to be a good first try
+
+\begin{Schunk}
+\begin{Sinput}
+estfun.survreg <- function(x, ...)
+{
+  stopifnot(require(survival))
+  X <- if (is.matrix(x$x)) x$x else model.matrix(terms(x), model.frame(x))
+  attr(X, "assign") <- NULL
+  wts <- if(!is.null(x$weights)) x$weights else 1
+  res <- residuals(x, type = "matrix")
+  rval <- as.vector(res[,"dg"]) * wts * X
+  if(NROW(x$var) > length(coefficients(x))) {
+    rval <- cbind(rval, res[,"ds"])
+    colnames(rval)[NCOL(rval)] <- "Log(scale)"
+  }  
+  return(rval)
+}
+\end{Sinput}
+\end{Schunk}
+
+however, the \code{"dg"} component seems to be off by a factor of $2$, whereas
+the \code{"ds"} component looks ok.
+
+For ``\code{coxph}'' objects, computing the empirical estimating functions
+is taken on by the \code{type = "score"} residuals if I understand the
+documentation correctly. Hence:
+\begin{Schunk}
+\begin{Sinput}
+estfun.coxph <- function(x, ...) residuals(x, type = "score", ...)
+\end{Sinput}
+\end{Schunk}
+
+
+\subsubsection*{Appropriateness of HC estimators}
+
+I am aware of only very few applications of HC estimators to regression 
+models other than the linear regression model. Is there any theoretical
+or applied work that treats HC estimators in a general setup as done
+here? Are there arguments why HC estimators as used here might not 
+be useful in other types of regression models?
 
 
 \end{document}
