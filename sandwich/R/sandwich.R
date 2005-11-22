@@ -20,7 +20,7 @@ bread <- function(x, ...)
 ##   return(rval)
 ## }
 
-bread.lm <- function(x, ...)
+bread.lm <- bread.nls <- function(x, ...)
 {
   sx <- summary(x)
   return(sx$cov.unscaled * as.vector(sum(sx$df[1:2])))
