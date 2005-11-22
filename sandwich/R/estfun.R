@@ -87,3 +87,10 @@ estfun.survreg <- function(x, ...)
   
   return(rval)
 }
+
+estfun.nls <- function(x, ...)
+{
+  rval <- as.vector(x$m$resid()) * x$m$gradient()
+  colnames(rval) <- names(coef(x))
+  rval
+}
