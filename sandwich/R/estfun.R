@@ -63,13 +63,13 @@ estfun.rlm <- function(x, ...)
 
 estfun.coxph <- function(x, ...)
 {
-  stopifnot(require(survival))
+  stopifnot(require("survival"))
   residuals(x, type = "score", ...)
 }
 
 estfun.survreg <- function(x, ...)
 {
-  stopifnot(require(survival))
+  stopifnot(require("survival"))
   if (is.matrix(x$x))
     xmat <- x$x
   else {
@@ -78,8 +78,8 @@ estfun.survreg <- function(x, ...)
   }
   wts <- if(!is.null(x$weights)) x$weights else 1
   res <- residuals(x, type = "matrix")
-  rval <- as.vector(res[,"dg"]) * wts * xmat * 2 #FIXME# like this?
-  if(NROW(x$var) > length(coefficients(x))) {
+  rval <- as.vector(res[,"dg"]) * wts * xmat
+  if(NROW(x$var) > length(coef(x))) {
     rval <- cbind(rval, res[,"ds"])
     colnames(rval)[NCOL(rval)] <- "Log(scale)"
   }
