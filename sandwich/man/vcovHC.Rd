@@ -44,7 +44,11 @@ vcovHC(x,
   estimating it, the \code{type} argument can be used to specify the 
   HC0 to HC4 estimators. If \code{omega} is used, \code{type} is ignored.
   
-  For details see the references.
+  Long \& Ervin (2000) conduct a simulation study of HC estimators in
+  the linear regression model, recommending to use HC3 which is thus the
+  default in \code{vcovHC}. Cribari-Neto (2004) suggests the HC4 type
+  estimator which is tailored to take into account the effect of leverage
+  points in the design matrix. For more details see the references.
 }
 \value{A matrix containing the covariance matrix estimate.
 }
@@ -54,8 +58,11 @@ Cribari-Neto F. (2004), Asymptotic inference under heteroskedasticity
 of unknown form. \emph{Computational Statistics \& Data Analysis}
 \bold{45}, 215--233.
 
-MacKinnon J. G., White H. (1985),
-Some heteroskedasticity-consistent
+Long J. S., Ervin L. H. (2000), Using Heteroscedasticity Consistent Standard
+Errors in the Linear Regression Model. \emph{The American Statistician},
+\bold{54}, 217--224.
+
+MacKinnon J. G., White H. (1985), Some heteroskedasticity-consistent
 covariance matrix estimators with improved finite sample properties.
 \emph{Journal of Econometrics} \bold{29}, 305--325.
 
@@ -63,9 +70,8 @@ White H. (1980), A heteroskedasticity-consistent covariance matrix and
 a direct test for heteroskedasticity. \emph{Econometrica} \bold{48},
 817--838.
 
-Zeileis A (2004),
-Econometric Computing with HC and HAC Covariance Matrix Estimators.
-\emph{Journal of Statistical Software}, \bold{11}(10), 1--17.
+Zeileis A (2004), Econometric Computing with HC and HAC Covariance Matrix
+Estimators. \emph{Journal of Statistical Software}, \bold{11}(10), 1--17.
 }
 
 \seealso{\code{\link{lm}}, \code{\link[car]{hccm}},

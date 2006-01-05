@@ -27,35 +27,7 @@ bread.lm <- bread.nls <- function(x, ...)
 }
 
 bread.survreg <- function(x, ...)
-{
-  stopifnot(require("survival"))
-
-  if (is.matrix(x$x))
-    xmat <- x$x
-  else {
-    mf <- model.frame(x)
-    xmat <- model.matrix(terms(x), mf)    
-  }
-  wts <- if(!is.null(x$weights)) x$weights else 1
-  xmat <- as.matrix(wts * xmat)
-  attr(xmat, "assign") <- NULL
-
-  n <- NROW(xmat)
-  res <- residuals(x, type = "matrix")
-
-  if(NROW(x$var) > length(coef(x))) {
-    rval <- crossprod(xmat, res[,"ddg"] * xmat)/n
-    xmean <- colMeans(res[,"dsg"] * xmat)
-    rval <- cbind(rbind(rval, xmean), c(xmean, mean(res[,"dds"])))
-    rownames(rval) <- colnames(rval) <- c(colnames(xmat), "Log(scale)")
-  } else {
-    rval <- crossprod(xmat, res[,"ddg"] * xmat)/n
-    rownames(rval) <- colnames(rval) <- colnames(xmat)
-  }
-
-  rval <- solve(rval)
-  return(rval)
-}
+  length(x$linear.predictors) * x$var
 
 ## meat <- function(x, ...)
 ## {
