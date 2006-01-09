@@ -108,6 +108,7 @@ weightsAndrews <- function(x, order.by = NULL, bw = bwAndrews,
   if(verbose) cat(paste("\nBandwidth chosen:", bw, "\n"))
       
   n <- length(residuals(x)) - as.integer(prewhite)
+  #FIXME# n <- NROW(estfun(x)) - as.integer(prewhite)
   
   weights <- kweights(0:(n-1)/bw, kernel = kernel)
   weights <- weights[1:max(which(abs(weights) > tol))]
@@ -150,8 +151,8 @@ bwAndrews <- function(x, order.by = NULL, kernel = c("Quadratic Spectral", "Trun
     if(!is.null(unames) && "(Intercept)" %in% unames)
       weights[which(unames == "(Intercept)")] <- 0
     else {
-      res <- as.vector(residuals(x, "working"))
-      weights[which(colSums((umat - res)^2) < 1e-16)] <- 0      
+      res <- as.vector(residuals(x, "working"))  #FIXME# as in vcovHC()
+      weights[which(colSums((umat - res)^2) < 1e-16)] <- 0  #FIXME# all.equal
     }
   } else {
     weights <- rep(weights, length.out = k)
@@ -232,7 +233,7 @@ weightsLumley <- function(x, order.by = NULL, C = NULL,
   method = c("truncate", "smooth"), acf = isoacf, data = list(), ...)
 {
   method <- match.arg(method)
-  res <- residuals(x, "response")
+  res <- residuals(x, "response") #FIXME# available for which models?
   n <- length(res)
 
   if(!is.null(order.by))
@@ -261,7 +262,7 @@ weightsLumley <- function(x, order.by = NULL, C = NULL,
     if(is.null(C)) C <- 1
     weights <- C * n * rhohat^2
     weights <- ifelse(weights > 1, 1, weights)
-    weights <- weights[1:max(which(abs(weights) > 1e-7))]
+    weights <- weights[1:max(which(abs(weights) > 1e-7))] #FIXME# tol = 1e-7
   })
   
   return(weights)
@@ -327,7 +328,7 @@ bwNeweyWest <- function(x, order.by = NULL, kernel = c("Bartlett", "Parzen",
     if(!is.null(unames) && "(Intercept)" %in% unames)
       weights[which(unames == "(Intercept)")] <- 0
     else {
-      res <- as.vector(residuals(x, "working"))
+      res <- as.vector(residuals(x, "working")) #FIXME# see above
       weights[which(colSums((umat - res)^2) < 1e-16)] <- 0      
     }
   } else {

@@ -1,3 +1,19 @@
+## bread.default <- function(x, ...)
+## {
+##   X <- estfunDeriv(x, ...)
+##   rval <- apply(X, 1:2, sum)/dim(X)[3]
+##   rval <- solve(rval)
+##   rownames(rval) <- colnames(rval) <- dimnames(X)[[1]]
+##   return(rval)
+## }
+
+## meat <- function(x, ...)
+## {
+##   UseMethod("meat")
+## }
+
+## meat.default -> see meat
+
 estfunDeriv <- function(x, ...)
 {
   UseMethod("estfunDeriv")

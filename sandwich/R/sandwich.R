@@ -11,15 +11,6 @@ bread <- function(x, ...)
   UseMethod("bread")
 }
 
-## bread.default <- function(x, ...)
-## {
-##   X <- estfunDeriv(x, ...)
-##   rval <- apply(X, 1:2, sum)/dim(X)[3]
-##   rval <- solve(rval)
-##   rownames(rval) <- colnames(rval) <- dimnames(X)[[1]]
-##   return(rval)
-## }
-
 bread.lm <- bread.nls <- function(x, ...)
 {
   sx <- summary(x)
@@ -29,12 +20,20 @@ bread.lm <- bread.nls <- function(x, ...)
 bread.survreg <- function(x, ...)
   length(x$linear.predictors) * x$var
 
-## meat <- function(x, ...)
-## {
-##   UseMethod("meat")
-## }
+bread.gam <- function(x, ...)
+{
+  sx <- summary(x)
+  sx$cov.unscaled * sx$n
+}
+  
+bread.coxph <- function(x, ...)
+{
+  rval <- object$var * object$n
+  dimnames(rval) <- list(names(coef(object)), names(coef(object)))
+  return(rval)
 
-## meat.default <- function(x, adjust = FALSE, ...)
+}
+
 meat <- function(x, adjust = FALSE, ...)
 {
   psi <- estfun(x, ...)
