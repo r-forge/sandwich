@@ -9,17 +9,22 @@ vcovHC <- function(x,
 
 meatHC <- function(x, 
   type = c("HC3", "const", "HC", "HC0", "HC1", "HC2", "HC4"),
-  omega = NULL, ...)
+  omega = NULL)
 {
   ## extract X
   X <- if(is.matrix(x$x)) x$x else model.matrix(x)
   attr(X, "assign") <- NULL
-  n <- nrow(X)
-  k <- ncol(X)
+  n <- NROW(X)
 
-  ## get residuals and hat values  
+  ## get hat values and residual degrees of freedom
   diaghat <- try(hatvalues(x), silent = TRUE)
-  res <- if(attr(terms(x), "intercept") > 0) estfun(x)[,1] else rowMeans(estfun(x)/X, na.rm = TRUE)
+  df <- try(df.residual(x), silent = TRUE)
+  if(is.null(df) || inherits(df, "try-error")) df <- n - NCOL(X)
+  
+  ## might work, but "intercept" is also claimed for "coxph"
+  ## res <- if(attr(terms(x), "intercept") > 0) estfun(x)[,1] else rowMeans(estfun(x)/X, na.rm = TRUE)
+  ## hence better rely on
+  res <- rowMeans(estfun(x)/X, na.rm = TRUE)
   
   ## if omega not specified, set up using type
   if(is.null(omega)) {
@@ -35,7 +40,7 @@ meatHC <- function(x,
   }
   
   ## process omega
-  if(is.function(omega)) omega <- omega(res, diaghat, n-k)
+  if(is.function(omega)) omega <- omega(res, diaghat, df)
   rval <- sqrt(omega) * X
   rval <- crossprod(rval)/n
 

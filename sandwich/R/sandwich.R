@@ -28,8 +28,8 @@ bread.gam <- function(x, ...)
   
 bread.coxph <- function(x, ...)
 {
-  rval <- object$var * object$n
-  dimnames(rval) <- list(names(coef(object)), names(coef(object)))
+  rval <- x$var * x$n
+  dimnames(rval) <- list(names(coef(x)), names(coef(x)))
   return(rval)
 
 }
