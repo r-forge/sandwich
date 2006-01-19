@@ -29,7 +29,7 @@ in Zeileis (2006).
 }
 
 \value{A matrix containing the sandwich covariance matrix estimate.
-Typically, this should be an \deqn{k \times k}{k x k} matrix corresponding
+Typically, this should be an \eqn{k \times k}{k x k} matrix corresponding
 to \eqn{k} parameters.}
 
 \seealso{\code{\link{bread}}, \code{\link{meat}}, \code{\link{meatHC}}, \code{\link{meatHAC}}}

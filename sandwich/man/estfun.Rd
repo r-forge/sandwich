@@ -20,7 +20,7 @@ estfun(x, \dots)
 }
 
 \value{A matrix containing the empirical estimating functions.
-Typically, this should be an \deqn{n \times k}{n x k} matrix corresponding
+Typically, this should be an \eqn{n \times k}{n x k} matrix corresponding
 to \eqn{n} observations and \eqn{k} parameters. The columns should be named
 as in \code{\link{coef}} or \code{\link{terms}}, respectively.}
 

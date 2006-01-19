@@ -54,7 +54,7 @@ weightsLumley(x, order.by = NULL, C = NULL,
 is called.
 
 Both weighting methods are based on some estimate of the autocorrelation
-function \deqn{\rho}{r} (as computed by \code{acf}) of the residuals of
+function \eqn{\rho}{r} (as computed by \code{acf}) of the residuals of
 the model \code{x}. The weights for the \code{"truncate"} method are 
 
 \deqn{I\{n \rho^2 > C\}}{I{n * r ** 2 > C}}

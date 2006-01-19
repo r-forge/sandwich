@@ -20,7 +20,7 @@ bread(x, \dots)
 
 \value{A matrix containing an estimator for the expectation of the negative
 derivative of the estimating functions.
-Typically, this should be an \deqn{k \times k}{n x k} matrix corresponding
+Typically, this should be an \eqn{k \times k}{k x k} matrix corresponding
 to \eqn{k} parameters. The rows and columns should be named
 as in \code{\link{coef}} or \code{\link{terms}}, respectively.}
 
