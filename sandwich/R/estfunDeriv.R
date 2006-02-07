@@ -22,12 +22,7 @@ estfunDeriv <- function(x, ...)
 estfunDeriv.lm <- function(x, ...)
 {
   ## extract X
-  if (is.matrix(x$x))
-    xmat <- x$x
-  else {
-    mf <- model.frame(x)
-    xmat <- model.matrix(terms(x), mf)    
-  }
+  xmat <- if(is.matrix(x$x)) x$x else model.matrix(x)
   wts <- if(!is.null(x$weights)) x$weights else 1
   xmat <- as.matrix(wts * xmat)
   attr(xmat, "assign") <- NULL
@@ -64,12 +59,7 @@ estfunDeriv.glm <- function(x, ...)
 estfunDeriv.survreg <- function(x, ...)
 {
   stopifnot(require(survival))
-  if (is.matrix(x$x))
-    xmat <- x$x
-  else {
-    mf <- model.frame(x)
-    xmat <- model.matrix(terms(x), mf)    
-  }
+  xmat <- if(is.matrix(x$x)) x$x else model.matrix(x)
   wts <- if(!is.null(x$weights)) x$weights else 1
   xmat <- as.matrix(wts * xmat)
   attr(xmat, "assign") <- NULL
