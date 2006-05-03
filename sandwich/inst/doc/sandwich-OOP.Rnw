@@ -99,7 +99,7 @@ depend on the univariate linear predictor $\eta = x^\top \theta$. Then, the esti
     \quad = \quad \frac{\partial \Psi}{\partial \eta} \cdot x.
 \]
 The partial derivative $r(y, \eta) = \partial \Psi(y, \eta) / \partial \eta$ is in some models
-also called ``working residual'' correpsonding to the usual residuals in linear regression models.
+also called ``working residual'' corresponding to the usual residuals in linear regression models.
 In such models based on linear predictors, the meat of the sandwich can also be written as
 \begin{equation} \label{eq:meatHC}
   M(\theta) \quad = \quad x \, \VAR[ r(y, x^\top \theta) ] \, x^\top.
