@@ -28,7 +28,7 @@ from fitted models and by supplying functions that compute various types of
 meat fillings from these.
 
 In particular, this should enable computations of sandwich estimators models fitted
-not only by \code{lm()}, but also  \code{glm()}, \code{survreg()}, and maybe
+not only by \code{lm()}, but also  \code{glm()}, \code{survreg()}, and possibly
 \code{gam()}, \code{betareg()}, etc.
 }
 
@@ -42,7 +42,15 @@ not only by \code{lm()}, but also  \code{glm()}, \code{survreg()}, and maybe
 
 <<preliminaries,echo=FALSE,results=hide>>=
 library("sandwich")
+library("lmtest")
 @
+
+\section{Introduction}
+
+\cite{hac:Zeileis:2004a}
+
+
+linear model in \cite{hac:Zeileis:2004a}, now more general
 
 \section{Model frame}
 
@@ -51,7 +59,7 @@ $(y_i, x_i)$ for $i = 1, \dots, n$, that follow some distribution that is
 controlled by a $k$-dimensional parameter vector $\theta$. In many situations,
 an estimating function $\psi(\cdot)$ is available for this type of models
 such that $\E[\psi(y, x, \theta)] = 0$. Then, under certain weak regularity
-conditions, %% \citep[see e.g.,][]{Z:White:1994},
+conditions, %FIXME% \citep[see e.g.,][]{Z:White:1994}, 
 $\theta$ can be estimated using an M-estimator $\hat \theta$ implicitely defined as
   \begin{equation} \label{eq:estfun}
     \sum_{i = 1}^n \psi(y_i, x_i, \hat \theta) \quad = \quad 0.
@@ -105,6 +113,7 @@ In such models based on linear predictors, the meat of the sandwich can also be 
   M(\theta) \quad = \quad x \, \VAR[ r(y, x^\top \theta) ] \, x^\top.
 \end{equation}
 
+%FIXME% further refs \cite{hac:Stefanski+Boos:2002}
 
 
 \section{Covariance matrix estimators}
@@ -142,10 +151,10 @@ for each class of fitted models. For ``\code{lm}'' and ``\code{glm}'' all the ne
 information can be conveniently obtained from the \code{summary()} method:
 \begin{Schunk}
 \begin{Sinput}
-bread.lm <- function(x, ...)
+bread.lm <- function(obj, ...)
 {
-  sx <- summary(x)
-  sx$cov.unscaled * as.vector(sum(sx$df[1:2]))
+  so <- summary(obj)
+  so$cov.unscaled * as.vector(sum(so$df[1:2]))
 }
 \end{Sinput}
 \end{Schunk}
@@ -172,9 +181,9 @@ and is sometimes also called
 outer product of gradients estimator. A simplified version of the \proglang{R} code is
 \begin{Schunk}
 \begin{Sinput}
-meat <- function(x)
+meat <- function(obj)
 {
-  psi <- estfun(x)
+  psi <- estfun(obj)
   crossprod(psi)/NROW(psi)
 }
 \end{Sinput}
@@ -185,9 +194,9 @@ weighted (empirical) autocorrelations of the (empirical) estimating function. An
 version of \code{meatHAC()} is
 \begin{Schunk}
 \begin{Sinput}
-meatHAC <- function(x, weights)
+meatHAC <- function(obj, weights)
 {
-  psi <- estfun(x)
+  psi <- estfun(obj)
   n <- NROW(psi)
 
   rval <- 0.5 * crossprod(psi) * weights[1]
@@ -217,16 +226,16 @@ and the residual degrees of freedom (via the \code{df.residual()} method).
 A condensed version of \code{meatHC()} can then be given as
 \begin{Schunk}
 \begin{Sinput}
-meatHC <- function(x, omega)
+meatHC <- function(obj, omega)
 {
-  X <- if(is.matrix(x$x)) x$x else model.matrix(x)
+  X <- if(is.matrix(obj$x)) obj$x else model.matrix(obj)
   n <- NROW(X)
   
-  diaghat <- hatvalues(x)
-  df <- df.residual(x)
+  diaghat <- hatvalues(obj)
+  df <- df.residual(obj)
   if(is.null(df)) df <- n - NCOL(X)
   
-  res <- rowMeans(estfun(x)/X, na.rm = TRUE)
+  res <- rowMeans(estfun(obj)/X, na.rm = TRUE)
   
   if(is.function(omega)) omega <- omega(res, diaghat, df)
   rval <- sqrt(omega) * X
@@ -252,11 +261,11 @@ Computing the sandwich is easy given the previous building blocks. Currently, th
 function \code{sandwich()} computes an estimate for $1/n \, S(\theta)$ via
 \begin{Schunk}
 \begin{Sinput}
-sandwich <- function(x, bread. = bread, meat. = meat, ...)
+sandwich <- function(obj, bread. = bread, meat. = meat, ...)
 {
-  if(is.function(bread.)) bread. <- bread.(x)
-  if(is.function(meat.)) meat. <- meat.(x, ...)
-  1/NROW(estfun(x)) * (bread. %*% meat. %*% bread.)
+  if(is.function(bread.)) bread. <- bread.(obj)
+  if(is.function(meat.)) meat. <- meat.(obj, ...)
+  1/NROW(estfun(obj)) * (bread. %*% meat. %*% bread.)
 }
 \end{Sinput}
 \end{Schunk}
@@ -327,18 +336,37 @@ arrows(30, 39, 47.5, 21, lwd = 1.5, length = 0.15, angle = 20)
 %%  - generalized linear model
 %%  - survreg: tobit regression for data("Fair", package = "Ecdat")
 %%  - betareg -> send code to CN and dBS
-%%  - maybe gam()?
 
-%% \section{Open questions}
-%% 
-%% \subsubsection*{Appropriateness of HC estimators}
-%% 
-%% I am aware of only very few applications of HC estimators to regression 
-%% models other than the linear regression model. Is there any theoretical
-%% or applied work that treats HC estimators in a general setup as done
-%% here? Are there arguments why HC estimators as used here might not 
-%% be useful in other types of regression models?
+\section{Illustrations}
 
-%% \bibliography{hac}
+Models from \cite{hac:Greene:2003} based on \citet{hac:Fair:1978}'s famous
+affairs data set, available in \proglang{R} in the \pkg{Ecdat} package
+\citep{hac:Croissant:2005}.
+
+<<>>=
+data("Fair", package = "Ecdat")
+
+fm_probit <- glm(I(nbaffairs > 0) ~ age + ym + religious + occupation + rate, 
+   data = Fair, family = binomial(link = probit))
+
+fm_tobit <- survreg(Surv(nbaffairs, nbaffairs > 0, type = "left") ~ 
+   age + ym + religious + occupation + rate, data = Fair, dist = "gaussian")
+@
+
+<<>>=
+coeftest(fm_probit)
+coeftest(fm_probit, vcov = sandwich(fm_probit, adjust = TRUE))
+@
+
+<<>>=
+coeftest(fm_tobit)
+coeftest(fm_tobit, vcov = sandwich(fm_tobit, adjust = TRUE))
+@
+
+mention \code{waldtest()} from \pkg{lmtest} \citep{hac:Zeileis+Hothorn:2002}
+and \code{linear.hypothesis()} from \pkg{car} \citep{hac:Fox:2002}
+
+
+\bibliography{hac}
 
 \end{document}
