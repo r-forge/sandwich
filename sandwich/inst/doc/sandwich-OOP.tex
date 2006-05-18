@@ -460,10 +460,10 @@ and \code{glm()}, respectively:
 
 \begin{Schunk}
 \begin{Sinput}
-R> data("Fair", package = "Ecdat")
-R> fm_tobit <- survreg(Surv(nbaffairs, nbaffairs > 0, type = "left") ~ 
+> data("Fair", package = "Ecdat")
+> fm_tobit <- survreg(Surv(nbaffairs, nbaffairs > 0, type = "left") ~ 
 +     age + ym + religious + occupation + rate, data = Fair, dist = "gaussian")
-R> fm_probit <- glm(I(nbaffairs > 0) ~ age + ym + religious + occupation + 
+> fm_probit <- glm(I(nbaffairs > 0) ~ age + ym + religious + occupation + 
 +     rate, data = Fair, family = binomial(link = probit))
 \end{Sinput}
 \end{Schunk}
@@ -475,7 +475,7 @@ and compare them to the HC standard errors provided by \code{sandwich()}.
 
 \begin{Schunk}
 \begin{Sinput}
-R> coeftest(fm_tobit)
+> coeftest(fm_tobit)
 \end{Sinput}
 \begin{Soutput}
 z test of coefficients:
@@ -492,7 +492,7 @@ Log(scale)   2.109859   0.067098 31.4444 < 2.2e-16 ***
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 \end{Soutput}
 \begin{Sinput}
-R> coeftest(fm_tobit, vcov = sandwich)
+> coeftest(fm_tobit, vcov = sandwich)
 \end{Sinput}
 \begin{Soutput}
 z test of coefficients:
@@ -517,7 +517,7 @@ estimate.
 
 \begin{Schunk}
 \begin{Sinput}
-R> coeftest(fm_probit)
+> coeftest(fm_probit)
 \end{Sinput}
 \begin{Soutput}
 z test of coefficients:
@@ -533,7 +533,7 @@ rate        -0.272983   0.052574 -5.1923 2.077e-07 ***
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 \end{Soutput}
 \begin{Sinput}
-R> coeftest(fm_probit, vcov = sandwich)
+> coeftest(fm_probit, vcov = sandwich)
 \end{Sinput}
 \begin{Soutput}
 z test of coefficients:
