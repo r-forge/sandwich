@@ -14,13 +14,13 @@
 
 \Abstract{
 Sandwich covariance matrix estimators are a popular tool in applied regression
-modeling for performing inference that is robust to certain types of misspecification.
+modeling for performing inference that is robust to certain types of model misspecification.
 Suitable implementations are available in the \proglang{R} system for statistical
 computing for certain model fitting functions only (in particular \code{lm()}), but
 not for other standard regression functions, such as \code{glm()}, \code{nls()}, or \code{survreg()}.
 
 Therefore, conceptual tools and their translation to computational tools in the package
-\pkg{sandwich} is discussed, enabling the computation of sandwich estimators in general
+\pkg{sandwich} are discussed, enabling the computation of sandwich estimators in general
 parametric models. Object orientation can be achieved by providing a few extractor
 functions---most importantly for the empirical estimating functions---from which various
 types of sandwich estimators can be computed.
@@ -44,7 +44,7 @@ library("survival")
 
 A popular approach to applied parametric regression modeling is to derive estimates
 of the unknown parameters via a set of estimating functions (including least squares
-and maximum likelihood). Inference for these models, is typically based on a
+and maximum likelihood scores). Inference for these models is typically based on a
 central limit theorem in which the covariance matrix is of a sandwich type: a slice
 of meat between two slices of bread, pictorially speaking. Employing estimators
 for the covariance matrix based on this sandwich form can make inference for the parameters
@@ -55,7 +55,7 @@ heteroskedasitcity and autocorrelation consistent (HAC) estimators for time-seri
 are commonly used in applied regression, in particular in linear regression models.
 
 \cite{hac:Zeileis:2004a} discusses a set of computational tools provided by the
-\pkg{sandwich} for the \proglang{R} system for statistical computing \citep{hac:R:2006}
+\pkg{sandwich} package for the \proglang{R} system for statistical computing \citep{hac:R:2006}
 which allows for computing HC and HAC estimators in linear regression models fitted 
 by \code{lm()}. Here, we set out where the discussion of \cite{hac:Zeileis:2004a} ends
 and generalize the tools from linear to general parametric models fitted by estimating
@@ -68,12 +68,14 @@ meat fillings for sandwiches is provided.
 The paper is organized is follows: Section~\ref{sec:model} discusses the model frame
 and reviews some of the underlying theory. Section~\ref{sec:R} presents some existing
 \proglang{R} infrastructure which can be re-used for the computation of sandwich 
-covariance matrices in Section~\ref{sec:vcov}. Section~\ref{sec:illustations} gives
+covariance matrices in Section~\ref{sec:vcov}. Section~\ref{sec:illustrations} gives
 a brief illustration of the computational tools before Section~\ref{sec:summary}
 concludes the paper.
 
 
+{
 \section{Model frame} \label{sec:model}
+\nopagebreak 
 
 To fix notations, let us assume we have data in a regression setup, i.e., 
 $(y_i, x_i)$ for $i = 1, \dots, n$, that follow some distribution that is 
@@ -91,6 +93,7 @@ the derivative of an objective function $\Psi(\cdot)$:
   \begin{equation} \label{eq:score}
     \psi(y, x, \theta) \quad = \quad \frac{\partial \Psi(y, x, \theta)}{\partial \theta}.
   \end{equation}
+}
 
 Inference about $\theta$ is then typically performed relying on a central
 limit theorem (CLT) of type
@@ -141,13 +144,13 @@ In such linear-predictor-based models, the meat of the sandwich can also be slop
 Whereas employing this structure for computing HC covariance matrix estimates is
 well-established practice for linear regression
 models \citep[see][among others]{hac:MacKinnon+White:1985,hac:Long+Ervin:2000},
-it is less commonly applied in other models regression models such as GLMs.
+it is less commonly applied in other regression models such as GLMs.
 
 
 \section[Existing R infrastructure]{Existing \proglang{R} infrastructure} \label{sec:R}
 
 To make use of the theory outlined in the previous section, some computational infrastructure
-is required translating the conceptual into computational tools. \proglang{R} comes with
+is required translating the conceptual to computational tools. \proglang{R} comes with
 a multitude of model-fitting functions that compute estimates $\hat \theta$ and can
 be seen as special cases of the framework above. They are typically accompanied by extractor
 and summary methods providing inference based on the CLT from Equation~\ref{eq:clt}. For extracting
@@ -168,8 +171,9 @@ methods which allow other covariance matrices to be plugged in. As for the latte
 \pkg{car} \citep{hac:Fox:2002} provides \code{linear.hypothesis()}---all of these can perform
 model comparisons in rather general parametric models, employing user-specified covariance
 matrices. As for the former, only specialized solutions of sandwich covariances matrices
-are currently available in \proglang{R} packages, e.g., HC and HAC estimators for linear models in
-previous versions of \pkg{sandwich}. Therefore, we aim at providing a tool kit
+are currently available in \proglang{R} packages, e.g., HAC estimators for linear models in
+previous versions of \pkg{sandwich} and HC estimators for linear models in \pkg{car} and
+\pkg{sandwich}. Therefore, we aim at providing a tool kit
 for plugging together sandwich matrices (including HC and HAC estimators and potentially others)
 in general parametric models, re-using the functionality that is already provided.
 
@@ -178,7 +182,7 @@ in general parametric models, re-using the functionality that is already provide
 
 In the following, the conceptual tools outlined in Section~\ref{sec:model} are translated
 to computational tools preserving their flexibility through the use of the estimating 
-functions framework and re-using the computation infrastructure that is already available
+functions framework and re-using the computational infrastructure that is already available
 in \proglang{R}. Separate methods are suggested for computing estimates for the bread
 $B(\theta)$ and the meat $M(\theta)$, along with some convenience functions and wrapper
 interfaces that build sandwiches from bread and meat.
@@ -205,8 +209,8 @@ in some models.
 
 The package \pkg{sandwich} provides \code{bread()} methods for ``\code{lm}'' (including ``\code{glm}''
 by inheritance), ``\code{coxph}'', ``\code{survreg}'' and ``\code{nls}'' objects. All of them
-simply re-use the information provided in the fitted models (or their summaries) and do not
-perform any real computations, e.g., for ``\code{lm}'' objects:
+simply re-use the information provided in the fitted models (or their summaries) and
+perform hardly any computations, e.g., for ``\code{lm}'' objects:
 \begin{Schunk}
 \begin{Sinput}
 bread.lm <- function(obj, ...)
@@ -226,7 +230,7 @@ $M(\theta)$, usually offering certain robustness properties. Most of these estim
 based on the empirical values of estimating functions. Hence, a natural idea
 for object-oriented implementation of such estimators is the following: provide various 
 functions that compute different estimators for the meat based on an
-\code{estfun()} extractor function that extracts the empirical estimating function
+\code{estfun()} extractor function that extracts the empirical estimating functions
 from a fitted model object. This is what \pkg{sandwich} does: the functions \code{meat()},
 \code{meatHAC()} and \code{meatHC()} compute outer product, HAC and HC estimators for
 $M(\theta)$, respectively, relying on the existence of an \code{estfun()} method (and potentially
@@ -236,7 +240,7 @@ a few other methods). Their design is described in the following.
 
 Whereas (different types of) residuals are typically available as discrepancy measure for
 a model fit via the \code{residuals()} method, the empirical values of the estimating functions
-$\psi(y_i, x_i, \hat \theta)$ are more often than not readily implemented in \proglang{R}. Hence,
+$\psi(y_i, x_i, \hat \theta)$ are often not readily implemented in \proglang{R}. Hence,
 \pkg{sandwich} provides a new \code{estfun()} generic whose methods should return an
 $n \times k$ matrix with the empirical estimating functions:
  \[ \left( \begin{array}{c} \psi(y_1, x_1, \hat \theta) \\ \vdots \\ \psi(y_n, x_n, \hat \theta)
@@ -258,7 +262,7 @@ estfun.lm <- function (obj, ...)
 \end{Schunk}
 
     
-\subsubsection{Outer products estimators}
+\subsubsection{Outer product estimators}
 
 A simple and natural estimator for the meat matrix $M(\theta) = \VAR[ \psi(y, x, \theta)]$
 is the outer product of the empirical estimating functions:
@@ -339,9 +343,10 @@ described in Equation~\ref{eq:estfunHC}. Then, the meat matrix $M(\theta)$ is
 of type (\ref{eq:objHC}) which naturally leads to HC estimators of the form
 $\hat M_\mathrm{HC} = 1/n \, X^\top \hat \Omega X$, where $X$
 is the regressor matrix and $\hat \Omega$ is a diagonal matrix estimating the variance of $r(y, \eta)$.
-Various function $\omega(\cdot)$ have been suggested that derive estimates of
+Various functions $\omega(\cdot)$ have been suggested that derive estimates of
 the variances from the observed working residuals
-$(r(y_1, x_1^\top \hat \theta), \dots, r(y_n, x_n^\top \hat \theta))^\top$ and possibly on
+$(r(y_1, x_1^\top \hat \theta), \dots, r(y_n, x_n^\top \hat \theta))^\top$---possibly 
+also depending on
 the hat values and the degrees of freedom. Thus, the HC estimators are of the form
 \begin{equation} \label{eq:meatHC}
 \hat M_\mathrm{HC} \quad = \quad \frac{1}{n} X^\top \left( \begin{array}{ccc} 
@@ -489,9 +494,9 @@ of extramarital affairs of 601 individuals along with several covariates such
 as age (\code{age}), years married (\code{ym}), religiousness (\code{religious}),
 occupation (\code{occupation}) and a self-rating of the marriage (\code{rate}).
 Table~22.3 in \cite{hac:Greene:2003} provides the parameter estimates and corresponding
-standard errors of tobit model (for the number of affairs) and a probit model
+standard errors of a tobit model (for the number of affairs) and a probit model
 (for infidelity as a binary variable). In \proglang{R}, these models can be
-fitted using \code{survreg()} from the \pkg{survival} package (FIXME: citation)
+fitted using \code{survreg()} from the \pkg{survival} package \citep{hac:Thernau+Lumley:2006}
 and \code{glm()}, respectively:
 
 <<>>=
@@ -506,8 +511,8 @@ fm_probit <- glm(I(nbaffairs > 0) ~ age + ym + religious + occupation + rate,
 
 Using \code{coeftest()} from \pkg{lmtest} \citep{hac:Zeileis+Hothorn:2002},
 we can produce the usual summary based on the standard errors as computed by
-\code{vcov()} and compare them to the HC standard errors provided by
-\code{sandwich()}.
+\code{vcov()} \citep[which reproduces the results in][]{hac:Greene:2003}
+and compare them to the HC standard errors provided by \code{sandwich()}.
 
 <<>>=
 coeftest(fm_tobit)
