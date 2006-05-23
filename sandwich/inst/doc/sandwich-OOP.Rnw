@@ -30,7 +30,7 @@ types of sandwich estimators can be computed.
 
 \SweaveOpts{engine=R,eps=FALSE}
 %\VignetteIndexEntry{Object-oriented Computation of Sandwich Estimators}
-%\VignetteDepends{sandwich,zoo}
+%\VignetteDepends{sandwich,zoo,Ecdat}
 %\VignetteKeywords{covariance matrix estimators, estimating functions, object orientation, R}
 %\VignettePackage{sandwich}
 
