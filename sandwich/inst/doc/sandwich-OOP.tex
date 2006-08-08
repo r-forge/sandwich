@@ -403,10 +403,11 @@ sandwich <- function(obj, bread. = bread, meat. = meat, ...)
 For computing other estimates, the argument \code{meat.} could also be set to
 \code{meatHAC} or \code{meatHC}. 
 
-Therefore, all that a use\proglang{R}/develope\proglang{R} would have to do to make a
+Therefore, all that an \proglang{R} user/developer would have to do to make a
 new class of fitted models, ``\code{foo}'' say, fit for this framework is: 
 provide an \code{estfun()} method \code{estfun.}\emph{foo}\code{()}
-and a \code{bread()} method \code{bread.}\emph{foo}\code{()}. See also Figure~\ref{fig:sandwich}.
+and a \code{bread()} method \code{bread.}\emph{foo}\code{()}.
+See also Figure~\ref{fig:sandwich}.
 
 Only for HC estimators (other than HC0 and HC1 which are available via \code{meat()}),
 it has to be assured in addtion that 
@@ -460,10 +461,10 @@ and \code{glm()}, respectively:
 
 \begin{Schunk}
 \begin{Sinput}
-> data("Fair", package = "Ecdat")
-> fm_tobit <- survreg(Surv(nbaffairs, nbaffairs > 0, type = "left") ~ 
+R> data("Fair", package = "Ecdat")
+R> fm_tobit <- survreg(Surv(nbaffairs, nbaffairs > 0, type = "left") ~ 
 +     age + ym + religious + occupation + rate, data = Fair, dist = "gaussian")
-> fm_probit <- glm(I(nbaffairs > 0) ~ age + ym + religious + occupation + 
+R> fm_probit <- glm(I(nbaffairs > 0) ~ age + ym + religious + occupation + 
 +     rate, data = Fair, family = binomial(link = probit))
 \end{Sinput}
 \end{Schunk}
@@ -475,7 +476,7 @@ and compare them to the HC standard errors provided by \code{sandwich()}.
 
 \begin{Schunk}
 \begin{Sinput}
-> coeftest(fm_tobit)
+R> coeftest(fm_tobit)
 \end{Sinput}
 \begin{Soutput}
 z test of coefficients:
@@ -492,7 +493,7 @@ Log(scale)   2.109859   0.067098 31.4444 < 2.2e-16 ***
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 \end{Soutput}
 \begin{Sinput}
-> coeftest(fm_tobit, vcov = sandwich)
+R> coeftest(fm_tobit, vcov = sandwich)
 \end{Sinput}
 \begin{Soutput}
 z test of coefficients:
@@ -510,14 +511,14 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 \end{Soutput}
 \end{Schunk}
 
-In this case, the HC standard errors are only slightly different and yield
-qualitatively identical results. The picture is similar for the probit model
-which leads to the same interpretations, both for the standard and the HC 
-estimate.
+For the tobit model \code{fm_tobit}, the HC standard errors are only slightly
+different and yield qualitatively identical results. The picture is similar for
+the probit model \code{fm_probit} which leads to the same interpretations, both
+for the standard and the HC  estimate.
 
 \begin{Schunk}
 \begin{Sinput}
-> coeftest(fm_probit)
+R> coeftest(fm_probit)
 \end{Sinput}
 \begin{Soutput}
 z test of coefficients:
@@ -533,7 +534,7 @@ rate        -0.272983   0.052574 -5.1923 2.077e-07 ***
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 \end{Soutput}
 \begin{Sinput}
-> coeftest(fm_probit, vcov = sandwich)
+R> coeftest(fm_probit, vcov = sandwich)
 \end{Sinput}
 \begin{Soutput}
 z test of coefficients:
@@ -553,7 +554,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 See \cite{hac:Greene:2003} for a more detailed discussion of these and other
 regression models for Fair's affairs data.
 
-This brief illustration should merely show that for the use\proglang{R}, the
+This brief illustration should merely show that for the \proglang{R} user, the
 estimators can be easily employed for inference. As discussed in Section~\ref{sec:R},
 further inference functions are available that accept covariance matrix estimators
 (or estimates) as arguments, e.g., in packages \pkg{lmtest} or \pkg{car}.
@@ -562,7 +563,7 @@ further inference functions are available that accept covariance matrix estimato
 
 Object-oriented computational infrastructure in the \proglang{R} package \pkg{sandwich}
 for estimating sandwich covariance matrices in a wide class of parametric models is suggested.
-Re-using existing building blocks, all a develope\proglang{R} has to provide for adapting
+Re-using existing building blocks, all an \proglang{R} developer has to provide for adapting
 a new fitted model class to the sandwich estimators are methods for extracting a bread
 estimator and the empirical estimating functions (and possibly model matrix and hat values).
 

@@ -408,10 +408,11 @@ sandwich <- function(obj, bread. = bread, meat. = meat, ...)
 For computing other estimates, the argument \code{meat.} could also be set to
 \code{meatHAC} or \code{meatHC}. 
 
-Therefore, all that a use\proglang{R}/develope\proglang{R} would have to do to make a
+Therefore, all that an \proglang{R} user/developer would have to do to make a
 new class of fitted models, ``\code{foo}'' say, fit for this framework is: 
 provide an \code{estfun()} method \code{estfun.}\emph{foo}\code{()}
-and a \code{bread()} method \code{bread.}\emph{foo}\code{()}. See also Figure~\ref{fig:sandwich}.
+and a \code{bread()} method \code{bread.}\emph{foo}\code{()}.
+See also Figure~\ref{fig:sandwich}.
 
 Only for HC estimators (other than HC0 and HC1 which are available via \code{meat()}),
 it has to be assured in addtion that 
@@ -519,10 +520,10 @@ coeftest(fm_tobit)
 coeftest(fm_tobit, vcov = sandwich)
 @
 
-In this case, the HC standard errors are only slightly different and yield
-qualitatively identical results. The picture is similar for the probit model
-which leads to the same interpretations, both for the standard and the HC 
-estimate.
+For the tobit model \code{fm_tobit}, the HC standard errors are only slightly
+different and yield qualitatively identical results. The picture is similar for
+the probit model \code{fm_probit} which leads to the same interpretations, both
+for the standard and the HC estimate.
 
 <<>>=
 coeftest(fm_probit)
@@ -532,7 +533,7 @@ coeftest(fm_probit, vcov = sandwich)
 See \cite{hac:Greene:2003} for a more detailed discussion of these and other
 regression models for Fair's affairs data.
 
-This brief illustration should merely show that for the use\proglang{R}, the
+This brief illustration should merely show that for the \proglang{R} user, the
 estimators can be easily employed for inference. As discussed in Section~\ref{sec:R},
 further inference functions are available that accept covariance matrix estimators
 (or estimates) as arguments, e.g., in packages \pkg{lmtest} or \pkg{car}.
@@ -541,7 +542,7 @@ further inference functions are available that accept covariance matrix estimato
 
 Object-oriented computational infrastructure in the \proglang{R} package \pkg{sandwich}
 for estimating sandwich covariance matrices in a wide class of parametric models is suggested.
-Re-using existing building blocks, all a develope\proglang{R} has to provide for adapting
+Re-using existing building blocks, all an \proglang{R} developer has to provide for adapting
 a new fitted model class to the sandwich estimators are methods for extracting a bread
 estimator and the empirical estimating functions (and possibly model matrix and hat values).
 
