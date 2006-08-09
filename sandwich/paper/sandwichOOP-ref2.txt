@@ -1,0 +1,30 @@
+I have read the Zeileis paper, but I can't really think of anything  
+much to say about it. I have never refereed this sort of article  
+before, and I don't know what the criteria for acceptance are.
+
+As far as I can tell, the author's sandwich package does something  
+useful. I assume that it works as advertised. Since I find R  
+mysterious and very hard to use, I do not have the energy to try to  
+see if it actually works, and I certainly do not have the energy to  
+compare its results with those from any other program.
+
+This paper is apparently an extension of a 2004 paper by the same  
+author, which is also in the J. of Stat. Software, and there seems to  
+be considerable overlap. I may well be mistaken, but it seems to me  
+that only the extensions to nonlinear models are new. As far as I can  
+tell, the "sandwich" package dates back at least to 2004, but it has  
+presumably been enhanced since then. Just what enhancements have  
+occurred, and when, I have no idea.
+
+I know that I really ought to read this paper and the 2004 paper with  
+care, so as to see just what is new, and experiment with the package  
+to see how well it works. But, quite frankly, I have many other  
+things to, including more interesting papers to referee. Short of  
+paying a graduate student to work on this for a week, I don't see  
+what to do. But if I could find a graduate student who was actually  
+willing to do some work, this is not what I would have them work on!
+
+There is at least one typo ("addtion" instead of "addition" on page  
+7). Also, I found "useR" and "developeR" (page 9) annoyingly cute. Is  
+this a standard affectation in the R world, or is it the author's own  
+invention?

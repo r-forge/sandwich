@@ -1,0 +1,79 @@
+A certain share of the criticism (of the associate editor and 
+referee 1) is about the usefulness of sandwich covariance matrices.
+The paper does not advocate the usage (let alone the routine
+usage) of sandwich standard errors for all models - it does
+merely provide the infrastructure to compute them easily in
+an object-oriented way. Whether or not it is sensible to make
+use of this infrastructure for a particular analysis problem
+should be decided by the data analyst (not his/her software).
+This is stated more clearly now in Section 1/2 and 6.
+
+ASSOCIATE EDITOR
+****************
+
+> The implicit definition of thetahat, since he is assuming an
+> equivalent minimization problem, is a bit nonstandard.
+
+The existence of an objective function is not required for
+deriving the sandwich estimators. Now, this is stated more clearly
+in Section 2.
+
+> It is important to say early on that sandwiches rely on our
+> willing suspension of disbelief in the _bias_ resulting from  
+> misspecification.
+> A recent cautionary note on this topic is available here:
+>   http://www.stat.berkeley.edu/~census/mlesan.pdf
+
+set.seed(123)
+n <- 250
+x <- sort(runif(n, 0, 10))
+beta <- c(0, -3, 0.5)
+prob <- plogis(beta[1] + beta[2] * x + beta[3] * x^2)
+y <- factor(rbinom(n, prob = prob, size = 1))
+
+fm1 <- glm(y ~ x, family = binomial)
+fm2 <- glm(y ~ x + I(x^2), family = binomial)
+
+plot(y ~ x)
+cdplot(y ~ x)
+
+> Finally, I would like to question the central european choice
+> of the function name meat(), and suggest that he might consider
+> sprouts() as an alternative.
+
+
+REFEREE 1
+*********
+
+
+REFEREE 2
+*********
+
+> This paper is apparently an extension of a 2004 paper by the same  
+> author, which is also in the J. of Stat. Software, and there seems to  
+> be considerable overlap. I may well be mistaken, but it seems to me  
+> that only the extensions to nonlinear models are new. As far as I can  
+> tell, the "sandwich" package dates back at least to 2004, but it has  
+> presumably been enhanced since then. Just what enhancements have  
+> occurred, and when, I have no idea.
+
+The history of CRAN releases of the sandwich package is available at
+  http://CRAN.R-project.org/src/contrib/Archive/S/
+The changes in the package since the release of the 2004 JSS paper
+(sandwich 1.0-0) are documented in the NEWS file of the package and
+the vignette currently under review for JSS.
+
+> There is at least one typo ("addtion" instead of "addition" on page 7).
+
+Fixed.
+
+> Also, I found "useR" and "developeR" (page 9) annoyingly cute. 
+
+Changed to "R user" and "R developer".
+
+> Is this a standard affectation in the R world, or is it the author's
+> own invention?
+
+The name "useR" was probably coined by David Meyer in 2003 as the name
+for the R User Conference "useR!" (see http://www.R-project.org/useR-2006/)
+and is since frequently used in the R community.

@@ -1,0 +1,24 @@
+I have only a few other comments:
+
+1.  The implicit definition of thetahat, since he is assuming an
+equivalent minimization problem. is a bit  nonstandard, I would
+suggest conforming to the usual conventions and writing
+
+        rho for Psi
+
+and starting with
+
+        thetahat = argmin sum rho(...)
+
+and then  using \grad in (2) and more importantly in (5) and later.
+
+2.  It is important to say early on that sandwiches rely on our
+willing suspension of disbelief in the _bias_ resulting from  
+misspecification.
+A recent cautionary note on this topic is available here:
+
+        http://www.stat.berkeley.edu/~census/mlesan.pdf
+
+3.  Finally, I would like to question the central european choice
+of the function name meat(), and suggest that he might consider
+sprouts() as an alternative.

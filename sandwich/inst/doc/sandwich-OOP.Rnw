@@ -87,15 +87,21 @@ $\theta$ can be estimated using an M-estimator $\hat \theta$ implicitely defined
   \begin{equation} \label{eq:estfun}
     \sum_{i = 1}^n \psi(y_i, x_i, \hat \theta) \quad = \quad 0.
   \end{equation}
-This includes in particular maximum likelihood (ML) and ordinary and nonlinear least
-squares (OLS and NLS) estimation, where the estimating function $\psi(\cdot)$ is
+This includes (but is not limited to) cases where the estimating function $\psi(\cdot)$ is
 the derivative of an objective function $\Psi(\cdot)$:
   \begin{equation} \label{eq:score}
     \psi(y, x, \theta) \quad = \quad \frac{\partial \Psi(y, x, \theta)}{\partial \theta}.
   \end{equation}
 }
+Examples for estimation techniques included in this framework are maximum likelihood (ML)
+and ordinary and nonlinear least squares (OLS and NLS) estimation, where the estimator
+is usually written in terms of the objective function as
+$\hat \theta = \mbox{argmin}_\theta \sum_i \Psi(y_i, x_i, \theta)$.
+Other techniques---often expressed in terms of the estimating function rather than
+the objective function---include quasi ML, robust M-estimation and generalized estimating
+equations (GEE). 
 
-Inference about $\theta$ is then typically performed relying on a central
+Inference about $\theta$ is typically performed relying on a central
 limit theorem (CLT) of type
   \begin{equation} \label{eq:clt}
     \sqrt{n} \, (\hat \theta - \theta) \quad \darrow \quad N(0, S(\theta)),
@@ -415,7 +421,7 @@ and a \code{bread()} method \code{bread.}\emph{foo}\code{()}.
 See also Figure~\ref{fig:sandwich}.
 
 Only for HC estimators (other than HC0 and HC1 which are available via \code{meat()}),
-it has to be assured in addtion that 
+it has to be assured in addition that 
 \begin{itemize}
   \item the model only depends on a linear predictor (this cannot be easily
         checked by the software, but has to be done by the user),
