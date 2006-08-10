@@ -520,46 +520,45 @@ from \pkg{lmtest} is always used for computing the summaries.
 \subsection{Count data regression}
 
 To illustrate the usage of sandwich estimators in count data regressions,
-we use artifical data simulated from a negative binomial model. The
-mean of the response \code{y} depends on a regressor \code{x} through
-a log link, the size parameter of the negative binomial distribution
-is 1, and the regressor is simply drawn from a standard normal distribution.
-After setting the random seed for reproducibility, we draw 250 observations
-from this model:
+we consider the data from \cite{hac:Deb+Trivedi:1997} on 4406
+individuals, aged 66 and over, who are covered by Medicare, a public
+insurance program. Originally obtained from the US National Medical
+Expenditure Survey, the data is available from the data archive of the
+\textit{Journal of Applied Econometrics} at
+\url{http://www.econ.queensu.ca/jae/1997-v12.3/deb-trivedi/}. A
+``\code{data.frame}'' for usage in \proglang{R} is available along with
+this paper as \code{DebTrivedi.rda}. Below, we consider different models
+for the number of physician office visits \code{ofp}, explained by regressors
+\code{health} status (three-level factor), \code{age} in years divided by 10,
+\code{gender}, marital status \code{married}, family income \code{faminc}
+(in USD 10,000), and factor \code{privins} indicating private insurance.
 
-<<dgp>>=
-set.seed(123)
-x <- rnorm(250)
-y <- rnbinom(250, mu = exp(1 + x), size = 1)
-@
-
-In the following, we will fit various count models to this data employing
-the overspecification \verb/y ~ x + I(x^2)/ and assessing the significance
-of \verb/I(x^2)/. First, we use \code{glm()} with \code{family = poisson}
-to fit a poisson regression as the simplest model for count data.
-Of course, this model is not correctly specified as \code{y} is from a 
-negative binomial distribution. Hence, we are not surprised that the 
-resulting test of \verb/I(x^2)/ is spuriously significant:
+First, we use \code{glm()} with \code{family = poisson} to fit a poisson
+regression as the simplest model for count data:
 
 <<poisson>>=
-fm_pois <- glm(y ~ x + I(x^2), family = poisson)
+load("DebTrivedi.rda")
+fm_pois <- glm(ofp ~ health + age + gender + married + faminc + privins, data = DebTrivedi, family = poisson)
 coeftest(fm_pois)
 @
 
-However, the specification of the conditional mean of \code{y} is correct
-in this model which is reflected by the coefficient estimates that are close to 
-their true value. Only the dispersion which is fixed at 1 in the \code{poisson}
-family is misspecified. In this situation, the problem can be alleviated 
-by employing sandwich standard errors in the partial $z$~tests, capturing
-the overdispersion in \code{y}.
+All coefficients except that of \code{faminc} are highly significant.
+However, we are presented a rather different picture when sandwich standard
+errors are employed for the partial $z$~tests:
 
 <<poisson-sandwich>>=
 coeftest(fm_pois, vcov = sandwich)
 @
 
-Clearly, sandwich standard errors are not the only way of
+The explanation for the difference is the overdispersion
+in the count variable \code{ofp} which is captured by \code{sandwich()}
+but not \code{vcov()} because the \code{poisson} family keeps the dispersion
+fixed at 1. Hence, the standard errors provided by \code{vcov()} are misleadingly
+small resulting in spuriously significant test statistics.
+
+Of course, sandwich standard errors are not the only way of
 dealing with this situation. Other obvious candidates would be to use a
-quasi-poisson or, of course, a negative binomial model \citep{hac:McCullagh+Nelder:1989}.
+quasi-poisson or a negative binomial model \citep{hac:McCullagh+Nelder:1989}.
 The former is available through the \code{quasipoisson} family for \code{glm()}
 that leads to the same coefficient estimates as \code{poisson} but additionally
 estimates the dispersion for inference. The associated model summary is very
@@ -567,7 +566,7 @@ similar to that based on the sandwich standard errors, leading to qualitatively
 identical results.
 
 <<quasipoisson>>=
-fm_qpois <- glm(y ~ x + I(x^2), family = quasipoisson)
+fm_qpois <- glm(ofp ~ health + age + gender + married + faminc + privins, data = DebTrivedi, family = quasipoisson)
 coeftest(fm_qpois)
 @
 
@@ -575,12 +574,13 @@ Negative binomial models can be fitted by \code{glm.nb()} from \pkg{MASS}
 \citep{hac:Venables+Ripley:2002}.
 
 <<negbin>>=
-fm_nbin <- glm.nb(y ~ x + I(x^2))
+fm_nbin <- glm.nb(ofp ~ health + age + gender + married + faminc + privins, data = DebTrivedi)
 coeftest(fm_nbin)
 @
 
-Here, the estimated parameters are very similar to those from the poisson regression
-and the $z$~tests lead to the same conclusions as in the previous two examples.
+Here, the estimated parameters (at least those that are significant) are very
+similar to those from the poisson regression and the $z$~tests lead to the same
+conclusions as in the previous two examples.
 
 
 \subsection{Probit and tobit models}

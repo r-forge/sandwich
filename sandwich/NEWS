@@ -1,8 +1,10 @@
 Changes in Version 2.0-0
 
-  o JSS paper
+  o A paper based on the "sandwich-OOP" vignette was accepted
+    for publication in Journal of Statistical Software at
+      http://www.jstatsoft.org/
   
-  o NAMESPACE
+  o A NAMESPACE was added for the package.
   
 
 Changes in Version 1.9-0

@@ -1,12 +1,28 @@
-A certain share of the criticism (of the associate editor and 
-referee 1) is about the usefulness of sandwich covariance matrices.
-The paper does not advocate the usage (let alone the routine
-usage) of sandwich standard errors for all models - it does
+Jan,
+
+thanks for the reviews. Attached to this mail is a revision
+of the paper that encompasses two main changes:
+  o An additional empirical example (count data regression)
+    has been added to Section 5.
+  o Section 6 has been extended discussing the usefulness
+    of the methods provided.
+
+This is in response to the fact that a certain share of the
+criticism (of the associate editor and referee 1) is about
+the usefulness of sandwich covariance matrices. The paper
+does not advocate the usage (let alone the routine usage)
+of sandwich standard errors for *all* models - it does
 merely provide the infrastructure to compute them easily in
 an object-oriented way. Whether or not it is sensible to make
 use of this infrastructure for a particular analysis problem
 should be decided by the data analyst (not his/her software).
-This is stated more clearly now in Section 1/2 and 6.
+
+A detailed point-to-point answer to the associate editor and
+the two referees is provided below.
+
+Best wishes,
+Z
+
 
 ASSOCIATE EDITOR
 ****************
@@ -21,29 +37,146 @@ in Section 2.
 > It is important to say early on that sandwiches rely on our
 > willing suspension of disbelief in the _bias_ resulting from  
 > misspecification.
+
+It is emphasized, both in Section 1 and 2, that the estimating
+functions have to be correctly specified. Now, some further discussion
+is added in Section 6 pointing out that this is easier to achieve
+for the linear model than for most other models.
+
 > A recent cautionary note on this topic is available here:
 >   http://www.stat.berkeley.edu/~census/mlesan.pdf
 
-set.seed(123)
-n <- 250
-x <- sort(runif(n, 0, 10))
-beta <- c(0, -3, 0.5)
-prob <- plogis(beta[1] + beta[2] * x + beta[3] * x^2)
-y <- factor(rbinom(n, prob = prob, size = 1))
+This is an interesting paper, discussing a few important points. I've
+added a reference in the discussion in Section 6.
 
-fm1 <- glm(y ~ x, family = binomial)
-fm2 <- glm(y ~ x + I(x^2), family = binomial)
-
-plot(y ~ x)
-cdplot(y ~ x)
+However, I had some problems with the example in this paper:
+First, the estimating functions clearly do not have expectation 0,
+hence it would be surprising if the robust standard errors were useful. 
+Second, the author poses the question "Could the specification error
+be detected by some kind of regression diagnostics? Perhaps, especially
+if we knew what kind of specification errors to look for." This
+overstates the point a little bit. In this particular example, a simple
+plot() would have revealed a quadratic relationship (see code below)
+and tests for functional form (such as a RESET-type test) certainly
+would have picked it up as well.
+  ## DGP
+  set.seed(123)
+  n <- 250
+  x <- sort(runif(n, 0, 10))
+  beta <- c(0, -3, 0.5)
+  prob <- plogis(beta[1] + beta[2] * x + beta[3] * x^2)
+  y <- factor(rbinom(n, prob = prob, size = 1))
+  ## logit models
+  fm1 <- glm(y ~ x, family = binomial)
+  fm2 <- glm(y ~ x + I(x^2), family = binomial)
+  ## visualizations
+  plot(y ~ x)
+  cdplot(y ~ x)
 
 > Finally, I would like to question the central european choice
 > of the function name meat(), and suggest that he might consider
 > sprouts() as an alternative.
 
+Is the choice so central European? A Google image search for "sandwich"
+reveals that meat-based sandwiches seem to be internationally popular.
+A Google fight favours "sandwich meat" over "sandwich sprouts" and
+even points us to references in popular culture involving meat sandwiches:
+The Blues Brothers (covering an original of The Chips) sing about a
+sandwich "where you have two slices of bread and you...wish you had some
+meat." This corresponds very well with the situation in sandwich
+estimation: The bread is there, but how to obtain the meat?
+
+Hence, despite not being carnivorous, I stick with this generic setup
+of a sandwich and content myself with being able to put together other
+flavours if I bring along a roll() and cheese():
+  sandwich(foo, bread = roll, meat = cheese)
+
 
 REFEREE 1
 *********
+
+> The author focuses on the situation where the objective function
+> psi(y, x, theta) depends on x and theta in a special way, namely it
+> does only depend on the univariate linear predictor eta = x'theta.
+> Nonetheless, the most common setting is that where theta = (beta', phi)'
+
+This is an important point for which I'm not sure what a good (let alone the
+best) solution is. Various fitting functions in R treat this differently,
+e.g., lm(), glm() and glm.nb() treat phi (or some re-parametrization of it)
+as a nuisance parameter whereas others such as betareg() treat it as a full
+model parameter. Other functions even handle phi somewhat inconsistently:
+the coef() method for "survreg" objects just returns beta, but the vcov()
+method has the covariance matrix for (beta, phi).
+
+The source of this confusion is in my opinion that the current guidelines
+how to implement parametric models and their accessor functions in R are
+too limited. As long as there are no better conventions how to deal with
+this, I refrain from implementing specialized tools for the (beta, phi)
+situation and just assume that bread() and estfun() return something 
+that matches. For my own use I tend to write wrapper classes that do
+what I want, e.g., write a function norm_lm() that treats the variance
+as a full model parameter.
+
+I am currently working on a white paper involving this (and other) issues
+which is aimed at generating some discussion about how to compute with
+fitted models in R. Therefore, I would prefer to leave the discussion 
+of the (beta, phi) situation out of this paper.
+
+> It would be helpful to extend the heteroskedasticity-robust inference
+> in light of the results in Godfrey (2006); see also Godfrey and Orme (2004).
+> The numerical evidence in Godfrey (2006) suggests that tests based on
+> restricted estimation are typically more reliable in finite-sample than
+> those that employ unrestricted parameter estimates.
+
+I had read that paper with interest and indeed it would be useful to
+implement tools for the HCxR-based tests. However, this is beyond the scope
+of this paper: sandwich just provides tools for computing sandwich matrices
+and no inference functions.
+Nevertheless, the building blocks of sandwich could be re-used for
+implementing HCxR-based tests. A conceivable route for implementation would
+be to create a "restricted_lm" object whose estfun() method combines the
+full regressor matrix X with the restricted residuals. Then vcovHC() in
+combination with coeftest() (or another bootstrap-based inference function)
+could be employed for conducting the test.
+Another interesting approach to restriction testing in a HAC situation are
+the "bandwidth = sample size" tests of Kiefer and Vogelsang (2002). Again,
+these could re-use tools provided by sandwich but would require a different
+inference engine.
+
+> I would like to see an additional illustration in Section 5. I suggest
+> the addition of an empirical example that deals with heteroskedasticity-robust
+> estimation, perhaps even the application in Cribari-Neto (2004), or an
+> empirical illustration that employs HAC estimation.
+
+This is all included in the 2004 sandwich paper and hence not repeated in
+the paper under review: Section 4.1 of the 2004 paper reproduces Cribari-Neto
+(2004), see also ?PublicSchools, Section 4.2 has a HAC illustration from 
+Greene (1993) and Section 4.3 a more advanced application from Bai and Perron
+(2003) in a structural change context.
+This is now pointed out more clearly in Section 5 which has been in addition
+enhanced by an example for count data regression. Sandwich estimators as
+one conceivable approach for dealing with overdispersion is illustrated with
+real-world data from Deb and Trivedi (1997). The same could also be shown
+with a simulated example:
+  ## DGP: negative binomial response
+  set.seed(123)
+  x <- rnorm(250)
+  y <- rnbinom(250, mu = exp(1 + x), size = 1)
+  ## fit poisson and negbin model with superfluous term x^2
+  fm_pois <- glm(y ~ x + I(x^2), family = poisson)
+  fm_nbin <- glm.nb(y ~ x + I(x^2))
+  ## both coefficient estimates are close to the true values
+  ## however neglecting the overdispersion causes trouble:
+  coeftest(fm_pois)
+  ## two methods for dealing with the overdispersion:
+  ## sandwich standard errors and negative binomial model
+  coeftest(fm_pois, vcov = sandwich)
+  coeftest(fm_nbin)
+  ## another alternative would be a quasipoisson model:
+  fm_qpois <- glm(y ~ x + I(x^2), family = quasipoisson)
+  coeftest(fm_qpois)
+This has the advantage that the DGP can be controlled, but as a real-world example
+is probably more appealing it is not used within the paper.
 
 
 REFEREE 2
@@ -61,7 +194,8 @@ The history of CRAN releases of the sandwich package is available at
   http://CRAN.R-project.org/src/contrib/Archive/S/
 The changes in the package since the release of the 2004 JSS paper
 (sandwich 1.0-0) are documented in the NEWS file of the package and
-the vignette currently under review for JSS.
+the vignette currently under review for JSS. The crucial new feature
+is the introduction of object orientation.
 
 > There is at least one typo ("addtion" instead of "addition" on page 7).
 
