@@ -13,6 +13,11 @@
 \Plainkeywords{covariance matrix estimators, estimating functions, object orientation, R}
 
 \Abstract{
+This introduction to the object-orientation features of the
+\proglang{R} package \pkg{sandwich} is a (slightly)
+modified version of \cite{hac:Zeileis:2006}, published in the
+\emph{Journal of Statistical Software}.
+
 Sandwich covariance matrix estimators are a popular tool in applied regression
 modeling for performing inference that is robust to certain types of model misspecification.
 Suitable implementations are available in the \proglang{R} system for statistical

@@ -1,5 +1,7 @@
-\documentclass{Z}
+\documentclass[article]{jss}
+
 %% need no \usepackage{Sweave}
+\usepackage{thumbpdf}
 
 %% Symbols
 \newcommand{\darrow}{\stackrel{\mbox{\tiny \textnormal{d}}}{\longrightarrow}}
@@ -26,13 +28,27 @@ functions---most importantly for the empirical estimating functions---from which
 types of sandwich estimators can be computed.
 }
 
+\Volume{16}
+\Issue{II}
+\Month{August}
+\Year{2006}
+\Submitdate{2006-05-26}
+\Acceptdate{2006-08-15}
+
+\Address{
+  Achim Zeileis\\
+  Department of Statistics and Mathematics\\
+  Wirtschaftsuniversit\"at Wien\\
+  Augasse 2--6\\
+  A-1090 Wien, Austria\\
+  E-mail: \email{Achim.Zeileis@wu-wien.ac.at}\\
+  URL: \email{http://statmath.wu-wien.ac.at/~zeileis/}\\
+}
+
+
 \begin{document}
 
 \SweaveOpts{engine=R,eps=FALSE}
-%\VignetteIndexEntry{Object-oriented Computation of Sandwich Estimators}
-%\VignetteDepends{sandwich,zoo,Ecdat,survival,MASS,lmtest}
-%\VignetteKeywords{covariance matrix estimators, estimating functions, object orientation, R}
-%\VignettePackage{sandwich}
 
 <<preliminaries,echo=FALSE,results=hide>>=
 library("sandwich")
@@ -430,18 +446,8 @@ it has to be assured in addition that
   \item a \code{hatvalues.}\emph{foo}\code{()} method exists (for HC2--HC4).
 \end{itemize}
 
-For both, HAC and HC estimators, the complexity of the meat functions was reduced for
-exposition in the paper: choosing the \code{weights} in \code{meatHAC} and the diagonal elements
-\code{omega} in \code{meatHC} can be controlled by a number of further arguments. To make
-these explicit for the user, wrapper functions \code{vcovHAC()} and \code{vcovHC()} are provided
-in \pkg{sandwich} which work as advertised in \cite{hac:Zeileis:2004a} and are the recommended
-interfaces for computing HAC and HC estimators, respectively. Furthermore, the convenience
-interfaces \code{kernHAC()}, \code{NeweyWest()} and \code{weave()} setting the right defaults for
-\citep{hac:Andrews:1991}, \cite{hac:Newey+West:1994}, and \cite{hac:Lumley+Heagerty:1999}, respectively,
-continue to be provided by \pkg{sandwich}.
-
 \setkeys{Gin}{width=.85\textwidth} 
-\begin{figure}[tbh]
+\begin{figure}[b!]
 \begin{center}
 <<sandwich,fig=TRUE,height=3.5,width=7,echo=FALSE>>=
 par(mar = rep(0, 4))
@@ -484,7 +490,15 @@ arrows(30, 39, 47.5, 21, lwd = 1.5, length = 0.15, angle = 20)
 \end{center}
 \end{figure}
 
-
+For both, HAC and HC estimators, the complexity of the meat functions was reduced for
+exposition in the paper: choosing the \code{weights} in \code{meatHAC} and the diagonal elements
+\code{omega} in \code{meatHC} can be controlled by a number of further arguments. To make
+these explicit for the user, wrapper functions \code{vcovHAC()} and \code{vcovHC()} are provided
+in \pkg{sandwich} which work as advertised in \cite{hac:Zeileis:2004a} and are the recommended
+interfaces for computing HAC and HC estimators, respectively. Furthermore, the convenience
+interfaces \code{kernHAC()}, \code{NeweyWest()} and \code{weave()} setting the right defaults for
+\citep{hac:Andrews:1991}, \cite{hac:Newey+West:1994}, and \cite{hac:Lumley+Heagerty:1999}, respectively,
+continue to be provided by \pkg{sandwich}.
 
 \section{Illustrations} \label{sec:illustrations}
 
@@ -668,6 +682,18 @@ can be dealt with in linear regression models, the situation is less obvious for
 regression models. Some further expository discussion of this issue for ML and quasi ML
 estimators can be found in \cite{hac:Freedman:2006} and \cite{hac:Koenker:2006}.
 
+
+\section*{Computational details}
+
+The results in this paper were obtained using
+\proglang{R}~\Sexpr{paste(R.Version()[6:7], collapse = ".")} with the packages
+\pkg{sandwich}~\Sexpr{gsub("-", "--", packageDescription("sandwich")$Version)},
+\pkg{lmtest}~\Sexpr{gsub("-", "--", packageDescription("lmtest")$Version)},
+\pkg{MASS}~\Sexpr{gsub("-", "--", packageDescription("MASS")$Version)},
+\pkg{survival}~\Sexpr{gsub("-", "--", packageDescription("survival")$Version)}
+and \pkg{zoo}~\Sexpr{gsub("-", "--", packageDescription("zoo")$Version)}.
+\proglang{R} itself and all packages used are available from
+CRAN at \url{http://CRAN.R-project.org/}.
 
 
 \section*{Acknowledgements}

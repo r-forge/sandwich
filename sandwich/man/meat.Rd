@@ -28,10 +28,9 @@ the scaled cross products of the empirical estimating functions.}
 \seealso{\code{\link{sandwich}}, \code{\link{bread}}, \code{\link{estfun}}}
 
 \references{
-Zeileis A (2006), Object-oriented Computation of Sandwich Estimators.
-\emph{Report 37}, Department of Statistics and Mathematics, 
-\enc{Wirtschaftsuniversität}{Wirtschaftsuniversitaet} Wien, Research Report Series.
-\url{http://epub.wu-wien.ac.at/}
+  Zeileis A (2006), Object-oriented Computation of Sandwich Estimators.
+  \emph{Journal of Statistical Software}, \bold{16}(II), 1--16.
+  URL \url{http://http://www.jstatsoft.org/v16/iII/}.
 }
 
 \examples{
