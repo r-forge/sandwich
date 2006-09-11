@@ -620,7 +620,7 @@ fm_tobit <- survreg(Surv(nbaffairs, nbaffairs > 0, type = "left") ~
    age + ym + religious + occupation + rate, data = Fair, dist = "gaussian")
 
 fm_probit <- glm(I(nbaffairs > 0) ~ age + ym + religious + occupation + rate, 
-   data = Fair, family = binomial(link = probit))
+   data = Fair, family = binomial(link = "probit"))
 @
 
 Using \code{coeftest()}, we compare the usual summary based on the standard
