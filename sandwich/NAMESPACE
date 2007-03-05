@@ -6,6 +6,9 @@ export(
   "bread",
   "meat",
 
+## OPG estimator
+  "vcovOPG",
+
 ## HC estimators  
   "vcovHC",
   "meatHC",

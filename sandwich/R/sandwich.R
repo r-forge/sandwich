@@ -44,3 +44,13 @@ meat <- function(x, adjust = FALSE, ...)
   rownames(rval) <- colnames(rval) <- colnames(psi)
   return(rval)
 }
+
+vcovOPG <- function(x, adjust = FALSE, ...) {
+  psi <- estfun(x, ...)
+  k <- NCOL(psi)
+  n <- NROW(psi)
+  rval <- chol2inv(qr.R(qr(psi)))
+  if(adjust) rval <- n/(n-k) * rval
+  rownames(rval) <- colnames(rval) <- colnames(psi)
+  return(rval)
+}
