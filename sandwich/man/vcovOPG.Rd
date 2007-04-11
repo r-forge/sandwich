@@ -28,6 +28,10 @@ the outer product of gradients (OPG) estimator (Cameron & Trivedi 2005).
 Using the \pkg{sandwich} infrastructure, the OPG estimator could easily be computed via
 \code{solve(meat(obj))} (modulo scaling). To employ numerically more stable implementation
 of the inversion, this simple convenience function can be used: \code{vcovOPG(obj)}.
+
+Note that this only works if the \code{estfun()} method computes the maximum
+likelihood scores (and not a scaled version such as least squares scores for
+\code{"lm"} objects).
 }
 
 \value{
@@ -46,12 +50,11 @@ of the inversion, this simple convenience function can be used: \code{vcovOPG(ob
 \seealso{\code{\link{meat}}, \code{\link{bread}}, \code{\link{sandwich}}}
 
 \examples{
-## generate linear regression relationship
-## with homoskedastic variances
+## generate poisson regression relationship
 x <- sin(1:100)
-y <- 1 + x + rnorm(100)
+y <- rpois(100, exp(1 + x))
 ## compute usual covariance matrix of coefficient estimates
-fm <- lm(y ~ x)
+fm <- glm(y ~ x, family = poisson)
 vcov(fm)
 vcovOPG(fm)
 }
