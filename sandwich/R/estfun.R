@@ -6,6 +6,7 @@ estfun <- function(x, ...)
 estfun.lm <- function(x, ...)
 {
   xmat <- model.matrix(x)
+  xmat <- naresid(x$na.action, xmat)
   wts <- weights(x)
   if(is.null(wts)) wts <- 1
   res <- residuals(x)
@@ -20,9 +21,10 @@ estfun.lm <- function(x, ...)
 estfun.glm <- function(x, ...)
 {
   xmat <- model.matrix(x)
+  xmat <- naresid(x$na.action, xmat)
   wres <- as.vector(residuals(x, "working")) * weights(x, "working")
   dispersion <- if(x$family$family %in% c("poisson", "binomial")) 1
-    else sum(wres^2)/sum(weights(x, "working"))
+    else sum(wres^2, na.rm = TRUE)/sum(weights(x, "working"), na.rm = TRUE)
   rval <- wres * xmat / dispersion
   attr(rval, "assign") <- NULL
   attr(rval, "contrasts") <- NULL
@@ -35,6 +37,7 @@ estfun.glm <- function(x, ...)
 estfun.rlm <- function(x, ...)
 {
   xmat <- model.matrix(x)
+  xmat <- naresid(x$na.action, xmat)
   wts <- weights(x)
   if(is.null(wts)) wts <- 1
   res <- residuals(x)
