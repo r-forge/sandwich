@@ -23,7 +23,7 @@ estfun.glm <- function(x, ...)
   xmat <- model.matrix(x)
   xmat <- naresid(x$na.action, xmat)
   wres <- as.vector(residuals(x, "working")) * weights(x, "working")
-  dispersion <- if(x$family$family %in% c("poisson", "binomial")) 1
+  dispersion <- if(substr(x$family$family, 1, 17) %in% c("poisson", "binomial", "Negative Binomial")) 1
     else sum(wres^2, na.rm = TRUE)/sum(weights(x, "working"), na.rm = TRUE)
   rval <- wres * xmat / dispersion
   attr(rval, "assign") <- NULL
