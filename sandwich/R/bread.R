@@ -44,3 +44,7 @@ bread.coxph <- function(x, ...)
 bread.hurdle <- function(x, ...) {
   x$vcov * x$n
 }
+
+bread.zeroinfl <- function(x, ...) {
+  x$vcov * x$n
+}

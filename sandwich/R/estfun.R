@@ -93,7 +93,7 @@ estfun.hurdle <- function(x, ...) {
 
   offset <- x$offset
   if(is.null(offset)) offset <- rep(0, NROW(X))
-  if(x$dist$zero == "binomial") li <- make.link(x$link)
+  if(x$dist$zero == "binomial") linkobj <- make.link(x$link)
   wts <- weights(x)
   Y1 <- Y > 0
 
@@ -119,7 +119,7 @@ estfun.hurdle <- function(x, ...) {
   
   ## zero component: working residuals
   eta <- as.vector(Z %*% gamma)
-  mu <- if(x$dist$zero == "binomial") li$linkinv(eta) else exp(eta)
+  mu <- if(x$dist$zero == "binomial") linkobj$linkinv(eta) else exp(eta)
   theta <- fulltheta["zero"]
 
   wres_zero <- switch(x$dist$zero,
@@ -137,8 +137,52 @@ estfun.hurdle <- function(x, ...) {
         log(theta) - log(mu + theta) + eta), -mu * theta/(mu + theta))
     },
     "binomial" = {
-      ifelse(Y1, 1/mu, -1/(1-mu)) * li$mu.eta(eta)
+      ifelse(Y1, 1/mu, -1/(1-mu)) * linkobj$mu.eta(eta)
     })
+
+  ## compute gradient from data
+  rval <- cbind(wres_count * wts * X, wres_zero * wts * Z)
+  colnames(rval) <- names(coef(x))
+  rownames(rval) <- rownames(X)
+  return(rval)
+}
+
+estfun.zeroinfl <- function(x, ...) {
+  ## extract data
+  Y <- if(is.null(x$y)) model.response(model.frame(x)) else x$y
+  X <- model.matrix(x, model = "count")
+  Z <- model.matrix(x, model = "zero")
+  beta <- coef(x, model = "count")
+  gamma <- coef(x, model = "zero")
+  theta <- x$theta
+
+  offset <- x$offset
+  if(is.null(offset)) offset <- rep(0, NROW(X))
+  linkobj <- make.link(x$link)
+  wts <- weights(x)
+  Y1 <- Y > 0
+
+  eta <- as.vector(X %*% beta + offset)
+  mu <- exp(eta)
+  etaz <- as.vector(Z %*% gamma)
+  muz <- linkobj$linkinv(etaz)
+
+  ## density for y = 0
+  clogdens0 <- switch(x$dist,
+    "poisson" = -mu,
+    "geometric" = dnbinom(0, size = 1, mu = mu, log = TRUE),
+    "negbin" = dnbinom(0, size = theta, mu = mu, log = TRUE))
+  dens0 <- muz * (1 - as.numeric(Y1)) + exp(log(1 - muz) + clogdens0)
+
+  ## working residuals  
+  wres_count <- switch(x$dist,
+    "poisson" = ifelse(Y1, Y - mu, -exp(-log(dens0) + log(1 - muz) + clogdens0 + log(mu))),
+    "geometric" = ifelse(Y1, Y - mu * (Y + 1)/(mu + 1), -exp(-log(dens0) +
+      log(1 - muz) + clogdens0 - log(mu + 1) + log(mu))),
+    "negbin" = ifelse(Y1, Y - mu * (Y + theta)/(mu + theta), -exp(-log(dens0) +
+      log(1 - muz) + clogdens0 + log(theta) - log(mu + theta) + log(mu))))
+  wres_zero <- ifelse(Y1, -1/(1-muz) * linkobj$mu.eta(etaz),
+    (linkobj$mu.eta(etaz) - exp(clogdens0) * linkobj$mu.eta(etaz))/dens0)
 
   ## compute gradient from data
   rval <- cbind(wres_count * wts * X, wres_zero * wts * Z)
