@@ -1,4 +1,5 @@
-\documentclass{Z}
+\documentclass[nojss]{jss}
+\usepackage{thumbpdf}
 %% need no \usepackage{Sweave}
 
 %% Symbols
@@ -29,6 +30,16 @@ Therefore, conceptual tools and their translation to computational tools in the 
 parametric models. Object orientation can be achieved by providing a few extractor
 functions---most importantly for the empirical estimating functions---from which various
 types of sandwich estimators can be computed.
+}
+
+\Address{
+  Achim Zeileis\\
+  Department of Statistics and Mathematics\\
+  Wirtschaftsuniversit\"at Wien\\
+  Augasse 2--9\\
+  A-1090 Wien, Austria\\
+  E-mail: \email{Achim.Zeileis@R-project.org}\\
+  URL: \url{http://statmath.wu-wien.ac.at/~zeileis/}
 }
 
 \begin{document}
@@ -393,6 +404,7 @@ meatHC <- function(obj, omega, ...)
   
   crossprod(rval)/NROW(X)
 }
+
 \end{Sinput}
 \end{Schunk}
 
@@ -402,6 +414,7 @@ Based on the building blocks described in the previous sections, computing a
 sandwich estimate from a fitted model object is easy: the
 function \code{sandwich()} computes an estimate (by default the Eicker-Huber-White
 outer product estimate) for $1/n \, S(\theta)$ via
+
 \begin{Schunk}
 \begin{Sinput}
 sandwich <- function(obj, bread. = bread, meat. = meat, ...)
@@ -412,6 +425,7 @@ sandwich <- function(obj, bread. = bread, meat. = meat, ...)
 }
 \end{Sinput}
 \end{Schunk}
+
 For computing other estimates, the argument \code{meat.}~could also be set to
 \code{meatHAC} or \code{meatHC}. 
 

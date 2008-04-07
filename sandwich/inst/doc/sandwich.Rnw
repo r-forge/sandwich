@@ -1,4 +1,5 @@
-\documentclass{Z}
+\documentclass[nojss]{jss}
+\usepackage{thumbpdf}
 %% need no \usepackage{Sweave}
 
 \author{Achim Zeileis\\Wirtschaftsuniversit\"at Wien}
@@ -34,6 +35,16 @@ is extremely flexible and comprehensive, including specific functions for the mo
 and HAC estimators from the econometric literature.
 Several real-world data sets are used to illustrate how the functionality
 can be integrated into applications.
+}
+
+\Address{
+  Achim Zeileis\\
+  Department of Statistics and Mathematics\\
+  Wirtschaftsuniversit\"at Wien\\
+  Augasse 2--9\\
+  A-1090 Wien, Austria\\
+  E-mail: \email{Achim.Zeileis@R-project.org}\\
+  URL: \url{http://statmath.wu-wien.ac.at/~zeileis/}
 }
 
 \begin{document}
@@ -251,7 +262,8 @@ the residuals $\hat u$, the diagonal of the hat matrix $h$
 and the residual degrees of freedom $n-k$. Thus, it has to be
 of the form \code{omega(residuals, diaghat, df)}: e.g.,
 for computing HC3 \code{omega} is set to
-\verb+function(residuals, diaghat, df) residuals^2/(1 - diaghat)^2+.
+\verb+function(residuals, diaghat, df)+ \linebreak
+\verb+residuals^2/(1 - diaghat)^2+.
 
 As a convenience option, a \code{type} argument can be set to
 \code{"const"}, \code{"HC0"} (or equivalently \code{"HC"}),

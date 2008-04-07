@@ -2,6 +2,7 @@
 \alias{estfun}
 \alias{estfun.lm}
 \alias{estfun.glm}
+\alias{estfun.mlm}
 \alias{estfun.rlm}
 \alias{estfun.survreg}
 \alias{estfun.coxph}

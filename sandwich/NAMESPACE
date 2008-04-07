@@ -47,6 +47,7 @@ export(
 ## methods for empirical estimating functions
   S3method("estfun", "lm")
   S3method("estfun", "glm")
+  S3method("estfun", "mlm")
   S3method("estfun", "survreg")
   S3method("estfun", "coxph")
   S3method("estfun", "nls")
