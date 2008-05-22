@@ -43,6 +43,7 @@ export(
   S3method("bread", "gam")
   S3method("bread", "hurdle")
   S3method("bread", "zeroinfl")
+  S3method("bread", "mlogit")
 
 ## methods for empirical estimating functions
   S3method("estfun", "lm")
@@ -54,3 +55,4 @@ export(
   S3method("estfun", "rlm")
   S3method("estfun", "hurdle")
   S3method("estfun", "zeroinfl")
+  S3method("estfun", "mlogit")

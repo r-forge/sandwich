@@ -48,3 +48,8 @@ bread.hurdle <- function(x, ...) {
 bread.zeroinfl <- function(x, ...) {
   x$vcov * x$n
 }
+
+bread.mlogit <- function(x, ...)
+{
+  vcov(x)*length(resid(x))
+}

@@ -211,3 +211,8 @@ estfun.zeroinfl <- function(x, ...) {
   rownames(rval) <- rownames(X)
   return(rval)
 }
+
+estfun.mlogit <- function(x, ...)
+{
+  x$gradient
+}
