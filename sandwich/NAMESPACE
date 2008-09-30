@@ -40,6 +40,7 @@ export(
   S3method("bread", "survreg")
   S3method("bread", "coxph")
   S3method("bread", "nls")
+  S3method("bread", "rlm")
   S3method("bread", "gam")
   S3method("bread", "hurdle")
   S3method("bread", "zeroinfl")

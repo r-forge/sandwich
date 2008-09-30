@@ -51,5 +51,17 @@ bread.zeroinfl <- function(x, ...) {
 
 bread.mlogit <- function(x, ...)
 {
-  vcov(x)*length(resid(x))
+  vcov(x) * length(resid(x))
+}
+
+bread.rlm <- function(x, ...) {
+  xmat <- model.matrix(x)
+  xmat <- naresid(x$na.action, xmat)
+  wts <- weights(x)
+  if(is.null(wts)) wts <- 1
+  res <- residuals(x)
+  psi_deriv <- function(z) x$psi(z, deriv = 1)
+  rval <- sqrt(abs(as.vector(psi_deriv(res/x$s)/x$s))) * wts * xmat    
+  rval <- chol2inv(qr.R(qr(rval))) * nrow(xmat)
+  return(rval)
 }
