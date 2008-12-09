@@ -51,7 +51,7 @@ bread.zeroinfl <- function(x, ...) {
 
 bread.mlogit <- function(x, ...)
 {
-  vcov(x) * length(resid(x))
+  vcov(x) * length(residuals(x))
 }
 
 bread.rlm <- function(x, ...) {

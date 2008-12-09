@@ -1,5 +1,6 @@
 \name{vcovHAC}
 \alias{vcovHAC}
+\alias{vcovHAC.default}
 \alias{meatHAC}
 \title{Heteroskedasticity and Autocorrelation Consistent (HAC) Covariance Matrix Estimation}
 \description{
@@ -8,7 +9,9 @@
  linear regression model.
 }
 \usage{
-vcovHAC(x, order.by = NULL, prewhite = FALSE, weights = weightsAndrews,
+vcovHAC(x, \dots)
+
+\method{vcovHAC}{default}(x, order.by = NULL, prewhite = FALSE, weights = weightsAndrews,
   adjust = TRUE, diagnostics = FALSE, sandwich = TRUE, ar.method = "ols",
   data = list(), \dots)
 
@@ -16,7 +19,7 @@ meatHAC(x, order.by = NULL, prewhite = FALSE, weights = weightsAndrews,
   adjust = TRUE, diagnostics = FALSE, ar.method = "ols", data = list())
 }
 \arguments{
- \item{x}{a fitted model object of class \code{"lm"} or \code{"glm"}.}
+ \item{x}{a fitted model object.}
  \item{order.by}{Either a vector \code{z} or a formula with a single explanatory
     variable like \code{~ z}. The observations in the model
     are ordered by the size of \code{z}. If set to \code{NULL} (the
@@ -46,14 +49,15 @@ meatHAC(x, order.by = NULL, prewhite = FALSE, weights = weightsAndrews,
 }
 
 \details{The function \code{meatHAC} is the real work horse for estimating
-the meat of HAC sandwich estimators -- \code{vcovHAC} is a wrapper calling
+the meat of HAC sandwich estimators -- the default \code{vcovHAC} method
+is a wrapper calling
 \code{\link{sandwich}} and \code{\link{bread}}. See Zeileis (2006) for
 more implementation details. The theoretical background, exemplified
 for the linear regression model, is described in Zeileis (2004).
 
 Both functions construct weighted information sandwich variance estimators
 for parametric models fitted to time series data. These are basically
-constructed from weighted sums of autocovariances of the estimation functions
+constructed from weighted sums of autocovariances of the estimating functions
 (as extracted by \code{\link{estfun}}). The crucial step is the specification
 of weights: the user can either supply \code{vcovHAC} with some vector of 
 weights or with a function that computes these weights adaptively (based on

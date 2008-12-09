@@ -11,10 +11,12 @@ export(
 
 ## HC estimators  
   "vcovHC",
+  "vcovHC.default",
   "meatHC",
 
 ## HAC estimators  
   "vcovHAC",
+  "vcovHAC.default",
   "meatHAC",
   "kernHAC",
   "NeweyWest",
