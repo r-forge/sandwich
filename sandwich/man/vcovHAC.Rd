@@ -34,8 +34,8 @@ meatHAC(x, order.by = NULL, prewhite = FALSE, weights = weightsAndrews,
     \code{prewhite}, \code{ar.method} and \code{data}. If \code{weights}
     is a function it has to take these arguments. See also details.}
  \item{adjust}{logical. Should a finite sample adjustment be made?
-    This amounts to multiplication with $n/(n-k)$ where $n$ is the
-    number of observations and $k$ the number of estimated parameters.}
+    This amounts to multiplication with \eqn{n/(n-k)} where \eqn{n} is the
+    number of observations and \eqn{k} the number of estimated parameters.}
  \item{diagnostics}{logical. Should additional model diagnostics be returned?
     See below for details.}
  \item{sandwich}{logical. Should the sandwich estimator be computed?
