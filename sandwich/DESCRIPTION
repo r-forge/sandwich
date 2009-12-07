@@ -1,6 +1,6 @@
 Package: sandwich
-Version: 2.2-2
-Date: 2009-11-18
+Version: 2.2-3
+Date: 2009-11-30
 Title: Robust Covariance Matrix Estimators
 Author: Thomas Lumley, Achim Zeileis
 Maintainer: Achim Zeileis <Achim.Zeileis@R-project.org>
