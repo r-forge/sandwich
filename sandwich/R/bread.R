@@ -32,6 +32,11 @@ bread.nls <- function(x, ...)
   return(sx$cov.unscaled * as.vector(sum(sx$df[1:2])))
 }
 
+bread.polr <- function(x, ...)
+{
+  vcov(x) * x$n
+}
+
 bread.survreg <- function(x, ...)
   length(x$linear.predictors) * x$var
 

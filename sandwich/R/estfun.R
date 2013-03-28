@@ -74,6 +74,39 @@ estfun.rlm <- function(x, ...)
   return(rval)
 }
 
+estfun.polr <- function(x, ...)
+{
+  ## link processing
+  mueta <- x$method
+  if(mueta == "logistic") mueta <- "logit"
+  mueta <- make.link(mueta)$mu.eta
+  
+  ## observations
+  xmat <- model.matrix(x)[, -1L, drop = FALSE]
+  y <- as.numeric(model.response(model.frame(x)))
+  n <- nrow(xmat)
+  k <- ncol(xmat)
+  m <- length(x$zeta)
+
+  ## estimates  
+  prob <- x$fitted.values[cbind(1:n, y)]
+  xb <- if(NCOL(xmat) > 1L) as.vector(xmat %*% x$coefficients) else rep(0, n)
+  zeta <- x$zeta
+  lp <- cbind(0, mueta(matrix(zeta, nrow = n, ncol = m, byrow = TRUE) - xb), 0)
+
+  ## estimating functions
+  rval <- matrix(0, nrow = n, ncol = k + m + 2L)
+  rval[, -tail(1L:(k + m + 2L), m + 2L)] <- (xmat *
+    as.vector(lp[cbind(1:n, y + 1L)] - lp[cbind(1:n, y)]))/prob
+  rval[cbind(1:n, k + y)] <- -as.vector(lp[cbind(1:n, y)])/prob
+  rval[cbind(1:n, k + y + 1L)] <- as.vector(lp[cbind(1:n, y + 1L)])/prob
+  rval <- rval[, -c(k + 1L, k + m + 2L), drop = FALSE]
+
+  ## dimnames and return
+  dimnames(rval) <- list(rownames(xmat), c(colnames(xmat), names(x$zeta)))
+  return(rval)
+}
+
 ## check: coxph and survreg
 
 estfun.coxph <- function(x, ...)
