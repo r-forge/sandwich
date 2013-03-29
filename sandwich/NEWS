@@ -1,3 +1,9 @@
+Changes in Version 2.2-11
+
+  o Added estfun() and bread() methods for ordered response models
+    from MASS::polr and ordinal::clm.
+
+
 Changes in Version 2.2-10
 
   o Added output of examples and vignettes as .Rout.save for
