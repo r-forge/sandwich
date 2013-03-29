@@ -5,6 +5,7 @@
 \alias{estfun.mlm}
 \alias{estfun.rlm}
 \alias{estfun.polr}
+\alias{estfun.clm}
 \alias{estfun.survreg}
 \alias{estfun.coxph}
 \alias{estfun.nls}
