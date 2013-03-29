@@ -112,6 +112,8 @@ estfun.polr <- function(x, ...)
 
 estfun.clm <- function(x, ...)
 {
+  if(x$threshold != "flexible") stop("only flexible thresholds implemented at the moment")
+
   ## link processing
   mueta <- make.link(x$link)$mu.eta
   
