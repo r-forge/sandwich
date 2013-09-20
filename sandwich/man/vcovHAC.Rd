@@ -107,7 +107,7 @@ with
   URL \url{http://www.jstatsoft.org/v11/i10/}.  
 
   Zeileis A (2006),
-  Object-oriented Computation of Sandwich Estimators.
+  Object-Oriented Computation of Sandwich Estimators.
   \emph{Journal of Statistical Software}, \bold{16}(9), 1--16.
   URL \url{http://www.jstatsoft.org/v16/i09/}.
 }
