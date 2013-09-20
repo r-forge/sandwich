@@ -37,6 +37,7 @@ meatHC(x, type = , omega = NULL)
   \code{\link{sandwich}} and \code{\link{bread}}. See Zeileis (2006) for
   more implementation details. The theoretical background, exemplified
   for the linear regression model, is described below and in Zeileis (2004).
+  Analogous formulas are employed for other types of models.
 
   When \code{type = "const"} constant variances are assumed and
   and \code{vcovHC} gives the usual estimate of the covariance matrix of
