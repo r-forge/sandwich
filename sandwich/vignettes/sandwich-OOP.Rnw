@@ -5,7 +5,7 @@
 %% Symbols
 \newcommand{\darrow}{\stackrel{\mbox{\tiny \textnormal{d}}}{\longrightarrow}}
 
-\author{Achim Zeileis\\Wirtschaftsuniversit\"at Wien}
+\author{Achim Zeileis\\Universit\"at Innsbruck}
 \Plainauthor{Achim Zeileis}
 
 \title{Object-Oriented Computation of Sandwich Estimators}
@@ -34,12 +34,13 @@ types of sandwich estimators can be computed.
 
 \Address{
   Achim Zeileis\\
-  Department of Statistics and Mathematics\\
-  WU Wirtschaftsuniversit\"at Wien\\
-  Augasse 2--9\\
-  1090 Wien, Austria\\
+  Department of Statistics\\
+  Faculty of Economics and Statistics\\
+  Universit\"at Innsbruck\\
+  Universit\"atsstr.~15\\
+  6020 Innsbruck, Austria\\
   E-mail: \email{Achim.Zeileis@R-project.org}\\
-  URL: \url{http://statmath.wu.ac.at/~zeileis/}
+  URL: \url{http://eeecon.uibk.ac.at/~zeileis/}
 }
 
 \begin{document}
