@@ -1,4 +1,4 @@
-Changes in Version 2.3-0
+Changes in Version 2.3-1
 
   o The estfun() methods for "survreg" and "coxph" objects incorrectly
     returned the unweighted estimating functions in case the objects
