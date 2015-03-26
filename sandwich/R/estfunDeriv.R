@@ -58,7 +58,6 @@ estfunDeriv.glm <- function(x, ...)
 
 estfunDeriv.survreg <- function(x, ...)
 {
-  stopifnot(require(survival))
   xmat <- model.matrix(x)
   wts <- if(!is.null(x$weights)) x$weights else 1
   xmat <- as.matrix(wts * xmat)
