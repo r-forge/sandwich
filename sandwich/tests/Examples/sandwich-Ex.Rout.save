@@ -95,7 +95,7 @@ The following objects are masked from 'package:base':
 	Breusch-Godfrey test for serial correlation of order up to 4
 
 data:  fm
-LM test = 12.0697, df = 4, p-value = 0.01684
+LM test = 12.07, df = 4, p-value = 0.01684
 
 > 
 > ## visualize fitted series
