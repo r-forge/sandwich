@@ -5,6 +5,9 @@ Changes in Version 2.3-4
     regression with irregular zoo data, the bandwidth estimation might
     have failed.
 
+  o In meatHC() it is now assured that the residuals are zero in observations
+    where all regressors and all estimating functions are zero.
+
 
 Changes in Version 2.3-3
 
