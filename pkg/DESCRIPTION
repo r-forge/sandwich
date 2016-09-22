@@ -5,7 +5,7 @@ Title: Robust Covariance Matrix Estimators
 Authors@R: c(person(given = "Thomas", family = "Lumley", role = "aut", email = "tlumley@u.washington.edu"),
              person(given = "Achim", family = "Zeileis", role = c("aut", "cre"), email = "Achim.Zeileis@R-project.org"))
 Description: Model-robust standard error estimators for cross-sectional, time series, and longitudinal data.
-Depends: R (>= 2.0.0)
-Imports: stats, zoo
+Depends: R (>= 2.10.0)
+Imports: stats, utils, zoo
 Suggests: car, lmtest, strucchange, AER, survival, MASS, scatterplot3d
 License: GPL-2 | GPL-3

@@ -1,4 +1,5 @@
 import("stats", "zoo")
+importFrom("utils", "combn")
 
 export(
 ## core ingredients
@@ -13,6 +14,10 @@ export(
   "vcovHC",
   "vcovHC.default",
   "meatHC",
+
+## clustered estimators  
+  "vcovCL",
+  "meatCL",
 
 ## HAC estimators  
   "vcovHAC",
