@@ -79,7 +79,7 @@ Lerner over the sample period.
 
 The classification of institutions into "quasiindexed", "transient" and
 "dedicated" follows Bushee (1998) and distinguishes between institutional
-investors based on their type of investing. Quasiindex institutions are
+investors based on their type of investing. Quasiindexed institutions are
 do not trade much and are widely diversified, dedicated institution do
 not trade much and have more concentrated holdings, and transient
 institutions often trade and have diversified holdings (see Aghion et
