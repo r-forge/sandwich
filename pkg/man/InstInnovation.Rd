@@ -113,19 +113,20 @@ Bushee B (1998).
 
 \examples{
 ## Poisson models from Table I in Aghion et al. (2013)
+
 ## load data set
-data(InstInnovation)
+data("InstInnovation", package = "sandwich")
 
 ## log-scale variable
 InstInnovation$lograndd <- log(InstInnovation$randd)
 InstInnovation$lograndd[InstInnovation$lograndd == -Inf] <- 0
 
-## count regression formulas
+## regression formulas
 f1 <- cites ~ institutions + log(capital/employment) + log(sales) + industry + year
 f2 <- cites ~ institutions + log(capital/employment) + log(sales) +
-industry + year + lograndd + drandd
+  industry + year + lograndd + drandd
 f3 <- cites ~ institutions + log(capital/employment) + log(sales) +
-industry + year + lograndd + drandd + dprecites + log(precites)
+  industry + year + lograndd + drandd + dprecites + log(precites)
 
 ## Poisson models
 tab_I_3_pois <- glm(f1, data = InstInnovation, family = poisson)
@@ -133,38 +134,15 @@ tab_I_4_pois <- glm(f2, data = InstInnovation, family = poisson)
 tab_I_5_pois <- glm(f3, data = InstInnovation, family = poisson)
 
 ## one-way clustered covariances
-(vCL_I_3 <- vcovCL(tab_I_3_pois, cluster = InstInnovation$company))
-(vCL_I_4 <- vcovCL(tab_I_4_pois, cluster = InstInnovation$company))
-(vCL_I_5 <- vcovCL(tab_I_5_pois, cluster = InstInnovation$company))
+vCL_I_3 <- vcovCL(tab_I_3_pois, cluster = InstInnovation$company)
+vCL_I_4 <- vcovCL(tab_I_4_pois, cluster = InstInnovation$company)
+vCL_I_5 <- vcovCL(tab_I_5_pois, cluster = InstInnovation$company)
 
 ## replication of columns 3 to 5 from Table I in Aghion et al. (2013)
-lmtest::coeftest(tab_I_3_pois, vcov = vCL_I_3)
-lmtest::coeftest(tab_I_4_pois, vcov = vCL_I_4)
-lmtest::coeftest(tab_I_5_pois, vcov = vCL_I_5)
-
-## model innovation as a dichotomous variable
-InstInnovation$cites_binary <- ifelse(InstInnovation$cites == 0, 0, 1)
-
-## logistic regression formulas
-f4 <- update(f1, cites_binary ~ .)
-f5 <- update(f2, cites_binary ~ .)
-f6 <- update(f3, cites_binary ~ .)
-
-## logistic regression
-tab_I_3_logit <- glm(f4, data = InstInnovation, family = binomial)
-tab_I_4_logit <- glm(f5, data = InstInnovation, family = binomial)
-tab_I_5_logit <- glm(f6, data = InstInnovation, family = binomial)
-
-## one-way clustered covariances
-(vCL_I_3l <- vcovCL(tab_I_3_logit, cluster = InstInnovation$company))
-(vCL_I_4l <- vcovCL(tab_I_4_logit, cluster = InstInnovation$company))
-(vCL_I_5l <- vcovCL(tab_I_5_logit, cluster = InstInnovation$company))
-
-##
-lmtest::coeftest(tab_I_3_logit, vcov = vCL_I_3l)
-lmtest::coeftest(tab_I_4_logit, vcov = vCL_I_4l)
-lmtest::coeftest(tab_I_5_logit, vcov = vCL_I_5l)
-
+cbind(coef(tab_I_3_pois), sqrt(diag(vCL_I_3)))[2:4, ]
+cbind(coef(tab_I_4_pois), sqrt(diag(vCL_I_4)))[c(2:4, 148), ]
+cbind(coef(tab_I_5_pois), sqrt(diag(vCL_I_5)))[c(2:4, 148), ]
+}
 }
 
 \keyword{datasets}
