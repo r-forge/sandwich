@@ -188,21 +188,25 @@ f1 <- cites ~ institutions + log(capital/employment) + log(sales) +
 industry + year
 
 ## model 3, Table I: Poisson model
-tab_I_3_pois <- glm(f1, data = InstInnovation, family = poisson)
-
-## model 1, Table II: negative binomial hurdle model
-tab_II_3_hurdle <- countreg::hurdle(f1, data = InstInnovation, dist = "negbin",
-zero.dist = "negbin", separate = FALSE)
-
 ## one-way clustered standard errors
+tab_I_3_pois <- glm(f1, data = InstInnovation, family = poisson)
 vcov_pois <- vcovCL(tab_I_3_pois, InstInnovation$company)
-sqrt(diag(vcov_pois))[which = c(2:4)]
-vcov_hurdle <- vcovCL(tab_II_3_hurdle, InstInnovation$company)
-sqrt(diag(vcov_hurdle))[which = c(2:4, 149:151)]
+sqrt(diag(vcov_pois))[2:4]
 
 ## coefficient tables
-lmtest::coeftest(tab_I_3_pois, vcov = vcov_pois)[which = c(2:4), ]
-lmtest::coeftest(tab_II_3_hurdle, vcov = vcov_hurdle)[which = c(2:4, 149:151), ]
+if(require("lmtest")) {
+coeftest(tab_I_3_pois, vcov = vcov_pois)[2:4, ]
+}
+
+## model 1, Table II: negative binomial hurdle model
+## (requires "countreg" from R-Forge)
+if(require("countreg") & require("lmtest")) {
+tab_II_3_hurdle <- hurdle(f1, data = InstInnovation,
+  dist = "negbin", zero.dist = "negbin", separate = FALSE)
+vcov_hurdle <- vcovCL(tab_II_3_hurdle, InstInnovation$company)
+sqrt(diag(vcov_hurdle))[c(2:4, 149:151)]
+coeftest(tab_II_3_hurdle, vcov = vcov_hurdle)[c(2:4, 149:151), ]
+}
 }
 
 \keyword{regression}
