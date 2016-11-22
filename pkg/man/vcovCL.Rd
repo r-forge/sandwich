@@ -117,10 +117,10 @@ Kauermann G & Carroll RJ (2001).
   \doi{10.1198/016214501753382309}
 
 Ma MS (2014).
-\dQuote{Are We Really Doing What We Think We Are Doing? A Note on
-  Finite-Sample Estimates of Two-Way Cluster-Robust Standard Errors},
-\emph{Mimeo, Availlable at SSRN:}
-URL \url{http://ssrn.com/abstract=2420421}.
+  \dQuote{Are We Really Doing What We Think We Are Doing? A Note on
+    Finite-Sample Estimates of Two-Way Cluster-Robust Standard Errors},
+  \emph{Mimeo, Availlable at SSRN:}
+   URL \url{http://ssrn.com/abstract=2420421}.
 
 McCaffrey DF & Bell RM (2002).
   \dQuote{Bias Reduction in Standard Errors for Linear Regression with
@@ -154,7 +154,7 @@ Zeileis A (2006).
   \doi{10.18637/jss.v016.i09}
 }
 
-\seealso{\code{\link{vcovHC}}, \code{\link{cluster.vcov}}}
+\seealso{\code{\link{vcovHC}}}
 
 \examples{
 ## Petersen's data
