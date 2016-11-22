@@ -143,6 +143,5 @@ cbind(coef(tab_I_3_pois), sqrt(diag(vCL_I_3)))[2:4, ]
 cbind(coef(tab_I_4_pois), sqrt(diag(vCL_I_4)))[c(2:4, 148), ]
 cbind(coef(tab_I_5_pois), sqrt(diag(vCL_I_5)))[c(2:4, 148), ]
 }
-}
 
 \keyword{datasets}
