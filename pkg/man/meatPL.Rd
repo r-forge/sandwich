@@ -5,7 +5,7 @@
 \title{Clustered Covariance Matrix Estimation for panel data}
 
 \description{
-  Estimation of sandwich covariances for panel data, Newey-West and Driscoll and Kraay standard errors.
+  Estimation of sandwich covariances for panel data.
 }
 
 \usage{
@@ -27,7 +27,7 @@ meatPL(x, cluster = NULL, order.by = NULL, kernel = "Bartlett", lag =
   \item{sandwich}{logical. Should the sandwich estimator be computed? If set to FALSE only the
 meat matrix is returned.}
   \item{lag}{character or logical, indicating the lag length used. By
-  default, the maximal lag length is used.}
+  default, the maximal lag length \eqn{T - 1} is used.}
   \item{bw}{numeric. The bandwidth of the kernel (corresponds to the
   truncation lag).}
   \item{adjust}{logical. Should a finite sample adjustment be made? This
@@ -37,14 +37,22 @@ meat matrix is returned.}
 }
 
 \details{
+  \code{vcovPL} is a function for estimating Newey-West (1978) and Driscoll and Kraay (1998)
+  covariance matrix.
+  Driscoll and Kraay (1998) apply a Newey-West type correction to the
+  sequence of cross-sectional averages of the moment conditions (see
+  Hoechle (2007)).
+  
   The function \code{meatPL} is the work horse for estimating
   the meat of clustered sandwich estimators. \code{vcovPL} is a wrapper calling
   \code{\link{sandwich}} and \code{\link{bread}} (Zeileis 2006).
 
-  \code{lag = "NW1994"} is taken from the first step of Newey and West's
+  Default lag length is the maximal lag length \eqn{T - 1}. For
+  \code{lag = "NW1994"},
+  the lag length is taken from the first step of Newey and West's
   (1994) plug-in procedure.
-
-  FIXME.
+  For \code{lag = "NW1987"}, the lag length is chosen from the heuristic
+  \eqn{floor[T^{(1/4)}]}. More details on lag length selection in Hoechle (2007).
   
 }
 
@@ -57,7 +65,12 @@ Andrews DWK (1991).
 \dQuote{Heteroscedasticity and Autocorrelation Consistent Covariance
   Matrix Estimation},
 \emph{Econometrica}, 817--858.
-  
+
+Driscoll JC &  Kraay AC (1998).
+\dQuote{Consistent Covariance Matrix Estimation with Spatially Dependent
+Panel Data},
+\emph{The Review of Economics and Statistics}, \bold{80}(4), 549--560.
+
 Hoechle D (2007).
 \dQuote{Robust Standard Errors for Panel Regressions with Cross-Sectional Dependence},
 \emph{Stata Journal}, \bold{7}(3), 281--312.
@@ -112,7 +125,7 @@ FALSE)))
 ## lag length set to rule of thumb proposed by Hoechle (2007)
 sqrt(diag(vcovPL(m, cluster = petersen$firmid, lag = "NW1994")))
 
-# lag length set to T^(1/4) 
+## lag length set to T^(1/4) 
 sqrt(diag(vcovPL(m, cluster = petersen$firmid, lag = "P2009")))
 }
 }
