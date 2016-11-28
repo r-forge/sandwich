@@ -5,7 +5,7 @@
 \title{Clustered Covariance Matrix Estimation for panel data}
 
 \description{
-  Estimation of sandwich covariances for panel data.
+  Estimation of sandwich covariances a la Newey-West (1978) and Driscoll and Kraay (1998) for panel data.
 }
 
 \usage{
@@ -41,10 +41,16 @@ meat matrix is returned.}
   covariance matrix.
   Driscoll and Kraay (1998) apply a Newey-West type correction to the
   sequence of cross-sectional averages of the moment conditions (see
-  Hoechle (2007)).
+  Hoechle (2007)). For large \eqn{T} (and regardless of the length of the
+  cross-sectional dimension), the Driscoll and Kraay (1998)
+  standard errors are robust to general forms of cross-sectional and
+  serial correlation (Hoechle (2007)).
+  The Newey-West (1978) covariance matrix restricts the Driscoll and
+  Kraay (1998) covariance matrix to no cross-sectional correlation.
   
   The function \code{meatPL} is the work horse for estimating
-  the meat of clustered sandwich estimators. \code{vcovPL} is a wrapper calling
+  the meat of Newey-West (1978) and Driscoll and Kraay (1998)
+  covariance matrix estimators. \code{vcovPL} is a wrapper calling
   \code{\link{sandwich}} and \code{\link{bread}} (Zeileis 2006).
 
   Default lag length is the maximal lag length \eqn{T - 1}. For
@@ -82,17 +88,6 @@ Newey WK & West KD (1987).
 Newey WK & West KD (1994).
 \dQuote{Automatic Lag Selection in Covariance Matrix Estimation},
 \emph{The Review of Economic Studies}, \bold{61}(4), 631--653.
-
-Petersen MA (2009).
-  \dQuote{Estimating Standard Errors in Finance Panel Data Sets: Comparing Approaches},
-  \emph{The Review of Financial Studies}, \bold{22}(1), 435--480.
-  \doi{10.1093/rfs/hhn053}
-
-Thompson SB (2011).
-  \dQuote{Simple Formulas for Standard Errors That Cluster by Both Firm
-    and Time},
-  \emph{Journal of Financial Economics}, \bold{99}(1), 1--10.
-  \doi{10.1016/j.jfineco.2010.08.016}
   
 White H (1980).
   \dQuote{A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity},
