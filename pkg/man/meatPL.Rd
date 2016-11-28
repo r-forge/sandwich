@@ -37,7 +37,7 @@ meat matrix is returned.}
 }
 
 \details{
-  \code{vcovPL} is a function for estimating Newey-West (1978) and Driscoll and Kraay (1998)
+  \code{vcovPL} is a function for estimating the Newey-West (1978) and Driscoll and Kraay (1998)
   covariance matrix.
   Driscoll and Kraay (1998) apply a Newey-West type correction to the
   sequence of cross-sectional averages of the moment conditions (see
@@ -119,7 +119,7 @@ m <- lm(y ~ x, data = PetersenCL)
 
 ## Driscoll and Kraay standard errors
 ## lag length set to maximum lag length T - 1
-driscoll <- sqrt(diag(vcovPL(m, cluster = petersen$firmid, adjust =
+sqrt(diag(vcovPL(m, cluster = petersen$firmid, adjust =
 FALSE)))
 
 ## lag length set to rule of thumb proposed by Hoechle (2007)
