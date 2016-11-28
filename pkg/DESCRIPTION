@@ -1,6 +1,6 @@
 Package: sandwich
 Version: 2.4-0
-Date: 2016-11-22
+Date: 2016-11-28
 Title: Robust Covariance Matrix Estimators
 Authors@R: c(person(given = "Thomas", family = "Lumley", role = "aut", email = "tlumley@u.washington.edu"),
              person(given = "Achim", family = "Zeileis", role = c("aut", "cre"), email = "Achim.Zeileis@R-project.org"))

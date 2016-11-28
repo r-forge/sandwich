@@ -27,6 +27,10 @@ export(
   "NeweyWest",
   "weave",
 
+## panel estimators  
+  "vcovPL",
+  "meatPL",
+
 ## weights/bandwidths for HAC estimators  
   "weightsLumley",
   "weightsAndrews",

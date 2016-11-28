@@ -1,4 +1,4 @@
-\name{meatPL}
+\name{vcovPL}
 \alias{meatPL}
 
 
@@ -122,7 +122,6 @@ sqrt(diag(vcovPL(m, cluster = petersen$firmid, lag = "NW1994")))
 
 ## lag length set to T^(1/4) 
 sqrt(diag(vcovPL(m, cluster = petersen$firmid, lag = "P2009")))
-}
 }
 
 \keyword{regression}
