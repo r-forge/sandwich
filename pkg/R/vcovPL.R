@@ -1,8 +1,9 @@
 vcovPL <- function(x, cluster = NULL, order.by = NULL,
-  kernel = "Bartlett", sandwich = TRUE, fix = FALSE, ...)
+  kernel = "Bartlett", lag = "max", sandwich = TRUE, fix = FALSE, ...)
 {
   ## compute meat of sandwich
-  rval <- meatPL(x, cluster = cluster, order.by = order.by, kernel = kernel, ...)
+  rval <- meatPL(x, cluster = cluster, order.by = order.by,
+    kernel = kernel, lag = lag, ...)
 
   ## full sandwich
   if(sandwich) rval <- sandwich(x, meat. = rval)
@@ -58,20 +59,14 @@ meatPL <- function(x, cluster = NULL, order.by = NULL,
   nt <- NROW(ef)
   
   ## lag/bandwidth selection
-    if(is.character(lag)) {
-        if(lag == "P2009") lag <- "max" 
-        switch(match.arg(lag, c("max", "NW1987", "NW1994")),
-               "max" = {
-                   lag <- nt - 1L
-               },
-               "NW1987" = {
-                   lag <- floor(nt^(1/4))
-                       },
-               "NW1994" = {
-                   lag <- floor(4L * (nt / 100L)^(2/9))
-                       }
-               )}
-  if(is.numeric(lag)) lag <- lag
+  if(is.character(lag)) {
+      if(lag == "P2009") lag <- "max" 
+      lag <- switch(match.arg(lag, c("max", "NW1987", "NW1994")),
+        "max"    = nt - 1L,
+  	"NW1987" = floor(nt^(1/4)),
+  	"NW1994" = floor(4 * (nt / 100)^(2/9))
+      )
+  }
   if(is.null(lag) & is.null(bw)) lag <- nt - 1L
   if(!is.null(lag) & is.null(bw)) bw <- lag + 1
 
@@ -84,8 +79,7 @@ meatPL <- function(x, cluster = NULL, order.by = NULL,
     for (ii in 2L:length(weights)) {
       rval <- rval +  weights[ii] * crossprod(ef[1L:(nt - ii + 1), , drop = FALSE], ef[ii:nt, , drop = FALSE])
     }
- }
-    
+  }
   rval <- rval + t(rval)
 
   if(adjust) rval <- n/(n - k) * rval

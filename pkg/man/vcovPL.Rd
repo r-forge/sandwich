@@ -6,14 +6,18 @@
 \title{Clustered Covariance Matrix Estimation for panel data}
 
 \description{
-  Estimation of sandwich covariances a la Newey-West (1978) and Driscoll and Kraay (1998) for panel data.
+  Estimation of sandwich covariances a la Newey-West (1987)
+  and Driscoll and Kraay (1998) for panel data.
 }
 
 \usage{
 vcovPL(x, cluster = NULL, order.by = NULL,
-  kernel = "Bartlett", sandwich = TRUE, fix = FALSE, \dots)
-meatPL(x, cluster = NULL, order.by = NULL, kernel = "Bartlett", lag =
-"max", bw = NULL, adjust = TRUE, \dots)
+  kernel = "Bartlett", lag = "max",
+  sandwich = TRUE, fix = FALSE, \dots)
+
+meatPL(x, cluster = NULL, order.by = NULL,
+  kernel = "Bartlett", lag = "max", bw = NULL,
+  adjust = TRUE, \dots)
 }
 
 \arguments{
@@ -23,24 +27,30 @@ meatPL(x, cluster = NULL, order.by = NULL, kernel = "Bartlett", lag =
     either \code{attr(x, "cluster")} is used. If that is also \code{NULL}
     each observation is its own cluster.}
   \item{order.by}{a variable indicating the aggregation within time periods.}
-  \item{kernel}{a character specifying the kernel used. All kernels used
-  are described in Andrews (1991).}
-  \item{sandwich}{logical. Should the sandwich estimator be computed? If set to FALSE only the
-meat matrix is returned.}
-  \item{fix}{FIXME}
-  \item{lag}{character or logical, indicating the lag length used. By
-  default, the maximal lag length \eqn{T - 1} is used.}
-  \item{bw}{numeric. The bandwidth of the kernel (corresponds to the
-  truncation lag).}
+  \item{kernel}{a character specifying the kernel used. All kernels
+    described in Andrews (1991) are supported, see \code{\link{kweights}}.}
+  \item{lag}{character or numeric, indicating the lag length used.
+    Three rules of thumb (\code{"max"} or equivalently \code{"P2009"},
+    \code{"NW1987"}, or \code{"NW1994"}) can be specified, or a numeric
+    number of lags can be specified directly. By default, the maximal lag
+    length \eqn{T - 1} is used.}
+  \item{bw}{numeric. The bandwidth of the kernel which by default corresponds
+    to \code{lag + 1}. Only one of \code{lag} and \code{bw} should be
+    used.}
+  \item{sandwich}{logical. Should the sandwich estimator be computed?
+    If set to \code{FALSE} only the meat matrix is returned.}
+  \item{fix}{logical. Should the covariance matrix be fixed to be
+    positive semi-definite in case it is not?}
   \item{adjust}{logical. Should a finite sample adjustment be made? This
-  amounts to multiplication with \eqn{n/(n - k)} where \eqn{n} is the
-  number of observations and \eqn{k} is the number of estimated parameters.}
-  \item{\dots}{arguments passed to the \code{estfun} function.}
+    amounts to multiplication with \eqn{n/(n - k)} where \eqn{n} is the
+    number of observations and \eqn{k} is the number of estimated parameters.}
+  \item{\dots}{arguments passed to the \code{metaPL} or \code{estfun} function,
+    respectively.}
 }
 
 \details{
-  \code{vcovPL} is a function for estimating the Newey-West (1978) and Driscoll and Kraay (1998)
-  covariance matrix.
+  \code{vcovPL} is a function for estimating the Newey-West (1987) and
+  Driscoll and Kraay (1998) covariance matrix.
   Driscoll and Kraay (1998) apply a Newey-West type correction to the
   sequence of cross-sectional averages of the moment conditions (see
   Hoechle (2007)). For large \eqn{T} (and regardless of the length of the
@@ -107,7 +117,7 @@ Zeileis A (2006).
   \doi{10.18637/jss.v016.i09}
 }
 
-\seealso{\code{\link{vcovPL}}}
+\seealso{\code{\link{vcovCL}}}
 
 \examples{
 ## Petersen's data
@@ -115,15 +125,17 @@ data("PetersenCL", package = "sandwich")
 m <- lm(y ~ x, data = PetersenCL)
 
 ## Driscoll and Kraay standard errors
-## lag length set to maximum lag length T - 1
-sqrt(diag(vcovPL(m, cluster = PetersenCL$firmid, adjust =
-FALSE)))
+## lag length set to: T - 1 (maximum lag length)
+## as proposed by Petersen (2009)
+sqrt(diag(vcovPL(m, cluster = PetersenCL$firmid, adjust = FALSE)))
 
-## lag length set to rule of thumb proposed by Hoechle (2007)
+## lag length set to: floor(4 * (T / 100)^(2/9))
+## rule of thumb proposed by Hoechle (2007) based on Newey & West (1994)
 sqrt(diag(vcovPL(m, cluster = PetersenCL$firmid, lag = "NW1994")))
 
-## lag length set to T^(1/4) 
-sqrt(diag(vcovPL(m, cluster = PetersenCL$firmid, lag = "P2009")))
+## lag length set to: floor(T^(1/4))
+## rule of thumb based on Newey & West (1987)
+sqrt(diag(vcovPL(m, cluster = PetersenCL$firmid, lag = "NW1987")))
 }
 
 \keyword{regression}
