@@ -1,4 +1,5 @@
 \name{vcovPL}
+\alias{vcovPL}
 \alias{meatPL}
 
 
@@ -26,6 +27,7 @@ meatPL(x, cluster = NULL, order.by = NULL, kernel = "Bartlett", lag =
   are described in Andrews (1991).}
   \item{sandwich}{logical. Should the sandwich estimator be computed? If set to FALSE only the
 meat matrix is returned.}
+  \item{fix}{FIXME}
   \item{lag}{character or logical, indicating the lag length used. By
   default, the maximal lag length \eqn{T - 1} is used.}
   \item{bw}{numeric. The bandwidth of the kernel (corresponds to the
@@ -114,14 +116,14 @@ m <- lm(y ~ x, data = PetersenCL)
 
 ## Driscoll and Kraay standard errors
 ## lag length set to maximum lag length T - 1
-sqrt(diag(vcovPL(m, cluster = petersen$firmid, adjust =
+sqrt(diag(vcovPL(m, cluster = PetersenCL$firmid, adjust =
 FALSE)))
 
 ## lag length set to rule of thumb proposed by Hoechle (2007)
-sqrt(diag(vcovPL(m, cluster = petersen$firmid, lag = "NW1994")))
+sqrt(diag(vcovPL(m, cluster = PetersenCL$firmid, lag = "NW1994")))
 
 ## lag length set to T^(1/4) 
-sqrt(diag(vcovPL(m, cluster = petersen$firmid, lag = "P2009")))
+sqrt(diag(vcovPL(m, cluster = PetersenCL$firmid, lag = "P2009")))
 }
 
 \keyword{regression}
