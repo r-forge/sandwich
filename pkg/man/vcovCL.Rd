@@ -56,14 +56,14 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, white = FALSE, \dots)
   A two-way clustered sandwich estimator \eqn{M} (e.g., for cluster dimensions
   "firm" and "industry") is a linear combination of
   one-way clustered sandwich estimators for both dimensions
-  (\eqn{M_{firm}, M_{year}}) minus the
+  (\eqn{M_{firm}, M_{time}}) minus the
   clustered sandwich estimator, with clusters formed out of the
-  intersection of both dimensions (\eqn{M_{firm \cap year}}):
-  \deqn{M = M_{firm} + M_{year} - M_{firm \cap year}}
-  Instead of substracting \eqn{M_{firm \cap year}} as the last
+  intersection of both dimensions (\eqn{M_{id \cap time}}):
+  \deqn{M = M_{id} + M_{time} - M_{id \cap time}}
+  Instead of substracting \eqn{M_{id \cap time}} as the last
   substacted matrix, Ma (2014) suggests to substract the White
   covariance matrix when only a single observation is in each
-  intersection of \eqn{firm}  and \eqn{time}.
+  intersection of \eqn{id}  and \eqn{time}.
   Set \code{white = TRUE} to substract the White covariance matrix as
   the last substracted matrix. For details, see also Petersen (2009) and
   Thompson (2011).
