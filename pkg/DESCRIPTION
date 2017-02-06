@@ -1,9 +1,11 @@
 Package: sandwich
 Version: 2.4-0
-Date: 2016-11-28
+Date: 2017-02-06
 Title: Robust Covariance Matrix Estimators
-Authors@R: c(person(given = "Thomas", family = "Lumley", role = "aut", email = "tlumley@u.washington.edu"),
-             person(given = "Achim", family = "Zeileis", role = c("aut", "cre"), email = "Achim.Zeileis@R-project.org"))
+Authors@R: c(person(given = "Achim", family = "Zeileis", role = c("aut", "cre"), email = "Achim.Zeileis@R-project.org"),
+             person(given = "Thomas", family = "Lumley", role = "aut", email = "tlumley@u.washington.edu"),
+	     person(given = "Susanne", family = "Berger", role = "ctb", email = "Susanne.Berger@uibk.ac.at"),
+	     person(given = "Nathaniel", family = "Graham", role = "ctb", email = "npgraham1@gmail.com"))
 Description: Model-robust standard error estimators for cross-sectional, time series, and longitudinal data.
 Depends: R (>= 2.10.0)
 Imports: stats, utils, zoo
