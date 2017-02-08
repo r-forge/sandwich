@@ -17,7 +17,7 @@ vcovPL <- function(x, cluster = NULL, order.by = NULL,
 }
 
 meatPL <- function(x, cluster = NULL, order.by = NULL,
-  kernel = "Bartlett", lag = "max", bw = NULL, adjust = TRUE, ...) ## adjust/cadjust?
+  kernel = "Bartlett", lag = "max", bw = NULL, adjust = TRUE, tol = NULL, ...) ## adjust/cadjust?
 {
   ## extract estimating functions / aka scores
   if (is.list(x) && !is.null(x$na.action)) class(x$na.action) <- "omit"
@@ -57,7 +57,7 @@ meatPL <- function(x, cluster = NULL, order.by = NULL,
   ## aggregate within time periods
   if(length(unique(order.by)) < n) ef <- apply(ef, 2L, tapply, order.by, sum)
   nt <- NROW(ef)
-  
+
   ## lag/bandwidth selection
   if(is.character(lag)) {
       if(lag == "P2009") lag <- "max" 
@@ -72,7 +72,8 @@ meatPL <- function(x, cluster = NULL, order.by = NULL,
 
   ## set up kernel weights up to maximal number of lags
   weights <- kweights(0L:(nt - 1L)/bw, kernel = kernel)
-
+  if(is.null(tol)) tol <- 1e-7 
+  weights <- weights[weights > tol]
   rval <- 0.5 * crossprod(ef) * weights[1L]
     
   if(length(weights) > 1L) {
