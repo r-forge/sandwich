@@ -23,8 +23,10 @@ meatPC(x, cluster = NULL, order.by = NULL,
     either \code{attr(x, "cluster")} is used. If that is also \code{NULL}
     each observation is its own cluster.}
   \item{order.by}{a variable indicating the aggregation within time periods.}
-  \item{subsample}{logical. FIXME.}
-  \item{sandwich}{logical. FIXME.}
+  \item{subsample}{logical. For unbalanced panels. Indicating whether
+  the meat should be estimated pair- or casewise.}
+  \item{sandwich}{logical. Should the sandwich estimator be computed?
+    If set to \code{FALSE} only the meat matrix is returned.}
   \item{kecker}{logical. FIXME.}
   \item{\dots}{arguments passed to the \code{meatPC} or \code{estfun} function,
     respectively.}
