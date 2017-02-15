@@ -20,8 +20,7 @@ meatPC(x, cluster = NULL, order.by = NULL,
   \item{x}{a fitted model object.}
   \item{cluster}{a variable indicating the clustering of observations
     or a \code{list} (or \code{data.frame}) thereof. By default,
-    either \code{attr(x, "cluster")} is used. If that is also \code{NULL}
-    each observation is its own cluster.}
+    either \code{attr(x, "cluster")} is used.}
   \item{order.by}{a variable indicating the aggregation within time periods.}
   \item{subsample}{logical. For unbalanced panels. Indicating whether
   the meat should be estimated pair- or casewise.}
@@ -37,9 +36,15 @@ meatPC(x, cluster = NULL, order.by = NULL,
   panel-corrected covariance matrix.
  
   The function \code{meatPC} is the work horse for estimating
-  the meat of Beck and Katz (1995)
-  covariance matrix estimators. \code{vcovPC} is a wrapper calling
+  the meat of Beck and Katz (1995) covariance matrix estimators.
+  \code{vcovPC} is a wrapper calling
   \code{\link{sandwich}} and \code{\link{bread}} (Zeileis 2006).
+
+  Following Bailey and Katz (2011), there are two alternatives to
+  estimate the meat for unbalanced panels.
+  For \code{subsample == TRUE}, a balanced subset of the panel is used,
+  whereas if \code{subsample == FALSE}, a pairwise balanced sample is
+  employed.
 }
 
 \value{
@@ -47,6 +52,11 @@ meatPC(x, cluster = NULL, order.by = NULL,
 }
 
 \references{
+Bailey D & Katz JN (2011).
+\dQuote{Implementing Panel-Corrected Standard Errors in R: The pcse Package},
+\emph{Journal of Statistical Software, Code Snippets}, \bold{42}(1), 1--11.
+URL \url{http://www.jstatsoft.org/v42/c01/}
+  
 Beck N & Katz JN (1995).
 \dQuote{What To Do (and Not To Do) with Time-Series-Cross-Section Data
   in Comparative Politics},
