@@ -26,7 +26,9 @@ meatPC(x, cluster = NULL, order.by = NULL,
   the meat should be estimated pair- or casewise.}
   \item{sandwich}{logical. Should the sandwich estimator be computed?
     If set to \code{FALSE} only the meat matrix is returned.}
-  \item{kecker}{logical. FIXME.}
+  \item{kecker}{logical. Calculate the meat via the
+  Kronecker-product, shortening the computation time for small
+  matrices. For large matrices, set \code{kecker = FALSE}.}
   \item{\dots}{arguments passed to the \code{meatPC} or \code{estfun} function,
     respectively.}
 }
@@ -43,7 +45,7 @@ meatPC(x, cluster = NULL, order.by = NULL,
   Following Bailey and Katz (2011), there are two alternatives to
   estimate the meat for unbalanced panels.
   For \code{subsample == TRUE}, a balanced subset of the panel is used,
-  whereas if \code{subsample == FALSE}, a pairwise balanced sample is
+  whereas for \code{subsample == FALSE}, a pairwise balanced sample is
   employed.
 }
 
@@ -83,7 +85,7 @@ m <- lm(y ~ x, data = PetersenCL)
 ## balanced panel
 sqrt(diag(vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year)))
 
-## Kronecker-product or lapply
+## calculation of the meat via the Kronecker-product 
 system.time(sqrt(diag(vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year, kecker = TRUE))))
 system.time(sqrt(diag(vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year, kecker = FALSE))))
 
