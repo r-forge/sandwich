@@ -52,25 +52,17 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kecker 
     e <- do.call("cbind", e)
     ## set up omega
     N <- prod(dim(e))    
-        sigma <- crossprod(e) / NROW(e)
-        if(kecker == TRUE) {
+    sigma <- crossprod(e) / NROW(e)
+    t <- length(unique(order.by))
+    n <- length(unique(cluster))
+    xx <- split(X, cluster)
+    xxCL <- lapply(1L:n, function(i) matrix(xx[[i]], nrow = t, ncol = ncol(X)))
+    if(kecker) {
             omega <- kronecker(sigma, diag(x = 1L, nrow = NROW(e), ncol = NROW(e)))
         } else {
-            t <- length(unique(order.by))
-            n <- length(unique(cluster))
-
-            xx <- split(X, cluster)
-            xxCL <- lapply(1:n, function(i) matrix(xx[[i]], nrow = t, ncol = ncol(X)))
-
-            omega <- matrix(0, nrow = NCOL(X), ncol = NCOL(X))
-            for(i in 1:n) {
-                for(j in 1:n) {
-                    omega <- omega + sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]]/(n*t)
-                }
+            omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]]/(n*t)))))
             }
-    ## omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]]/(n*t)))))
-        }
-  } else {
+    } else {
     ## use pairwise calculation for omega (Bailey and Katz, 2011)
     N <- dim(X)[1L]    
     pair <- data.frame(cluster = cluster, order.by = order.by)
@@ -89,16 +81,24 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kecker 
     
     ## set up omega
     e <- matrix(e, length(unique(cluster)), length(unique(order.by)), byrow = TRUE)
-    e[is.na(e)] <- 0
+    e[is.na(e)] <- 0L
     e <- t(e)
     sigma <- crossprod(e) / denoma
-    omega <- kronecker(sigma, diag(x = 1L, nrow = NROW(e), ncol = NROW(e)))
+    if(kecker) {
+        omega <- kronecker(sigma, diag(x = 1L, nrow = NROW(e), ncol = NROW(e)))
+    } else {
+        t <- length(unique(pair$order.by))
+        n <- length(unique(pair$cluster))
+        xx <- split(X, pair$cluster)
+        xxCL <- lapply(1L:n, function(i) as.matrix(xx[[i]], nrow = t, ncol = ncol(X)))
+        omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]] /  N))))
     }
-    X <- as.matrix(X)
-    if(kecker == TRUE) {
+    }   
+    if(kecker) {
+        X <- as.matrix(X)
         rval <- t(X) %*% omega %*% X / N
     } else {
         rval <- omega
-        }
+    }
   return(rval = rval)
 }
