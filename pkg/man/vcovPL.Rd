@@ -12,8 +12,7 @@
 
 \usage{
 vcovPL(x, cluster = NULL, order.by = NULL,
-  kernel = "Bartlett", lag = "max",
-  sandwich = TRUE, fix = FALSE, \dots)
+  kernel = "Bartlett", sandwich = TRUE, fix = FALSE, \dots)
 
 meatPL(x, cluster = NULL, order.by = NULL,
   kernel = "Bartlett", lag = "max", bw = NULL,
