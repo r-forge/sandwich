@@ -1,7 +1,7 @@
+
 \name{vcovPC}
 \alias{vcovPC}
 \alias{meatPC}
-
 
 \title{Panel-Corrected Covariance Matrix Estimation}
 
@@ -10,10 +10,8 @@
 }
 
 \usage{
-vcovPC(x, cluster = NULL, order.by = NULL,
-  subsample = TRUE, sandwich = TRUE, fix = FALSE, \dots)
-meatPC(x, cluster = NULL, order.by = NULL,
-  subsample = TRUE, kecker = TRUE, \dots)
+vcovPC(x, cluster = NULL, order.by = NULL, subsample = TRUE, sandwich = TRUE, fix = FALSE, \dots)
+meatPC(x, cluster = NULL, order.by = NULL, subsample = TRUE, kecker = TRUE, \dots)
 }
 
 \arguments{
@@ -26,6 +24,8 @@ meatPC(x, cluster = NULL, order.by = NULL,
   the meat should be estimated pair- or casewise.}
   \item{sandwich}{logical. Should the sandwich estimator be computed?
     If set to \code{FALSE} only the meat matrix is returned.}
+  \item{fix}{logical. Should the covariance matrix be fixed to be
+    positive semi-definite in case it is not?}  
   \item{kecker}{logical. Calculate the meat via the
   Kronecker-product, shortening the computation time for small
   matrices. For large matrices, set \code{kecker = FALSE}.}
@@ -90,7 +90,7 @@ system.time(sqrt(diag(vcovPC(m, cluster = PetersenCL$firmid, order.by = Petersen
 system.time(sqrt(diag(vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year, kecker = FALSE))))
 
 ## unbalanced panel
-if(require("pcse")) {
+if(requireNamespace("pcse", quietly = TRUE)) {
 data("aglUn", package = "pcse")
 agllm <- lm(growth ~ lagg1 + opengdp + openex + openimp + central +
 leftc + inter, data = aglUn)
