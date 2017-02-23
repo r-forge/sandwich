@@ -1,0 +1,139 @@
+\documentclass[nojss]{jss}
+\usepackage{thumbpdf}
+%% need no \usepackage{Sweave}
+
+\author{Susanne Berger\\University of Innsbruck \And 
+        Nathaniel Graham\\Trinity University Texas \And
+        Achim Zeileis\\University of Innsbruck}
+\title{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R}
+
+\Plainauthor{Susanne Berger, Nathaniel Graham, Achim Zeileis}
+\Plaintitle{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R}
+\Shorttitle{Various Versatile Variances}
+
+\Keywords{clustered data, clustered covariance matrix estimators, object-orientation, simulation, \proglang{R}}
+\Plainkeywords{clustered data, clustered covariance matrix estimators, object-orientation, simulation, R}
+
+\Abstract{
+Clustered covariances or clustered standard errors are very widely used to account for correlated or clustered data, especially in economics, political sciences, or other social sciences. They are employed to adjust the inference following estimation of a standard least-squares regression or generalized linear model estimated by maximum likelihood. Although many publications just refer to "the" clustered standard errors, there is a surprisingly wide variation in clustered covariances, particularly due to different flavors of bias corrections. Furthermore, while the linear regression model is certainly the most important application case, the same strategies can be employed in more general models (e.g. for zero-inflated, censored, or limited responses). We discuss an object-oriented implementation based on the building blocks provided by R package "sandwich" and assess its performance in a simulation study.
+}
+
+\Address{
+  Susanne Berger\\
+  Department of Statistics\\
+  Faculty of Economics and Statistics\\
+  Universit\"at Innsbruck\\
+  Universit\"atsstr.~15\\
+  6020 Innsbruck, Austria\\
+  Telephone: +43/512/507-7113\\
+  E-mail: \email{susanne.berger@uibk.ac.at}
+}
+
+\begin{document}
+
+\SweaveOpts{engine=R,eps=FALSE}
+%\VignetteIndexEntry{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R}
+%\VignetteDepends{sandwich,countreg,lattice}
+%\VignetteKeywords{clustered data, clustered covariance matrix estimators, object-orientation, simulation, R}
+%\VignettePackage{sandwich}
+
+<<preliminaries,echo=FALSE,results=hide>>=
+library("sandwich")
+library("countreg")
+library("lattice")
+options(prompt = "R> ", continue = "+   ")
+@ 
+
+%% simulations
+
+\section{Introduction} \label{sec:intro}
+
+\subsection{R package for sandwich covariances}
+
+\subsection{R packages for clustered covariances}
+
+\section{Implementation in R} \label{sec:implementation}
+
+\subsection{The correct "meat" for clustered covariances}
+
+\subsection{R functions for clustered covariances}
+
+\section{Example: Innovation data} \label{sec:example}
+
+The determinants of a firm's ability to innovate are in the focus of the innovation literature.
+\cite{hac:Aghion+VanReenen+Zingales:2013} investigate the effect of institutional owners (these are, for example, pension funds, insurance companies, etc.) on innovation.
+The authors use firm-level panel data on innovation and institutional ownership from 1991 to 1999 over 803 firms, with the data clustered at company as well as industry level. 
+To capture the differing value of patents, citation-weighted patent counts are used as a proxy for innovation, where the authors weight the patents by the number of future citations.
+This motivates the use of count data models.
+
+\subsection{Original analysis by Aghion et al. (2013)}
+
+\cite{hac:Aghion+VanReenen+Zingales:2013} mostly employ Poisson and negative binomial models in a quasi-maximum likelihood approach and cluster standard errors by either companies or industries.
+Still, one limitation of standard count data models is that the zeros and the nonzeros (positives) are assumed to come from the same data-generating process.
+From an economic perspective, there is a difference in determinants of "first innovation" and "continuing innovation". The rationale behind this is the notion of nonlinearities in the innovation process.
+In case that the first innovation is especially hard to obtain in comparison to succeeding innovations, hurdle models offer a useful way that allows for a distinction to be made between these two processes \citep{hac:Berger+Stocker+Zeileis:2016}.
+
+\subsection{Reanalysis by Berger et al. (2016)}
+
+\cite{hac:Berger+Stocker+Zeileis:2016} employ two-part hurdle models with a binary part that models the decision to innovate at all, and a count part that models ongoing innovation, respectively.
+The \cite{hac:Aghion+VanReenen+Zingales:2013} data are (partly) availlable in the \pkg{sandwich} package.
+<<innovation-data>>= 
+data(InstInnovation, package = "sandwich")
+@ 
+Hurdle models are fitted with the \code{hurdle} function from the \pkg{countreg} package \citep{hac:Zeileis+Kleiber+Jackman:2008}.
+<<innovation-model>>=
+library("countreg")
+h.innov <- hurdle(
+  cites ~ institutions + log(capital/employment) + log(sales),
+  data = InstInnovation,
+  dist = "negbin", zero.dist = "negbin", separate = FALSE)
+@
+Below, a comparison of "classical", sandwich and clustered standard errors for an exemplary hurdle model is shown, utilizing company as cluster dimension.
+<<innovation-se>>= 
+library("sandwich")
+vc <- list(
+  "classical" = vcov(h.innov),
+  "sandwich" = sandwich(h.innov),
+  "cluster" = vcovCL(h.innov, cluster = InstInnovation$company)
+)
+sapply(vc, function(x) sqrt(diag(x)))
+@
+What can be observed is that when the data are clustered, "classical" standard errors can greatly overstate estimator precision.
+Then, for the exemplary hurdle model, clustered standard errors are scaled up by factors between $1.47$ and $1.86$ compared to sandwich standard errors.
+
+\section{Simulation} \label{sec:simulation}
+
+\subsection{Design}
+
+\subsection{Evaluation}
+
+The outcome measures we are most interested in are coverage and bias. In order to assess the validity of statistical inference, the coverage rate is used.
+If standard errors are estimated accurately, the coverage rate of the $95$\% confidence intervall should be close to 0.95. 
+Values less than 0.925 will be considered to have underestimated standard errors while values greater than 0.975 will be considered to have overestimated standard errors.
+
+\subsection{Results}
+
+\section{Summary} \label{sec:summary}
+
+\bibliography{hac}
+
+\clearpage
+
+\begin{appendix}
+
+%% for "plain pretty" printing
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{}
+<<echo=FALSE>>=
+options(prompt = "  ")
+@
+
+\section[R code]{\proglang{R} code}
+
+The packages \pkg{sandwich}, \pkg{countreg} and \pkg{lattice} are
+required for the applications in this paper.
+
+\section{Simulation of correlated data with a random cluster effect}
+
+\end{appendix}
+
+\end{document}
