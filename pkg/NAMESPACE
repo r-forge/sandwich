@@ -31,6 +31,10 @@ export(
   "vcovPL",
   "meatPL",
 
+## panel corrected estimators
+  "vcovPC",
+  "meatPC",
+
 ## weights/bandwidths for HAC estimators  
   "weightsLumley",
   "weightsAndrews",
