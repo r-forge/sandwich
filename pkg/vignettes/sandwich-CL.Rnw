@@ -85,8 +85,7 @@ Hurdle models are fitted with the \code{hurdle} function from the \pkg{pscl} pac
 library("pscl")
 h.innov <- hurdle(
   cites ~ institutions + log(capital/employment) + log(sales),
-  data = InstInnovation,
-  dist = "negbin", zero.dist = "negbin", separate = FALSE)
+  data = InstInnovation, dist = "negbin")
 @
 Below, a comparison of "classical", sandwich and clustered standard errors for an exemplary hurdle model is shown, utilizing company as cluster dimension.
 <<innovation-se>>= 
