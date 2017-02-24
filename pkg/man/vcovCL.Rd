@@ -199,10 +199,10 @@ coeftest(tab_I_3_pois, vcov = vcov_pois)[2:4, ]
 }
 
 ## model 1, Table II: negative binomial hurdle model
-## (requires "countreg" from R-Forge)
-if(require("countreg") & require("lmtest")) {
-tab_II_3_hurdle <- hurdle(f1, data = InstInnovation,
-  dist = "negbin", zero.dist = "negbin", separate = FALSE)
+## (requires "pscl" or alternatively "countreg" from R-Forge)
+if(require("pscl") & require("lmtest")) {
+tab_II_3_hurdle <- hurdle(f1, data = InstInnovation, dist = "negbin")
+#  dist = "negbin", zero.dist = "negbin", separate = FALSE)
 vcov_hurdle <- vcovCL(tab_II_3_hurdle, InstInnovation$company)
 sqrt(diag(vcov_hurdle))[c(2:4, 149:151)]
 coeftest(tab_II_3_hurdle, vcov = vcov_hurdle)[c(2:4, 149:151), ]

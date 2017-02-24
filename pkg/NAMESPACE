@@ -1,4 +1,4 @@
-import("stats", "zoo", "lattice")
+import("stats", "zoo")
 importFrom("utils", "combn")
 
 export(

@@ -33,13 +33,13 @@ Clustered covariances or clustered standard errors are very widely used to accou
 
 \SweaveOpts{engine=R,eps=FALSE}
 %\VignetteIndexEntry{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R}
-%\VignetteDepends{sandwich,countreg,lattice}
+%\VignetteDepends{sandwich,pscl,lattice}
 %\VignetteKeywords{clustered data, clustered covariance matrix estimators, object-orientation, simulation, R}
 %\VignettePackage{sandwich}
 
 <<preliminaries,echo=FALSE,results=hide>>=
 library("sandwich")
-library("countreg")
+library("pscl")
 library("lattice")
 options(prompt = "R> ", continue = "+   ")
 @ 
@@ -80,9 +80,9 @@ The \cite{hac:Aghion+VanReenen+Zingales:2013} data are (partly) availlable in th
 <<innovation-data>>= 
 data(InstInnovation, package = "sandwich")
 @ 
-Hurdle models are fitted with the \code{hurdle} function from the \pkg{countreg} package \citep{hac:Zeileis+Kleiber+Jackman:2008}.
+Hurdle models are fitted with the \code{hurdle} function from the \pkg{pscl} package \citep{hac:Zeileis+Kleiber+Jackman:2008}.
 <<innovation-model>>=
-library("countreg")
+library("pscl")
 h.innov <- hurdle(
   cites ~ institutions + log(capital/employment) + log(sales),
   data = InstInnovation,
@@ -129,7 +129,7 @@ options(prompt = "  ")
 
 \section[R code]{\proglang{R} code}
 
-The packages \pkg{sandwich}, \pkg{countreg} and \pkg{lattice} are
+The packages \pkg{sandwich}, \pkg{pscl} and \pkg{lattice} are
 required for the applications in this paper.
 
 \section{Simulation of correlated data with a random cluster effect}
