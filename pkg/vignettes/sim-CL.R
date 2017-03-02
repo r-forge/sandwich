@@ -279,7 +279,7 @@ fit <- function(data,
 
   if("bk" %in% vcov) {
     rval <- rbind(rval, data.frame(
-      coef = coef(m), se = sqrt(diag(vcovBK(m, cluster = data$id, order.by = data$round, kecker = TRUE))), par = names(coef(m)),
+      coef = coef(m), se = sqrt(diag(vcovPC(m, cluster = data$id, order.by = data$round, kecker = TRUE))), par = names(coef(m)),
       vcov = "bk", stringsAsFactors = FALSE))
   }
     
@@ -362,7 +362,7 @@ library("VGAM")
 source("meatCL.R")
 source("simCL.R")
 source("vcovPL.R")
-source("vcovBK.R")
+source("vcovPC.R")
     
 trellis.device(color = FALSE, height = 5, width = 15)
 
@@ -948,7 +948,7 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   data = s129, subset = par != "(Intercept)",
   type = "b", xlab = "G", auto.key = list(columns = 2), panel = panel.xyref)
 
-## Experiment Beck & Katz standard errors with vcovBK()
+## Experiment Beck & Katz standard errors with vcovPC()
 set.seed(130)
 s130 <- sim(nrep = 1000, nid = 100, nround = 5, cores = 3,
           coef = c(0, 0.85, 0 , 0), formula = response ~ x1,
