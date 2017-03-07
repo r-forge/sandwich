@@ -85,28 +85,53 @@ s03 <- sim(nrep = 10000, nid = 100, nround = 5,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,
            vcov = c("without", "HC0", "HC0-id"),
            type = "copula")
-save(s03, file = "sim-02.rda")
+save(s03, file = "sim-03.rda")
+}
+@
+
+<<sim-04,echo=FALSE,results=hide>>=
+if(file.exists("sim-04.rda")) load("sim-04.rda") else {
+set.seed(4)
+s04 <- sim(nrep = 10000, nid = c(10, seq(50, 250, by = 50)), nround = 5,
+           dist = c("gaussian","poisson", "logit"), rho = 0.25, xrho = 0.25,
+           coef = c(0, 0.85, 0, 0), formula = response ~ x1,
+           vcov = c("HC0-id","HC1-id","HC2-id","HC3-id"),
+           type = "copula")
+save(s04, file = "sim-04.rda")
+}
+@
+
+<<sim-05,echo=FALSE,results=hide>>=
+if(file.exists("sim-05.rda")) load("sim-05.rda") else {
+set.seed(5)
+s05 <- sim(nrep = 10000, nid = 100, nround = 5,
+           dist = c("gaussian", "logit", "poisson"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
+           coef = c(0, 0.85, 0, 0), formula = response ~ x1,
+           vcov = c("without", "HC0", "HC0-id", "random", "gee", "bk"),
+           type = "ranef")
+save(s05, file = "sim-05.rda")
 }
 @
 
 \section{Introduction} \label{sec:intro}
 
-Cluster-correlated data arise when there is a certain degree of similarity between objects of the same group. 
+Cluster-correlated data arise when there is a certain degree of similarity between objects of the same group/cluster. 
 In such datasets with dependence within, but not between observations of a cluster, the assumption of independent and identically distributed errors cannot plausibly sustain.
 But ignoring dependency between observations of a cluster by using "classical" standard errors (that is, iid standard errors without heteroscedasticity and without autocorrelation) can result in an overstate of estimator precision and can thus lead to serious mistakes in statistical inference \citep{hac:Moulton:1986, hac:Moulton:1990}.
 For valid statistical inference, the correlation between objects of the same group can no longer be ignored.
-Thus, clustered covariances are widely used to account for correlated or clustered/grouped data.
+Thus, clustered covariances are widely used to account for correlated or clustered data.
 Examples from the literature where clustered covariances are used can be found, for example, in the field of economics, political sciences, or other social sciences (references here).
-Our paper contributes to the literature particularly in two respects:
-First, we discuss a set of computational tools for the \proglang{R} system for statistical computing \citep{hac:R:2008}, providing for an object-oriented implementation of clustered covariances/standard errors in the R package \pkg{sandwich}, which now allows for computing different types of clustered covariances beyond \code{lm()} and \code{glm()} model objects.
+
+This paper contributes to the literature particularly in two respects:
+First, we discuss a set of computational tools for the \proglang{R} system for statistical computing \citep{hac:R:2008}, providing for an object-oriented implementation of clustered covariances/standard errors in the R package \pkg{sandwich}, which now allows for computing different types of clustered covariances beyond \code{lm} and \code{glm} model objects.
 Second, we perform a simulation study to test the performace of different types of clustered covariances for a variety of response distribution.
 
-The paper is structured as follows: Section~\ref{sec:idea} discusses the general idea of clustered covariances and reviews existing \proglang{R} packages for sandwich as well as clustered covariances.
+The rest of the paper is structured as follows: Section~\ref{sec:idea} discusses the idea of clustered covariances and reviews existing \proglang{R} packages for sandwich as well as clustered covariances.
 Section~\ref{sec:implementation} takes a look behind the scenes of the \proglang{R} implementation, Section~\ref{sec:example} gives an empirical illustration. The simulation results are discussed in Section~\ref{sec:simulation}. Section~\ref{sec:summary} concludes.
 
 \section{Idea} \label{sec:idea}
 
-As data described by econometric models typically contain heteroscedasticity and/or autocorrelation of unknown form, it is essential to use covariance matrix estimators for inference that can consistently estimate the covariance of the model parameters.
+As data described by econometric models often contain heteroscedasticity and/or autocorrelation of unknown form, it is essential to use covariance matrix estimators for inference that can consistently estimate the covariance of the model parameters.
 The idea of a quasi-maximum likelihood approach is to estimate a model by assuming independent data, and then use sandwich covariances to adjust for heteroscedasticity and/or autocorrelation.
 Independent but heteroscedastic errors typically occur within a context of cross-section data. Then, heteroscedasticity consistent (HC) covariance estimators can be used to account for the fact that the diagonal elements of the covariance matrix are nonconstant.
 For time series data, the independency assumption of the errors often does not hold. For such cases, heteroscedasticity and autocorrelation consistent (HAC) estimators are a suitable option.
@@ -122,9 +147,9 @@ There is, however, as yet no implementation of clustered/panel covariances.
 
 \subsection{R packages for clustered covariances}
 
-Clustered covariances are availlable in a couple of R packages, including \pkg{multiwayvcov} \citep{hac:Graham+Arai+Hagstroemer:2016}, \pkg{plm} \citep{hac:Croissant+Millo:2008}, \pkg{geepack} \citep{hac:Halekoh+Hojsgaard+Yan:2002}, \pkg{lfe} \citep{hac:Gaure:2016}, \pkg{clubSandwich} \citep{hac:Pustejovsky:2016}, among others.
-Nevertheless, usage is restricted to \code{lm} and \code{glm}-like object in \pkg{multiwayvcov}, to \code{plm()} objects in \pkg{plm},
-to \code{geeglm()} objects in \pkg{geepack}, to \code{felm} objects in \pkg{lfe}, and to ordinary and weighted least squares linear regression models in \pkg{clubSandwich}.
+Clustered covariances are availlable in a couple of R packages, including \pkg{multiwayvcov} \citep{hac:Graham+Arai+Hagstroemer:2016}, \pkg{plm} \citep{hac:Croissant+Millo:2008}, \pkg{geepack} \citep{hac:Halekoh+Hojsgaard+Yan:2002}, \pkg{lfe} \citep{hac:Gaure:2016} and \pkg{clubSandwich} \citep{hac:Pustejovsky:2016}, among others.
+Nevertheless, usage is restricted to \code{lm} and \code{glm}-like object in \pkg{multiwayvcov}, to \code{plm} objects in \pkg{plm},
+to \code{geeglm} objects in \pkg{geepack}, to \code{felm} objects in \pkg{lfe}, and to ordinary and weighted least squares linear regression models in \pkg{clubSandwich}.
 In a nutshell, there is no object-oriented implementation of clustered covariances in R.
 
 \section{Sandwich covariances in R} \label{sec:implementation}
@@ -138,13 +163,13 @@ To compute sandwich covariances, take a bread matrix and a meat matrix and multi
 \end{eqnarray}
 A natural idea for object-oriented implementation of such estimators is to provide for various functions that compute different estimators for the meat $M(\theta)$ based on an \code{estfun()} extractor function that extracts the empirical estimating functions $\psi$ (which is the derivative of an objective function, typically the log-likelihood, with respect to a parameter vector $\theta$) from a fitted model object.
 The building blocks for the calculation of the sandwich are provided by the \pkg{sandwich} package.
-\code{bread()} extracts the empirical version of the inverse Hessian, and \code{estfun()} extracts empirical estimating functions from a fitted model object. 
+\code{bread()} extracts the empirical version of the inverse Hessian, \code{estfun()} extracts empirical estimating functions from a fitted model object. 
 \code{meat()}, \code{meatHAC()} and \code{meatHC()} compute outer product, HAC and HC estimators for the meat, respectively, given the existence of an \code{estfun()} method.
 
 \subsection{The correct "meat" for clustered covariances}
 
 A simple and natural estimator for the meat matrix is the outer product of the empirical estimating functions.
-For clustered covariances, the level of aggregation changes from individuals to clusters, with the result that the meat changes. The empirical estimating functions are first summed groupwise (e.g., by $id$) before the outer product is calculated.
+For clustered covariances, the level of aggregation changes from individuals to clusters, leading to changes in the meat. The empirical estimating functions are first summed groupwise (e.g., by $id$) before the outer product is calculated.
 \begin{eqnarray} \label{eq:cluster}
 S(\theta)_{id} & = & B(\theta) * M(\theta)_{id} * B(\theta)
 \end{eqnarray}
@@ -152,8 +177,8 @@ If it is the case that each observation is its own cluster, clustered covariance
 Thus, the clustered covariance estimator generalizes White's famous covariance estimator \citep{hac:White:1980}.
 Clustered covariances do not call for specification of a model for within-cluster error correlation, but instead necessitate that the number of clusters approaches infinity, not the number of observations \citep{hac:Cameron+Miller:2015}.
 
-One-way clustered covariances can be extended to more than one cluster dimension. In \pkg{sandwich}, \code{vcovCL()} allows for an arbitrary number of cluster dimensions. This so-called multi-way clustering as shown by \cite{hac:Cameron+Gelbach+Miller:2011} comprises clustering on $2^{D} - 1$ dimensional combinations.
-Clustering in two dimensions, for example in $id$ and in $time$, gives $D = 2$, such that the clustered covariance matrix is composed of $2^2 - 1$ parts that have to be added up/substracted off.
+One-way clustered covariances can be extended to more than one cluster dimension. This so-called multi-way clustering as shown by \cite{hac:Cameron+Gelbach+Miller:2011} comprises clustering on $2^{D} - 1$ dimensional combinations.
+Clustering in two dimensions, for example in $id$ and $time$, gives $D = 2$, such that the clustered covariance matrix is composed of $2^2 - 1 = 3$ parts that have to be added up/substracted off.
 For two-way clustered covariances with cluster dimensions $id$ and $time$, the one-way clustered covariance matrices on $id$ and on $time$ are added up, and the two-way clustered covariance matrix  with clusters formed by the intersection of $id$ and $time$ is substacted off.
 \begin{eqnarray} \label{eq:twoway}
 S(\theta)_{id,time} & = & S(\theta)_{id} + S(\theta)_{time} - S(\theta)_{id \cap time}
@@ -163,8 +188,9 @@ Clustered covariance matrices with an odd number of cluster dimensions are added
 \subsection{Estimating clustered covariances}
 
 In the event of clustered data, \code{vcovCL(x, cluster = NULL, type = NULL, sandwich = TRUE, fix = FALSE, \ldots)} implemented in the \pkg{sandwich} package can be used for the estimation of one-, two-, and multi-way clustered covariances with different types of bias adjustments.
-Compared to classical sandwich estimators, the meat changes for clustered covariances. The function \code{meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, white = FALSE, \ldots)} allows the calculation of the meat for clustered covariances.
-The \code{cluster} argument allows to supply one or more cluster variables. If no cluster variable is supplied, each observation is its own cluster
+Compared to classical sandwich estimators, the meat changes for clustered covariances. The function \code{meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, white = FALSE, \ldots)} calculates the meat of clustered covariances.
+
+The \code{cluster} argument allows to supply one or more cluster variables. If no cluster variable is supplied, each observation is its own cluster.
 Different types of bias adjustments are offered, and can be separated into two part, the cluster bias adjustment $G/(G-1)$ (where $G$ is the number of clusters within a cluster dimension) and the HC bias adjustment. Both parts can be separately switched on and off.
 With the \code{cadjust} argument, the cluster bias adjustment can be switched on and off, whereas the \code{type} argument allows to specify the HC type of bias correction.
 HC0-HC3 are offered, HC2 and HC3 are geared towards the linear model, but are also applicable for GLMs \citep{hac:Bell+McCaffrey:2002, hac:Kauermann+Carroll:2001}. A precondition for HC2 and HC3 types of bias adjustment is the existence of a hat matrix or a weighted version of the hat matrix for GLMs, respectively.
@@ -172,28 +198,19 @@ Hence, this is the only part of \code{vcovCL()} that is not fully object-oriente
 However, beyond the glm case it's often not clear what the hat matrix should be.
 
 The \code{white} argument specifies whether to substract HC0-type (that is, White's) covariance matrix as the last substracted matrix or the covariance matrix formed by the intersection of groups \citep{hac:Ma:2014}.
-The \code{sandwich} argument returns either the full sandwich or the meat, and the \code{fix} argument specifies the eigendecomposition of the estimated covariance matrix and convert any negative eigenvalues to zero.
+The \code{sandwich} argument returns either the full sandwich or the meat \code{meatCL}, the \code{fix} argument specifies the eigendecomposition of the estimated covariance matrix and convert any negative eigenvalues to zero.
 In some applications with fixed effects, covariance matrix of the estimator may not be positive-definite, which is the why this argument is sometimes required. Additionally, \cite{hac:Cameron+Gelbach+Miller:2011} observe that this is most likely to arise when clustering is done over the same groups as the fixed effects.
 
-CONTINUE HERE
-For panel data, \code{vcovPL()} allows for estimation of Driscoll and Kraay type covariances \citep{hac:Driscoll+Kraay:1998} as well as Newey-West type covariances \citep{hac:Newey+West:1987}.
-\cite{hac:Driscoll+Kraay:1998} apply a Newey-West type correction to the sequence of cross-sectional averages of the moment conditions \citep{vcov:Hoechle:2007} \par
-for large length of the time dimesion (and regardless of the length of the cross-sectional dimension), the \cite{hac:Driscoll+Kraay:1998} standard errors are robust to general forms of cross-sectional and serial correlation \citep{hac:Hoechle:2007} \par
-the \cite{hac:Newey+West:1987} covariance matrix restricts the \cite{hac:Driscoll+Kraay:1998} covariance matrix to non cross-sectional correlation \par
+For panel data, \code{vcovPL(x, cluster = NULL, order.by = NULL, kernel = "Bartlett", sandwich = TRUE, fix = FALSE, \dots)} with \code{meatPL(x, cluster = NULL, order.by = NULL, kernel = "Bartlett", lag = "max", bw = NULL, adjust = TRUE, \dots)} allow for estimation of Driscoll and Kraay type covariances \citep{hac:Driscoll+Kraay:1998} as well as Newey-West type covariances \citep{hac:Newey+West:1987}.
+\cite{hac:Driscoll+Kraay:1998} apply a Newey-West type correction to the sequence of cross-sectional averages of the moment conditions \citep{hac:Hoechle:2007}.
+For large length of the time dimesion (and regardless of the length of the cross-sectional dimension), the \cite{hac:Driscoll+Kraay:1998} standard errors are robust to general forms of cross-sectional and serial correlation \citep{hac:Hoechle:2007}.
+The \cite{hac:Newey+West:1987} covariance matrix restricts the \cite{hac:Driscoll+Kraay:1998} covariance matrix to non cross-sectional correlation \par
+The \code{cluster} argument allows to specify a variable indicating the clustering of observations, \code{order.by} allows to specify a variable indicating the aggregation within time periods.
+The \code{kernel} argument is a character specifying the kernel used. All kernels described in \cite{hac:Andrews:1991} are supported.
+\code{lag} indicates the lag length used, \code{bw} specifies the bandwidth of the kernel, which by default corresponds to $\textrm{lag} + 1$.
+The \code{adjust} argument allows to make a finite sample adjustment, which amounts to multiplication with $n/(n - k)$, where $n$ is the number of observations, and $k$ is the number of estimated parameters.
 
-\code{vcovPL(x, cluster = NULL, order.by = NULL, kernel = "Bartlett", lag = "max", \ldots)}
-the \code{cluster} argument allows to specify a variable indicating the clustering of observations
-the \code{order.by} argument allows to specify a variable indicating the aggregation within time periods
-the \code{kernel} argument is a character specifying the kernel used \par 
-  all kernels described in \cite{hac:Andrews:1991} are supported
-the \code{lag} argument indicates the lag length used
-the \code{bw} argument allows to specify the bandwidth of the kernel which by default corresponds to $\textrm{lag} + 1$
-the \code{sandwich} argument specifies whether the sandwich estimator should be computed, if set to \code{FALSE}, only the meat matrix is returned
-the \code{fix} argument allows the covariance matrix be fixed to be positive semi-definite
-the \code{adjust} argument allows to make a finite sample adjustment, which amounts to multiplication with $n/(n - k)$, where $n$ is the number of observations, and $k$ is the number of estimated parameters
-
-
-\code{vcovPC(x, cluster = NULL, order.by = NULL, subsample = TRUE, sandwich = TRUE, fix = FALSE, \ldots)}
+Panel-corrected standard errors (PCSE) a la \cite{hac:Beck+Katz:1995} can be performed with \code{vcovPC(x, cluster = NULL, order.by = NULL, subsample = TRUE, sandwich = TRUE, fix = FALSE, \ldots)} and are usually used for time-series-cross-section data with a large enough time dimension. While an easy task for balanced panel, there are two alternatives to estimate the meat for unbalanced panel \citep{hac:Bailey+Katz:2011}. For \code{subsample = TRUE}, a balanced subset of the panel is employed, whereas for \code{subsample = FALSE}, a pairwise balaced sample is used.
 
 \section{Example: Innovation data} \label{sec:example}
 
@@ -237,11 +254,26 @@ sapply(vc, function(x) sqrt(diag(x)))
 What can be observed is that when the data are clustered, "classical" standard errors can greatly overstate estimator precision.
 Then, for the exemplary hurdle model, clustered standard errors are scaled up by factors between $1.48$ and $1.86$ compared to sandwich standard errors.
 
-\section{Simulation} \label{sec:simulation}
+\section{Simulation design} \label{sec:simulation}
 
-We run a Monte Carlo simulation to investigate the performance of a variety of clustered standard errors for different response distributions.
+We run a Monte Carlo simulation to investigate the performance of a variety of clustered standard errors for different response distributions. The simulations are each composed of $10,000$ replications.
+Parameters we let systematically vary are $\rho$ and the number of clusters $G$. Using normal copulas to simulate the correlation structure, $\rho$ determines the strength of cluster correlation. $\rho$ varies from $0$ to $0.9$, the number of clusters $G$ ranges from $10$ to $50, 100, 150, 200$ to $250$. Numerous studies \citep{hac:Green+Vavreck:2008,hac:Arceneaux+Nickerson:2009, hac:Harden:2011} confirmed that the higher the number of clusters, the lower the bias of the standard errors (in linear regression models). Furthermore, we only have a look at balanced cluster, observations per cluster are fixed to $5$.
 
-\subsection{Design}
+We analyze three regressor variables,
+\begin{eqnarray} \label{eq:regressors}
+x_{1,ig} & \sim & \rho_{x} \cdot \mathcal{N}_{g}(0, 1) + (1 - \rho_{x}) \cdot \mathcal{N}_{ig}(0, 1) \label{x1} \\ 
+x_{2,g} & \sim & \mathcal{N}_{g}(0, 1) \label{x2} \\
+x_{3,ig} & \sim & \mathcal{N}_{ig}(0, 1) \label{x3}
+\end{eqnarray}
+regressor $x_{1,ig}$ (\ref{x1}) is composed of a linear combination of a random draw at cluster level ($\mathcal{N}_{g}$) and a random draw at individual level ($\mathcal{N}_{ig}$), regressor $x_{2,g}$ (\ref{x2}) is composed of a random draw at cluster level, and regressor $x_{3,ig}$ (\ref{x3}) consists of a random draw at individual level. In most of the simulations, only a single regressor  $x_{1,ig}$ (\ref{x1}) is used. The cluster correlation of $x_{1,ig}$ is controlled by a parameter $\rho_{x}$, and is set to 0.25 per default. This impies at least some within cluster correlation of regressor  $x_{1,ig}$.
+The vector of coefficients is fixed to
+\begin{eqnarray} \label{eq:coefs}
+\beta_{1} & = & (0, 0.85, 0.5, 0.7)^\top \label{beta1} \\ 
+\beta_{2} & = & (0, 0.85, 0, 0)^\top \label{beta2} \\ 
+\end{eqnarray}
+even though these values can be interchanged without influencing the results\footnote{Values are equivalent to \cite{hac:Harden:2011}}.
+
+Response distributions examined include Gaussian, Bernoulli (with logit link), Poisson, zero-truncated Poisson, Beta and zero-inflated Poisson (ZIP). 
 
 \subsection{Evaluation}
 
@@ -314,7 +346,30 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   \end{center}
 \end{figure}
 
+\begin{figure}[thb] \label{fig:sim-04}
+ \begin{center}
+<<sim-04-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
+my.settings <- canonical.theme(color = TRUE)
+my.settings[["strip.background"]]$col <- "gray"
+my.settings[["strip.border"]]$col <- "black"
+my.settings[["superpose.line"]]$lwd <- 1
+levels(s04$vcov) <- c("HC0-cluster", "HC1-cluster", "HC2-cluster", "HC3-cluster")
+my.settings[["superpose.line"]]$col <- c("#377eb8", "cyan4", "#e41a1c", "#4daf4a")
+my.settings[["superpose.symbol"]]$col <- c("#377eb8", "cyan4","#e41a1c", "#4daf4a")
+xyplot(coverage ~ nid | dist, groups = ~ factor(vcov),
+  data = na.omit(s04), subset = par != "(Intercept)",
+  type = "b", xlab = "G", ylab = "coverage",
+  auto.key = list(columns = 2),
+  par.strip.text = list(col = "black"), par.settings = my.settings,
+  panel = panel.xyref)
+@ 
+\caption{Fixed: $N_{g} = 5$, $\rho = 0.25$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Poisson, logit, zerotrunc. Poisson.}
+ \end{center}
+\end{figure}
+
 \section{Summary} \label{sec:summary}
+
+\clearpage
 
 \bibliography{hac}
 
@@ -334,6 +389,73 @@ The packages \pkg{sandwich}, \pkg{pscl} and \pkg{lattice} are
 required for the applications in this paper.
 
 \section{Simulation of correlated data with a random cluster effect} \label{sec:rceffect}
+
+\begin{figure}[thb] \label{fig:sim-05}
+  \begin{center}
+<<sim-05-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
+my.settings <- canonical.theme(color = TRUE)
+my.settings[["strip.background"]]$col <- "gray"
+my.settings[["strip.border"]]$col <- "black"
+my.settings[["superpose.line"]]$lwd <- 1
+levels(s05$vcov) <- c("PC", "gee", "HC0", "HC0-cluster", "random", "classical")
+my.settings[["superpose.line"]]$col <- c("#006400", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
+my.settings[["superpose.symbol"]]$col <- c("#006400", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
+xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
+  data = s05, subset = par != "(Intercept)",
+  type = "b", xlab = expression(rho), ylab = "coverage",
+  auto.key = list(columns = 2),
+  par.strip.text = list(col = "black"), par.settings = my.settings,
+  panel = panel.xyref)
+@ 
+\caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Poisson, logit.}
+  \end{center}
+\end{figure}
+
+\begin{figure}[thb] \label{fig:sim-05-bias}
+  \begin{center}
+<<sim-05-bias-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
+panel.xyref <- function(x, y, ...) {
+  panel.abline(h = 0, col = 2)
+  panel.xyplot(x, y, ...)  
+}
+my.settings <- canonical.theme(color = TRUE)
+my.settings[["strip.background"]]$col <- "gray"
+my.settings[["strip.border"]]$col <- "black"
+my.settings[["superpose.line"]]$lwd <- 1
+levels(s05$vcov) <- c("PC", "gee", "HC0", "HC0-cluster", "random", "classical")
+my.settings[["superpose.line"]]$col <- c("slategray")
+my.settings[["superpose.symbol"]]$col <- c("slategray")
+xyplot(bias ~ rho | dist, groups = ~ factor(vcov),
+  data = s05, subset = par != "(Intercept)",
+  type = "b", xlab = expression(rho), ylab = "bias",
+  auto.key = list(columns = 2),
+  par.strip.text = list(col = "black"), par.settings = my.settings,
+  panel = panel.xyref)
+@ 
+\caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Poisson, logit. Copula.}
+  \end{center}
+\end{figure}
+
+\begin{figure}[thb] \label{fig:sim-02-bias}
+  \begin{center}
+<<sim-02-bias-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
+my.settings <- canonical.theme(color = TRUE)
+my.settings[["strip.background"]]$col <- "gray"
+my.settings[["strip.border"]]$col <- "black"
+my.settings[["superpose.line"]]$lwd <- 1
+levels(s02$vcov) <- c("PC", "gee", "HC0", "HC0-cluster", "random", "classical")
+my.settings[["superpose.line"]]$col <- c("slategray")
+my.settings[["superpose.symbol"]]$col <- c("slategray")
+xyplot(bias ~ rho | dist, groups = ~ factor(vcov),
+  data = s02, subset = par != "(Intercept)",
+  type = "b", xlab = expression(rho), ylab = "bias",
+  auto.key = list(columns = 2),
+  par.strip.text = list(col = "black"), par.settings = my.settings,
+  panel = panel.xyref)
+@ 
+\caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Poisson, logit. Random effect.}
+  \end{center}
+\end{figure}
 
 \end{appendix}
 
