@@ -44,8 +44,8 @@ meatPC(x, cluster = NULL, order.by = NULL, subsample = TRUE, kecker = TRUE, \dot
 
   Following Bailey and Katz (2011), there are two alternatives to
   estimate the meat for unbalanced panels.
-  For \code{subsample == TRUE}, a balanced subset of the panel is used,
-  whereas for \code{subsample == FALSE}, a pairwise balanced sample is
+  For \code{subsample = TRUE}, a balanced subset of the panel is used,
+  whereas for \code{subsample = FALSE}, a pairwise balanced sample is
   employed.
 }
 
