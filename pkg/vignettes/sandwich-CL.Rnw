@@ -155,7 +155,8 @@ There is, however, as yet no implementation of clustered/panel covariances.
 Clustered covariances are availlable in a couple of R packages, including \pkg{multiwayvcov} \citep{hac:Graham+Arai+Hagstroemer:2016}, \pkg{plm} \citep{hac:Croissant+Millo:2008}, \pkg{geepack} \citep{hac:Halekoh+Hojsgaard+Yan:2002}, \pkg{lfe} \citep{hac:Gaure:2016} and \pkg{clubSandwich} \citep{hac:Pustejovsky:2016}, among others.
 Nevertheless, usage is restricted to \code{lm} and \code{glm}-like object in \pkg{multiwayvcov}, to \code{plm} objects in \pkg{plm},
 to \code{geeglm} objects in \pkg{geepack}, to \code{felm} objects in \pkg{lfe}, and to ordinary and weighted least squares linear regression models in \pkg{clubSandwich}.
-In a nutshell, there is no object-oriented implementation of clustered covariances in R.
+
+In a nutshell, there is no object-oriented implementation of clustered covariances in R. While the linear regression model is of course an important application case, the same strategies can be employed in more general models, including zero-inflated, censored, or limited responses.
 
 \section{Sandwich covariances in R} \label{sec:implementation}
 
