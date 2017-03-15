@@ -238,11 +238,11 @@ In case that the first innovation is especially hard to obtain in comparison to 
 \subsection{Reanalysis by Berger et al. (2016)}
 
 \cite{hac:Berger+Stocker+Zeileis:2016} employ two-part hurdle models with a binary part that models the decision to innovate at all, and a count part that models ongoing innovation, respectively.
-The \cite{hac:Aghion+VanReenen+Zingales:2013} data are (partly) availlable in the \pkg{sandwich} package.
+The \cite{hac:Aghion+VanReenen+Zingales:2013} data are availlable in the \pkg{sandwich} package.
 <<innovation-data>>= 
 data(InstInnovation, package = "sandwich")
 @ 
-Hurdle models are fitted with the \code{hurdle} function from the \pkg{pscl} package \citep{hac:Zeileis+Kleiber+Jackman:2008}.
+Hurdle models are fitted with the \code{hurdle} function from the \pkg{pscl} package \citep{hac:Zeileis+Kleiber+Jackman:2008}. Here, the count model family chosen is a negative binomial, and the zero hurdle model family is a binomial with logit link.
 <<innovation-model>>=
 library("pscl")
 h.innov <- hurdle(
@@ -265,15 +265,16 @@ Then, for the exemplary hurdle model, clustered standard errors are scaled up by
 \section{Simulation design} \label{sec:simulation}
 
 We run a Monte Carlo simulation to investigate the performance of a variety of clustered standard errors for different response distributions. The simulations are each composed of $10,000$ replications.
-We systematically vary parameters $\rho$ and the number of clusters $G$. Using normal copulas to simulate the correlation structure, $\rho$ determines the strength of cluster correlation. $\rho$ varies from $0$ to $0.9$, the number of clusters $G$ ranges from $10$ to $50, 100, 150, 200$ to $250$. Numerous studies \citep{hac:Green+Vavreck:2008,hac:Arceneaux+Nickerson:2009, hac:Harden:2011} confirmed that the higher the number of clusters, the lower the bias of the standard errors (in linear regression models). Furthermore, we only have a look at balanced cluster, observations per cluster are fixed to $5$.
+We systematically vary parameters $\rho$ and the number of clusters $G$. Using normal copulas to simulate the correlation structure, $\rho$ determines the strength of cluster correlation. We let $\rho$ vary from $0$ to $0.9$, the number of clusters $G$ ranges from $10$ to $50, 100, 150, 200$ to $250$. Numerous studies \citep{hac:Green+Vavreck:2008,hac:Arceneaux+Nickerson:2009, hac:Harden:2011} confirmed that the higher the number of clusters, the lower the bias of the standard errors (in linear regression models). Furthermore, we only have a look at balanced cluster, observations per cluster are fixed to $5$.
 
 We analyze three regressor variables
 \begin{eqnarray} \label{eq:regressors}
-x_{1,ig} & \sim & \rho_{x} \cdot \mathcal{N}_{g}(0, 1) + (1 - \rho_{x}) \cdot \mathcal{N}_{ig}(0, 1), \label{x1} \\ 
-x_{2,g} & \sim & \mathcal{N}_{g}(0, 1) \label{x2} \mathrm{and} \\
-x_{3,ig} & \sim & \mathcal{N}_{ig}(0, 1) \label{x3}.
+x_{1,ig} & \sim & \rho_{x} \cdot \mathcal{N}_{g}(0, 1) + (1 - \rho_{x}) \cdot \mathcal{N}_{ig}(0, 1) \label{x1} \\ 
+x_{2,g} & \sim & \mathcal{N}_{g}(0, 1) \label{x2} \\
+x_{3,ig} & \sim & \mathcal{N}_{ig}(0, 1) \label{x3}
 \end{eqnarray}
-Regressor $x_{1,ig}$ (\ref{x1}) is composed of a linear combination of a random draw at cluster level ($\mathcal{N}_{g}$) and a random draw at individual level ($\mathcal{N}_{ig}$), regressor $x_{2,g}$ (\ref{x2}) is composed of a random draw at cluster level, and regressor $x_{3,ig}$ (\ref{x3}) consists of a random draw at individual level. In most of the simulations, only a single regressor  $x_{1,ig}$ (\ref{x1}) is used. In line with \cite{hac:Harden:2011}, this is done to produce variation at cluster level, individual level and at a combination of both levels. The cluster correlation of $x_{1,ig}$ is controlled by parameter $\rho_{x}$, and is set to 0.25 per default. This implies at least some within cluster correlation of regressor $x_{1,ig}$.
+Regressor $x_{1,ig}$ (\ref{x1}) is composed of a linear combination of a random draw at cluster level ($\mathcal{N}_{g}$) and a random draw at individual level ($\mathcal{N}_{ig}$), regressor $x_{2,g}$ (\ref{x2}) is composed of a random draw at cluster level, and regressor $x_{3,ig}$ (\ref{x3}) consists of a random draw at individual level. In most of the simulations, only a single regressor  $x_{1,ig}$ (\ref{x1}) is used. In line with \cite{hac:Harden:2011}, this is done to produce variation at cluster level, individual level and at a combination of both levels. The cluster correlation of $x_{1,ig}$ is controlled by parameter $\rho_{x}$, and is set to 0.25 per default. This implies at least some within cluster correlation of regressor $x_{1,ig}$. If $\rho_{x} = 1$, regressor (\ref{x1}) is equivalent to regressor (\ref{x2}). Furthermore, if $\rho_{x} = 0$, regressor (\ref{x1}) corresponds to regressor (\ref{x3}).
+
 The vector of coefficients is fixed to
 \begin{eqnarray} \label{eq:coefs}
 \beta_{1} & = & (0, 0.85, 0.5, 0.7)^\top \label{beta1} \\ 
@@ -281,11 +282,14 @@ The vector of coefficients is fixed to
 \end{eqnarray}
 even though these values can be interchanged without influencing the results\footnote{Values are equivalent to \cite{hac:Harden:2011}}.
 
-Response distributions examined include Gaussian, Bernoulli (with logit link), Poisson, zero-truncated Poisson, Beta and zero-inflated Poisson (ZIP). With \code{vcovCL()} it is now possible to estimate clustered standard errors for all listed response distributions.
+Response distributions examined include Gaussian, Bernoulli (with logit link), Poisson, zero-truncated Poisson, Beta and zero-inflated Poisson (ZIP). With an object-oriented implementation it is now possible to estimate clustered standard errors for all abovementioned response distributions.
+
+Standard errors being compared to each other include iid standard errors without heteroscedasticity and without autocorrelation (classical), HC0 standard errors \citep{hac:White:1980}, panel-corrected (PC) standard errors a la \cite{hac:Beck+Katz:1995} and clustered standard errors with HC0 to HC3 adjustment (HC0-cluster, HC1-cluster, HC2-cluster, HC3-cluster). In addition, standard errors from a random effects model (random) and from a GEE with exchangeable correlation structure (gee) are compared.
 
 The outcome measures we are most interested in are coverage and bias. In order to assess the validity of statistical inference, the coverage rate is used.
 If standard errors are estimated accurately, the coverage rate of the $95$\% confidence intervall should be close to 0.95. 
 Values less than 0.925 will be considered to have underestimated standard errors while values greater than 0.975 will be considered to have overestimated standard errors.
+
 
 \section{Results}
 \setkeys{Gin}{width=.85\textwidth} 
@@ -301,6 +305,7 @@ my.settings[["superpose.line"]]$col <- c("#006400", "#e41a1c", "#f781bf", "#377e
 my.settings[["superpose.symbol"]]$col <- c("#006400", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
 xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
   data = s01, subset = par != "(Intercept)",
+  ylim = c(0, 1),
   type = "b", xlab = expression(rho), ylab = "coverage",
   auto.key = list(columns = 2),
   par.strip.text = list(col = "black"), par.settings = my.settings,
@@ -322,6 +327,7 @@ my.settings[["superpose.line"]]$col <- c("#006400", "#e41a1c", "#f781bf", "#377e
 my.settings[["superpose.symbol"]]$col <- c("#006400", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   data = s02, subset = par != "(Intercept)",
+  ylim = c(0, 1),
   type = "b", xlab = expression(rho), ylab = "coverage",
   auto.key = list(columns = 2),
   par.strip.text = list(col = "black"), par.settings = my.settings,
@@ -344,6 +350,7 @@ my.settings[["superpose.line"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 my.settings[["superpose.symbol"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   data = s03, subset = par != "(Intercept)",
+  ylim = c(0, 1),
   type = "b", xlab = expression(rho), ylab = "coverage",
   auto.key = list(columns = 2),
   par.strip.text = list(col = "black"), par.settings = my.settings,
