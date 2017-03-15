@@ -409,6 +409,7 @@ my.settings[["superpose.line"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 my.settings[["superpose.symbol"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   data = s05, subset = par != "(Intercept)",
+  ylim = c(0, 1),
   type = "b", xlab = expression(rho), ylab = "coverage",
   auto.key = list(columns = 2),
   par.strip.text = list(col = "black"), par.settings = my.settings,
@@ -459,6 +460,7 @@ my.settings[["superpose.line"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 my.settings[["superpose.symbol"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   data = s02[which(s02$vcov %in% c("classical", "HC0", "HC0-cluster")), ], subset = par != "(Intercept)",
+  ylim = c(0, 1),
   type = "b", xlab = expression(rho), ylab = "coverage",
   auto.key = list(columns = 2),
   par.strip.text = list(col = "black"), par.settings = my.settings,
