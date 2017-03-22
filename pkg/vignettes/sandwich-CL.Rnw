@@ -348,6 +348,14 @@ Then, for the exemplary hurdle model, clustered standard errors are scaled up by
 We run a Monte Carlo simulation to investigate the performance of a variety of clustered standard errors for different response distributions. The simulations are each composed of $10,000$ replications.
 We systematically vary parameters $\rho$ and the number of clusters $G$. Using normal copulas to simulate the correlation structure, $\rho$ determines the strength of cluster correlation. We let $\rho$ vary from $0$ to $0.9$, the number of clusters $G$ ranges from $10$ to $50, 100, 150, 200$ to $250$. Numerous studies \citep{hac:Green+Vavreck:2008,hac:Arceneaux+Nickerson:2009, hac:Harden:2011} confirmed that the higher the number of clusters, the lower the bias of the standard errors (in linear regression models). Furthermore, we only have a look at balanced cluster, observations per cluster are fixed to $5$.
 
+\subsection*{Linear predictor}
+The linear predictor is
+\begin{eqnarray} \label{eq:predictor}
+h(\mu_{ig}) = \beta_{0} + \beta_{1} \cdot x_{1,ig} + \beta_{2} \cdot x_{2,g} + \beta_{3} \cdot x_{3,ig}
+\end{eqnarray}
+with a link function $h$.
+
+\subsection*{Regressor variables}
 We analyze three regressor variables
 \begin{eqnarray} \label{eq:regressors}
 x_{1,ig} & \sim & \rho_{x} \cdot \mathcal{N}_{g}(0, 1) + (1 - \rho_{x}) \cdot \mathcal{N}_{ig}(0, 1) \label{x1} \\ 
@@ -363,10 +371,13 @@ The vector of coefficients is fixed to
 \end{eqnarray}
 even though these values can be interchanged without influencing the results\footnote{Values are equivalent to \cite{hac:Harden:2011}}.
 
-Response distributions examined include Gaussian, Bernoulli (with logit link), Poisson, zero-truncated Poisson, Beta and zero-inflated Poisson (ZIP). With an object-oriented implementation it is now possible to estimate clustered standard errors for all abovementioned response distributions.
+\subsection*{Response distributions}
+Response distributions examined include Gaussian, Bernoulli (with logit link), Poisson, zero-truncated Poisson, Beta and zero-inflated Poisson (ZIP). With \code{vcovCL()} it is now possible to estimate clustered standard errors for all abovementioned response distributions.
 
+\subsection*{Standard errors}
 Standard errors being compared to each other include iid standard errors without heteroscedasticity and without autocorrelation (classical), HC0 standard errors \citep{hac:White:1980}, panel-corrected (PC) standard errors a la \cite{hac:Beck+Katz:1995} and clustered standard errors with HC0 to HC3 adjustment (HC0-cluster, HC1-cluster, HC2-cluster, HC3-cluster). In addition, standard errors from a random effects model (random) and from a GEE with exchangeable correlation structure (gee) are compared.
 
+\subsection*{Outcome measures}
 The outcome measures we are most interested in are coverage and bias. In order to assess the validity of statistical inference, the coverage rate is used.
 If standard errors are estimated accurately, the coverage rate of the $95$\% confidence intervall should be close to 0.95. 
 Values less than 0.925 will be considered to have underestimated standard errors while values greater than 0.975 will be considered to have overestimated standard errors.
