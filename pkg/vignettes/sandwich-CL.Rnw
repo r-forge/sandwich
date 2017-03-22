@@ -5,7 +5,7 @@
 \author{Susanne Berger\\University of Innsbruck \And 
         Nathaniel Graham\\Trinity University Texas \And
         Achim Zeileis\\University of Innsbruck}
-\title{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R}
+\title{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in \proglang{R}}
 
 \Plainauthor{Susanne Berger, Nathaniel Graham, Achim Zeileis}
 \Plaintitle{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R}
@@ -15,7 +15,9 @@
 \Plainkeywords{clustered data, clustered covariance matrix estimators, object-orientation, simulation, R}
 
 \Abstract{
-Clustered covariances or clustered standard errors are very widely used to account for correlated or clustered data, especially in economics, political sciences, or other social sciences. They are employed to adjust the inference following estimation of a standard least-squares regression or generalized linear model estimated by maximum likelihood. Although many publications just refer to "the" clustered standard errors, there is a surprisingly wide variation in clustered covariances, particularly due to different flavors of bias corrections. Furthermore, while the linear regression model is certainly the most important application case, the same strategies can be employed in more general models (e.g. for zero-inflated, censored, or limited responses). We discuss an object-oriented implementation based on the building blocks provided by R package "sandwich" and assess its performance in a simulation study.
+Clustered covariances or clustered standard errors are very widely used to account for correlated or clustered data, especially in economics, political sciences, or other social sciences. They are employed to adjust the inference following estimation of a standard least-squares regression or generalized linear model estimated by maximum likelihood. Although many publications just refer to ``the'' clustered standard errors, there is a surprisingly wide variation in clustered covariances, particularly due to different flavors of bias corrections. Furthermore, while the linear regression model is certainly the most important application case, the same strategies can be employed in more general models (e.g. for zero-inflated, censored, or limited responses).
+
+In \proglang{R}, the sandwich package \citep{hac:Zeileis:2004a,hac:Zeileis:2006} provides an object-oriented approach to ``robust'' covariance matrix estimation based on methods for two generic functions (\code{estfun()} and \code{bread()}). Using this infrastructure, sandwich covariances for cross-section or time series data have been available for models beyond \code{lm()} or \code{glm()}, e.g., for packages \pkg{MASS}, \pkg{pscl}, \pkg{countreg}, \pkg{betareg}, among many others. However, corresponding functions for clustered or panel data have been somewhat scattered or available only for certain modeling functions. This shortcoming has been corrected in the development version of sandwich on R-Forge. Here, we introduce this new object-oriented implementation of clustered and panel covariances and assess the methods' performance in a simulation study.
 }
 
 \Address{
@@ -117,7 +119,7 @@ save(s05, file = "sim-05.rda")
 
 Cluster-correlated observations arise when there is a certain degree of similarity between objects of the same group/cluster. Each cluster comprises multiple objects, such that the data structure is either nested or hierarchical \citep{hac:Galbraith:Daniel:Vissel:2010}.
 For model errors that are correlated within, but not across clusters, the assumption of independent and identically distributed errors cannot plausibly sustain.
-But ignoring dependency of model errors within clusters by using "classical" standard errors (that is, iid standard errors without heteroscedasticity and without autocorrelation) can result in an overstate of estimator precision and can thus lead to serious mistakes in statistical inference \citep{hac:Moulton:1986, hac:Moulton:1990}.
+But ignoring dependency of model errors within clusters by using ``classical'' standard errors (that is, iid standard errors without heteroscedasticity and without autocorrelation) can result in an overstate of estimator precision and can thus lead to serious mistakes in statistical inference \citep{hac:Moulton:1986, hac:Moulton:1990}.
 
 For valid statistical inference, the correlation between objects of the same group can no longer be ignored.
 Thus, clustered covariances are widely used to account for clustered errors.
@@ -142,7 +144,16 @@ For time series data, the independency assumption of the errors often does not h
 
 For clustered or panel data, with errors independent across but correlated within clusters, it is quite common to use clustered sandwich covariances.
 
-\subsection{R package for sandwich covariances}
+\section{Methods} \label{sec:methods}
+\subsection{Clustered standard errors} 
+\subsection{Standard errors for panel data}
+\subsection{Panel-corrected standard errors}
+\section{Software} \label{sec:software}
+\subsection{Clustered standard errors}
+\subsection{Standard errors for panel data}
+\subsection{Panel-corrected standard errors}
+
+\subsection[R packages for sandwich covariances]{\proglang{R package for sandwich covariances}}
 
 The standard \proglang{R} package to model sandwich covariance estimators is the \pkg{sandwich} package \citep{hac:Zeileis:2004a,hac:Zeileis:2006}, which provides for an object-oriented implementation for the building blocks of the sandwich that rely only on a small set of extractor functions for fitted model objects.
 The function \code{sandwich()} computes a sandwich estimate from a fitted model object, default is the Eicker-Huber-White outer product estimate \citep{hac:White:1980}.
@@ -150,7 +161,7 @@ The function \code{sandwich()} computes a sandwich estimate from a fitted model 
 \code{vcovHAC()} can compute HAC covariance matrix estimates, with the convenience functions \code{kernHAC()} for Andrews' kernel HAC \citep{hac:Andrews:1991} and \code{NeweyWest()} for Newey-West-style HAC \citep{hac:Newey+West:1987,hac:Newey+West:1994}.
 There is, however, as yet no implementation of clustered/panel covariances.
 
-\subsection{R packages for clustered covariances}
+\subsection[R packages for clustered covariances]{\proglang{R} packages for clustered covariances}
 
 Clustered covariances are availlable in a couple of R packages, including \pkg{multiwayvcov} \citep{hac:Graham+Arai+Hagstroemer:2016}, \pkg{plm} \citep{hac:Croissant+Millo:2008}, \pkg{geepack} \citep{hac:Halekoh+Hojsgaard+Yan:2002}, \pkg{lfe} \citep{hac:Gaure:2016} and \pkg{clubSandwich} \citep{hac:Pustejovsky:2016}, among others.
 Nevertheless, usage is restricted to \code{lm} and \code{glm}-like object in \pkg{multiwayvcov}, to \code{plm} objects in \pkg{plm},
@@ -158,12 +169,12 @@ to \code{geeglm} objects in \pkg{geepack}, to \code{felm} objects in \pkg{lfe}, 
 
 In a nutshell, there is no object-oriented implementation of clustered covariances in R. While the linear regression model is of course an important application case, the same strategies can be employed in more general models, including zero-inflated, censored, or limited responses.
 
-\section{Sandwich covariances in R} \label{sec:implementation}
+\section[Sandwich covariances in R]{Sandwich covariances in \proglang{R}} \label{sec:implementation}
 
 Let $(y_{i},x_{i})$ for $i = 1, \ldots, n$ be data with some distribution controlled by a k-dimensional parameter vector $\theta$ \citep{hac:Zeileis:2006}.
 To compute sandwich covariances, take a bread matrix and a meat matrix and multiply them to a sandwich with meat between two slices of bread.
 \begin{eqnarray} \label{eq:sandwich}
-  S(\theta) & = & B(\theta) \, M(\theta) \, B(\theta) \\  \label{eq:bread}
+  S(\theta) & = & B(\theta) \cdot M(\theta) \cdot B(\theta) \\  \label{eq:bread}
   B(\theta) & = & \left( \E[ - \psi'(y, x, \theta) ] \right)^{-1} \\  \label{obj}
   M(\theta) & = & \VAR[ \psi(y, x, \theta) ]
 \end{eqnarray}
@@ -172,12 +183,12 @@ The building blocks for the calculation of the sandwich are provided by the \pkg
 \code{bread()} extracts the empirical version of the inverse Hessian, \code{estfun()} extracts empirical estimating functions from a fitted model object. 
 \code{meat()}, \code{meatHAC()} and \code{meatHC()} compute outer product, HAC and HC estimators for the meat, respectively, given the existence of an \code{estfun()} method.
 
-\subsection{The correct "meat" for clustered covariances}
+\subsection{The correct ``meat'' for clustered covariances}
 
 A simple and natural estimator for the meat matrix is the outer product of the empirical estimating functions.
 For clustered covariances, the level of aggregation changes from individuals to clusters, leading to changes in the meat. The empirical estimating functions are first summed groupwise (e.g., by $id$) before the outer product is calculated.
 \begin{eqnarray} \label{eq:cluster}
-S(\theta)_{id} & = & B(\theta) * M(\theta)_{id} * B(\theta)
+S(\theta)_{id} & = & B(\theta) \cdot M(\theta)_{id} \cdot B(\theta)
 \end{eqnarray}
 If it is the case that each observation is its own cluster, clustered covariances correspond to White covariances.
 Thus, the clustered covariance estimator generalizes White's famous covariance estimator \citep{hac:White:1980}.
@@ -221,27 +232,96 @@ The \code{adjust} argument allows to make a finite sample adjustment, which amou
 
 Panel-corrected standard errors (PCSE) a la \cite{hac:Beck+Katz:1995} are implemented in \code{vcovPC(x, cluster = NULL, order.by = NULL, subsample = TRUE, sandwich = TRUE, fix = FALSE, \ldots)} and are usually used for time-series-cross-section (TSCS) data with a large enough time dimension. While an easy task for balanced panel, there are two alternatives to estimate the meat for unbalanced panel \citep{hac:Bailey+Katz:2011}. If \code{subsample = TRUE}, a balanced subset of the panel is employed, whereas for \code{subsample = FALSE}, a pairwise balaced sample is used.
 
-\section{Example: Innovation data} \label{sec:example}
+\section{Illustrations} \label{sec:illu}
+The classical area of application for clustered standard errors is the linear model, with model errors that are correlated within clusters. In this section, replication and comparison of clustered standard errors for different \proglang{R} packages is shown on the basis of benchmark \cite{hac:Petersen:2009} data (Example \ref{ex-petersen}). Due to the nice feature of object-orientation, clustered covariances in \code{vcovCL()} are now available for models beyond \code{lm()} or \code{glm()}. Example \ref{ex-aghion} applies \code{vcovCL()} to a hurdle model, using data provided by \cite{hac:Aghion+VanReenen+Zingales:2013}.
 
-The determinants of a firm's ability to innovate are in the focus of the innovation literature.
+\subsection[Petersen (2009)]{\cite{hac:Petersen:2009}} \label{ex-petersen}
+Benchmark data for testing the clustered standard error estimates in the linear model is a simulated dataset\footnote{\url{http://www.kellogg.northwestern.edu/faculty/petersen/htm/papers/se/test_data.txt}} provided by \cite{hac:Petersen:2009}, containing 500 firms over 10 years. The data include 4 variables, \code{firmid}, \code{year}, dependent variable \code{y} and explanatory variable \code{x} \citep[see also][]{hac:Graham+Arai+Hagstroemer:2016}.
+
+The data are availlable in \pkg{sandwich} as well as in \pkg{multiwayvcov}.
+<<petersen-data>>= 
+data("PetersenCL", package = "sandwich")
+formula <- y ~ x
+@ 
+A linear model is fitted with \code{lm()}, 
+<<petersen-model>>=
+lm.petersen <- lm(formula, data = PetersenCL)
+@ 
+and testing the estimated coefficients with \code{coeftest()} from package \pkg{lmtest} gives
+<<petersen-coeftest>>=
+library("lmtest")
+coeftest(lm.petersen)
+@ 
+However, the data are clustered by firms (\code{firmid}), with a total of 500 clusters. But ignoring dependency by using ``classical'' standard errors results in an overstate of estimator precision.
+
+\subsection*{One-way clustered standard errors}
+Thus, one-way clustered standard errors clustered by \code{firmid} are employed.
+It can be observed that clustered standard errors are larger than ``classical'' standard errors.
+<<petersen-onecl-firm>>=
+library("sandwich")
+coeftest(lm.petersen, vcov = vcovCL(lm.petersen, cluster = PetersenCL$firmid))
+@ 
+Next, a comparison of clustered standard errors resulting from packages \pkg{sandwich}, \pkg{plm}, \pkg{geepack} and \pkg{multiwayvcov} is shown. 
+<<petersen-packages>>=
+library("plm")
+library("geepack")
+library("multiwayvcov")
+@ 
+A pooling model is estimated with \code{plm()}, \code{geeglm()} fits a generalized estimating equation (GEE) with independence correlation structure.
+<<petersen-models>>=
+plm.petersen <- plm(formula, data = PetersenCL, model = "pooling")
+gee.petersen <- geeglm(formula, data = PetersenCL, id = PetersenCL$firmid,
+corstr = "independence", family = gaussian)
+@ 
+The bias correction in \code{vcovCL()} is set to \code{cadjust = TRUE} and \code{type = "HC1"} by default. For \code{cluster.vcov()} from \pkg{multiwayvcov}, the same type of bias correction is achieved by default.
+Nevertheless, in order to accomplish exactly the same value for clustered standard errors using \code{plm} and \code{geepack}, the bias correction $\frac{G}{G - 1}\frac{n - 1}{n - k}$ has to be multiplied to the covariance matrices.
+<<petersen-df>>=
+n <- nrow(PetersenCL)
+G <- length(unique(PetersenCL$firmid))
+k <- 2
+bc <- G / (G - 1) * (n - 1) / (n - k)
+@ 
+$G$ is the number of clusters, $n$ is the total number of observations, and $k$ is the number of parameters estimated.
+
+All packages examined produce the same clustered standard errors for \code{lm()}. For packages \pkg{plm} and \pkg{geepack}, one manually has to adjust the bias correction factor. In general, differences in clustered standard errors often coincide with different types of bias corrections.
+<<petersen-comparison>>=
+vc <- list(
+  "sandwich" = vcovCL(lm.petersen, cluster = PetersenCL$firmid),
+  "multiwayvcov" = cluster.vcov(lm.petersen, cluster = PetersenCL$firmid),
+  "plm" = vcovHC(plm.petersen, type = "HC0", cluster = "group") * bc,
+  "geepack" = gee.petersen$geese$vbeta * bc
+)
+sapply(vc, function(x) sqrt(diag(x)))
+@ 
+
+\subsection*{Two-way clustered standard errors}
+Two-way clustered standard errors with cluster dimensions \code{firmid} as well as \code{year} are, at least for the explanatory variable \code{x}, a bit larger than one-way clustered standard errors clustered by \code{firmid}.
+<<petersen-twocl>>=
+coeftest(lm.petersen, vcov. = vcovCL(lm.petersen, 
+cluster = cbind(PetersenCL$firmid, PetersenCL$year)))
+@ 
+ However, as cluster dimension \code{year} has a total of only 10 cluster, the results should be regarded with caution, as it is required by theory that each cluster dimension has many clusters \citep{hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,hac:Cameron+Miller:2015}
+ 
+\subsection[Aghion et al. (2013)]{\cite{hac:Aghion+VanReenen+Zingales:2013}} \label{ex-aghion}
+In this section, a further example will make use of the object-orientation of \code{vcovCL()}, and estimate clustered standard errors for a count data hurdle model.
+
 \cite{hac:Aghion+VanReenen+Zingales:2013} investigate the effect of institutional owners (these are, for example, pension funds, insurance companies, etc.) on innovation.
 The authors use firm-level panel data on innovation and institutional ownership from 1991 to 1999 over 803 firms, with the data clustered at company as well as industry level. 
 To capture the differing value of patents, citation-weighted patent counts are used as a proxy for innovation, whereby the authors weight the patents by the number of future citations.
 This motivates the use of count data models.
 
-\subsection{Original analysis by Aghion et al. (2013)}
-
 \cite{hac:Aghion+VanReenen+Zingales:2013} mostly employ Poisson and negative binomial models in a quasi-maximum likelihood approach and cluster standard errors by either companies or industries.
 Still, one limitation of standard count data models is that the zeros and the nonzeros (positives) are assumed to come from the same data-generating process.
-From an economic perspective, there is a difference in determinants of "first innovation" and "continuing innovation". The rationale behind this is the notion of nonlinearities in the innovation process.
+
+From an economic perspective, there is a difference in determinants of ``first innovation'' and ``continuing innovation''. The rationale behind this is the notion of nonlinearities in the innovation process.
 In case that the first innovation is especially hard to obtain in comparison to succeeding innovations, hurdle models offer a useful way that allows for a distinction to be made between these two processes \citep{hac:Berger+Stocker+Zeileis:2016}.
 
-\subsection{Reanalysis by Berger et al. (2016)}
+\subsection*{Reanalysis by \cite{hac:Berger+Stocker+Zeileis:2016}}
 
 \cite{hac:Berger+Stocker+Zeileis:2016} employ two-part hurdle models with a binary part that models the decision to innovate at all, and a count part that models ongoing innovation, respectively.
 The \cite{hac:Aghion+VanReenen+Zingales:2013} data are availlable in the \pkg{sandwich} package.
 <<innovation-data>>= 
-data(InstInnovation, package = "sandwich")
+data("InstInnovation", package = "sandwich")
 @ 
 Hurdle models are fitted with the \code{hurdle} function from the \pkg{pscl} package \citep{hac:Zeileis+Kleiber+Jackman:2008}. Here, the count model family chosen is a negative binomial, and the zero hurdle model family is a binomial with logit link.
 <<innovation-model>>=
@@ -250,18 +330,18 @@ h.innov <- hurdle(
   cites ~ institutions + log(capital/employment) + log(sales),
   data = InstInnovation, dist = "negbin")
 @
-Below, a comparison of "classical", sandwich and clustered standard errors for an exemplary hurdle model is shown. Standard errors are clustered by companies, with a total of 803 clusters.
+Below, a comparison of "classical", HC0 and clustered standard errors for an exemplary hurdle model is shown. Standard errors are clustered by companies, with a total of 803 clusters.
 <<innovation-se>>= 
 library("sandwich")
 vc <- list(
   "classical" = vcov(h.innov),
-  "sandwich" = sandwich(h.innov),
+  "HC0" = sandwich(h.innov),
   "cluster" = vcovCL(h.innov, cluster = InstInnovation$company)
 )
 sapply(vc, function(x) sqrt(diag(x)))
 @
-What can be observed is that when the data are clustered, "classical" standard errors can greatly overstate estimator precision.
-Then, for the exemplary hurdle model, clustered standard errors are scaled up by factors between $1.48$ and $1.86$ compared to sandwich standard errors.
+What can be observed is that when the data are clustered, ``classical'' standard errors can greatly overstate estimator precision.
+Then, for the exemplary hurdle model, clustered standard errors are scaled up by factors between $1.48$ and $1.86$ compared to HC0  standard errors.
 
 \section{Simulation design} \label{sec:simulation}
 
@@ -324,11 +404,12 @@ my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
 levels(s02$vcov) <- c("PC", "gee", "HC0", "HC0-cluster", "random", "classical")
+levels(s02$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("#006400", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
 my.settings[["superpose.symbol"]]$col <- c("#006400", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   data = s02, subset = par != "(Intercept)",
-  ylim = c(0, 1),
+  ylim = c(0.8, 1),
   type = "b", xlab = expression(rho), ylab = "coverage",
   auto.key = list(columns = 2),
   par.strip.text = list(col = "black"), par.settings = my.settings,
@@ -347,11 +428,12 @@ my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
 levels(s03$vcov) <- c("HC0", "HC0-cluster", "classical")
+levels(s03$dist) <- c("betareg", "zerotrunc", "zeroinfl")
 my.settings[["superpose.line"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 my.settings[["superpose.symbol"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   data = s03, subset = par != "(Intercept)",
-  ylim = c(0, 1),
+  ylim = c(0.8, 1),
   type = "b", xlab = expression(rho), ylab = "coverage",
   auto.key = list(columns = 2),
   par.strip.text = list(col = "black"), par.settings = my.settings,
@@ -369,6 +451,7 @@ my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
 levels(s04$vcov) <- c("HC0-cluster", "HC1-cluster", "HC2-cluster", "HC3-cluster")
+levels(s04$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("#377eb8", "cyan4", "#e41a1c", "#4daf4a")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8", "cyan4","#e41a1c", "#4daf4a")
 xyplot(coverage ~ nid | dist, groups = ~ factor(vcov),
@@ -413,6 +496,7 @@ my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
 levels(s05$vcov) <- c("HC0", "HC0-cluster", "classical")
+levels(s05$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 my.settings[["superpose.symbol"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
@@ -422,13 +506,7 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   auto.key = list(columns = 2),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
-@ 
-\caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Poisson, logit. Random effect.}
-  \end{center}
-\end{figure}
-
-\begin{figure}[thb] \label{fig:sim-05-bias}
-  \begin{center}
+@  
 <<sim-05-bias-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 panel.xyref <- function(x, y, ...) {
   panel.abline(h = 0, col = 2)
@@ -439,6 +517,7 @@ my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
 levels(s05$vcov) <- c("HC0", "HC0-cluster", "classical")
+levels(s05$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("slategray", "slategray", "slategray")
 my.settings[["superpose.symbol"]]$col <- c("slategray", "slategray", "slategray")
 xyplot(bias ~ rho | dist, groups = ~ factor(vcov),
@@ -449,7 +528,7 @@ xyplot(bias ~ rho | dist, groups = ~ factor(vcov),
   panel = panel.xyref)
 @ 
 \caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Poisson, logit. Random effect.}
-  \end{center}
+    \end{center}
 \end{figure}
 
 \begin{figure}[thb!] \label{fig:sim-02-1}
@@ -464,6 +543,7 @@ my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
 levels(s02$vcov) <- c("PC", "gee", "HC0", "HC0-cluster", "random", "classical")
+levels(s02$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 my.settings[["superpose.symbol"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
@@ -474,13 +554,7 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
 @ 
-\caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Poisson, logit. Copula.}
-  \end{center}
-\end{figure}
-
-\begin{figure}[thb!] \label{fig:sim-02-bias}
-  \begin{center}
-<<sim-02-bias-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
+<<sim-02-1-bias-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 panel.xyref <- function(x, y, ...) {
   panel.abline(h = 0, col = 2)
   panel.xyplot(x, y, ...)  
@@ -490,6 +564,7 @@ my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
 levels(s02$vcov) <- c("PC", "gee", "HC0", "HC0-cluster", "random", "classical")
+levels(s02$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("slategray", "slategray", "slategray")
 my.settings[["superpose.symbol"]]$col <- c("slategray", "slategray", "slategray")
 xyplot(bias ~ rho | dist, groups = ~ factor(vcov),
