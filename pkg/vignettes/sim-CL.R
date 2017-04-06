@@ -273,7 +273,7 @@ fit <- function(data,
 
   if("dk" %in% vcov) {
     rval <- rbind(rval, data.frame(
-      coef = coef(m), se = sqrt(diag(vcovPL(m, cluster = data$id, lag = 1, adjust = FALSE))), par = names(coef(m)),
+      coef = coef(m), se = sqrt(diag(vcovPL(m, cluster = data$id, adjust = FALSE))), par = names(coef(m)),
       vcov = "dk", stringsAsFactors = FALSE))
   }
 
