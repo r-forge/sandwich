@@ -215,7 +215,7 @@ Thus, an empirical estimating (or score) function evaluates an estimating functi
   \end{array} \right) X.
 \end{eqnarray}
 The outer product estimator in (\ref{eq:meat-op}) corresponds to the White estimator \citep{hac:Eicker:1963,hac:Huber:1967,hac:White:1980}.
-$w_{|i-j|}$ in (\ref{eq:meat-hac}) is a vector of weights \citep{hac:Zeileis:2004}
+$w_{|i-j|}$ in (\ref{eq:meat-hac}) is a vector of weights \citep{hac:Zeileis:2004a}
 In (\ref{eq:meat-hc}), functions $\omega(\cdot)$ derive estimates of the variance of the observed working residuals $r(y_1, x_1^\top \theta), \ldots, r(y_n, x_n^\top \theta)$ \citep{hac:Zeileis:2006}.
 
 \subsection{Clustered covariances} 
@@ -237,16 +237,16 @@ The clustered covariance estimator controls for both heteroscedasticity across a
 Although many publications just refer to ``the'' clustered standard errors, there is a surprisingly wide variation in clustered covariances, particularly due to different flavors of bias corrections.
 The bias correction factor can be split in two parts, a ``cluster bias correction'' and an ``HC bias correction''.
 The cluster bias correction is defined as 
-\begin{equation}
+\begin{equation} \label{eq:biasadj0}
  \frac{G}{G - 1},
 \end{equation} 
 where $G$ is again the number of clusters.
 The HC bias correction can additionally to the cluster bias correction be applied to the clustered covariance estimator. This is an easy task for HC0 and HC1 types of bias correction, but more demanding for cluster generalizations of HC2 and HC3, which have been developed by \cite{hac:Kauermann+Carroll:2001} and \cite{hac:Bell+McCaffrey:2002}.
 HC0 to HC3 bias corrections are defined as
-\begin{eqnarray} \label{eq:biasadj}
-  \mathrm{HC0:} & = & 1 \\
-  \mathrm{HC1:} & = & \frac{n}{n - k} \\
-  \mathrm{HC2:} & = & [\vI_{n_{g}} - \vH_{gg}]^{-0.5} \\
+\begin{eqnarray} \label{eq:biasadj1}
+  \mathrm{HC0:} & = & 1 \\  \label{eq:biasadj2}
+  \mathrm{HC1:} & = & \frac{n}{n - k} \\  \label{eq:biasadj3}
+  \mathrm{HC2:} & = & [\vI_{n_{g}} - \vH_{gg}]^{-0.5} \\  \label{eq:biasadj4}
   \mathrm{HC3:} & = & [\vI_{n_{g}} - \vH_{gg}]^{-1}, 
 \end{eqnarray}  
 where $n$ is the number of observations and $k$ is the number of estimated parameters.
@@ -263,7 +263,7 @@ S(\theta)_{id,time} \quad = \quad S(\theta)_{id} + S(\theta)_{time} - S(\theta)_
 \end{equation}
 Clustered covariance matrices like $S(\theta)_{id}$ and $S(\theta)_{time}$ with an odd number of cluster dimensions are added up, whereas those with an even number of cluster dimensions like $S(\theta)_{id \cap time}$ are substracted off to get the two-way clustered covariance estimator. The same heuristic applies to clustered covariances with more than two dimensions of clusters.
 
-\cite{hac:Petersen:2009} and \cite{hac:Ma:2014} suggest to substract the White covariance matrix as the last substracted matrix in case that the clusters formed by the intersection of $id$ and $time$ do only contain a single observation\footnote{If one wants to cluster by dimensions $id$ and $year$ in a sample of $id-month$ observations, each cluster is composed of 12 observations \citep{hac:Ma:2014}. In such a setting, the last substracted matrix should be a one-way clustered covariance matrix with clusters formed by the intersections of $id$ and $year$.}.
+\cite{hac:Petersen:2009}, \cite{hac:Thompson:2011} and \cite{hac:Ma:2014} suggest to substract the White covariance matrix as the last substracted matrix in case that the clusters formed by the intersection of $id$ and $time$ do only contain a single observation\footnote{If one wants to cluster by dimensions $id$ and $year$ in a sample of $id-month$ observations, each cluster is composed of 12 observations \citep{hac:Ma:2014}. In such a setting, the last substracted matrix should be a one-way clustered covariance matrix with clusters formed by the intersections of $id$ and $year$.}. As \cite{hac:Ma:2014} argues, the White estimator does not take into account any bias adjustment, such that the cluster bias correction $\frac{G}{G-1}$ is larger. Thus, if always the clustered covariance matrix is substracted as the last substracted matrix instead of Whites covariance, clustered covariances are underestimated and can thus lead to erroneous conclusions.
 
 \subsection{Clustered covariances for panel data}
 The information of panel data sets is often overstated, as cross-sectional as well as temporal dependencies may occur \citep{hac:Hoechle:2007}. \cite[][p.~702]{hac:Cameron+Trivedi:2005} noticed that ``NT correlated observations have less information than NT independent observations''. 
@@ -325,35 +325,41 @@ Compared to White's estimator, where squared residuals are along the diagonal of
 
 With regard to the finite-sample propertiers of the PCSE estimator, \cite{hac:Hoechle:2007} argues that they are rather poor if the cross-sectional dimension $g$ is large compared to the time dimension $t$. The PCSE estimator will be quite imprecise for a small $t/g$ ration, as the whole $g \times g$ cross-sectional covariance matrix is estimated.
 
+In the next section, the software implementation of the various types of clustered covariances is introduced.
+
 \section{Software} \label{sec:software}
 
-\subsection{Clustered standard errors}
+\subsection{Clustered covariances}
 
-In the event of clustered data, 
+One-, two-, and multi-way clustered standard errors with the different types of bias correction introduced in (\ref{eq:biasadj1}) - (\ref{eq:biasadj4}) are implemented with the following arguments in the function
 \begin{verbatim}
 vcovCL(x, cluster = NULL, type = NULL, sandwich = TRUE, fix = FALSE, ...)
 \end{verbatim}
-implemented in the \pkg{sandwich} package can be used for the estimation of one-, two-, and multi-way clustered covariances with different types of bias adjustments.
-Compared to classical sandwich estimators, the meat changes for clustered covariances. The function
+as a part of the \pkg{sandwich} package.
+As compared to classical sandwich estimators, the meat for clustered covariances changes and can be separately calculated by the function
 \begin{verbatim}
-meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, white = FALSE, ...)
+meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, white = FALSE, ...).
 \end{verbatim}
-calculates the meat of clustered covariances.
 
-The \code{cluster} argument allows to supply one or more cluster variables. If no cluster variable is supplied, each observation is its own cluster.
+The first argument \code{x} is a fitted model object of class \code{lm}, \code{glm}, \code{zerotrunc}, \code{betareg} or \code{hurdle}, among others.
 
-Different types of bias adjustments are offered, and can be separated into two part, the cluster bias adjustment $G/(G-1)$ (where $G$ is the number of clusters within a cluster dimension) and the HC bias adjustment. Both parts can be separately switched on and off.
-With the \code{cadjust} argument, the cluster bias adjustment can be switched on and off, whereas the \code{type} argument allows to specify the HC type of bias correction.
-HC0-HC3 are offered, HC2 and HC3 are geared towards the linear model, but are also applicable for GLMs \citep{hac:Bell+McCaffrey:2002, hac:Kauermann+Carroll:2001}. A precondition for HC2 and HC3 types of bias adjustment is the existence of a hat matrix or a weighted version of the hat matrix for GLMs, respectively.
-Hence, this is the only part of \code{vcovCL()} that is not fully object-oriented, but just works for \code{lm()} and \code{glm()} model objects.
-However, beyond the glm case it's often not clear what the hat matrix should be.
+The \code{cluster} argument allows to supply one or more cluster variables. If no cluster variable is supplied, each observation is its own cluster per default. In such a case, the clustered covariance estimator collapses to Whites robust covariance estimator.
 
-The \code{white} argument specifies whether to substract HC0-type (that is, White's) covariance matrix as the last substracted matrix or the covariance matrix formed by the intersection of groups \citep{hac:Ma:2014}. If, for instance, the intersection of $id$ and $time$ in (\ref{eq:twoway}) consists of multiple observations, it is suggested \citep{hac:Petersen:2009,hac:Ma:2014} to replace White's covariance matrix as the last substracted matrix by the covariance matrix with clusters formed by intersections of $id$ and $time$.
+The bias correction is composed of two parts, the cluster bias correction defined in (\ref{eq:biasadj0}) and the HC bias correction defined in  (\ref{eq:biasadj1}) - (\ref{eq:biasadj4}). Both types of bias correction can be separately switched on and off.
+With the \code{cadjust} argument, the cluster bias adjustment can be turned on and off, whereas the \code{type} argument allows to specify the HC type of bias correction.
 
-The \code{sandwich} argument returns either the full sandwich or the meat \code{meatCL}, the \code{fix} argument specifies the eigendecomposition of the estimated covariance matrix and convert any negative eigenvalues to zero.
+HC2 and HC3 types of bias correction are geared towards the linear model, but are also applicable for \code{glm} \citep{hac:Bell+McCaffrey:2002, hac:Kauermann+Carroll:2001}. Nevertheless, a precondition for the HC2 and HC3 corrections is the existence of a hat matrix or a weighted version of the hat matrix for GLMs, respectively.
+Hence, this is the only part of \code{vcovCL()} that is not fully object-oriented, but just works for \code{lm} and \code{glm} model objects.
+However, beyond the \code{glm} case it's often not clear what the hat matrix should be.
+
+The \code{white} argument is executed only for two- and multi-way clustered covariances and specifies whether to substract White's covariance matrix as the last substracted matrix in (\ref{eq:twoway}) or the covariance matrix formed by the intersection of groups \citep{hac:Petersen:2009,hac:Thompson:2011,hac:Ma:2014}.
+
+The \code{sandwich} argument returns either the full sandwich estimator or only the meat \code{meatCL} \citep[for details, see][]{hac:Zeileis:2004a}.
+
+The \code{fix} argument specifies whether any negative eigenvalues from the eigendecomposition of the estimated covariance matrix should be converted to zero.
 In some applications with fixed effects, covariance matrix of the estimator may not be positive-definite, which is the why this argument is sometimes required. Additionally, \cite{hac:Cameron+Gelbach+Miller:2011} observe that this is most likely to arise when clustering is done over the same groups as the fixed effects.
 
-\subsection{Standard errors for panel data}
+\subsection{Clustered covariances for panel data}
 
 For panel data, 
 \begin{verbatim}
@@ -365,27 +371,43 @@ as well as
 meatPL(x, cluster = NULL, order.by = NULL, kernel = "Bartlett",
  lag = "max", bw = NULL, adjust = TRUE, ...)
 \end{verbatim}
-allow for estimation of Driscoll and Kraay type covariances \citep{hac:Driscoll+Kraay:1998} as well as Newey-West type covariances \citep{hac:Newey+West:1987}.
+allow for estimation of Driscoll and Kraay type covariances \citep{hac:Driscoll+Kraay:1998} as well as Newey-West type covariances \citep{hac:Newey+West:1987}. Again, \code{vcovPL()} returns the full sandwich if the argument \code{sandwich = TRUE}, and \code{fix = TRUE} converts any negative eigenvalues to zero.
 
-\cite{hac:Driscoll+Kraay:1998} apply a Newey-West type correction to the sequence of cross-sectional averages of the moment conditions \citep{hac:Hoechle:2007}.
-For large length of the time dimesion (and regardless of the length of the cross-sectional dimension), the \cite{hac:Driscoll+Kraay:1998} standard errors are robust to general forms of cross-sectional and serial correlation \citep{hac:Hoechle:2007}.
-The \cite{hac:Newey+West:1987} covariance matrix restricts the \cite{hac:Driscoll+Kraay:1998} covariance matrix to non cross-sectional correlation \par
-The \code{cluster} argument allows to specify a variable indicating the clustering of observations, \code{order.by} allows to specify a variable indicating the aggregation within time periods.
-The \code{kernel} argument is a character specifying the kernel used. All kernels described in \cite{hac:Andrews:1991} are supported.
-\code{lag} indicates the lag length used, \code{bw} specifies the bandwidth of the kernel, which by default corresponds to $\textrm{lag} + 1$.
+The \code{cluster} argument allows to specify a variable indicating the cluster dimension, and resorts to cross-section if no cluster is supplied. A cluster can either be supplied explicitly or be an attribute of the model, or can be a list with both indexes \code{cluster} and \code{order.by}.
+The argument \code{order.by} allows to specify a variable indicating the aggregation within time periods.
+
+The \code{kernel} argument is a character specifying the kernel used. All kernels described in \cite{hac:Andrews:1991} are supported. See \cite{hac:Zeileis:2004} for details.
+
+The \code{lag} argument indicates the lag length used, and can be either numeric or a character (one of ``\code{max}'', ``\code{NW1987}'' or ``\code{NW1994}''). ``\code{max}'' (or equivalently, ``\code{P2009}'' for \cite{hac:Petersen:2009}) indicates the maximum lag length $T - 1$, that is the number of time periods minus one.
+``\code{NW1987}'' corresponds to \cite{hac:Newey+West:1987}, who have shown that their estimator is consistent if the number of lags increases with time periods $T$, but with speed less that $T^{1/4}$ \citep[see also][]{hac:Hoechle:2007}.
+``\code{NW1994}'' sets the lag length to $\mathrm{floor}[4 \cdot (\frac{T}{100})^{2/9}]$ \citep{hac:Newey+West:1994}.
+The function argument \code{bw} specifies the bandwidth of the kernel, which by default corresponds to $\textrm{lag} + 1$.
+
 The \code{adjust} argument allows to make a finite sample adjustment, which amounts to multiplication with $n/(n - k)$, where $n$ is the number of observations, and $k$ is the number of estimated parameters.
+
+%\cite{hac:Driscoll+Kraay:1998} apply a Newey-West type correction to the sequence of cross-sectional averages of the moment conditions %\citep{hac:Hoechle:2007}.
+%For large length of the time dimesion (and regardless of the length of the cross-sectional dimension), the \cite{hac:Driscoll+Kraay:1998} %standard errors are robust to general forms of cross-sectional and serial correlation \citep{hac:Hoechle:2007}.
+%The \cite{hac:Newey+West:1987} covariance matrix restricts the \cite{hac:Driscoll+Kraay:1998} covariance matrix to non cross-sectional %correlation.
 
 \subsection{Panel-corrected standard errors}
 
-Panel-corrected standard errors (PCSE) a la \cite{hac:Beck+Katz:1995} are implemented in
+Panel-corrected standard errors (PCSE) a la \cite{hac:Beck+Katz:1995} are implemented in functions
 \begin{verbatim}
 vcovPC(x, cluster = NULL, order.by = NULL, subsample = TRUE,
- sandwich = TRUE, fix = FALSE, \ldots)
+ sandwich = TRUE, fix = FALSE, ...)
+
+meatPC(x,  cluster = NULL, order.by = NULL, subsample = TRUE,
+ kecker = TRUE, ...)
 \end{verbatim}
-and are usually used for time-series-cross-section (TSCS) data with a large enough time dimension. While an easy task for balanced panel, there are two alternatives to estimate the meat for unbalanced panel \citep{hac:Bailey+Katz:2011}. If \code{subsample = TRUE}, a balanced subset of the panel is employed, whereas for \code{subsample = FALSE}, a pairwise balaced sample is used.
+and are usually used for time-series-cross-section (TSCS) data with a large enough time dimension. 
+The arguments \code{sandwich} and \code{fix} do the same things as in \code{vcovCL()} and \code{vcovPL()}. The same holds true for \code{cluster} and \code{order.by}.
+
+While an easy task for balanced panel, there are two alternatives to estimate the meat for unbalanced panel \citep{hac:Bailey+Katz:2011}. For \code{subsample = TRUE}, a balanced subset of the panel is employed, whereas for \code{subsample = FALSE}, a pairwise balaced sample is used. For details, see \cite{hac:Bailey+Katz:2011}.
+
+The argument \code{kecker} relates to estimation of the meat and determines whether calculations are executed with the Kronecker product or elementwise, which is computationally faster for a large number of observations.
 
 \section{Illustrations} \label{sec:illu}
-The classical area of application for clustered standard errors is the linear model, with model errors that are correlated within clusters. In this section, replication and comparison of clustered standard errors for different \proglang{R} packages is shown on the basis of benchmark \cite{hac:Petersen:2009} data (Example \ref{ex-petersen}). Due to the nice feature of object-orientation, clustered covariances in \code{vcovCL()} are now available for models beyond \code{lm()} or \code{glm()}. Example \ref{ex-aghion} applies \code{vcovCL()} to a hurdle model, using data provided by \cite{hac:Aghion+VanReenen+Zingales:2013}.
+The classical area of application for clustered standard errors is the linear model, with model errors that are correlated within clusters. In this section, replication and comparison of clustered standard errors availlable in a couple of \proglang{R} packages is shown on the basis of benchmark \cite{hac:Petersen:2009} data in Example \ref{ex-petersen}. Due to the nice feature of object-orientation, clustered covariances in \code{vcovCL()} are now available for models beyond \code{lm()} or \code{glm()}. Example \ref{ex-aghion} applies \code{vcovCL()} to a hurdle model, using data provided by \cite{hac:Aghion+VanReenen+Zingales:2013}.
 
 \subsection[Petersen (2009)]{\cite{hac:Petersen:2009}} \label{ex-petersen}
 Benchmark data for testing the clustered standard error estimates in the linear model is a simulated data set\footnote{\url{http://www.kellogg.northwestern.edu/faculty/petersen/htm/papers/se/test_data.txt}} provided by \cite{hac:Petersen:2009}, containing 500 firms over 10 years. The data include 4 variables, \code{firmid}, \code{year}, dependent variable \code{y} and explanatory variable \code{x} \citep[see also][]{hac:Graham+Arai+Hagstroemer:2016}.
@@ -452,10 +474,10 @@ Two-way clustered standard errors with cluster dimensions \code{firmid} as well 
 coeftest(lm.petersen, vcov. = vcovCL(lm.petersen, 
 cluster = cbind(PetersenCL$firmid, PetersenCL$year)))
 @ 
- However, as cluster dimension \code{year} has a total of only 10 cluster, the results should be regarded with caution, as it is required by theory that each cluster dimension has many clusters \citep{hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,hac:Cameron+Miller:2015}
+ However, as cluster dimension \code{year} has a total of only 10 cluster, the results should be regarded with caution, as it is required by theory that each cluster dimension has many clusters \citep{hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,hac:Cameron+Miller:2015}.
  
 \subsection[Aghion et al. (2013)]{\cite{hac:Aghion+VanReenen+Zingales:2013}} \label{ex-aghion}
-In this section, a further example will make use of the object-orientation of \code{vcovCL()}, and estimate clustered standard errors for a count data hurdle model.
+In this section, in a further example we will make use of the object-orientation of \code{vcovCL()}, and estimate clustered standard errors for a count data hurdle model.
 
 \cite{hac:Aghion+VanReenen+Zingales:2013} investigate the effect of institutional owners (these are, for example, pension funds, insurance companies, etc.) on innovation.
 The authors use firm-level panel data on innovation and institutional ownership from 1991 to 1999 over 803 firms, with the data clustered at company as well as industry level. 
@@ -497,8 +519,8 @@ Then, for the exemplary hurdle model, clustered standard errors are scaled up by
 
 \section{Simulation} \label{sec:simulation}
 
-We run a Monte Carlo simulation to assess the methods' performance in a simulation study.
-The aim is to test clustered standard errors beyond \code{lm()} and \code{glm()}. For the linear model, there are a couple of simulation studies in the literature \citep{hac:Cameron+Gelbach+Miller:2008,hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,hac:Harden:2011,hac:Thompson:2011,hac:Cameron+Miller:2015,hac:Jin:2015}, far less for \code{glm()} \citep{hac:Miglioretti+Heagerty:2007} and, up to our knowledge, none for models beyond \code{lm()} and \code{glm()}.
+Next, we run a Monte Carlo simulation to assess the methods' performance in a simulation study.
+The aim is to test clustered standard errors beyond linear and generalized linear models. For the linear model, there are a couple of simulation studies in the literature \citep{hac:Cameron+Gelbach+Miller:2008,hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,hac:Harden:2011,hac:Thompson:2011,hac:Cameron+Miller:2015,hac:Jin:2015}, far less for generalized linear models \citep[see for example][]{hac:Miglioretti+Heagerty:2007} and, up to our knowledge, none for models beyond \code{lm()} and \code{glm()}.
 
 \subsection{Simulation design}
 The simulations are each composed of $10,000$ replications.
@@ -512,7 +534,7 @@ h(\mu_{ig}) = \beta_{0} + \beta_{1} \cdot x_{1,ig} + \beta_{2} \cdot x_{2,g} + \
 with a link function $h$ and expected value $\mu_{ig}$. 
 In order to generate within cluster error correlation, there are two possible options. The first option is to take the marginal model equation (\ref{eq:predictor}) and introduce correlation via a copula. The second option is to add a random effect in equation (\ref{eq:predictor}). 
 
-It has to be mentioned that for the linear model with an identity link function $h(\cdot)$, both options amount to the same thing. Though for models other than \code{lm()}, the two options are different. In the simulations, the copula option is favoured, because for models other than \code{lm()}, including a random effect simultaneously includes a bias, too.
+It has to be mentioned that for the linear model with an identity link function $h(\cdot)$, both options amount to the same thing. Though for models other than \code{lm()}, the two options are different. In the simulation exercises, the copula option is favoured, because for models other than \code{lm()}, including a random effect simultaneously includes a bias, too.
 
 We analyze three regressor variables
 \begin{eqnarray} \label{eq:regressors}
@@ -529,7 +551,7 @@ The vector of coefficients is fixed to
 \beta_{1} & = & (0, 0.85, 0.5, 0.7)^\top \label{beta1} \\ 
 \beta_{2} & = & (0, 0.85, 0, 0)^\top \label{beta2}
 \end{eqnarray}
-even though these values can be interchanged without influencing the results\footnote{Values are equivalent to \cite{hac:Harden:2011}}.
+even though these values can be interchanged without influencing the results\footnote{Values are equivalent to \cite{hac:Harden:2011}.}.
 
 Response distributions examined include Gaussian, Bernoulli (with logit link), Poisson, zero-truncated Poisson, Beta and zero-inflated Poisson (ZIP). \code{vcovCL()} allows estimation of clustered standard errors for all the abovementioned responses (and many more).
 
