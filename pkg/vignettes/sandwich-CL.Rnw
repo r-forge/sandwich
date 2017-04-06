@@ -68,7 +68,7 @@ set.seed(1)
 s01 <- sim(nrep = 10000, nid = 100, nround = 5,
            dist = "gaussian", rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
            coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
-           vcov = c("without", "HC0", "HC0-id", "random", "gee", "bk"),
+           vcov = c("without", "HC0", "HC0-id", "random", "gee", "bk", "dk"),
            type = "copula")
 save(s01, file = "sim-01.rda")
 }
@@ -80,7 +80,7 @@ set.seed(2)
 s02 <- sim(nrep = 10000, nid = 100, nround = 5,
            dist = c("gaussian", "logit", "poisson"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,
-           vcov = c("without", "HC0", "HC0-id", "random", "gee", "bk"),
+           vcov = c("without", "HC0", "HC0-id", "random", "gee", "bk", "dk"),
            type = "copula")
 save(s02, file = "sim-02.rda")
 }
@@ -230,10 +230,10 @@ before the outer product is calculated
   \hat M_\mathrm{CL} \quad = \quad \frac{1}{n} \sum_{g = 1}^G\sum_{i = 1}^{n_{g}}\psi(y_{ig}, x_{ig}, \hat \theta) \psi(y_{ig}, x_{ig}, \hat \theta)^\top.
 \end{equation}
 The clustered covariance estimator generalizes White's famous covariance estimator \citep{hac:White:1980}.
-If it is the case that each observation is its own cluster, clustered covariances correspond to the White's estimator.
+If it is the case that each observation is its own cluster, clustered covariances correspond to the White estimator.
 
 \subsubsection{Types of bias correction}
-The clustered covariance estimator controls for both heteroscedasticity across as well as within cluster, but this comes at the cost that the number of clusters approaches infinity, not the number of observations \citep{hac:Cameron+Gelbach+Miller:2008,hac:Cameron+Miller:2015}.
+The clustered covariance estimator controls for both heteroscedasticity across as well as within clusters, but this comes at the cost that the number of clusters approaches infinity, not the number of observations \citep{hac:Cameron+Gelbach+Miller:2008,hac:Cameron+Miller:2015}.
 Although many publications just refer to ``the'' clustered standard errors, there is a surprisingly wide variation in clustered covariances, particularly due to different flavors of bias corrections.
 The bias correction factor can be split in two parts, a ``cluster bias correction'' and an ``HC bias correction''.
 The cluster bias correction is defined as 
@@ -263,7 +263,9 @@ S(\theta)_{id,time} \quad = \quad S(\theta)_{id} + S(\theta)_{time} - S(\theta)_
 \end{equation}
 Clustered covariance matrices like $S(\theta)_{id}$ and $S(\theta)_{time}$ with an odd number of cluster dimensions are added up, whereas those with an even number of cluster dimensions like $S(\theta)_{id \cap time}$ are substracted off to get the two-way clustered covariance estimator. The same heuristic applies to clustered covariances with more than two dimensions of clusters.
 
-\cite{hac:Petersen:2009}, \cite{hac:Thompson:2011} and \cite{hac:Ma:2014} suggest to substract the White covariance matrix as the last substracted matrix in case that the clusters formed by the intersection of $id$ and $time$ do only contain a single observation\footnote{If one wants to cluster by dimensions $id$ and $year$ in a sample of $id-month$ observations, each cluster is composed of 12 observations \citep{hac:Ma:2014}. In such a setting, the last substracted matrix should be a one-way clustered covariance matrix with clusters formed by the intersections of $id$ and $year$.}. As \cite{hac:Ma:2014} argues, the White estimator does not take into account any bias adjustment, such that the cluster bias correction $\frac{G}{G-1}$ is larger. Thus, if always the clustered covariance matrix is substracted as the last substracted matrix instead of Whites covariance, clustered covariances are underestimated and can thus lead to erroneous conclusions.
+\cite{hac:Petersen:2009}, \cite{hac:Thompson:2011} and \cite{hac:Ma:2014} suggest to substract the White covariance matrix as the last substracted matrix in case that the clusters formed by the intersection of $id$ and $time$ do only contain a single observation\footnote{If one wants to cluster by dimensions $id$ and $year$ in a sample of $id-month$ observations, each cluster is composed of 12 observations \citep{hac:Ma:2014}. In such a setting, the last substracted matrix should be a one-way clustered covariance matrix with clusters formed by the intersections of $id$ and $year$.}. 
+
+As \cite{hac:Ma:2014} argues, the White estimator does not take into account any bias adjustment, such that the cluster bias correction $\frac{G}{G-1}$ is larger. Thus, if always the clustered covariance matrix is substracted as the last substracted matrix instead of White's covariance, clustered covariances are underestimated and can thus lead to erroneous conclusions.
 
 \subsection{Clustered covariances for panel data}
 The information of panel data sets is often overstated, as cross-sectional as well as temporal dependencies may occur \citep{hac:Hoechle:2007}. \cite[][p.~702]{hac:Cameron+Trivedi:2005} noticed that ``NT correlated observations have less information than NT independent observations''. 
@@ -303,7 +305,7 @@ where $i$ denotes the cross section and $t$ the time units with
 
 \subsection{Panel-corrected standard errors}
 
-For time-series-cross-section (hereinafter abbreviated to TSCS) data, panel-corrected standard errors (hereinafter abbreviated to PCSE) have been introduced by \cite{hac:Beck+Katz:1995} as an attempt to weaken the problems of the Parks-Kmenta method\footnote{}. 
+For time-series-cross-section (hereinafter abbreviated to TSCS) data, panel-corrected standard errors (hereinafter abbreviated to PCSE) have been introduced by \cite{hac:Beck+Katz:1995} as an attempt to weaken the problems of the Parks-Kmenta method\footnote{For details, see \cite{hac:Hoechle:2007}.}. 
 According to \cite{hac:Beck+Katz:1995}, TSCS data are characterized by having repeated observations on fixed units (for example states), where the number of units normally is between 10 and 100, and the number of time periods ranges between 20 and 50 years. 
 
 Thus, TSCS data do often allow not only for heterocedasticity, but for spatial and temporal correlation as well.
@@ -556,7 +558,7 @@ even though these values can be interchanged without influencing the results\foo
 Response distributions examined include Gaussian, Bernoulli (with logit link), Poisson, zero-truncated Poisson, Beta and zero-inflated Poisson (ZIP). \code{vcovCL()} allows estimation of clustered standard errors for all the abovementioned responses (and many more).
 
 \subsubsection{Sandwich covariances}
-Standard errors being compared to each other include iid standard errors without heteroscedasticity and without autocorrelation (classical), HC0 standard errors \citep{hac:White:1980}, panel-corrected (PC) standard errors a la \cite{hac:Beck+Katz:1995} and clustered standard errors with HC0 to HC3 adjustment (HC0-cluster, HC1-cluster, HC2-cluster, HC3-cluster). In addition, standard errors from a random effects model (random) and from a GEE with exchangeable correlation structure (gee) are compared.
+Standard errors being compared to each other include iid standard errors without heteroscedasticity and without autocorrelation (classical), HC0 standard errors \citep{hac:White:1980}, Driscoll and Kraay standard errors (DK) \citep{hac:Driscoll+Kraay:1998}, panel-corrected (PC) standard errors a la \cite{hac:Beck+Katz:1995} and clustered standard errors with HC0 to HC3 adjustment (HC0-cluster, HC1-cluster, HC2-cluster, HC3-cluster). In addition, standard errors from a random effects model (random) and from a GEE with exchangeable correlation structure (gee) are compared.
 
 \subsubsection{Outcome measures}
 The outcome measures we are most interested in are coverage and bias. In order to assess the validity of statistical inference, the coverage rate is used.
@@ -573,14 +575,14 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s01$vcov) <- c("PC", "gee", "HC0", "HC0-cluster", "random", "classical")
-my.settings[["superpose.line"]]$col <- c("#006400", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
-my.settings[["superpose.symbol"]]$col <- c("#006400", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
+levels(s01$vcov) <- c("PC", "DK", "gee", "HC0", "HC0-cluster", "random", "classical")
+my.settings[["superpose.line"]]$col <- c("#006400", "#0000FF", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
+my.settings[["superpose.symbol"]]$col <- c("#006400", "#0000FF", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
 xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
   data = s01, subset = par != "(Intercept)",
   ylim = c(0, 1),
   type = "b", xlab = expression(rho), ylab = "coverage",
-  auto.key = list(columns = 2),
+  auto.key = list(columns = 3),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
 @ 
@@ -675,12 +677,39 @@ options(prompt = "  ")
 
 \section[R Code]{\proglang{R} code} \label{sec:code}
 
-The packages \pkg{sandwich}, \pkg{pscl} and \pkg{lattice} are
+The packages \pkg{sandwich}, \pkg{pscl}, \pkg{lattice}, \pkg{countreg}, \pkg{lmtest}, \pkg{plm}, \pkg{geepack}, \pkg{multiwayvcov} and \pkg{lme4} are
 required for the applications in this paper.
+For replication of the simulation exercises, the \proglang{R} script \code{sim-CL.R} is required.
+
+\proglang{R} version \Sexpr{paste(R.Version()[6:7], collapse = ".")} has been used for computations.
+Package versions that have been employed are \pkg{sandwich}
+\Sexpr{gsub("-", "--", packageDescription("sandwich")$Version)},
+\pkg{pscl} \Sexpr{gsub("-", "--", packageDescription("pscl")$Version)},
+\pkg{lattice} \Sexpr{gsub("-", "--", packageDescription("lattice")$Version)},
+\pkg{countreg} \Sexpr{gsub("-", "--", packageDescription("countreg")$Version)},
+\pkg{lmtest} \Sexpr{gsub("-", "--", packageDescription("lmtest")$Version)},
+\pkg{plm} \Sexpr{gsub("-", "--", packageDescription("plm")$Version)},
+\pkg{geepack} \Sexpr{gsub("-", "--", packageDescription("geepack")$Version)},
+\pkg{multiwayvcov} \Sexpr{gsub("-", "--", packageDescription("multiwayvcov")$Version)},
+and \pkg{lme4} \Sexpr{gsub("-", "--", packageDescription("lme4")$Version)}
+have been used.
+
+\proglang{R} itself and all packages (except \pkg{countreg}) used are available from
+CRAN at \url{http://CRAN.R-project.org/}.
 
 \section{Simulation of correlated data with a random cluster effect} \label{sec:rceffect}
 
-\begin{figure}[thb] \label{fig:sim-05}
+Introducing within cluster error correlation via a random cluster effect instead of a copula comes along with introducing a bias, which also affects the coverage.
+The linear predictor in (\ref{eq:predictor}) with a random cluster effect $v_g$ is
+\begin{eqnarray} \label{eq:predictorv}
+h(\mu_{ig}) = \beta_{0} + \beta_{1} \cdot x_{1,ig} + \beta_{2} \cdot x_{2,g} + \beta_{3} \cdot x_{3,ig} + v_g,
+\end{eqnarray}
+where $v_g$ is a random draw at cluster level $v_{g} \sim \mathcal{N}_{g}(0, \frac{\rho}{1 - \rho})$.
+$\rho$ determines again the importance of the random cluster effect and ranges from 0 to 0.9.
+
+Contrasting coverage and bias plots for models except the linear model depicts the problem caused by this approach.
+
+\begin{figure}[thb] \label{fig:sim-05-01}
   \begin{center}
 <<sim-05-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
@@ -722,6 +751,9 @@ xyplot(bias ~ rho | dist, groups = ~ factor(vcov),
 \caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Binomial, Poisson. Random effect.}
     \end{center}
 \end{figure}
+
+Figure \ref{fig:sim-05-01} constrasts coverage and bias plots for Gaussian, Binomial and Poisson response distributions with a single regressor $x_{1,ig}$. Each of the 10,000 simulated datasets consists of 100 clusters with 5 observations per cluster.
+For the Gaussian response, the random cluster effect does not introduce a bias, but for the Binomial and Logit responses, this happend. The higher the importance of the random cluster effect $\rho$, the worse the bias.
 
 \begin{figure}[thb!] \label{fig:sim-02-1}
   \begin{center}
@@ -769,6 +801,8 @@ xyplot(bias ~ rho | dist, groups = ~ factor(vcov),
 \caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Binomial, Poisson. Copula.}
   \end{center}
 \end{figure}
+
+Introducing within cluster correlation via a copula as in \ref{fig:sim-02-1}, unbiased estimators for the response distribution occur and thus also do not have an impact on the coverage.
 
 \end{appendix}
 
