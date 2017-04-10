@@ -558,17 +558,28 @@ even though these values can be interchanged without influencing the results\foo
 Response distributions examined include Gaussian, Bernoulli (with logit link), Poisson, zero-truncated Poisson, Beta and zero-inflated Poisson (ZIP). \code{vcovCL()} allows estimation of clustered standard errors for all the abovementioned responses (and many more).
 
 \subsubsection{Sandwich covariances}
-Standard errors being compared to each other include iid standard errors without heteroscedasticity and without autocorrelation (classical), HC0 standard errors \citep{hac:White:1980}, Driscoll and Kraay standard errors (DK) \citep{hac:Driscoll+Kraay:1998}, panel-corrected (PC) standard errors a la \cite{hac:Beck+Katz:1995} and clustered standard errors with HC0 to HC3 adjustment (HC0-cluster, HC1-cluster, HC2-cluster, HC3-cluster). In addition, standard errors from a random effects model (random) and from a GEE with exchangeable correlation structure (gee) are compared.
+Standard errors being compared to each other include iid standard errors without heteroscedasticity and without autocorrelation (\emph{classical}), HC0 standard errors \citep{hac:White:1980}, Driscoll and Kraay standard errors (\emph{DK}) \citep{hac:Driscoll+Kraay:1998}, panel-corrected standard errors (\emph{PC}) a la \cite{hac:Beck+Katz:1995} and clustered standard errors with HC0 to HC3 adjustment (\emph{HC0-cluster}, \emph{HC1-cluster}, \emph{HC2-cluster}, \emph{HC3-cluster}). In addition, standard errors from a random effects model (\emph{random}) and from a GEE with exchangeable correlation structure (\emph{gee}) are compared.
 
-\subsubsection{Outcome measures}
-The outcome measures we are most interested in are coverage and bias. In order to assess the validity of statistical inference, the coverage rate is used.
+\subsubsection{Outcome measure}
+In order to assess the validity of statistical inference, the coverage rate is the outcome measure of interest.
 If standard errors are estimated accurately, the coverage rate of the $95$\% confidence intervall should be close to 0.95. 
-Values less than 0.925 will be considered to have underestimated standard errors while values greater than 0.975 will be considered to have overestimated standard errors.
-
+Values less than 0.925 will be considered to have underestimated standard errors towards a Type I error, while values greater than 0.975 will be considered to have overestimated standard errors towards a Type II error.
 
 \subsection{Results}
+The questions of interest in our simulation study can be summarized in the following four experiments:
+\begin{itemize}
+   \item Experiment I: How do the different model/covariance estimators perform for different types of regressors in the linear regression model?
+   \item Experiment II: How do clustered covariances perform for glm types of responses?
+   \item Experiment III: How do clustered covariances perform for beyond glm type of responses?
+   \item Experiment IV: How do clustered covariances with HC0 - HC3 bias correction perform for different type of responses?
+\end{itemize}
+Figure (\ref{fig:sim-01}) shows the results from Experiment I and plots the coverage probabilities for the coefficients $x1$ (\ref{x1}), $x2$ (\ref{x2}) and $x3$ (\ref{x3}). Regressor $x1$ is composed of a random draw at cluster level and a random draw at individual level, with a cluster correlation of 0.25. Regressor $x2$ is a random draw at cluster level, and regressor $x3$ is composed of a random draw at individual level.
+
+Depending on the regressors, the implications of changing the cluster correlation $\rho$ from 0 to 0.9 on different covariance estimators are substantial.
+Starting with regressor $x1$
+
 \setkeys{Gin}{width=.85\textwidth} 
-\begin{figure}[thb] \label{fig:sim-01}
+\begin{figure}[thb] 
   \begin{center}
 <<sim-01-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
@@ -576,8 +587,8 @@ my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
 levels(s01$vcov) <- c("PC", "DK", "gee", "HC0", "HC0-cluster", "random", "classical")
-my.settings[["superpose.line"]]$col <- c("#006400", "#0000FF", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
-my.settings[["superpose.symbol"]]$col <- c("#006400", "#0000FF", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
+my.settings[["superpose.line"]]$col <- c("#006400", "#00868B", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
+my.settings[["superpose.symbol"]]$col <- c("#006400", "#00868B", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
 xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
   data = s01, subset = par != "(Intercept)",
   ylim = c(0, 1),
@@ -587,33 +598,35 @@ xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
   panel = panel.xyref)
 @ 
 \caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$. Copula.}
+\label{fig:sim-01}
   \end{center}
 \end{figure}
 
-\begin{figure}[thb] \label{fig:sim-02}
+\begin{figure}[thb]
   \begin{center}
 <<sim-02-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s02$vcov) <- c("PC", "gee", "HC0", "HC0-cluster", "random", "classical")
+levels(s02$vcov) <- c("PC", "DK", "gee", "HC0", "HC0-cluster", "random", "classical")
 levels(s02$dist) <- c("gaussian", "binomial(logit)", "poisson")
-my.settings[["superpose.line"]]$col <- c("#006400", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
-my.settings[["superpose.symbol"]]$col <- c("#006400", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
+my.settings[["superpose.line"]]$col <- c("#006400", "#00868B", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
+my.settings[["superpose.symbol"]]$col <- c("#006400", "#00868B" , "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   data = s02, subset = par != "(Intercept)",
-  ylim = c(0.8, 1),
+  ylim = c(0.5, 1),
   type = "b", xlab = expression(rho), ylab = "coverage",
-  auto.key = list(columns = 2),
+  auto.key = list(columns = 3),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
 @ 
 \caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Binomial, Poisson. Copula.}
+\label{fig:sim-02}
   \end{center}
 \end{figure}
 
-\begin{figure}[thb] \label{fig:sim-03}
+\begin{figure}[thb] 
   \begin{center}
 <<sim-03-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 s03 <- na.omit(s03)
@@ -634,10 +647,11 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   panel = panel.xyref)
 @ 
 \caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F =$ Beta, zerotrunc. Poisson, ZIP. Copula.}
+\label{fig:sim-03}
   \end{center}
 \end{figure}
 
-\begin{figure}[thb] \label{fig:sim-04}
+\begin{figure}[thb] 
  \begin{center}
 <<sim-04-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
@@ -646,8 +660,8 @@ my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
 levels(s04$vcov) <- c("HC0-cluster", "HC1-cluster", "HC2-cluster", "HC3-cluster")
 levels(s04$dist) <- c("gaussian", "binomial(logit)", "poisson")
-my.settings[["superpose.line"]]$col <- c("#377eb8", "cyan4", "#e41a1c", "#4daf4a")
-my.settings[["superpose.symbol"]]$col <- c("#377eb8", "cyan4","#e41a1c", "#4daf4a")
+my.settings[["superpose.line"]]$col <- c("#377eb8", "#00E5EE", "#e41a1c", "#4daf4a")
+my.settings[["superpose.symbol"]]$col <- c("#377eb8", "#00E5EE","#e41a1c", "#4daf4a")
 xyplot(coverage ~ nid | dist, groups = ~ factor(vcov),
   data = na.omit(s04), subset = par != "(Intercept)",
   type = "b", xlab = "G", ylab = "coverage",
@@ -656,10 +670,11 @@ xyplot(coverage ~ nid | dist, groups = ~ factor(vcov),
   panel = panel.xyref)
 @ 
 \caption{Fixed: $N_{g} = 5$, $\rho = 0.25$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Binomial, Poisson. Copula.}
+\label{fig:sim-04}
  \end{center}
 \end{figure}
 
-\section{Summary} \label{sec:summary}
+%\section{Summary} \label{sec:summary}
 
 \clearpage
 
@@ -677,25 +692,26 @@ options(prompt = "  ")
 
 \section[R Code]{\proglang{R} code} \label{sec:code}
 
-The packages \pkg{sandwich}, \pkg{pscl}, \pkg{lattice}, \pkg{countreg}, \pkg{lmtest}, \pkg{plm}, \pkg{geepack}, \pkg{multiwayvcov} and \pkg{lme4} are
+The packages \pkg{sandwich}, \pkg{countreg}, \pkg{geepack}, \pkg{lattice}, \pkg{lme4}, \pkg{lmtest},\pkg{multiwayvcov}, \pkg{plm} and \pkg{pscl} are
 required for the applications in this paper.
 For replication of the simulation exercises, the \proglang{R} script \code{sim-CL.R} is required.
 
 \proglang{R} version \Sexpr{paste(R.Version()[6:7], collapse = ".")} has been used for computations.
 Package versions that have been employed are \pkg{sandwich}
 \Sexpr{gsub("-", "--", packageDescription("sandwich")$Version)},
-\pkg{pscl} \Sexpr{gsub("-", "--", packageDescription("pscl")$Version)},
-\pkg{lattice} \Sexpr{gsub("-", "--", packageDescription("lattice")$Version)},
 \pkg{countreg} \Sexpr{gsub("-", "--", packageDescription("countreg")$Version)},
-\pkg{lmtest} \Sexpr{gsub("-", "--", packageDescription("lmtest")$Version)},
-\pkg{plm} \Sexpr{gsub("-", "--", packageDescription("plm")$Version)},
 \pkg{geepack} \Sexpr{gsub("-", "--", packageDescription("geepack")$Version)},
+\pkg{lattice} \Sexpr{gsub("-", "--", packageDescription("lattice")$Version)},
+\pkg{lme4} \Sexpr{gsub("-", "--", packageDescription("lme4")$Version)},
+\pkg{lmtest} \Sexpr{gsub("-", "--", packageDescription("lmtest")$Version)},
 \pkg{multiwayvcov} \Sexpr{gsub("-", "--", packageDescription("multiwayvcov")$Version)},
-and \pkg{lme4} \Sexpr{gsub("-", "--", packageDescription("lme4")$Version)}
+\pkg{plm} \Sexpr{gsub("-", "--", packageDescription("plm")$Version)},
+and \pkg{pscl} \Sexpr{gsub("-", "--", packageDescription("pscl")$Version)}
 have been used.
 
 \proglang{R} itself and all packages (except \pkg{countreg}) used are available from
-CRAN at \url{http://CRAN.R-project.org/}.
+CRAN at \url{http://CRAN.R-project.org/}. 
+\pkg{countreg} is accessible from \url{https://r-forge.r-project.org/projects/countreg/}.
 
 \section{Simulation of correlated data with a random cluster effect} \label{sec:rceffect}
 
@@ -705,11 +721,11 @@ The linear predictor in (\ref{eq:predictor}) with a random cluster effect $v_g$ 
 h(\mu_{ig}) = \beta_{0} + \beta_{1} \cdot x_{1,ig} + \beta_{2} \cdot x_{2,g} + \beta_{3} \cdot x_{3,ig} + v_g,
 \end{eqnarray}
 where $v_g$ is a random draw at cluster level $v_{g} \sim \mathcal{N}_{g}(0, \frac{\rho}{1 - \rho})$.
-$\rho$ determines again the importance of the random cluster effect and ranges from 0 to 0.9.
+$\rho$ ranges from 0 to 0.9 and determines again the importance of the random cluster effect.
 
 Contrasting coverage and bias plots for models except the linear model depicts the problem caused by this approach.
 
-\begin{figure}[thb] \label{fig:sim-05-01}
+\begin{figure}[thb] 
   \begin{center}
 <<sim-05-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
@@ -749,13 +765,15 @@ xyplot(bias ~ rho | dist, groups = ~ factor(vcov),
   panel = panel.xyref)
 @ 
 \caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Binomial, Poisson. Random effect.}
+\label{fig:sim-05-01}
     \end{center}
 \end{figure}
 
-Figure \ref{fig:sim-05-01} constrasts coverage and bias plots for Gaussian, Binomial and Poisson response distributions with a single regressor $x_{1,ig}$. Each of the 10,000 simulated datasets consists of 100 clusters with 5 observations per cluster.
-For the Gaussian response, the random cluster effect does not introduce a bias, but for the Binomial and Logit responses, this happend. The higher the importance of the random cluster effect $\rho$, the worse the bias.
+Figure (\ref{fig:sim-05-01}) constrasts coverage (in the upper panel) and bias (in the lower panel) for Gaussian, binomial (with a logit link) and Poisson response distributions with a single regressor $x_{1,ig}$. Regressor $x_{ig}$ exhibits a cluster correlation $\rho_x$ of 0.25. Each of the 10,000 simulated datasets consists of 100 clusters with 5 observations per cluster.
 
-\begin{figure}[thb!] \label{fig:sim-02-1}
+For the Gaussian response, the random cluster effect does not introduce a bias, but for the binomial and Poisson responses, the random cluster effect comes along with a negative bias. It can be observed that the bias is rising with the random cluster effect $\rho$.
+
+\begin{figure}[thb!] 
   \begin{center}
 <<sim-02-1figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 panel.xyref <- function(x, y, ...) {
@@ -766,7 +784,7 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s02$vcov) <- c("PC", "gee", "HC0", "HC0-cluster", "random", "classical")
+levels(s02$vcov) <- c("PC", "DK", "gee", "HC0", "HC0-cluster", "random", "classical")
 levels(s02$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 my.settings[["superpose.symbol"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
@@ -787,7 +805,7 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s02$vcov) <- c("PC", "gee", "HC0", "HC0-cluster", "random", "classical")
+levels(s02$vcov) <- c("PC", "DK", "gee", "HC0", "HC0-cluster", "random", "classical")
 levels(s02$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("slategray", "slategray", "slategray")
 my.settings[["superpose.symbol"]]$col <- c("slategray", "slategray", "slategray")
@@ -799,10 +817,11 @@ xyplot(bias ~ rho | dist, groups = ~ factor(vcov),
   panel = panel.xyref)
 @ 
 \caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Binomial, Poisson. Copula.}
+\label{fig:sim-02-1}
   \end{center}
 \end{figure}
 
-Introducing within cluster correlation via a copula as in \ref{fig:sim-02-1}, unbiased estimators for the response distribution occur and thus also do not have an impact on the coverage.
+Introducing within cluster correlation via a copula as is done for all simulation exercises in Section (\ref{sec:simulation}) does not introduce a bias. This can be observed in Figure (\ref{fig:sim-02-1}), where estimators are unbiased for the response distributions and thus no further deteriorate the coverage.
 
 \end{appendix}
 
