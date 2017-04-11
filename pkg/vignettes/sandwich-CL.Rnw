@@ -42,7 +42,7 @@ In \proglang{R}, the sandwich package \citep{hac:Zeileis:2004a,hac:Zeileis:2006}
 
 \SweaveOpts{engine=R,eps=FALSE}
 %\VignetteIndexEntry{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R}
-%\VignetteDepends{sandwich,pscl,lattice,geepack,multiwayvcov,plm}
+%\VignetteDepends{sandwich,pscl,lattice,geepack,multiwayvcov,plm,lme4,countreg}
 %\VignetteKeywords{clustered data, clustered covariance matrix estimators, object-orientation, simulation, R}
 %\VignettePackage{sandwich}
 
