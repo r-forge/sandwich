@@ -1,4 +1,3 @@
-
 \name{vcovPC}
 \alias{vcovPC}
 \alias{meatPC}
@@ -10,8 +9,11 @@
 }
 
 \usage{
-vcovPC(x, cluster = NULL, order.by = NULL, subsample = TRUE, sandwich = TRUE, fix = FALSE, \dots)
-meatPC(x, cluster = NULL, order.by = NULL, subsample = TRUE, kecker = TRUE, \dots)
+vcovPC(x, cluster = NULL, order.by = NULL,
+  subsample = TRUE, sandwich = TRUE, fix = FALSE, \dots)
+
+meatPC(x, cluster = NULL, order.by = NULL,
+  subsample = TRUE, kecker = TRUE, \dots)
 }
 
 \arguments{
@@ -40,7 +42,8 @@ meatPC(x, cluster = NULL, order.by = NULL, subsample = TRUE, kecker = TRUE, \dot
   The function \code{meatPC} is the work horse for estimating
   the meat of Beck and Katz (1995) covariance matrix estimators.
   \code{vcovPC} is a wrapper calling
-  \code{\link{sandwich}} and \code{\link{bread}} (Zeileis 2006).
+  \code{\link[sandwich]{sandwich}} and \code{\link[sandwich]{bread}}
+  (Zeileis 2006).
 
   Following Bailey and Katz (2011), there are two alternatives to
   estimate the meat for unbalanced panels.
@@ -86,8 +89,12 @@ m <- lm(y ~ x, data = PetersenCL)
 sqrt(diag(vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year)))
 
 ## calculation of the meat via the Kronecker-product 
-system.time(sqrt(diag(vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year, kecker = TRUE))))
-system.time(sqrt(diag(vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year, kecker = FALSE))))
+system.time(sqrt(diag(
+  vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year, kecker = TRUE)
+)))
+system.time(sqrt(diag(
+  vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year, kecker = FALSE)
+)))
 
 ## unbalanced panel
 if(requireNamespace("pcse", quietly = TRUE)) {
