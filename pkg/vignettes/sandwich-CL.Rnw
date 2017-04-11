@@ -325,7 +325,7 @@ the meat of the panel-corrected covariance matrix is defined as \citep{hac:Beck+
 \end{equation}
 Compared to White's estimator, where squared residuals are along the diagonal of the estimator, the covariance across clusters is estimated by the cross product of their residuals \citep{hac:Johnson:2004}. While Whites approach does not account for clustering and handles each observations separately, panel-corrected covariances utilize the clustering structure.
 
-With regard to the finite-sample propertiers of the PCSE estimator, \cite{hac:Hoechle:2007} argues that they are rather poor if the cross-sectional dimension $g$ is large compared to the time dimension $t$. The PCSE estimator will be quite imprecise for a small $t/g$ ration, as the whole $g \times g$ cross-sectional covariance matrix is estimated.
+With regard to the finite-sample propertiers of the PCSE estimator, \cite{hac:Hoechle:2007} argues that they are rather poor if the cross-sectional dimension $g$ is large compared to the time dimension $t$. The PCSE estimator will be quite imprecise for a small $t/g$ ratio, as the whole $g \times g$ cross-sectional covariance matrix is estimated.
 
 In the next section, the software implementation of the various types of clustered covariances is introduced.
 
@@ -569,14 +569,26 @@ Values less than 0.925 will be considered to have underestimated standard errors
 The questions of interest in our simulation study can be summarized in the following four experiments:
 \begin{itemize}
    \item Experiment I: How do the different model/covariance estimators perform for different types of regressors in the linear regression model?
-   \item Experiment II: How do clustered covariances perform for glm types of responses?
-   \item Experiment III: How do clustered covariances perform for beyond glm type of responses?
+   \item Experiment II: How do clustered covariances perform for glm type of responses?
+   \item Experiment III: How do clustered covariances perform for beyond glm responses?
    \item Experiment IV: How do clustered covariances with HC0 - HC3 bias correction perform for different type of responses?
 \end{itemize}
-Figure (\ref{fig:sim-01}) shows the results from Experiment I and plots the coverage probabilities for the coefficients $x1$ (\ref{x1}), $x2$ (\ref{x2}) and $x3$ (\ref{x3}). Regressor $x1$ is composed of a random draw at cluster level and a random draw at individual level, with a cluster correlation of 0.25. Regressor $x2$ is a random draw at cluster level, and regressor $x3$ is composed of a random draw at individual level.
+Figure (\ref{fig:sim-01}) shows the results from Experiment I and plots the coverage probabilities for the coefficients $x1$ (\ref{x1}), $x2$ (\ref{x2}) and $x3$ (\ref{x3}) on the y-axis. Regressor $x1$ is composed of a combination of a random draw at cluster level and a random draw at individual level, with a cluster correlation of 0.25. Regressor $x2$ consists of a random draw at cluster level, and regressor $x3$ is composed of a random draw at individual level. 
 
-Depending on the regressors, the implications of changing the cluster correlation $\rho$ from 0 to 0.9 on different covariance estimators are substantial.
-Starting with regressor $x1$
+On the x-axis the within cluster correlation $\rho$ is shown, running from 0 (no correlation) to 0.9 (high correlation).
+Depending on the regressors, the implications of running the cluster correlation $\rho$ from 0 to 0.9 on different covariance estimators are substantial.
+
+Starting with regressor $x1$, at $\rho = 0$, all standard errors except the Driscoll and Kraay standard errors perform well. It can be observed that when the number of observations within each cluster is small with only $N_g = 5$, Driscoll and Kraay standard errors are substantially underestimated, even for a $\rho$ of 0.
+Panel-corrected standard errors for regressor $x1$ underestimate the ``true'' standard errors, that applies all the more the higher $\rho$. To a smaller extend, the same holds true for ``classical'' standard errors.
+As noted by \cite{hac:Hoechle:2007}, PCSE can be quite imprecise if the crosss-sectional dimension is large compared to the time dimension.
+
+It can be observed that for regressor $x2$, Driscoll and Kraay standard errors, PCSE, and to a smaller extend also ``classical'' and HC0 standard errors are getting worse the larger the within cluster correlation.
+
+For regressor $x3$, independent of the value of $\rho$, all methods perform well (except again the Driscoll and Kraay estimator).
+
+In summary, it holds for the linear model that if a regressor exhibits within cluster correlation even to a small extent, HC0 and ``classical'' standard errors that do not take the cluster dimension into account, deteriorate with an increasing $\rho$. In addition, PCSE and Driscoll and Kraay standard errors do not perform sufficiently well because of a too small $N_g$.
+
+As the effects of regressor $x1$ are in between the effects of regressors $x2$ (varies at cluster level) and $x3$ (varies at individual level), we limit ourselves to a single regressor $x1$ in the following simulation experiments.
 
 \setkeys{Gin}{width=.85\textwidth} 
 \begin{figure}[thb] 
@@ -602,6 +614,8 @@ xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
   \end{center}
 \end{figure}
 
+Figure (\ref{fig:sim-02}) illustrates the results from Experiment II. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. Three response distributions are compared: Gaussian, binomial (with a logit link) and Poisson distribution. Unlike in Experiment I, only a single regressor $x1$ is included, with a $\rho_x$ of 0.25.
+
 \begin{figure}[thb]
   \begin{center}
 <<sim-02-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
@@ -625,6 +639,8 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
 \label{fig:sim-02}
   \end{center}
 \end{figure}
+
+Figure (\ref{fig:sim-03}) shows the outcome of Experiment III.
 
 \begin{figure}[thb] 
   \begin{center}
@@ -650,6 +666,8 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
 \label{fig:sim-03}
   \end{center}
 \end{figure}
+
+Figure (\ref{fig:sim-04}) depicts the findings of Experiment IV.
 
 \begin{figure}[thb] 
  \begin{center}
