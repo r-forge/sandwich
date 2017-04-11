@@ -572,7 +572,7 @@ The questions of interest in our simulation study can be summarized in the follo
    \item Experiment I: How do the different model/covariance estimators perform for different types of regressors in the linear regression model?
    \item Experiment II: How do clustered covariances perform for glm type of responses?
    \item Experiment III: How do clustered covariances perform for beyond glm responses?
-   \item Experiment IV: How do clustered covariances with HC0 - HC3 bias correction perform for different type of responses?
+   \item Experiment IV: How do clustered covariances with HC0--HC3 bias correction perform for different type of responses?
 \end{itemize}
 Figure~\ref{fig:sim-01} shows the results from Experiment I and plots the coverage probabilities for the coefficients $x1$ (\ref{x1}), $x2$ (\ref{x2}) and $x3$ (\ref{x3}) on the y-axis. Regressor $x1$ is composed of a combination of a random draw at cluster level and a random draw at individual level, with a cluster correlation of 0.25. Regressor $x2$ consists of a random draw at cluster level, and regressor $x3$ is composed of a random draw at individual level. 
 
@@ -684,7 +684,7 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
 \label{fig:sim-03}
 \end{figure}
 
-Figure~\ref{fig:sim-04} depicts the findings of Experiment IV. The y-axis represents again the coverage, but in contrast to the other simulation experiments, the number of clusters $G$ is plotted on the x-axis, ranging from 10 to 50 clusters, and in further steps of 50 up to 250 clusters. Gaussian, binomial and Poisson responses are compared with each other, with the focus on clustered standard errors with HC0-HC3 types of bias correction.
+Figure~\ref{fig:sim-04} depicts the findings of Experiment IV. The y-axis represents again the coverage, but in contrast to the other simulation experiments, the number of clusters $G$ is plotted on the x-axis, ranging from 10 to 50 clusters, and in further steps of 50 up to 250 clusters. Gaussian, binomial and Poisson responses are compared with each other, with the focus on clustered standard errors with HC0--HC3 types of bias correction.
 
 In most cases, all of the standard errors are underestimated for $G = 10$ clusters (except clustered standard errors with HC3 bias correction for the binomial response). The larger the number of clusters $G$, the better the coverage and the less standard errors are underestimated. It can be observed that about 50 clusters is often enough for accurate inference. This result is well known in the literature \citep[][among others]{hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Harden:2011,hac:Cameron+Miller:2015}.
 
@@ -720,19 +720,8 @@ Figure~\ref{fig:sim-04} depicts the findings of Experiment IV.
 
 %\section{Summary} \label{sec:summary}
 
-\bibliography{hac}
 
-\newpage
-
-\begin{appendix}
-
-%% for "plain pretty" printing
-\DefineVerbatimEnvironment{Sinput}{Verbatim}{}
-<<echo=FALSE>>=
-options(prompt = "  ")
-@
-
-\section[R Code]{\proglang{R} code} \label{sec:code}
+\section*{Computation details}
 
 The packages \pkg{sandwich}, \pkg{countreg}, \pkg{geepack}, \pkg{lattice}, \pkg{lme4}, \pkg{lmtest},\pkg{multiwayvcov}, \pkg{plm} and \pkg{pscl} are
 required for the applications in this paper.
@@ -752,8 +741,21 @@ and \pkg{pscl} \Sexpr{gsub("-", "--", packageDescription("pscl")$Version)}
 have been used.
 
 \proglang{R} itself and all packages (except \pkg{countreg}) used are available from
-CRAN at \url{http://CRAN.R-project.org/}. 
+CRAN at \url{https://CRAN.R-project.org/}. 
 \pkg{countreg} is accessible from \url{https://R-Forge.R-project.org/projects/countreg/}.
+
+
+\bibliography{hac}
+
+\newpage
+
+\begin{appendix}
+
+%% for "plain pretty" printing
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{}
+<<echo=FALSE>>=
+options(prompt = "  ")
+@
 
 \section{Simulation of correlated data with a random cluster effect} \label{sec:rceffect}
 
