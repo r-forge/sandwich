@@ -42,7 +42,7 @@ In \proglang{R}, the sandwich package \citep{hac:Zeileis:2004a,hac:Zeileis:2006}
 
 \SweaveOpts{engine=R,eps=FALSE}
 %\VignetteIndexEntry{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R}
-%\VignetteDepends{sandwich,pscl,lattice}
+%\VignetteDepends{sandwich,pscl,lattice,geepack,multiwayvcov,plm}
 %\VignetteKeywords{clustered data, clustered covariance matrix estimators, object-orientation, simulation, R}
 %\VignettePackage{sandwich}
 
@@ -142,7 +142,7 @@ Second, we perform a Monte Carlo simulation study for various response distribut
 
 The rest of the paper is structured as follows: Section~\ref{sec:idea} discusses the idea of clustered covariances and reviews existing \proglang{R} packages for sandwich as well as clustered covariances.
 Section~\ref{sec:methods} deals with the theory behind sandwich covariances, especially with respect to clustered covariances for cross-sectional and longitudinal data, clustered data as well as panel data.
-Section~\ref{sec:software} then takes a look behind the scenes of a new object-oriented \proglang{R} implementation for clustered covariances, Section~\ref{sec:illu} gives an empirical illustration based on data provided from \cite{hac:Petersen:2009} and \cite{hac:Aghion+VanReenen+Zingales:2013}. The simulation setup and results are discussed in Section~\ref{sec:simulation}. Section~\ref{sec:summary} concludes.
+Section~\ref{sec:software} then takes a look behind the scenes of a new object-oriented \proglang{R} implementation for clustered covariances, Section~\ref{sec:illu} gives an empirical illustration based on data provided from \cite{hac:Petersen:2009} and \cite{hac:Aghion+VanReenen+Zingales:2013} as reanalyzed by \cite{hac:Berger+Stocker+Zeileis:2016}. The simulation setup and results are discussed in Section~\ref{sec:simulation}. Section~\ref{sec:summary} concludes.
 
 \section{Idea} \label{sec:idea}
 
@@ -163,7 +163,7 @@ The function \code{sandwich()} computes a sandwich estimate from a fitted model 
 \code{vcovHC()} is a wrapper calling \code{sandwich()} and \code{bread()}, and can compute arbitrary HC covariance matrix estimates, ranging from HC0 to HC5.
 \code{vcovHAC()} can compute HAC covariance matrix estimates, with the convenience functions \code{kernHAC()} for Andrews' kernel HAC \citep{hac:Andrews:1991} and \code{NeweyWest()} for Newey-West-style HAC \citep{hac:Newey+West:1987,hac:Newey+West:1994}. Thus, for cross-section and time-series data, object-oriented implementations for HC and HAC estimators are already implemented in \pkg{sandwich}.
 
-Another \proglang{R} package that includes heteroscedasticity consistent covariance estimators for models produced by \code{lm()} is the \pkg{car} package \citep{hac:Fox+Weisberg:2011}. Its function \pkg{hccm} calculates HC0-HC4 type covariance matrices.
+Another \proglang{R} package that includes heteroscedasticity consistent covariance estimators for models produced by \code{lm()} is the \pkg{car} package \citep{hac:Fox+Weisberg:2011}. Its function \pkg{hccm} calculates HC0--HC4 type covariance matrices.
 
 However, there is as yet no systematic implementation of clustered/panel covariances beyond (generalized) linear models. Though, activities were carried out to implement clustered covariances in a couple of \proglang{R} packages.
 
@@ -333,7 +333,7 @@ In the next section, the software implementation of the various types of cluster
 
 \subsection{Clustered covariances}
 
-One-, two-, and multi-way clustered standard errors with the different types of bias correction introduced in (\ref{eq:biasadj1}) - (\ref{eq:biasadj4}) are implemented with the following arguments in the function
+One-, two-, and multi-way clustered standard errors with the different types of bias correction introduced in (\ref{eq:biasadj1})--(\ref{eq:biasadj4}) are implemented with the following arguments in the function
 \begin{verbatim}
 vcovCL(x, cluster = NULL, type = NULL, sandwich = TRUE, fix = FALSE, ...)
 \end{verbatim}
@@ -347,7 +347,7 @@ The first argument \code{x} is a fitted model object of class \code{lm}, \code{g
 
 The \code{cluster} argument allows to supply one or more cluster variables. If no cluster variable is supplied, each observation is its own cluster per default. In such a case, the clustered covariance estimator collapses to Whites robust covariance estimator.
 
-The bias correction is composed of two parts, the cluster bias correction defined in (\ref{eq:biasadj0}) and the HC bias correction defined in  (\ref{eq:biasadj1}) - (\ref{eq:biasadj4}). Both types of bias correction can be separately switched on and off.
+The bias correction is composed of two parts, the cluster bias correction defined in (\ref{eq:biasadj0}) and the HC bias correction defined in  (\ref{eq:biasadj1})--(\ref{eq:biasadj4}). Both types of bias correction can be separately switched on and off.
 With the \code{cadjust} argument, the cluster bias adjustment can be turned on and off, whereas the \code{type} argument allows to specify the HC type of bias correction.
 
 HC2 and HC3 types of bias correction are geared towards the linear model, but are also applicable for \code{glm} \citep{hac:Bell+McCaffrey:2002, hac:Kauermann+Carroll:2001}. Nevertheless, a precondition for the HC2 and HC3 corrections is the existence of a hat matrix or a weighted version of the hat matrix for GLMs, respectively.
@@ -417,16 +417,15 @@ Benchmark data for testing the clustered standard error estimates in the linear 
 The data are availlable in \pkg{sandwich} as well as in \pkg{multiwayvcov}.
 <<petersen-data>>= 
 data("PetersenCL", package = "sandwich")
-formula <- y ~ x
 @ 
 A linear model is fitted with \code{lm()}, 
 <<petersen-model>>=
-lm.petersen <- lm(formula, data = PetersenCL)
+p_lm <- lm(y ~ x, data = PetersenCL)
 @ 
 and testing the estimated coefficients with \code{coeftest()} from package \pkg{lmtest} gives
 <<petersen-coeftest>>=
 library("lmtest")
-coeftest(lm.petersen)
+coeftest(p_lm)
 @ 
 However, the data are clustered by firms (\code{firmid}), with a total of 500 clusters. But ignoring dependency by using ``classical'' standard errors results in an overstate of estimator precision.
 
@@ -435,19 +434,24 @@ Thus, one-way clustered standard errors clustered by \code{firmid} are employed.
 It can be observed that clustered standard errors are larger than ``classical'' standard errors.
 <<petersen-onecl-firm>>=
 library("sandwich")
-coeftest(lm.petersen, vcov = vcovCL(lm.petersen, cluster = PetersenCL$firmid))
+coeftest(p_lm, vcov = vcovCL(p_lm, cluster = PetersenCL$firmid))
 @ 
 Next, a comparison of clustered standard errors resulting from packages \pkg{sandwich}, \pkg{plm}, \pkg{geepack} and \pkg{multiwayvcov} is shown. 
 <<petersen-packages>>=
 library("plm")
 library("geepack")
 library("multiwayvcov")
+vcov.geeglm <- function(object) {
+  vc <- object$geese$vbeta
+  rownames(vc) <- colnames(vc) <- names(coef(object))
+  return(vc)
+}
 @ 
 A pooling model is estimated with \code{plm()}, \code{geeglm()} fits a generalized estimating equation (GEE) with independence correlation structure.
 <<petersen-models>>=
-plm.petersen <- plm(formula, data = PetersenCL, model = "pooling")
-gee.petersen <- geeglm(formula, data = PetersenCL, id = PetersenCL$firmid,
-corstr = "independence", family = gaussian)
+p_plm <- plm(y ~ x, data = PetersenCL, model = "pooling")
+p_gee <- geeglm(y ~ x, data = PetersenCL, id = PetersenCL$firmid,
+  corstr = "independence", family = gaussian)
 @ 
 The bias correction in \code{vcovCL()} is set to \code{cadjust = TRUE} and \code{type = "HC1"} by default. For \code{cluster.vcov()} from \pkg{multiwayvcov}, the same type of bias correction is achieved by default.
 Nevertheless, in order to accomplish exactly the same value for clustered standard errors using \code{plm} and \code{geepack}, the bias correction $\frac{G}{G - 1}\frac{n - 1}{n - k}$ has to be multiplied to the covariance matrices.
@@ -462,10 +466,10 @@ $G$ is the number of clusters, $n$ is the total number of observations, and $k$ 
 All packages examined produce the same clustered standard errors for \code{lm()}. For packages \pkg{plm} and \pkg{geepack}, one manually has to adjust the bias correction factor. In general, differences in clustered standard errors often coincide with different types of bias corrections.
 <<petersen-comparison>>=
 vc <- list(
-  "sandwich" = vcovCL(lm.petersen, cluster = PetersenCL$firmid),
-  "multiwayvcov" = cluster.vcov(lm.petersen, cluster = PetersenCL$firmid),
-  "plm" = vcovHC(plm.petersen, type = "HC0", cluster = "group") * bc,
-  "geepack" = gee.petersen$geese$vbeta * bc
+  "sandwich" = vcovCL(p_lm, cluster = PetersenCL$firmid),
+  "multiwayvcov" = cluster.vcov(p_lm, cluster = PetersenCL$firmid),
+  "plm" = vcovHC(p_plm, type = "HC0", cluster = "group") * bc,
+  "geepack" = vcov(p_gee) * bc
 )
 sapply(vc, function(x) sqrt(diag(x)))
 @ 
@@ -473,12 +477,12 @@ sapply(vc, function(x) sqrt(diag(x)))
 \subsubsection{Two-way clustered standard errors}
 Two-way clustered standard errors with cluster dimensions \code{firmid} as well as \code{year} are, at least for the explanatory variable \code{x}, a bit larger than one-way clustered standard errors clustered by \code{firmid}.
 <<petersen-twocl>>=
-coeftest(lm.petersen, vcov. = vcovCL(lm.petersen, 
+coeftest(p_lm, vcov. = vcovCL(p_lm, 
 cluster = cbind(PetersenCL$firmid, PetersenCL$year)))
 @ 
  However, as cluster dimension \code{year} has a total of only 10 cluster, the results should be regarded with caution, as it is required by theory that each cluster dimension has many clusters \citep{hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,hac:Cameron+Miller:2015}.
  
-\subsection[Aghion et al. (2013)]{\cite{hac:Aghion+VanReenen+Zingales:2013}} \label{ex-aghion}
+\subsection[Aghion et al. (2013) and Berger et al. (2016)]{\cite{hac:Aghion+VanReenen+Zingales:2013} and \cite{hac:Berger+Stocker+Zeileis:2016}} \label{ex-aghion}
 In this section, in a further example we will make use of the object-orientation of \code{vcovCL()}, and estimate clustered standard errors for a count data hurdle model.
 
 \cite{hac:Aghion+VanReenen+Zingales:2013} investigate the effect of institutional owners (these are, for example, pension funds, insurance companies, etc.) on innovation.
@@ -491,10 +495,7 @@ Still, one limitation of standard count data models is that the zeros and the no
 
 From an economic perspective, there is a difference in determinants of ``first innovation'' and ``continuing innovation''. The rationale behind this is the notion of nonlinearities in the innovation process.
 In case that the first innovation is especially hard to obtain in comparison to succeeding innovations, hurdle models offer a useful way that allows for a distinction to be made between these two processes \citep{hac:Berger+Stocker+Zeileis:2016}.
-
-\subsubsection[Berger et al. (2016)]{Reanalysis by \cite{hac:Berger+Stocker+Zeileis:2016}}
-
-\cite{hac:Berger+Stocker+Zeileis:2016} employ two-part hurdle models with a binary part that models the decision to innovate at all, and a count part that models ongoing innovation, respectively.
+Therefore, \cite{hac:Berger+Stocker+Zeileis:2016} employ two-part hurdle models with a binary part that models the decision to innovate at all, and a count part that models ongoing innovation, respectively.
 The \cite{hac:Aghion+VanReenen+Zingales:2013} data are availlable in the \pkg{sandwich} package.
 <<innovation-data>>= 
 data("InstInnovation", package = "sandwich")
@@ -534,7 +535,7 @@ The linear predictor is
 h(\mu_{ig}) = \beta_{0} + \beta_{1} \cdot x_{1,ig} + \beta_{2} \cdot x_{2,g} + \beta_{3} \cdot x_{3,ig}
 \end{eqnarray}
 with a link function $h$ and expected value $\mu_{ig}$. 
-In order to generate within cluster error correlation, there are two possible options. The first option is to take the marginal model equation (\ref{eq:predictor}) and introduce correlation via a copula. The second option is to add a random effect in equation (\ref{eq:predictor}). 
+In order to generate within cluster error correlation, there are two possible options. The first option is to take the marginal model Equation~\ref{eq:predictor} and introduce correlation via a copula. The second option is to add a random effect in Equation~\ref{eq:predictor}. 
 
 It has to be mentioned that for the linear model with an identity link function $h(\cdot)$, both options amount to the same thing. Though for models other than \code{lm()}, the two options are different. In the simulation exercises, the copula option is favoured, because for models other than \code{lm()}, including a random effect simultaneously includes a bias, too.
 
@@ -573,7 +574,7 @@ The questions of interest in our simulation study can be summarized in the follo
    \item Experiment III: How do clustered covariances perform for beyond glm responses?
    \item Experiment IV: How do clustered covariances with HC0 - HC3 bias correction perform for different type of responses?
 \end{itemize}
-Figure (\ref{fig:sim-01}) shows the results from Experiment I and plots the coverage probabilities for the coefficients $x1$ (\ref{x1}), $x2$ (\ref{x2}) and $x3$ (\ref{x3}) on the y-axis. Regressor $x1$ is composed of a combination of a random draw at cluster level and a random draw at individual level, with a cluster correlation of 0.25. Regressor $x2$ consists of a random draw at cluster level, and regressor $x3$ is composed of a random draw at individual level. 
+Figure~\ref{fig:sim-01} shows the results from Experiment I and plots the coverage probabilities for the coefficients $x1$ (\ref{x1}), $x2$ (\ref{x2}) and $x3$ (\ref{x3}) on the y-axis. Regressor $x1$ is composed of a combination of a random draw at cluster level and a random draw at individual level, with a cluster correlation of 0.25. Regressor $x2$ consists of a random draw at cluster level, and regressor $x3$ is composed of a random draw at individual level. 
 
 On the x-axis the within cluster correlation $\rho$ is shown, running from 0 (no correlation) to 0.9 (high correlation).
 Depending on the regressors, the implications of running the cluster correlation $\rho$ from 0 to 0.9 on different covariance estimators are substantial.
@@ -590,9 +591,9 @@ In summary, it holds for the linear model that if a regressor exhibits within cl
 
 As the effects of regressor $x1$ are in between the effects of regressors $x2$ (varies at cluster level) and $x3$ (varies at individual level), we limit ourselves to a single regressor $x1$ in the following simulation experiments.
 
-\setkeys{Gin}{width=.85\textwidth} 
-\begin{figure}[thb] 
-  \begin{center}
+\setkeys{Gin}{width=\textwidth} 
+\begin{figure}[t!] 
+\centering
 <<sim-01-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
@@ -611,17 +612,16 @@ xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
 @ 
 \caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$. Copula.}
 \label{fig:sim-01}
-  \end{center}
 \end{figure}
 
-Figure (\ref{fig:sim-02}) illustrates the results from Experiment II. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. Three response distributions are compared: Gaussian, binomial (with a logit link) and Poisson. Unlike in Experiment I, only a single regressor $x1$ is included, with a $\rho_x$ of 0.25.
-The left panel depicts the coverage for the Gaussian response, and thus corresponds to the left panel in Figure (\ref{fig:sim-01}). 
+Figure~\ref{fig:sim-02} illustrates the results from Experiment II. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. Three response distributions are compared: Gaussian, binomial (with a logit link) and Poisson. Unlike in Experiment I, only a single regressor $x1$ is included, with a $\rho_x$ of 0.25.
+The left panel depicts the coverage for the Gaussian response, and thus corresponds to the left panel in Figure~\ref{fig:sim-01}. 
 
 Results are qualitatively similar for the binomial and Poisson responses. The only exception are the standard errors from a random effects model, where the coverage is moving faster downwards than for the other standard errors. 
 One can thus conclude that clustered standard errors will also work for glm's.
 
-\begin{figure}[thb]
-  \begin{center}
+\begin{figure}[t!]
+\centering
 <<sim-02-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
@@ -641,14 +641,27 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
 @ 
 \caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Binomial, Poisson. Copula.}
 \label{fig:sim-02}
-  \end{center}
 \end{figure}
 
-Figure (\ref{fig:sim-03}) shows the outcome of Experiment III and reveals the strength of the new function \code{vcovCL()} that comes with the feature that allows to estimate clustered covariances for models beyond glms. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. 
+Figure~\ref{fig:sim-03} shows the outcome of Experiment III and reveals the strength of the new function \code{vcovCL()} that comes with the feature that allows to estimate clustered covariances for models beyond glms. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. 
 Comparisons are made between beta regression, zerotruncated Poisson and zero-inflated Poisson (ZIP). For these response distributions, clustered standard errors perform well and remain nearly constant even for an increasing $\rho$. Standard errors that do not take into account the cluster correlation, like ``classical'' and HC0 standard errors underestimate the true standard errors more and more the larger $\rho$.
+On the x-axis the within cluster correlation $\rho$ is shown, running from 0 (no correlation) to 0.9 (high correlation).
+Depending on the regressors, the implications of running the cluster correlation $\rho$ from 0 to 0.9 on different covariance estimators are substantial.
 
-\begin{figure}[thb] 
-  \begin{center}
+Starting with regressor $x1$, at $\rho = 0$, all standard errors except the Driscoll and Kraay standard errors perform well. It can be observed that when the number of observations within each cluster is small with only $N_g = 5$, Driscoll and Kraay standard errors are substantially underestimated, even for a $\rho$ of 0.
+Panel-corrected standard errors for regressor $x1$ underestimate the ``true'' standard errors, that applies all the more the higher $\rho$. To a smaller extend, the same holds true for ``classical'' standard errors.
+As noted by \cite{hac:Hoechle:2007}, PCSE can be quite imprecise if the crosss-sectional dimension is large compared to the time dimension.
+
+It can be observed that for regressor $x2$, Driscoll and Kraay standard errors, PCSE, and to a smaller extend also ``classical'' and HC0 standard errors are getting worse the larger the within cluster correlation.
+
+For regressor $x3$, independent of the value of $\rho$, all methods perform well (except again the Driscoll and Kraay estimator).
+
+In summary, it holds for the linear model that if a regressor exhibits within cluster correlation even to a small extent, HC0 and ``classical'' standard errors that do not take the cluster dimension into account, deteriorate with an increasing $\rho$. In addition, PCSE and Driscoll and Kraay standard errors do not perform sufficiently well because of a too small $N_g$.
+
+As the effects of regressor $x1$ are in between the effects of regressors $x2$ (varies at cluster level) and $x3$ (varies at individual level), we limit ourselves to a single regressor $x1$ in the following simulation experiments.
+
+\begin{figure}[t!] 
+\centering
 <<sim-03-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 s03 <- na.omit(s03)
 my.settings <- canonical.theme(color = TRUE)
@@ -669,17 +682,15 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
 @ 
 \caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F =$ Beta, zerotrunc. Poisson, ZIP. Copula.}
 \label{fig:sim-03}
-  \end{center}
 \end{figure}
 
-Figure (\ref{fig:sim-04}) depicts the findings of Experiment IV. The y-axis represents again the coverage, but in contrast to the other simulation experiments, the number of clusters $G$ is plotted on the x-axis, ranging from 10 to 50 clusters, and in further steps of 50 up to 250 clusters. Gaussian, binomial and Poisson responses are compared with each other, with the focus on clustered standard errors with HC0-HC3 types of bias correction.
+Figure~\ref{fig:sim-04} depicts the findings of Experiment IV. The y-axis represents again the coverage, but in contrast to the other simulation experiments, the number of clusters $G$ is plotted on the x-axis, ranging from 10 to 50 clusters, and in further steps of 50 up to 250 clusters. Gaussian, binomial and Poisson responses are compared with each other, with the focus on clustered standard errors with HC0-HC3 types of bias correction.
 
 In most cases, all of the standard errors are underestimated for $G = 10$ clusters (except clustered standard errors with HC3 bias correction for the binomial response). The larger the number of clusters $G$, the better the coverage and the less standard errors are underestimated. It can be observed that about 50 clusters is often enough for accurate inference. This result is well known in the literature \citep[][among others]{hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Harden:2011,hac:Cameron+Miller:2015}.
 
 Additionally, it can be observed that the higher the number of clusters, the less the different types of HC bias correction make the difference. However, for a small number of clusters, the HC3 correction works best, followed by HC2, HC1 and HC0. For the linear model, \cite{hac:Long+Ervin:2000} suggest to use HC3 for small samples (with less than 250 observations).
 
-\begin{figure}[thb] 
- \begin{center}
+\begin{figure}[t!] 
 <<sim-04-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
@@ -698,16 +709,20 @@ xyplot(coverage ~ nid | dist, groups = ~ factor(vcov),
 @ 
 \caption{Fixed: $N_{g} = 5$, $\rho = 0.25$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Binomial, Poisson. Copula.}
 \label{fig:sim-04}
- \end{center}
 \end{figure}
+
+Figure~\ref{fig:sim-02} illustrates the results from Experiment II. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. Three response distributions are compared: Gaussian, binomial (with a logit link) and Poisson distribution. Unlike in Experiment I, only a single regressor $x1$ is included, with a $\rho_x$ of 0.25.
+
+Figure~\ref{fig:sim-03} shows the outcome of Experiment III.
+
+Figure~\ref{fig:sim-04} depicts the findings of Experiment IV.
+
 
 %\section{Summary} \label{sec:summary}
 
-\clearpage
-
 \bibliography{hac}
 
-\clearpage
+\newpage
 
 \begin{appendix}
 
@@ -738,7 +753,7 @@ have been used.
 
 \proglang{R} itself and all packages (except \pkg{countreg}) used are available from
 CRAN at \url{http://CRAN.R-project.org/}. 
-\pkg{countreg} is accessible from \url{https://r-forge.r-project.org/projects/countreg/}.
+\pkg{countreg} is accessible from \url{https://R-Forge.R-project.org/projects/countreg/}.
 
 \section{Simulation of correlated data with a random cluster effect} \label{sec:rceffect}
 
@@ -752,8 +767,8 @@ $\rho$ ranges from 0 to 0.9 and determines again the importance of the random cl
 
 Contrasting coverage and bias plots for models except the linear model depicts the problem caused by this approach.
 
-\begin{figure}[thb] 
-  \begin{center}
+\begin{figure}[t!] 
+\centering
 <<sim-05-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
@@ -793,15 +808,14 @@ xyplot(bias ~ rho | dist, groups = ~ factor(vcov),
 @ 
 \caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Binomial, Poisson. Random effect.}
 \label{fig:sim-05-01}
-    \end{center}
 \end{figure}
 
-Figure (\ref{fig:sim-05-01}) constrasts coverage (in the upper panel) and bias (in the lower panel) for Gaussian, binomial (with a logit link) and Poisson response distributions with a single regressor $x_{1,ig}$. Regressor $x_{ig}$ exhibits a cluster correlation $\rho_x$ of 0.25. Each of the 10,000 simulated datasets consists of 100 clusters with 5 observations per cluster.
+Figure~\ref{fig:sim-05-01} constrasts coverage (in the upper panel) and bias (in the lower panel) for Gaussian, binomial (with a logit link) and Poisson response distributions with a single regressor $x_{1,ig}$. Regressor $x_{ig}$ exhibits a cluster correlation $\rho_x$ of 0.25. Each of the 10,000 simulated datasets consists of 100 clusters with 5 observations per cluster.
 
 For the Gaussian response, the random cluster effect does not introduce a bias, but for the binomial and Poisson responses, the random cluster effect comes along with a negative bias. It can be observed that the bias is rising with the random cluster effect $\rho$.
 
-\begin{figure}[thb!] 
-  \begin{center}
+\begin{figure}[t!] 
+\centering
 <<sim-02-1figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 panel.xyref <- function(x, y, ...) {
   panel.abline(h = 0.95, col = 2)
@@ -845,10 +859,9 @@ xyplot(bias ~ rho | dist, groups = ~ factor(vcov),
 @ 
 \caption{Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, Binomial, Poisson. Copula.}
 \label{fig:sim-02-1}
-  \end{center}
 \end{figure}
 
-Introducing within cluster correlation via a copula as is done for all simulation exercises in Section (\ref{sec:simulation}) does not introduce a bias. This can be observed in Figure (\ref{fig:sim-02-1}), where estimators are unbiased for the response distributions and thus no further deteriorate the coverage.
+Introducing within cluster correlation via a copula as is done for all simulation exercises in Section~\ref{sec:simulation} does not introduce a bias. This can be observed in Figure~\ref{fig:sim-02-1}, where estimators are unbiased for the response distributions and thus no further deteriorate the coverage.
 
 \end{appendix}
 
