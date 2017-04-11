@@ -582,7 +582,7 @@ Starting with regressor $x1$, at $\rho = 0$, all standard errors except the Dris
 Panel-corrected standard errors for regressor $x1$ underestimate the ``true'' standard errors, that applies all the more the higher $\rho$. To a smaller extend, the same holds true for ``classical'' standard errors.
 As noted by \cite{hac:Hoechle:2007}, PCSE can be quite imprecise if the crosss-sectional dimension is large compared to the time dimension.
 
-It can be observed that for regressor $x2$, Driscoll and Kraay standard errors, PCSE, and to a smaller extend also ``classical'' and HC0 standard errors are getting worse the larger the within cluster correlation.
+It can be observed that for regressor $x2$, Driscoll and Kraay standard errors, PCSE, and to a smaller extend also ``classical'' and HC0 standard errors are getting worse the larger the within cluster correlation. ``classical'' standard errors are biased downwards because of the wrong assumption of independent observations \citep[see also][]{hac:Harden:2011}.
 
 For regressor $x3$, independent of the value of $\rho$, all methods perform well (except again the Driscoll and Kraay estimator).
 
@@ -614,7 +614,11 @@ xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
   \end{center}
 \end{figure}
 
-Figure (\ref{fig:sim-02}) illustrates the results from Experiment II. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. Three response distributions are compared: Gaussian, binomial (with a logit link) and Poisson distribution. Unlike in Experiment I, only a single regressor $x1$ is included, with a $\rho_x$ of 0.25.
+Figure (\ref{fig:sim-02}) illustrates the results from Experiment II. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. Three response distributions are compared: Gaussian, binomial (with a logit link) and Poisson. Unlike in Experiment I, only a single regressor $x1$ is included, with a $\rho_x$ of 0.25.
+The left panel depicts the coverage for the Gaussian response, and thus corresponds to the left panel in Figure (\ref{fig:sim-01}). 
+
+Results are qualitatively similar for the binomial and Poisson responses. The only exception are the standard errors from a random effects model, where the coverage is moving faster downwards than for the other standard errors. 
+One can thus conclude that clustered standard errors will also work for glm's.
 
 \begin{figure}[thb]
   \begin{center}
@@ -640,7 +644,8 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   \end{center}
 \end{figure}
 
-Figure (\ref{fig:sim-03}) shows the outcome of Experiment III.
+Figure (\ref{fig:sim-03}) shows the outcome of Experiment III and reveals the strength of the new function \code{vcovCL()} that comes with the feature that allows to estimate clustered covariances for models beyond glms. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. 
+Comparisons are made between beta regression, zerotruncated Poisson and zero-inflated Poisson (ZIP). For these response distributions, clustered standard errors perform well and remain nearly constant even for an increasing $\rho$. Standard errors that do not take into account the cluster correlation, like ``classical'' and HC0 standard errors underestimate the true standard errors more and more the larger $\rho$.
 
 \begin{figure}[thb] 
   \begin{center}
@@ -667,7 +672,11 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   \end{center}
 \end{figure}
 
-Figure (\ref{fig:sim-04}) depicts the findings of Experiment IV.
+Figure (\ref{fig:sim-04}) depicts the findings of Experiment IV. The y-axis represents again the coverage, but in contrast to the other simulation experiments, the number of clusters $G$ is plotted on the x-axis, ranging from 10 to 50 clusters, and in further steps of 50 up to 250 clusters. Gaussian, binomial and Poisson responses are compared with each other, with the focus on clustered standard errors with HC0-HC3 types of bias correction.
+
+In most cases, all of the standard errors are underestimated for $G = 10$ clusters (except clustered standard errors with HC3 bias correction for the binomial response). The larger the number of clusters $G$, the better the coverage and the less standard errors are underestimated. It can be observed that about 50 clusters is often enough for accurate inference. This result is well known in the literature \citep[][among others]{hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Harden:2011,hac:Cameron+Miller:2015}.
+
+Additionally, it can be observed that the higher the number of clusters, the less the different types of HC bias correction make the difference. However, for a small number of clusters, the HC3 correction works best, followed by HC2, HC1 and HC0. For the linear model, \cite{hac:Long+Ervin:2000} suggest to use HC3 for small samples (with less than 250 observations).
 
 \begin{figure}[thb] 
  \begin{center}
