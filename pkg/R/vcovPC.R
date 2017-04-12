@@ -14,7 +14,7 @@ vcovPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, sandwic
   return(rval)
 }
 
-meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kecker = TRUE, ...)
+meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kronecker = TRUE, ...)
 {
   ## extract estimating functions / aka scores
   if (is.list(x) && !is.null(x$na.action)) class(x$na.action) <- "omit"
@@ -57,7 +57,7 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kecker 
     n <- length(unique(cluster))
     xx <- split(X, cluster)
     xxCL <- lapply(1L:n, function(i) matrix(xx[[i]], nrow = t, ncol = ncol(X)))
-    if(kecker) {
+    if(kronecker) {
             omega <- kronecker(sigma, diag(x = 1L, nrow = NROW(e), ncol = NROW(e)))
         } else {
             omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]]/(n*t)))))
@@ -84,7 +84,7 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kecker 
     e[is.na(e)] <- 0L
     e <- t(e)
     sigma <- crossprod(e) / denoma
-    if(kecker) {
+    if(kronecker) {
         omega <- kronecker(sigma, diag(x = 1L, nrow = NROW(e), ncol = NROW(e)))
     } else {
         t <- length(unique(pair$order.by))
@@ -94,7 +94,7 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kecker 
         omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]] /  N))))
     }
     }   
-    if(kecker) {
+    if(kronecker) {
         X <- as.matrix(X)
         rval <- t(X) %*% omega %*% X / N
     } else {
