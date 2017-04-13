@@ -13,7 +13,7 @@ vcovPC(x, cluster = NULL, order.by = NULL,
   subsample = TRUE, sandwich = TRUE, fix = FALSE, \dots)
 
 meatPC(x, cluster = NULL, order.by = NULL,
-  subsample = TRUE, kecker = TRUE, \dots)
+  subsample = TRUE, kronecker = TRUE, \dots)
 }
 
 \arguments{
@@ -28,9 +28,9 @@ meatPC(x, cluster = NULL, order.by = NULL,
     If set to \code{FALSE} only the meat matrix is returned.}
   \item{fix}{logical. Should the covariance matrix be fixed to be
     positive semi-definite in case it is not?}  
-  \item{kecker}{logical. Calculate the meat via the
+  \item{kronecker}{logical. Calculate the meat via the
   Kronecker-product, shortening the computation time for small
-  matrices. For large matrices, set \code{kecker = FALSE}.}
+  matrices. For large matrices, set \code{kronecker = FALSE}.}
   \item{\dots}{arguments passed to the \code{meatPC} or \code{estfun} function,
     respectively.}
 }
@@ -90,10 +90,10 @@ sqrt(diag(vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year)))
 
 ## calculation of the meat via the Kronecker-product 
 system.time(sqrt(diag(
-  vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year, kecker = TRUE)
+  vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year, kronecker = TRUE)
 )))
 system.time(sqrt(diag(
-  vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year, kecker = FALSE)
+  vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year, kronecker = FALSE)
 )))
 
 ## unbalanced panel
