@@ -135,14 +135,14 @@ In panel data, clustered errors can arise from correlation of different time per
 
 This paper contributes to the literature particularly in two respects:
 
-First, we discuss a set of computational tools for the \proglang{R} system for statistical computing \citep{hac:R:2008}, providing for an object-oriented implementation of clustered covariances/standard errors in the \proglang{R} package \pkg{sandwich}.
-Using this infrastructure, sandwich covariances for cross-section or time series data have been available for models beyond \code{lm()} or \code{glm()}, e.g., for packages \pkg{MASS}, \pkg{pscl}, \pkg{countreg}, \pkg{betareg}, among many others. However, corresponding functions for clustered or panel data have been somewhat scattered or available only for certain modeling functions. This shortcoming has been corrected in the development version of sandwich on \proglang{R}-Forge.
+First, we discuss a set of computational tools for the \proglang{R} system for statistical computing \citep{hac:R:2017}, providing for an object-oriented implementation of clustered covariances/standard errors in the \proglang{R} package \pkg{sandwich}.
+Using this infrastructure, sandwich covariances for cross-section or time series data have been available for models beyond \code{lm()} or \code{glm()}, e.g., for packages \pkg{MASS}, \pkg{pscl}, \pkg{countreg}, \pkg{betareg}, among many others. However, corresponding functions for clustered or panel data have been somewhat scattered or available only for certain modeling functions. This shortcoming has been corrected in the development version of \pkg{sandwich} on \proglang{R}-Forge.
 
 Second, we perform a Monte Carlo simulation study for various response distributions with the aim to test the performance of clustered standard errors beyond \code{lm()} and \code{glm()}. Up to our knowledge, there does not yet exist such a simulation exercise in the literature.
 
 The rest of the paper is structured as follows: Section~\ref{sec:idea} discusses the idea of clustered covariances and reviews existing \proglang{R} packages for sandwich as well as clustered covariances.
 Section~\ref{sec:methods} deals with the theory behind sandwich covariances, especially with respect to clustered covariances for cross-sectional and longitudinal data, clustered data as well as panel data.
-Section~\ref{sec:software} then takes a look behind the scenes of a new object-oriented \proglang{R} implementation for clustered covariances, Section~\ref{sec:illu} gives an empirical illustration based on data provided from \cite{hac:Petersen:2009} and \cite{hac:Aghion+VanReenen+Zingales:2013} as reanalyzed by \cite{hac:Berger+Stocker+Zeileis:2016}. The simulation setup and results are discussed in Section~\ref{sec:simulation}. Section~\ref{sec:summary} concludes.
+Section~\ref{sec:software} then takes a look behind the scenes of a new object-oriented \proglang{R} implementation for clustered covariances, Section~\ref{sec:illu} gives an empirical illustration based on data provided from \cite{hac:Petersen:2009} and \cite{hac:Aghion+VanReenen+Zingales:2013} as reanalyzed by \cite{hac:Berger+Stocker+Zeileis:2016}. The simulation setup and results are discussed in Section~\ref{sec:simulation}.
 
 \section{Idea} \label{sec:idea}
 
@@ -214,9 +214,9 @@ Thus, an empirical estimating (or score) function evaluates an estimating functi
   0 & \cdots & \omega(r(y_n, x_n^\top \theta))
   \end{array} \right) X.
 \end{eqnarray}
-The outer product estimator in (\ref{eq:meat-op}) corresponds to the White estimator \citep{hac:Eicker:1963,hac:Huber:1967,hac:White:1980}.
-$w_{|i-j|}$ in (\ref{eq:meat-hac}) is a vector of weights \citep{hac:Zeileis:2004a}
-In (\ref{eq:meat-hc}), functions $\omega(\cdot)$ derive estimates of the variance of the observed working residuals $r(y_1, x_1^\top \theta), \ldots, r(y_n, x_n^\top \theta)$ \citep{hac:Zeileis:2006}.
+The outer product estimator in Equation~\ref{eq:meat-op} corresponds to the White estimator \citep{hac:Eicker:1963,hac:Huber:1967,hac:White:1980}.
+$w_{|i-j|}$ in Equation~\ref{eq:meat-hac} is a vector of weights \citep{hac:Zeileis:2004a}.
+In Equation~\ref{eq:meat-hc}, functions $\omega(\cdot)$ derive estimates of the variance of the observed working residuals $r(y_1, x_1^\top \theta), \ldots, r(y_n, x_n^\top \theta)$ \citep{hac:Zeileis:2006}.
 
 \subsection{Clustered covariances} 
 
@@ -333,7 +333,7 @@ In the next section, the software implementation of the various types of cluster
 
 \subsection{Clustered covariances}
 
-One-, two-, and multi-way clustered standard errors with the different types of bias correction introduced in (\ref{eq:biasadj1})--(\ref{eq:biasadj4}) are implemented with the following arguments in the function
+One-, two-, and multi-way clustered standard errors with the different types of bias correction introduced in Equation~\ref{eq:biasadj1}--Equation~\ref{eq:biasadj4} are implemented with the following arguments in the function
 \begin{verbatim}
 vcovCL(x, cluster = NULL, type = NULL, sandwich = TRUE, fix = FALSE, ...)
 \end{verbatim}
@@ -347,16 +347,16 @@ The first argument \code{x} is a fitted model object of class \code{lm}, \code{g
 
 The \code{cluster} argument allows to supply one or more cluster variables. If no cluster variable is supplied, each observation is its own cluster per default. In such a case, the clustered covariance estimator collapses to Whites robust covariance estimator.
 
-The bias correction is composed of two parts, the cluster bias correction defined in (\ref{eq:biasadj0}) and the HC bias correction defined in  (\ref{eq:biasadj1})--(\ref{eq:biasadj4}). Both types of bias correction can be separately switched on and off.
-With the \code{cadjust} argument, the cluster bias adjustment can be turned on and off, whereas the \code{type} argument allows to specify the HC type of bias correction.
+The bias correction is composed of two parts, the cluster bias correction defined in Equation~\ref{eq:biasadj0} and the HC bias correction defined in Equation~\ref{eq:biasadj1}--Equation~\ref{eq:biasadj4}. Both types of bias correction can be separately switched on and off.
+With the \code{cadjust} argument, the cluster bias adjustment can be turned on and off, the \code{type} argument allows to specify the HC type of bias correction.
 
 HC2 and HC3 types of bias correction are geared towards the linear model, but are also applicable for \code{glm} \citep{hac:Bell+McCaffrey:2002, hac:Kauermann+Carroll:2001}. Nevertheless, a precondition for the HC2 and HC3 corrections is the existence of a hat matrix or a weighted version of the hat matrix for GLMs, respectively.
 Hence, this is the only part of \code{vcovCL()} that is not fully object-oriented, but just works for \code{lm} and \code{glm} model objects.
 However, beyond the \code{glm} case it's often not clear what the hat matrix should be.
 
-The \code{white} argument is executed only for two- and multi-way clustered covariances and specifies whether to substract White's covariance matrix as the last substracted matrix in (\ref{eq:twoway}) or the covariance matrix formed by the intersection of groups \citep{hac:Petersen:2009,hac:Thompson:2011,hac:Ma:2014}.
+The \code{white} argument is executed only for two- and multi-way clustered covariances and specifies whether to substract White's covariance matrix as the last substracted matrix in Equation~\ref{eq:twoway} or the covariance matrix formed by the intersection of groups \citep{hac:Petersen:2009,hac:Thompson:2011,hac:Ma:2014}.
 
-The \code{sandwich} argument returns either the full sandwich estimator or only the meat \code{meatCL} \citep[for details, see][]{hac:Zeileis:2004a}.
+The \code{sandwich} argument returns either the full sandwich estimator or only the meat \citep[for details, see][]{hac:Zeileis:2004a}.
 
 The \code{fix} argument specifies whether any negative eigenvalues from the eigendecomposition of the estimated covariance matrix should be converted to zero.
 In some applications with fixed effects, covariance matrix of the estimator may not be positive-definite, which is the why this argument is sometimes required. Additionally, \cite{hac:Cameron+Gelbach+Miller:2011} observe that this is most likely to arise when clustering is done over the same groups as the fixed effects.
@@ -397,16 +397,18 @@ Panel-corrected standard errors (PCSE) a la \cite{hac:Beck+Katz:1995} are implem
 \begin{verbatim}
 vcovPC(x, cluster = NULL, order.by = NULL, subsample = TRUE,
  sandwich = TRUE, fix = FALSE, ...)
-
+\end{verbatim}
+and
+\begin{verbatim}
 meatPC(x,  cluster = NULL, order.by = NULL, subsample = TRUE,
- kecker = TRUE, ...)
+ kronecker = TRUE, ...)
 \end{verbatim}
 and are usually used for time-series-cross-section (TSCS) data with a large enough time dimension. 
 The arguments \code{sandwich} and \code{fix} do the same things as in \code{vcovCL()} and \code{vcovPL()}. The same holds true for \code{cluster} and \code{order.by}.
 
 While an easy task for balanced panel, there are two alternatives to estimate the meat for unbalanced panel \citep{hac:Bailey+Katz:2011}. For \code{subsample = TRUE}, a balanced subset of the panel is employed, whereas for \code{subsample = FALSE}, a pairwise balaced sample is used. For details, see \cite{hac:Bailey+Katz:2011}.
 
-The argument \code{kecker} relates to estimation of the meat and determines whether calculations are executed with the Kronecker product or elementwise, which is computationally faster for a large number of observations.
+The argument \code{kronecker} relates to estimation of the meat and determines whether calculations are executed with the Kronecker product or elementwise, which is computationally faster for a large number of observations.
 
 \section{Illustrations} \label{sec:illu}
 The classical area of application for clustered standard errors is the linear model, with model errors that are correlated within clusters. In this section, replication and comparison of clustered standard errors availlable in a couple of \proglang{R} packages is shown on the basis of benchmark \cite{hac:Petersen:2009} data in Example \ref{ex-petersen}. Due to the nice feature of object-orientation, clustered covariances in \code{vcovCL()} are now available for models beyond \code{lm()} or \code{glm()}. Example \ref{ex-aghion} applies \code{vcovCL()} to a hurdle model, using data provided by \cite{hac:Aghion+VanReenen+Zingales:2013}.
@@ -436,16 +438,25 @@ It can be observed that clustered standard errors are larger than ``classical'' 
 library("sandwich")
 coeftest(p_lm, vcov = vcovCL(p_lm, cluster = PetersenCL$firmid))
 @ 
-Next, a comparison of clustered standard errors resulting from packages \pkg{sandwich}, \pkg{plm}, \pkg{geepack} and \pkg{multiwayvcov} is shown. 
-<<petersen-packages>>=
+Next, a comparison of clustered standard errors resulting from packages \pkg{sandwich}, \pkg{multiwayvcov}, \pkg{plm} and \pkg{geepack} is shown. 
+First, \code{vcovCL()} from \pkg{sandwich} and \code{cluster.vcov()} from \pkg{multiwayvcov} are compared. 
+<<petersen-packages1>>=
+library("multiwayvcov")
+@ 
+Both functions are closely related, as \code{vcovCL()} is partly based on \code{cluster.vcov()}.
+<<petersen-comparison1>>=
+vc <- list(
+  "sandwich" = vcovCL(p_lm, cluster = PetersenCL$firmid),
+  "multiwayvcov" = cluster.vcov(p_lm, cluster = PetersenCL$firmid)
+)
+sapply(vc, function(x) sqrt(diag(x)))
+@ 
+The bias correction in \code{vcovCL()} is set to \code{cadjust = TRUE} and \code{type = "HC1"} by default. The same type of bias correction is achieved for \code{cluster.vcov()} by default.
+
+Second, \code{vcovCL()} is compared to packages \pkg{plm} and \pkg{geepack}, who are also able to calculate clustered covariances.
+<<petersen-packages2>>=
 library("plm")
 library("geepack")
-library("multiwayvcov")
-vcov.geeglm <- function(object) {
-  vc <- object$geese$vbeta
-  rownames(vc) <- colnames(vc) <- names(coef(object))
-  return(vc)
-}
 @ 
 A pooling model is estimated with \code{plm()}, \code{geeglm()} fits a generalized estimating equation (GEE) with independence correlation structure.
 <<petersen-models>>=
@@ -453,26 +464,25 @@ p_plm <- plm(y ~ x, data = PetersenCL, model = "pooling")
 p_gee <- geeglm(y ~ x, data = PetersenCL, id = PetersenCL$firmid,
   corstr = "independence", family = gaussian)
 @ 
-The bias correction in \code{vcovCL()} is set to \code{cadjust = TRUE} and \code{type = "HC1"} by default. For \code{cluster.vcov()} from \pkg{multiwayvcov}, the same type of bias correction is achieved by default.
-Nevertheless, in order to accomplish exactly the same value for clustered standard errors using \code{plm} and \code{geepack}, the bias correction $\frac{G}{G - 1}\frac{n - 1}{n - k}$ has to be multiplied to the covariance matrices.
-<<petersen-df>>=
-n <- nrow(PetersenCL)
-G <- length(unique(PetersenCL$firmid))
-k <- 2
-bc <- G / (G - 1) * (n - 1) / (n - k)
+As there is no \code{vcov()}-method specified for \code{geeglm()}, the convenience function \code{vcov.geeglm()} is provided to make this contribution.
+<<petersen-convenience>>=
+vcov.geeglm <- function(object) {
+  vc <- object$geese$vbeta
+  rownames(vc) <- colnames(vc) <- names(coef(object))
+  return(vc)
+}
 @ 
-$G$ is the number of clusters, $n$ is the total number of observations, and $k$ is the number of parameters estimated.
-
-All packages examined produce the same clustered standard errors for \code{lm()}. For packages \pkg{plm} and \pkg{geepack}, one manually has to adjust the bias correction factor. In general, differences in clustered standard errors often coincide with different types of bias corrections.
-<<petersen-comparison>>=
+Nevertheless, in order to accomplish exactly the same value for clustered standard errors using \code{plm} and \code{geepack}, the bias correction $\frac{G}{G - 1}\frac{n - 1}{n - k}$ has to be omitted from the clustered covariance matrix estimated by \code{vcovCL()}. This is achieved by setting the function arguments \code{cadjust = FALSE} and \code{type = "HC0"}.
+<<petersen-comparison2>>=
 vc <- list(
-  "sandwich" = vcovCL(p_lm, cluster = PetersenCL$firmid),
-  "multiwayvcov" = cluster.vcov(p_lm, cluster = PetersenCL$firmid),
-  "plm" = vcovHC(p_plm, type = "HC0", cluster = "group") * bc,
-  "geepack" = vcov(p_gee) * bc
+  "sandwich" = vcovCL(p_lm, cluster = PetersenCL$firmid,
+                      cadjust = FALSE, type = "HC0"),
+  "plm" = vcovHC(p_plm, type = "HC0", cluster = "group"),
+  "geepack" = vcov(p_gee)
 )
 sapply(vc, function(x) sqrt(diag(x)))
-@ 
+@
+All packages examined produce the same clustered standard errors for \code{lm} model objects. For packages \pkg{plm} and \pkg{geepack}, one has to omit the HC bias correction factor as well as the cluster bias correction. In general, differences in clustered standard errors often coincide with different types of bias corrections.
 
 \subsubsection{Two-way clustered standard errors}
 Two-way clustered standard errors with cluster dimensions \code{firmid} as well as \code{year} are, at least for the explanatory variable \code{x}, a bit larger than one-way clustered standard errors clustered by \code{firmid}.
@@ -545,9 +555,9 @@ x_{1,ig} & \sim & \rho_{x} \cdot \mathcal{N}_{g}(0, 1) + (1 - \rho_{x}) \cdot \m
 x_{2,g} & \sim & \mathcal{N}_{g}(0, 1) \label{x2} \\
 x_{3,ig} & \sim & \mathcal{N}_{ig}(0, 1) \label{x3}
 \end{eqnarray}
-Regressor $x_{1,ig}$ (\ref{x1}) is composed of a linear combination of a random draw at cluster level ($\mathcal{N}_{g}$) and a random draw at individual level ($\mathcal{N}_{ig}$), regressor $x_{2,g}$ (\ref{x2}) is composed of a random draw at cluster level, and regressor $x_{3,ig}$ (\ref{x3}) consists of a random draw at individual level. In most of the simulations, only a single regressor  $x_{1,ig}$ (\ref{x1}) is used.
+Regressor $x_{1,ig}$ in Equation~\ref{x1} is composed of a linear combination of a random draw at cluster level ($\mathcal{N}_{g}$) and a random draw at individual level ($\mathcal{N}_{ig}$), regressor $x_{2,g}$ in Equation~\ref{x2} is composed of a random draw at cluster level, and regressor $x_{3,ig}$ in Equation~\ref{x3} consists of a random draw at individual level. In most of the simulations, only a single regressor $x_{1,ig}$ is used.
 
-In line with \cite{hac:Harden:2011}, this is done to produce variation at cluster level, individual level and at a combination of both levels. The cluster correlation of $x_{1,ig}$ is controlled by parameter $\rho_{x}$, and is set to 0.25 per default. This implies at least some within cluster correlation of regressor $x_{1,ig}$. If $\rho_{x} = 1$, regressor (\ref{x1}) is equivalent to regressor (\ref{x2}). Furthermore, if $\rho_{x} = 0$, regressor (\ref{x1}) corresponds to regressor (\ref{x3}).
+In line with \cite{hac:Harden:2011}, this is done to produce variation at cluster level, individual level and at a combination of both levels. The cluster correlation of $x_{1,ig}$ is controlled by parameter $\rho_{x}$, and is set to 0.25 per default. This implies at least some within cluster correlation of regressor $x_{1,ig}$. If $\rho_{x} = 1$, regressor $x_{1,ig}$ is equivalent to regressor $x_{2,g}$. Furthermore, if $\rho_{x} = 0$, regressor $x_{1,ig}$ corresponds to regressor $x_{3,ig}$.
 
 The vector of coefficients is fixed to
 \begin{eqnarray} \label{eq:coefs}
@@ -556,15 +566,65 @@ The vector of coefficients is fixed to
 \end{eqnarray}
 even though these values can be interchanged without influencing the results\footnote{Values are equivalent to \cite{hac:Harden:2011}.}.
 
-Response distributions examined include Gaussian, Bernoulli (with logit link), Poisson, zero-truncated Poisson, Beta and zero-inflated Poisson (ZIP). \code{vcovCL()} allows estimation of clustered standard errors for all the abovementioned responses (and many more).
+Response distributions examined include Gaussian (\code{gaussian}), binomial with a logit link (\code{binomial(logit)}), Poisson (\code{poisson}), zero-truncated Poisson (\code{zerotrunc}), Beta (\code{beta}) and zero-inflated Poisson (\code{zip}). \code{vcovCL()} allows estimation of clustered standard errors for all the abovementioned responses (and many more).
 
 \subsubsection{Sandwich covariances}
-Standard errors being compared to each other include iid standard errors without heteroscedasticity and without autocorrelation (\emph{classical}), HC0 standard errors \citep{hac:White:1980}, Driscoll and Kraay standard errors (\emph{DK}) \citep{hac:Driscoll+Kraay:1998}, panel-corrected standard errors (\emph{PC}) a la \cite{hac:Beck+Katz:1995} and clustered standard errors with HC0 to HC3 adjustment (\emph{HC0-cluster}, \emph{HC1-cluster}, \emph{HC2-cluster}, \emph{HC3-cluster}). In addition, standard errors from a random effects model (\emph{random}) and from a GEE with exchangeable correlation structure (\emph{gee}) are compared.
+Standard errors being compared to each other include iid standard errors without heteroscedasticity and without autocorrelation (\code{classical}), HC0 standard errors \citep{hac:White:1980}, Driscoll and Kraay standard errors (\code{DK}) \citep{hac:Driscoll+Kraay:1998}, panel-corrected standard errors (\code{PC}) a la \cite{hac:Beck+Katz:1995} and clustered standard errors with HC0 to HC3 adjustment (\code{HC0-cluster}, \code{HC1-cluster}, \code{HC2-cluster}, \code{HC3-cluster}). In addition, standard errors from a random effects model (\code{random}) and from a GEE with exchangeable correlation structure (\code{gee}) are compared.
 
 \subsubsection{Outcome measure}
 In order to assess the validity of statistical inference, the coverage rate is the outcome measure of interest.
 If standard errors are estimated accurately, the coverage rate of the $95$\% confidence intervall should be close to 0.95. 
 Values less than 0.925 will be considered to have underestimated standard errors towards a Type I error, while values greater than 0.975 will be considered to have overestimated standard errors towards a Type II error.
+
+\subsubsection{Simulation code}
+The \proglang{R} script \code{sim-CL.R} comprises the simulation code that simulates the data generating process that has been described above and includes three functions: \code{dgp()}, \code{fit()} and \code{sim()}.
+While \code{dgp()} specifies the data generating process and generates a data frame with (at most) three regressors \code{x1}, \code{x2}, \code{x3} as well as cluster dimensions \code{id} and \code{time}.
+\code{fit()} is responsible for the model fitting, the covariances as well as further outcomes (bias, mad, power and coverage). \code{sim()} conducts all simulations and provides for parallelization support.
+
+%\begin{table}[t!]
+%  \centering
+%\begin{tabular}{| l | p{6cm} | p{7cm} |}
+%  \hline
+%  model & formula & model fit \\ \hline
+%  \code{m} & \code{formula <- response ~ x1 + x2 + x3} & \code{lm(formula, data = data)} \\ \hline
+%  \code{m_fe} & \code{formula_fe <- update(formula, . ~ . + id)} &\code{lm(formula_fe, data = data)} \\ \hline
+%  \code{m_re} & \code{formula_re <- update(formula, . ~ . + (1 | id))} & \code{lme4::lmer(formula_re, data = %data, REML = FALSE)} \\ \hline
+%  \code{m_gee} & \code{formula <- response ~ x1 + x2 + x3} & \code{geepack::geeglm(formula, data = data, id = %id, corstr = "exchangeable", family = gaussian)} \\ \hline
+%\end{tabular}
+%\caption{\code{sim-CL.R}: model fitting for a Gaussian response}
+%  \label{tab:models}
+%\end{table}
+
+Four models are fitted with a Gaussian response: A pooled model (\code{m}), a fixed effects model (\code{m_fe}), a random effects model (\code{m_re}) and a GEE with an exchangeable correlation structure (\code{m_gee}). The fixed effects model includes fixed \code{id} effects, the random effects model is specified as a model with random intercepts. Model fittig for random effects models and GEEs requires the packages \pkg{lme4} and \pkg{geepack}, respectively.
+
+Table~\ref{tab:vcov} shows how the different types of covariances are calculated for a Gaussian response. It has to be noticed, however, that it is not possible to fit all model types for all mentioned response distributions. There are some limitations for random effects models as well as for GEEs.
+
+Furthermore, to calculate clustered standard errors, the square root of the diagonal elements of the covariance matrices in Table~\ref{tab:vcov} is calculated.
+
+\begin{table}[t!]
+  \centering
+\begin{tabular}{ | l | l | p{9cm} |}
+  \hline
+  vcov label & model & covariance matrix \\ \hline
+  \code{classical} & \code{m} & \code{vcov(m)} \\ \hline
+  \code{HC0} & \code{m} & \code{sandwich(m)} \\ \hline
+%  \code{HC1} & \code{m} & \code{vcovHC(m, type = "HC1")} \\ \hline
+%  \code{HC2} &\code{m} & \code{vcovHC(m, type = "HC2")} \\ \hline
+%  \code{HC3} & \code{m} & \code{vcovHC(m, type = "HC3")} \\ \hline
+  \code{HC0-cluster} & \code{m} & \code{vcovCL(m, cluster = data\$id, type = "HC0")} \\ \hline
+  \code{HC1-cluster} & \code{m} & \code{vcovCL(m, cluster = data\$id, type = "HC1")} \\ \hline
+  \code{HC2-cluster} & \code{m} & \code{vcovCL(m, cluster = data\$id, type = "HC2")} \\ \hline
+  \code{HC3-cluster} & \code{m} & \code{vcovCL(m, cluster = data\$id, type = "HC3")} \\ \hline
+  \code{fixed} & \code{m_fe} & \code{vcov(m_fe)[1L:length(coef(m)), 1L:length(coef(m))]} \\ \hline
+  \code{random} & \code{m_re} & \code{vcov(m_re)} \\ \hline
+  \code{gee} & \code{m_gee}  & \code{m_gee\$geese\$vbeta} \\ \hline
+  \code{DK} & \code{m} & \code{vcovPL(m, cluster = data\$id, adjust = FALSE)} \\ \hline
+  \code{BK} & \code{m} & \code{vcovPC(m, cluster = data\$id,
+                             order.by = data\$round, kronecker = TRUE)} \\ \hline
+\end{tabular}
+\caption{\code{sim-CL.R}: covariance matrices for a Gaussian response}
+\label{tab:vcov}
+\end{table}
 
 \subsection{Results}
 The questions of interest in our simulation study can be summarized in the following four experiments:
@@ -574,22 +634,22 @@ The questions of interest in our simulation study can be summarized in the follo
    \item Experiment III: How do clustered covariances perform for beyond glm responses?
    \item Experiment IV: How do clustered covariances with HC0--HC3 bias correction perform for different type of responses?
 \end{itemize}
-Figure~\ref{fig:sim-01} shows the results from Experiment I and plots the coverage probabilities for the coefficients $x1$ (\ref{x1}), $x2$ (\ref{x2}) and $x3$ (\ref{x3}) on the y-axis. Regressor $x1$ is composed of a combination of a random draw at cluster level and a random draw at individual level, with a cluster correlation of 0.25. Regressor $x2$ consists of a random draw at cluster level, and regressor $x3$ is composed of a random draw at individual level. 
+Figure~\ref{fig:sim-01} shows the results from Experiment I and plots the coverage probabilities for the coefficients \code{x1} in Equation~\ref{x1}, \code{x2} in Equation~\ref{x2} and \code{x3} in Equation~\ref{x3} on the y-axis. Regressor \code{x1} is composed of a combination of a random draw at cluster level and a random draw at individual level, with a cluster correlation of 0.25. Regressor \code{x2} consists of a random draw at cluster level, and regressor \code{x3} is composed of a random draw at individual level. 
 
 On the x-axis the within cluster correlation $\rho$ is shown, running from 0 (no correlation) to 0.9 (high correlation).
 Depending on the regressors, the implications of running the cluster correlation $\rho$ from 0 to 0.9 on different covariance estimators are substantial.
 
-Starting with regressor $x1$, at $\rho = 0$, all standard errors except the Driscoll and Kraay standard errors perform well. It can be observed that when the number of observations within each cluster is small with only $N_g = 5$, Driscoll and Kraay standard errors are substantially underestimated, even for a $\rho$ of 0.
-Panel-corrected standard errors for regressor $x1$ underestimate the ``true'' standard errors, that applies all the more the higher $\rho$. To a smaller extend, the same holds true for ``classical'' standard errors.
+Starting with regressor \code{x1}, at $\rho = 0$, all standard errors except the Driscoll and Kraay standard errors perform well. It can be observed that when the number of observations within each cluster is small with only $N_g = 5$, Driscoll and Kraay standard errors are substantially underestimated, even for a $\rho$ of 0.
+Panel-corrected standard errors for regressor \code{x1} underestimate the ``true'' standard errors, that applies all the more the higher $\rho$. To a smaller extent, the same holds true for ``classical'' standard errors.
 As noted by \cite{hac:Hoechle:2007}, PCSE can be quite imprecise if the crosss-sectional dimension is large compared to the time dimension.
 
-It can be observed that for regressor $x2$, Driscoll and Kraay standard errors, PCSE, and to a smaller extend also ``classical'' and HC0 standard errors are getting worse the larger the within cluster correlation. ``classical'' standard errors are biased downwards because of the wrong assumption of independent observations \citep[see also][]{hac:Harden:2011}.
+It can be observed that for regressor \code{x2}, Driscoll and Kraay standard errors, PCSE, and to a smaller extent also ``classical'' and HC0 standard errors are getting worse the larger the within cluster correlation. ``classical'' standard errors are biased downwards because of the wrong assumption of independent observations \citep[see also][]{hac:Harden:2011}.
 
-For regressor $x3$, independent of the value of $\rho$, all methods perform well (except again the Driscoll and Kraay estimator).
+For regressor \code{x3}, independent of the value of $\rho$, all methods perform well (except again the Driscoll and Kraay estimator).
 
 In summary, it holds for the linear model that if a regressor exhibits within cluster correlation even to a small extent, HC0 and ``classical'' standard errors that do not take the cluster dimension into account, deteriorate with an increasing $\rho$. In addition, PCSE and Driscoll and Kraay standard errors do not perform sufficiently well because of a too small $N_g$.
 
-As the effects of regressor $x1$ are in between the effects of regressors $x2$ (varies at cluster level) and $x3$ (varies at individual level), we limit ourselves to a single regressor $x1$ in the following simulation experiments.
+As the effects of regressor \code{x1} are in between the effects of regressors \code{x2} (varies at cluster level) and \code{x3} (varies at individual level), we limit ourselves to a single regressor \code{x1} in the following simulation experiments.
 
 \setkeys{Gin}{width=\textwidth} 
 \begin{figure}[t!] 
@@ -614,7 +674,7 @@ xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
 \label{fig:sim-01}
 \end{figure}
 
-Figure~\ref{fig:sim-02} illustrates the results from Experiment II. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. Three response distributions are compared: Gaussian, binomial (with a logit link) and Poisson. Unlike in Experiment I, only a single regressor $x1$ is included, with a $\rho_x$ of 0.25.
+Figure~\ref{fig:sim-02} illustrates the results from Experiment II. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. Three response distributions are compared: Gaussian, binomial (with a logit link) and Poisson. Unlike in Experiment I, only a single regressor \code{x1} is included, with a $\rho_x$ of 0.25.
 The left panel depicts the coverage for the Gaussian response, and thus corresponds to the left panel in Figure~\ref{fig:sim-01}. 
 
 Results are qualitatively similar for the binomial and Poisson responses. The only exception are the standard errors from a random effects model, where the coverage is moving faster downwards than for the other standard errors. 
@@ -645,20 +705,6 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
 
 Figure~\ref{fig:sim-03} shows the outcome of Experiment III and reveals the strength of the new function \code{vcovCL()} that comes with the feature that allows to estimate clustered covariances for models beyond glms. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. 
 Comparisons are made between beta regression, zerotruncated Poisson and zero-inflated Poisson (ZIP). For these response distributions, clustered standard errors perform well and remain nearly constant even for an increasing $\rho$. Standard errors that do not take into account the cluster correlation, like ``classical'' and HC0 standard errors underestimate the true standard errors more and more the larger $\rho$.
-On the x-axis the within cluster correlation $\rho$ is shown, running from 0 (no correlation) to 0.9 (high correlation).
-Depending on the regressors, the implications of running the cluster correlation $\rho$ from 0 to 0.9 on different covariance estimators are substantial.
-
-Starting with regressor $x1$, at $\rho = 0$, all standard errors except the Driscoll and Kraay standard errors perform well. It can be observed that when the number of observations within each cluster is small with only $N_g = 5$, Driscoll and Kraay standard errors are substantially underestimated, even for a $\rho$ of 0.
-Panel-corrected standard errors for regressor $x1$ underestimate the ``true'' standard errors, that applies all the more the higher $\rho$. To a smaller extend, the same holds true for ``classical'' standard errors.
-As noted by \cite{hac:Hoechle:2007}, PCSE can be quite imprecise if the crosss-sectional dimension is large compared to the time dimension.
-
-It can be observed that for regressor $x2$, Driscoll and Kraay standard errors, PCSE, and to a smaller extend also ``classical'' and HC0 standard errors are getting worse the larger the within cluster correlation.
-
-For regressor $x3$, independent of the value of $\rho$, all methods perform well (except again the Driscoll and Kraay estimator).
-
-In summary, it holds for the linear model that if a regressor exhibits within cluster correlation even to a small extent, HC0 and ``classical'' standard errors that do not take the cluster dimension into account, deteriorate with an increasing $\rho$. In addition, PCSE and Driscoll and Kraay standard errors do not perform sufficiently well because of a too small $N_g$.
-
-As the effects of regressor $x1$ are in between the effects of regressors $x2$ (varies at cluster level) and $x3$ (varies at individual level), we limit ourselves to a single regressor $x1$ in the following simulation experiments.
 
 \begin{figure}[t!] 
 \centering
@@ -711,16 +757,6 @@ xyplot(coverage ~ nid | dist, groups = ~ factor(vcov),
 \label{fig:sim-04}
 \end{figure}
 
-Figure~\ref{fig:sim-02} illustrates the results from Experiment II. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. Three response distributions are compared: Gaussian, binomial (with a logit link) and Poisson distribution. Unlike in Experiment I, only a single regressor $x1$ is included, with a $\rho_x$ of 0.25.
-
-Figure~\ref{fig:sim-03} shows the outcome of Experiment III.
-
-Figure~\ref{fig:sim-04} depicts the findings of Experiment IV.
-
-
-%\section{Summary} \label{sec:summary}
-
-
 \section*{Computation details}
 
 The packages \pkg{sandwich}, \pkg{countreg}, \pkg{geepack}, \pkg{lattice}, \pkg{lme4}, \pkg{lmtest},\pkg{multiwayvcov}, \pkg{plm} and \pkg{pscl} are
@@ -760,7 +796,7 @@ options(prompt = "  ")
 \section{Simulation of correlated data with a random cluster effect} \label{sec:rceffect}
 
 Introducing within cluster error correlation via a random cluster effect instead of a copula comes along with introducing a bias, which also affects the coverage.
-The linear predictor in (\ref{eq:predictor}) with a random cluster effect $v_g$ is
+The linear predictor in Equation~\ref{eq:predictor} with a random cluster effect $v_g$ is
 \begin{eqnarray} \label{eq:predictorv}
 h(\mu_{ig}) = \beta_{0} + \beta_{1} \cdot x_{1,ig} + \beta_{2} \cdot x_{2,g} + \beta_{3} \cdot x_{3,ig} + v_g,
 \end{eqnarray}
@@ -812,7 +848,7 @@ xyplot(bias ~ rho | dist, groups = ~ factor(vcov),
 \label{fig:sim-05-01}
 \end{figure}
 
-Figure~\ref{fig:sim-05-01} constrasts coverage (in the upper panel) and bias (in the lower panel) for Gaussian, binomial (with a logit link) and Poisson response distributions with a single regressor $x_{1,ig}$. Regressor $x_{ig}$ exhibits a cluster correlation $\rho_x$ of 0.25. Each of the 10,000 simulated datasets consists of 100 clusters with 5 observations per cluster.
+Figure~\ref{fig:sim-05-01} constrasts coverage (in the upper panel) and bias (in the lower panel) for Gaussian, binomial (with a logit link) and Poisson response distributions with a single regressor \code{x1}. Regressor \code{x1} exhibits a cluster correlation $\rho_x$ of 0.25. Each of the 10,000 simulated datasets consists of 100 clusters with 5 observations per cluster.
 
 For the Gaussian response, the random cluster effect does not introduce a bias, but for the binomial and Poisson responses, the random cluster effect comes along with a negative bias. It can be observed that the bias is rising with the random cluster effect $\rho$.
 
