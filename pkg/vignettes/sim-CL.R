@@ -6,7 +6,7 @@ dgp <- function(nid = 100L, nround = 5L,
   dist = "gaussian", type = "copula", link = NULL, ...)
 {
   ## match distribution and type of correlation
-  dist <- match.arg(dist, c("gaussian", "poisson", "zip", "hurdle", "beta", "logit", "zerotrunc"))
+  dist <- match.arg(dist, c("gaussian", "poisson", "zip", "hurdle", "beta", "binomial(logit)", "zerotrunc"))
   type <- match.arg(type, c("copula","copula-ar1", "ranef"))
   
   ## sample size
@@ -94,7 +94,7 @@ dgp <- function(nid = 100L, nround = 5L,
         if(is.null(link)) link <- "logit"
       },
 
-      "logit" = {
+      "binomial(logit)" = {
         dist <- if(type == "ranef") {
 	  function(n, mu, ...) rbinom(n, size = 1, prob = mu)
 	} else {
@@ -140,8 +140,8 @@ dgp <- function(nid = 100L, nround = 5L,
 ## model fitting and covariances
 fit <- function(data,
   formula = response ~ x1 + x2 + x3,
-  dist = c("gaussian", "poisson", "zip", "hurdle", "beta", "logit", "zerotrunc"),
-  vcov = c("without", "HC0", "HC1", "HC2", "HC3", "HC0-id", "HC1-id", "HC2-id", "HC3-id", "fixed", "random", "gee", "dk", "bk"),
+  dist = c("gaussian", "poisson", "zip", "hurdle", "beta", "binomial(logit)", "zerotrunc"),
+  vcov = c("classical", "HC0", "HC1", "HC2", "HC3", "HC0-cluster", "HC1-cluster", "HC2-cluster", "HC3-cluster", "fixed", "random", "gee", "DK", "PC"),
   level = 0.95)
 {
   
@@ -155,7 +155,7 @@ fit <- function(data,
     "zip" = countreg::zeroinfl(formula, data = data),
     "hurdle" = pscl::hurdle(formula, data = data),
     "beta" = betareg::betareg(formula, data = data, phi = FALSE),
-    "logit" = glm(formula, data = data, family = binomial),
+    "binomial(logit)" = glm(formula, data = data, family = binomial),
     "zerotrunc" = glm(formula, data = data, family = ztpoisson)
     #"zerotrunc" = zerotrunc(formula, data = data, dist = "poisson")
   )
@@ -168,7 +168,7 @@ fit <- function(data,
       "zip" = countreg::zeroinfl(formula_fe, data = data),
       "hurdle" = pscl::hurdle(formula_fe, data = data),
       "beta" = betareg::betareg(formula_fe, data = data, phi = FALSE),
-      "logit" = glm(formula_fe, data, family = binomial),
+      "binomial(logit)" = glm(formula_fe, data, family = binomial),
       "zerotrunc" = glm(formula_fe, data = data, family = ztpoisson)
       #"zerotrunc" = zerotrunc(formula_fe, data = data, dist = "poisson") 
     )
@@ -184,7 +184,7 @@ fit <- function(data,
       "zip" = NULL,
       "hurdle" = NULL,
       "beta" = NULL,
-      "logit" = lme4::glmer(formula_re, data = data, family = binomial),
+      "binomial(logit)" = lme4::glmer(formula_re, data = data, family = binomial),
       "zerotrunc" = NULL
     )
   } else {
@@ -198,7 +198,7 @@ fit <- function(data,
       "zip" = NULL,
       "hurdle" = NULL,
       "beta" = NULL,
-      "logit" = geepack::geeglm(formula, data = data, id = id, corstr = "exchangeable", family = binomial("logit")),
+      "binomial(logit)" = geepack::geeglm(formula, data = data, id = id, corstr = "exchangeable", family = binomial("logit")),
       "zerotrunc" = NULL
     )
   } else {
@@ -209,10 +209,10 @@ fit <- function(data,
   rval <- data.frame(coef = numeric(0), se = numeric(0), par = character(0),
       vcov = character(0), stringsAsFactors = FALSE)
 
-  if("without" %in% vcov) {
+  if("classical" %in% vcov) {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcov(m))), par = names(coef(m)),
-      vcov = "without", stringsAsFactors = FALSE))
+      vcov = "classical", stringsAsFactors = FALSE))
   }
   if("HC0" %in% vcov) {
     rval <- rbind(rval, data.frame(
@@ -234,22 +234,22 @@ fit <- function(data,
       coef = coef(m), se = sqrt(diag(vcovHC(m, type = "HC3"))), par = names(coef(m)),
       vcov = "HC3", stringsAsFactors = FALSE))
   }
-  if("HC0-id" %in% vcov) {
+  if("HC0-cluster" %in% vcov) {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcovCL(m, cluster = data$id, type = "HC0"))), par = names(coef(m)),
-      vcov = "HC0-id", stringsAsFactors = FALSE))
+      vcov = "HC0-cluster", stringsAsFactors = FALSE))
   }
-  if("HC1-id" %in% vcov) {
+  if("HC1-cluster" %in% vcov) {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcovCL(m, cluster = data$id, type = "HC1"))), par = names(coef(m)),
-      vcov = "HC1-id", stringsAsFactors = FALSE))
+      vcov = "HC1-cluster", stringsAsFactors = FALSE))
   }
-  if("HC2-id" %in% vcov & dist != "zip") {
+  if("HC2-cluster" %in% vcov & dist != "zip") {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcovCL(m, cluster = data$id, type = "HC2"))), par = names(coef(m)),
-      vcov = "HC2-id", stringsAsFactors = FALSE))
+      vcov = "HC2-cluster", stringsAsFactors = FALSE))
   }
-  if("HC3-id" %in% vcov & dist != "zip") {
+  if("HC3-cluster" %in% vcov & dist != "zip") {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcovCL(m, cluster = data$id, type = "HC3"))), par = names(coef(m)),
       vcov = "HC3-id", stringsAsFactors = FALSE))
@@ -271,16 +271,16 @@ fit <- function(data,
       vcov = "gee", stringsAsFactors = FALSE))
   }
 
-  if("dk" %in% vcov) {
+  if("DK" %in% vcov) {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcovPL(m, cluster = data$id, adjust = FALSE))), par = names(coef(m)),
-      vcov = "dk", stringsAsFactors = FALSE))
+      vcov = "DK", stringsAsFactors = FALSE))
   }
 
-  if("bk" %in% vcov) {
+  if("PC" %in% vcov) {
     rval <- rbind(rval, data.frame(
-      coef = coef(m), se = sqrt(diag(vcovPC(m, cluster = data$id, order.by = data$round, kecker = TRUE))), par = names(coef(m)),
-      vcov = "bk", stringsAsFactors = FALSE))
+      coef = coef(m), se = sqrt(diag(vcovPC(m, cluster = data$id, order.by = data$round, kronecker = TRUE))), par = names(coef(m)),
+      vcov = "PC", stringsAsFactors = FALSE))
   }
     
   ## reorder columns
@@ -304,7 +304,7 @@ fit <- function(data,
 sim <- function(nrep = 1000, nid = 100L, nround = 5L,
   dist = "gaussian", rho = 0.5, xrho = 0.5,
   coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
-  vcov = c("without", "HC0", "HC1", "HC2", "HC3", "HC0-id", "HC1-id", "HC2-id", "HC3-id", "fixed", "random", "gee", "dk", "bk"),
+  vcov = c("classical", "HC0", "HC1", "HC2", "HC3", "HC0-cluster", "HC1-cluster", "HC2-cluster", "HC3-cluster", "fixed", "random", "gee", "DK", "PC"),
   ...,
   cores = NULL)
 {
