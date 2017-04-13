@@ -1,7 +1,9 @@
 Changes in Version 2.4-0
 
-  o Various flavors of clustered sandwich estimators in vcovCL() and panel
-    sandwich estimators in vcovPL().
+  o Various flavors of clustered sandwich estimators in vcovCL(), panel
+    sandwich estimators in vcovPL(), and panel-corrected estimators a la
+    Beck & Katz in vcovPC(). A new vignette("sandwich-CL", package = "sandwich")
+    introduces all functions and illustrates their use and properties.
 
 
 Changes in Version 2.3-4
