@@ -48,10 +48,10 @@ Aghion et al. (2013) combine several firm level panel datasets (e.g.,
 USPTO, SEC and Compustat) to examine the role of institutional investors
 in the governance of innovation. Their baseline to model innovation is the Poisson model,
 but they also consider negative binomial models.
-Berger et al. (2013) argue that nonlinearities in the innovation process emerge in case that the first
+Berger et al. (2017) argue that nonlinearities in the innovation process emerge in case that the first
 innovation is especially hard to obtain in comparison to succeeding innovations.
 Then, hurdle models offer a useful way that allows for a distinction between these two processes.
-Berger et al. (2016) show that an extended analysis with negative binomial hurdle models
+Berger et al. (2017) show that an extended analysis with negative binomial hurdle models
 differs materially from the outcomes of the single-equation Poisson
 approach of Aghion et al. (2013).
 
@@ -96,12 +96,12 @@ Aghion P, Van Reenen J, Zingales L (2013).
   \emph{The American Economic Review}, \bold{103}(1), 277--304.
   \doi{10.1257/aer.103.1.277}
   
-Berger S, Stocker H, Zeileis A (2016).
+Berger S, Stocker H, Zeileis A (2017).
   \dQuote{Innovation and Institutional Ownership Revisited: An Empirical Investigation with Count Data Models.}
-  \emph{Empirical Economics}. Forthcoming.
+  \emph{Empirical Economics}, \bold{52}(4), 1675--1688.
   \doi{10.1007/s00181-016-1118-0}
 
-  Blundell R, Griffith R, Van Reenen J (1999).
+Blundell R, Griffith R, Van Reenen J (1999).
   \dQuote{Market Share, Market Value and Innovation in a Panel of
     British Manufacturing Firms.}
   \emph{Review of Economic Studies}, {66}(3), 529--554.

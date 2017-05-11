@@ -171,7 +171,7 @@ Second, we perform a Monte Carlo simulation study for various response distribut
 
 The rest of the paper is structured as follows: Section~\ref{sec:idea} discusses the idea of clustered covariances and reviews existing \proglang{R} packages for sandwich as well as clustered covariances.
 Section~\ref{sec:methods} deals with the theory behind sandwich covariances, especially with respect to clustered covariances for cross-sectional and longitudinal data, clustered data as well as panel data.
-Section~\ref{sec:software} then takes a look behind the scenes of a new object-oriented \proglang{R} implementation for clustered covariances, Section~\ref{sec:illu} gives an empirical illustration based on data provided from \cite{hac:Petersen:2009} and \cite{hac:Aghion+VanReenen+Zingales:2013} as reanalyzed by \cite{hac:Berger+Stocker+Zeileis:2016}. The simulation setup and results are discussed in Section~\ref{sec:simulation}.
+Section~\ref{sec:software} then takes a look behind the scenes of a new object-oriented \proglang{R} implementation for clustered covariances, Section~\ref{sec:illu} gives an empirical illustration based on data provided from \cite{hac:Petersen:2009} and \cite{hac:Aghion+VanReenen+Zingales:2013} as reanalyzed by \cite{hac:Berger+Stocker+Zeileis:2017}. The simulation setup and results are discussed in Section~\ref{sec:simulation}.
 
 \section{Idea} \label{sec:idea}
 
@@ -521,7 +521,7 @@ cluster = cbind(PetersenCL$firmid, PetersenCL$year)))
 @ 
  However, as cluster dimension \code{year} has a total of only 10 cluster, the results should be regarded with caution, as it is required by theory that each cluster dimension has many clusters \citep{hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,hac:Cameron+Miller:2015}.
  
-\subsection[Aghion et al. (2013) and Berger et al. (2016)]{\cite{hac:Aghion+VanReenen+Zingales:2013} and \cite{hac:Berger+Stocker+Zeileis:2016}} \label{ex-aghion}
+\subsection[Aghion et al. (2013) and Berger et al. (2017)]{\cite{hac:Aghion+VanReenen+Zingales:2013} and \cite{hac:Berger+Stocker+Zeileis:2017}} \label{ex-aghion}
 In this section, in a further example we will make use of the object-orientation of \code{vcovCL()}, and estimate clustered standard errors for a count data hurdle model.
 
 \cite{hac:Aghion+VanReenen+Zingales:2013} investigate the effect of institutional owners (these are, for example, pension funds, insurance companies, etc.) on innovation.
@@ -533,8 +533,8 @@ This motivates the use of count data models.
 Still, one limitation of standard count data models is that the zeros and the nonzeros (positives) are assumed to come from the same data-generating process.
 
 From an economic perspective, there is a difference in determinants of ``first innovation'' and ``continuing innovation''. The rationale behind this is the notion of nonlinearities in the innovation process.
-In case that the first innovation is especially hard to obtain in comparison to succeeding innovations, hurdle models offer a useful way that allows for a distinction to be made between these two processes \citep{hac:Berger+Stocker+Zeileis:2016}.
-Therefore, \cite{hac:Berger+Stocker+Zeileis:2016} employ two-part hurdle models with a binary part that models the decision to innovate at all, and a count part that models ongoing innovation, respectively.
+In case that the first innovation is especially hard to obtain in comparison to succeeding innovations, hurdle models offer a useful way that allows for a distinction to be made between these two processes \citep{hac:Berger+Stocker+Zeileis:2017}.
+Therefore, \cite{hac:Berger+Stocker+Zeileis:2017} employ two-part hurdle models with a binary part that models the decision to innovate at all, and a count part that models ongoing innovation, respectively.
 The \cite{hac:Aghion+VanReenen+Zingales:2013} data are availlable in the \pkg{sandwich} package.
 <<innovation-data>>= 
 data("InstInnovation", package = "sandwich")
