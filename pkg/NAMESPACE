@@ -51,6 +51,7 @@ export(
   "pava.blocks")
 
 ## methods for extracting bread matrix
+  S3method("bread", "default")
   S3method("bread", "lm")
   S3method("bread", "mlm")
   S3method("bread", "glm")
