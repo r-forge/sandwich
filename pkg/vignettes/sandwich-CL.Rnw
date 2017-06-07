@@ -191,7 +191,7 @@ beyond \code{lm()} and \code{glm()}. This also includes special cases for which
 such a finite-sample assessment has not yet been carried out in the literature
 (to the best of our knowledge).
 
-The rest of this manuscript is structured as follows: Section~\ref{sec:idea}
+The rest of this manuscript is structured as follows: Section~\ref{sec:overview}
 discusses the idea of clustered covariances and reviews existing \proglang{R}
 packages for sandwich as well as clustered covariances.
 Section~\ref{sec:methods} deals with the theory behind sandwich covariances,
@@ -203,42 +203,106 @@ Section~\ref{sec:illu} gives an empirical illustration based on data provided
 from \cite{hac:Petersen:2009} and \cite{hac:Aghion+VanReenen+Zingales:2013}.
 The simulation setup and results are discussed in Section~\ref{sec:simulation}.
 
-\section{Idea} \label{sec:idea}
+\section{Overview} \label{sec:overview}
 
-As data described by econometric models often contain heteroscedasticity and/or autocorrelation of unknown form, it is essential to use covariance matrix estimators for inference that can consistently estimate the covariance of the model parameters.
-The idea of a quasi-maximum likelihood approach is to estimate a model by assuming independent data, but use sandwich covariances to adjust for heteroscedasticity and/or autocorrelation.
+There is a range of popular strategies for dealing with clustered dependencies
+in regression models. In the statistics literature, random effects (especially
+random intercepts) are often introduced to capture unobserved cluster
+correlations (e.g., using the \pkg{lme4} package in \proglang{R},
+\citealp{hac:Bates+Machler+Bolker:2015}). Alternatively, generalized estimating
+equations (GEE) can account for such correlations by adjusting the model's
+scores in the estimation, also leading naturally to a clustered covariance
+(e.g., available in the \pkg{geepack} package for \proglang{R},
+\citealp{hac:Halekoh+Hojsgaard+Yan:2002}). Another approach, widely used
+in econometrics and the social sciences, is to assume that the model's score
+function was correctly specified but that only the remaining likelihood was
+potentially misspecified, e.g., due to a lack of independence as in the case
+of clustered correlations (see \citealp{hac:White:1994}, for a classic textbook,
+and \citealp{hac:Freedman:2006}, for a criticial review). This approach leaves
+the parameter estimator unchanged -- then also known as quasi-maximum likelihood
+(QML) estimator or, in GEE jargon, as independence working model -- but adjust
+the covariance matrix by using a sandwich estimator, especially in Wald tests
+and corresponding confidence intervals.
 
-Independent but heteroscedastic model errors typically occur within a context of cross-section data. Then, heteroscedasticity consistent (HC) covariance estimators can be used to account for the fact that the diagonal elements of the covariance matrix are nonconstant.
+Important special cases of this QML approach combined with sandwich covariances
+include: (1) independent but heteroscedastic observations necessitating
+heteroscedasticity-consistent (HC) covariances
+\citep[see e.g.,][]{hac:Long+Ervin:2000}, (2) autocorrelated time series of
+observations requiring heteroscedasticity- and autocorrelation-consistent
+(HAC) covariances \citep[such as][]{hac:Newey+West:1987,hac:Andrews:1991},
+(3) and clustered sandwich covariances for clustered or panel data
+\citep[see e.g.,][]{hac:Cameron+Miller:2015}.
 
-For time series data, the independency assumption of the errors often does not hold because of autocorrelation. For such cases, heteroscedasticity and autocorrelation consistent (HAC) estimators are a suitable option.
+Various kinds of sandwich covariances have already been implemented in several
+\proglang{R} packages, with the linear regression case receiving most attention.
+But some packages also cover more general models.
 
-For clustered or panel data, with errors independent across but correlated within clusters, it is quite common to use clustered sandwich covariances.
-Various kinds of sandwich covariances have already been implemented in a couple of \proglang{R} packages.
 
 \subsection[R packages for sandwich covariances]{\proglang{R} packages for sandwich covariances}
 
-The standard \proglang{R} package to model sandwich covariance estimators is the \pkg{sandwich} package \citep{hac:Zeileis:2004a,hac:Zeileis:2006}, which provides for an object-oriented implementation for the building blocks of the sandwich that rely only on a small set of extractor functions (\code{estfun()} and \code{bread()}) for fitted model objects.
-The function \code{sandwich()} computes a sandwich estimate from a fitted model object, default is the Eicker-Huber-White outer product estimate \citep{hac:White:1980}.
-\code{vcovHC()} is a wrapper calling \code{sandwich()} and \code{bread()}, and can compute arbitrary HC covariance matrix estimates, ranging from HC0 to HC5.
-\code{vcovHAC()} can compute HAC covariance matrix estimates, with the convenience functions \code{kernHAC()} for Andrews' kernel HAC \citep{hac:Andrews:1991} and \code{NeweyWest()} for Newey-West-style HAC \citep{hac:Newey+West:1987,hac:Newey+West:1994}. Thus, for cross-section and time-series data, object-oriented implementations for HC and HAC estimators are already implemented in \pkg{sandwich}.
+The standard \proglang{R} package to model sandwich covariance estimators is the
+\pkg{sandwich} package \citep{hac:Zeileis:2004a,hac:Zeileis:2006}, which
+provides an object-oriented implementation for the building blocks of the
+sandwich that rely only on a small set of extractor functions (\code{estfun()}
+and \code{bread()}) for fitted model objects. The function \code{sandwich()}
+computes a plain sandwich estimate \citep{hac:Eicker:1963,hac:Huber:1967,hac:White:1980}
+from a fitted model object, defaulting to what is known as HC0 or HC1 in linear
+regresion models. \code{vcovHC()} is a wrapper to \code{sandwich()} combined
+with \code{meatHC()} and \code{bread()} to compute general HC covariances
+ranging from HC0 to HC5. \code{vcovHAC()}, based on \code{sandwich()} with
+\code{meatHAC()} and \code{bread()}, computes HAC covariance matrix estimates.
+Further convenience interfaces \code{kernHAC()} for Andrews' kernel HAC
+\citep{hac:Andrews:1991} and \code{NeweyWest()} for Newey-West-style HAC
+\citep{hac:Newey+West:1987,hac:Newey+West:1994} are available. However,
+in versions prior to 2.4.0 of \pkg{sandwich} no similarly object-oriented
+approach to clustered sandwich covariances was available.
 
-Another \proglang{R} package that includes heteroscedasticity consistent covariance estimators for models produced by \code{lm()} is the \pkg{car} package \citep{hac:Fox+Weisberg:2011}. Its function \pkg{hccm} calculates HC0--HC4 type covariance matrices.
-
-However, there is as yet no systematic implementation of clustered/panel covariances beyond (generalized) linear models. Though, activities were carried out to implement clustered covariances in a couple of \proglang{R} packages.
+Another \proglang{R} package that includes heteroscedasticity consistent
+covariance estimators (HC0--HC4), for models produced by \code{lm()} only,
+is the \pkg{car} package \citep{hac:Fox+Weisberg:2011} in function
+\code{hccm()}. Like \code{vcovHC()} from \pkg{sandwich} this is limited
+to the cross-section case without clustering, though.
 
 \subsection[R packages for clustered covariances]{\proglang{R} packages for clustered covariances}
 
-Clustered covariances are availlable in several \proglang{R} packages, including \pkg{multiwayvcov} \citep{hac:Graham+Arai+Hagstroemer:2016}, \pkg{plm} \citep{hac:Croissant+Millo:2008}, \pkg{geepack} \citep{hac:Halekoh+Hojsgaard+Yan:2002}, \pkg{lfe} \citep{hac:Gaure:2016}, \pkg{clubSandwich} \citep{hac:Pustejovsky:2016} and \pkg{clusterSEs} \citep{hac:Esarey:2017}, among others.
+The lack of support for clustered sandwich covariances in standard packages
+like \pkg{sandwich} or \pkg{car} has led to a number of different
+implementations scattered over various packages. Typically, these are tied
+to either objects from \code{lm()} or dedicated model objects fitting certain
+(generalized) linear models for clustered or panel data. The list of packages
+includes: \pkg{multiwayvcov} \citep{hac:Graham+Arai+Hagstroemer:2016},
+\pkg{plm} \citep{hac:Croissant+Millo:2008}, \pkg{geepack}
+\citep{hac:Halekoh+Hojsgaard+Yan:2002}, \pkg{lfe} \citep{hac:Gaure:2016},
+\pkg{clubSandwich} \citep{hac:Pustejovsky:2016}, and \pkg{clusterSEs}
+\citep{hac:Esarey:2017}, among others.
 
-Nevertheless, usage is restricted to \code{lm} and \code{glm}-like object in \pkg{multiwayvcov}, to \code{plm} objects in \pkg{plm},
-to \code{geeglm} objects in \pkg{geepack}, to \code{felm} objects in \pkg{lfe}, and to ordinary and weighted least squares linear regression models in \pkg{clubSandwich}.
-While \pkg{multiwayvcov} and \pkg{clubSandwich} are specialized on the estimation of clustered covariances, the other packages mentioned are partly focused on different issues. \pkg{clusterSEs} calculates cluster-robust p-values and confidence intervalls, while \pkg{plm} places the focus on the estimation of linear panel models. \pkg{geepack} concentrates on a generalized estimation equations approach, and allows for clustered covariances via an independence correlation structure, and \pkg{lfe} is mainly used to estimate linear models with multiple group fixed effects, but allows for clustered covariances, too.
+In \pkg{multiwayvcov}, the implementation was object-oriented in many aspects
+building on \pkg{sandwich} infrastructure. However, certain details assumed
+\code{lm} or \code{glm}-like objects. In \pkg{plm} and \pkg{lfe} several
+types of sandwich covariances are available for the packages' \code{plm}
+(panel linear models) and \code{felm} (fixed-effect linear models), respectively.
+The \pkg{geepack} package can estimate independence working models for
+\code{glm}-type models, also supporting clustered covariances for the
+resulting \code{geeglm} objects. Finally, \pkg{clusterSEs} and
+\pkg{clubSandwich} focus on the case of ordinary or weighted least squares
+regression models.
 
-In a nutshell, there is until now no object-oriented implementation for clustered covariances in \proglang{R}. There are some packages that allow for clustered covariances, but connected with the disadvantage that these functions are only applicable to a limited range of modeling functions. While the linear regression model is of course an important application case, the same strategies can be employed in more general models, including zero-inflated, censored, or limited responses. 
-
-In the next section, some theoretical background of the underlying methods for clustered as well as panel data is introduced. As a starting point, the structure of sandwich covariances is established, because all types of covariances considered here are based on sandwich covariances.
+In a nutshell, there is good coverage of clustered covariances for (generalized)
+linear regression objects albeit potentially necessitating reestimating a
+certain model using a different model-fitting function/packages. However, there
+was no object-oriented implementation for clustered covariances in \proglang{R},
+that enabled plugging in different model objects from in principle any class.
+Therefore, starting from the implementation in \pkg{multiwayvcov} a new and
+object-oriented implementation was established and integrated in \pkg{sandwich},
+allowing application to more general models, including zero-inflated, censored,
+or limited responses. 
 
 \section{Methods} \label{sec:methods}
+
+In the next section, some theoretical background of the underlying methods for
+clustered as well as panel data is introduced. As a starting point, the
+structure of sandwich covariances is established, because all types of
+covariances considered here are based on sandwich covariances.
 
 Let $(y_{i},x_{i})$ for $i = 1, \ldots, n$ be data with some distribution controlled by a parameter vector $\theta$ with k dimensions.
 To compute sandwich covariances, take a bread matrix $B(\theta)$ and a meat matrix $M(\theta)$ and multiply them to a sandwich with meat between two slices of bread \citep{hac:Zeileis:2006}
@@ -470,12 +534,12 @@ While an easy task for balanced panel, there are two alternatives to estimate th
 The argument \code{kronecker} relates to estimation of the meat and determines whether calculations are executed with the Kronecker product or elementwise, which is computationally faster for a large number of observations.
 
 \section{Illustrations} \label{sec:illu}
-The classical area of application for clustered standard errors is the linear model, with model errors that are correlated within clusters. In this section, replication and comparison of clustered standard errors availlable in a couple of \proglang{R} packages is shown on the basis of benchmark \cite{hac:Petersen:2009} data in Example \ref{ex-petersen}. Due to the nice feature of object-orientation, clustered covariances in \code{vcovCL()} are now available for models beyond \code{lm()} or \code{glm()}. Example \ref{ex-aghion} applies \code{vcovCL()} to a hurdle model, using data provided by \cite{hac:Aghion+VanReenen+Zingales:2013}.
+The classical area of application for clustered standard errors is the linear model, with model errors that are correlated within clusters. In this section, replication and comparison of clustered standard errors available in a couple of \proglang{R} packages is shown on the basis of benchmark \cite{hac:Petersen:2009} data in Example \ref{ex-petersen}. Due to the nice feature of object-orientation, clustered covariances in \code{vcovCL()} are now available for models beyond \code{lm()} or \code{glm()}. Example \ref{ex-aghion} applies \code{vcovCL()} to a hurdle model, using data provided by \cite{hac:Aghion+VanReenen+Zingales:2013}.
 
 \subsection[Petersen (2009)]{\cite{hac:Petersen:2009}} \label{ex-petersen}
 Benchmark data for testing the clustered standard error estimates in the linear model is a simulated data set\footnote{\url{http://www.kellogg.northwestern.edu/faculty/petersen/htm/papers/se/test_data.txt}} provided by \cite{hac:Petersen:2009}, containing 500 firms over 10 years. The data include 4 variables, \code{firmid}, \code{year}, dependent variable \code{y} and explanatory variable \code{x} \citep[see also][]{hac:Graham+Arai+Hagstroemer:2016}.
 
-The data are availlable in \pkg{sandwich} as well as in \pkg{multiwayvcov}.
+The data are available in \pkg{sandwich} as well as in \pkg{multiwayvcov}.
 <<petersen-data>>= 
 data("PetersenCL", package = "sandwich")
 @ 
@@ -565,7 +629,7 @@ Still, one limitation of standard count data models is that the zeros and the no
 From an economic perspective, there is a difference in determinants of ``first innovation'' and ``continuing innovation''. The rationale behind this is the notion of nonlinearities in the innovation process.
 In case that the first innovation is especially hard to obtain in comparison to succeeding innovations, hurdle models offer a useful way that allows for a distinction to be made between these two processes \citep{hac:Berger+Stocker+Zeileis:2017}.
 Therefore, \cite{hac:Berger+Stocker+Zeileis:2017} employ two-part hurdle models with a binary part that models the decision to innovate at all, and a count part that models ongoing innovation, respectively.
-The \cite{hac:Aghion+VanReenen+Zingales:2013} data are availlable in the \pkg{sandwich} package.
+The \cite{hac:Aghion+VanReenen+Zingales:2013} data are available in the \pkg{sandwich} package.
 <<innovation-data>>= 
 data("InstInnovation", package = "sandwich")
 @ 
@@ -632,7 +696,7 @@ Standard errors being compared to each other include iid standard errors without
 
 \subsubsection{Outcome measure}
 In order to assess the validity of statistical inference, the coverage rate is the outcome measure of interest.
-If standard errors are estimated accurately, the coverage rate of the $95$\% confidence intervall should be close to 0.95. 
+If standard errors are estimated accurately, the coverage rate of the $95$\% confidence interval should be close to 0.95. 
 Values less than 0.925 will be considered to have underestimated standard errors towards a Type I error, while values greater than 0.975 will be considered to have overestimated standard errors towards a Type II error.
 
 \subsubsection{Simulation code}
