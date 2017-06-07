@@ -28,24 +28,24 @@
   following estimation of a standard least-squares regression or generalized
   linear model estimated by maximum likelihood. Although many publications just
   refer to ``the'' clustered standard errors, there is a surprisingly wide
-  variation in clustered covariances, particularly due to different flavors of
+  variety of clustered covariances, particularly due to different flavors of
   bias corrections. Furthermore, while the linear regression model is certainly
   the most important application case, the same strategies can be employed in
   more general models (e.g. for zero-inflated, censored, or limited responses).
 
-  In \proglang{R}, the sandwich package
-  \citep{hac:Zeileis:2004a,hac:Zeileis:2006} provides an object-oriented
-  approach to ``robust'' covariance matrix estimation based on methods for two
-  generic functions (\code{estfun()} and \code{bread()}). Using this
-  infrastructure, sandwich covariances for cross-section or time series data
-  have been available for models beyond \code{lm()} or \code{glm()}, e.g., for
-  packages \pkg{MASS}, \pkg{pscl}, \pkg{countreg}, \pkg{betareg}, among many
-  others. However, corresponding functions for clustered or panel data have been
-  somewhat scattered or available only for certain modeling functions. This
-  shortcoming has been corrected in the development version of sandwich on
-  R-Forge. Here, we introduce this new object-oriented implementation of
-  clustered and panel covariances and assess the methods' performance in a
-  simulation study.
+  In \proglang{R}, functions for covariances in clustered or panel models have been
+  somewhat scattered or available only for certain modeling functions, notably
+  the (generalized) linear regression model. In contrast, an object-oriented
+  approach to ``robust'' covariance matrix estimation -- applicable beyond
+  \code{lm()} and \code{glm()} -- is available in the \pkg{sandwich} package but
+  has been limited to the case of cross-section or time series data. However,
+  this shortcoming has been corrected in \pkg{sandwich} (starting from
+  version~2.4.0): Based on methods for two generic functions (\code{estfun()} and
+  \code{bread()}), clustered and panel covariances are now provided in
+  \code{vcovCL()} and \code{vcovPL()}, respectively. These are directly
+  applicable to models from packages \pkg{MASS}, \pkg{pscl}, \pkg{countreg},
+  \pkg{betareg}, among many others. Some empirical illustrations are provided
+  as well as an assessment of the methods' performance in a simulation study.
 }
 
 \Address{
@@ -153,25 +153,55 @@ save(s05, file = "sim-05.rda")
 
 \section{Introduction} \label{sec:intro}
 
-Observations that contain correlation between objects of the same group/cluster are often referred to as ``cluster-correlated'' observations. Each cluster comprises multiple objects, such that the data structure is either nested or hierarchical \citep{hac:Galbraith:Daniel:Vissel:2010}.
-For model errors that are correlated within, but not across clusters, the assumption of independent and identically distributed errors cannot plausibly sustain.
-But ignoring dependency of model errors within clusters by using ``classical'' standard errors (that is, iid standard errors without heteroscedasticity and without autocorrelation) can result in an overstate of estimator precision and can thus lead to serious mistakes in statistical inference \citep{hac:Moulton:1986, hac:Moulton:1990}.
+Observations with correlations between objects of the same group/cluster are often referred to as ``cluster-correlated'' observations. Each cluster comprises multiple objects that are correlated within, but not acress, clusters, leading to a nested or hierarchical structure \citep{hac:Galbraith:Daniel:Vissel:2010}.
+Ignoring this dependency and pretending observations are independent not only
+across but also within the clusters, still leads to parameter estimates that
+are consistent (albeit not efficient) in many situations. However, the
+observations' information will typically be overestimated and hence lead to
+overstated precision of the parameter estimates and inflated type~I errors
+in the corresponding tests \citep{hac:Moulton:1986, hac:Moulton:1990}.
+Therefore, clustered covariances are widely used to account for clustered
+correlations in the data.
 
-For valid statistical inference, the correlation between objects of the same group can no longer be ignored.
-Thus, clustered covariances are widely used to account for clustered errors.
-Clustered errors can emerge in cross-section as well as in panel data. For cross-section data, the cluster dimension can for instance be the industry in which companies operate or the classroom of pupils.
-In panel data, clustered errors can arise from correlation of different time periods for a given individual, while there is no correlation across individuals \citep{hac:Cameron+Miller:2015}.
+Such clustering effects can emerge both in cross-section and in panel (or
+longitudinal) data. Typical examples for clusting cross-section data include
+firms within the same industry or students within the same school or call.
+In panel data, a common source of clustering is that observations for the
+same individual at different time points are correlated while the individuals
+may be independent \citep{hac:Cameron+Miller:2015}.
 
 This paper contributes to the literature particularly in two respects:
+%
+Most importantly, we discuss a set of computational tools for the \proglang{R} system for
+statistical computing \citep{hac:R:2017}, providing an object-oriented
+implementation of clustered covariances/standard errors in the \proglang{R}
+package \pkg{sandwich} \citep{hac:Zeileis:2004a,hac:Zeileis:2006}. Using this
+infrastructure, sandwich covariances for cross-section or time series data have
+been available for models beyond \code{lm()} or \code{glm()}, e.g., for packages
+\pkg{MASS} \citep{hac:Venables+Ripley:2002}, \pkg{pscl}/\pkg{countreg}
+\citep{hac:Zeileis+Kleiber+Jackman:2008}, \pkg{betareg}
+\citep{hac:Cribari-Neto+Zeileis:2010,hac:Gruen+Kosmidis+Zeileis:2012}, among
+many others. However, corresponding functions for clustered or panel data had
+not been available in \pkg{sandwich} but have been somewhat scattered or
+available only for certain modeling functions.
 
-First, we discuss a set of computational tools for the \proglang{R} system for statistical computing \citep{hac:R:2017}, providing for an object-oriented implementation of clustered covariances/standard errors in the \proglang{R} package \pkg{sandwich}.
-Using this infrastructure, sandwich covariances for cross-section or time series data have been available for models beyond \code{lm()} or \code{glm()}, e.g., for packages \pkg{MASS}, \pkg{pscl}, \pkg{countreg}, \pkg{betareg}, among many others. However, corresponding functions for clustered or panel data have been somewhat scattered or available only for certain modeling functions. This shortcoming has been corrected in the development version of \pkg{sandwich} on \proglang{R}-Forge.
+Moreover, we perform a Monte Carlo simulation study for various response
+distributions with the aim to assess the performance of clustered standard errors
+beyond \code{lm()} and \code{glm()}. This also includes special cases for which
+such a finite-sample assessment has not yet been carried out in the literature
+(to the best of our knowledge).
 
-Second, we perform a Monte Carlo simulation study for various response distributions with the aim to test the performance of clustered standard errors beyond \code{lm()} and \code{glm()}. Up to our knowledge, there does not yet exist such a simulation exercise in the literature.
-
-The rest of the paper is structured as follows: Section~\ref{sec:idea} discusses the idea of clustered covariances and reviews existing \proglang{R} packages for sandwich as well as clustered covariances.
-Section~\ref{sec:methods} deals with the theory behind sandwich covariances, especially with respect to clustered covariances for cross-sectional and longitudinal data, clustered data as well as panel data.
-Section~\ref{sec:software} then takes a look behind the scenes of a new object-oriented \proglang{R} implementation for clustered covariances, Section~\ref{sec:illu} gives an empirical illustration based on data provided from \cite{hac:Petersen:2009} and \cite{hac:Aghion+VanReenen+Zingales:2013} as reanalyzed by \cite{hac:Berger+Stocker+Zeileis:2017}. The simulation setup and results are discussed in Section~\ref{sec:simulation}.
+The rest of this manuscript is structured as follows: Section~\ref{sec:idea}
+discusses the idea of clustered covariances and reviews existing \proglang{R}
+packages for sandwich as well as clustered covariances.
+Section~\ref{sec:methods} deals with the theory behind sandwich covariances,
+especially with respect to clustered covariances for cross-sectional and
+longitudinal data, clustered data, as well as panel data.
+Section~\ref{sec:software} then takes a look behind the scenes of the new
+object-oriented \proglang{R} implementation for clustered covariances,
+Section~\ref{sec:illu} gives an empirical illustration based on data provided
+from \cite{hac:Petersen:2009} and \cite{hac:Aghion+VanReenen+Zingales:2013}.
+The simulation setup and results are discussed in Section~\ref{sec:simulation}.
 
 \section{Idea} \label{sec:idea}
 
