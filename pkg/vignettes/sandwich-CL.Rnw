@@ -159,7 +159,7 @@ save(s05, file = "sim-05.rda")
 
 Observations with correlations between objects of the same group/cluster are
 often referred to as ``cluster-correlated'' observations. Each cluster comprises
-multiple objects that are correlated within, but not acress, clusters, leading
+multiple objects that are correlated within, but not across, clusters, leading
 to a nested or hierarchical structure \citep{hac:Galbraith+Daniel+Vissel:2010}.
 Ignoring this dependency and pretending observations are independent not only
 across but also within the clusters, still leads to parameter estimates that
@@ -171,7 +171,7 @@ Therefore, clustered covariances are widely used to account for clustered
 correlations in the data.
 
 Such clustering effects can emerge both in cross-section and in panel (or
-longitudinal) data. Typical examples for clusting cross-section data include
+longitudinal) data. Typical examples for clustered cross-section data include
 firms within the same industry or students within the same school or call.
 In panel data, a common source of clustering is that observations for the
 same individual at different time points are correlated while the individuals
@@ -325,27 +325,22 @@ of $B(\theta)$:
   B(\theta) & = & \left( \E[ - \psi'(y, x, \theta) ] \right)^{-1} \\  \label{obj}
   M(\theta) & = & \VAR[ \psi(y, x, \theta) ].
 \end{eqnarray}
-The building blocks for the calculation of the sandwich are provided by the \pkg{sandwich} package.
-\fixme{Better delay the comments regarding the package until the very end of this
-subsection. Instead focus on continuing the conceptual discussion, i.e., explain what
-psi is before fleshing out more details.}
-A natural idea for an object-oriented implementation of such estimators is to provide for various functions that compute different estimators for the meat $M(\theta)$ based on an \code{estfun()} extractor function that extracts the empirical estimating functions $\psi(y, x, \theta)$ from a fitted model object.
 An estimating function
 \begin{eqnarray}
-  \psi(y, x, \theta) \quad = \quad \frac{\partial \Psi(y, x, \theta)}{\partial \theta},
+  \psi(y, x, \theta) \quad = \quad \frac{\partial \Psi(y, x, \theta)}{\partial \theta}
 \end{eqnarray}
 is defined as the derivative of an objective function $\Psi(y, x, \theta)$, typically the log-likelihood, with respect to a parameter vector $\theta$.
-Thus, an empirical estimating (or score) function evaluates an estimating function at the observed data and the estimated parameters \citep{hac:Zeileis:2006}.
-\code{estfun()} returns an $n \times k$ matrix of empirical estimating functions from a fitted model object \citep{hac:Zeileis:2006}:
-\fixme{Should the equation below get a number so that the corresponding cluster-aggregated version can refer to it.}
- \[ \left( \begin{array}{c} \psi(y_1, x_1, \hat \theta) \\ \vdots \\ \psi(y_n, x_n, \hat \theta)
-           \end{array} \right). \]
-
-\code{bread()} extracts the empirical version of the inverse Hessian
+Thus, an empirical estimating (or score) function evaluates an estimating function at the observed data and the estimated parameters
+such that an $n \times k$ matrix is obtained \citep{hac:Zeileis:2006}:
+\begin{eqnarray} \label{eq:estfun}
+\left( \begin{array}{c} \psi(y_1, x_1, \hat \theta) \\ \vdots \\ \psi(y_n, x_n, \hat \theta)
+           \end{array} \right).
+\end{eqnarray}
+$\hat B$ extracts the empirical version of the inverse Hessian
 \begin{equation} \label{eq:Bhat}
-  \hat B \quad = \quad \left( \frac{1}{n} \sum_{i = 1}^n - \psi'(y_i, x_i, \hat \theta) \right)^{-1}.
+  \hat B \quad = \quad \left( \frac{1}{n} \sum_{i = 1}^n - \psi'(y_i, x_i, \hat \theta) \right)^{-1},
 \end{equation}
-\code{meat()}, \code{meatHAC()} and \code{meatHC()} compute outer product, HAC and HC estimators for the meat, respectively, given the existence of an \code{estfun()} method:
+whereas $\hat M, \hat M_\mathrm{HAC}, \hat M_\mathrm{HC}$ compute outer product, HAC and HC estimators for the meat, respectively, 
 \begin{eqnarray} \label{eq:meat-op}
   \hat M & = & \frac{1}{n} \sum_{i = 1}^n\psi(y_i, x_i, \hat \theta) \psi(y_i, x_i, \hat \theta)^\top \\ \label{eq:meat-hac}
   \hat M_\mathrm{HAC} & = & \frac{1}{n} \sum_{i, j = 1}^n w_{|i-j|} \, \psi(y_i, x_i, \hat \theta) \psi(y_j, x_j, \hat \theta)^\top \\ \label{eq:meat-hc}
@@ -355,33 +350,38 @@ Thus, an empirical estimating (or score) function evaluates an estimating functi
   0 & \cdots & \omega(r(y_n, x_n^\top \theta))
   \end{array} \right) X.
 \end{eqnarray}
-The outer product estimator in Equation~\ref{eq:meat-op} corresponds to the White estimator \citep{hac:Eicker:1963,hac:Huber:1967,hac:White:1980}.
+The outer product estimator in Equation~\ref{eq:meat-op} corresponds to the standard sandwich estimator \citep{hac:Eicker:1963,hac:Huber:1967,hac:White:1980}.
 $w_{|i-j|}$ in Equation~\ref{eq:meat-hac} is a vector of weights \citep{hac:Zeileis:2004a}.
-In Equation~\ref{eq:meat-hc}, functions $\omega(\cdot)$ derive estimates of the variance of the observed working residuals $r(y_1, x_1^\top \theta), \ldots, r(y_n, x_n^\top \theta)$ \citep{hac:Zeileis:2006}.
+In Equation~\ref{eq:meat-hc}, functions $\omega(\cdot)$ derive estimates of the variance of the empirical working residuals $r(y_1, x_1^\top \hat \theta), \ldots, r(y_n, x_n^\top \hat \theta)$ and may also depend on hat values as well as degrees of freedom \citep{hac:Zeileis:2006}.
+The HC type of the model in Equation~\ref{eq:meat-hc} has to be of a form that allows factorization of the scores
+\begin{equation} \label{eq:fact}
+\psi(y_i, x_i, \hat\theta)  =  r(y_i, x_i^\top \hat \theta) \cdot x_i
+\end{equation}  
+into empirical working residuals times the regressor vector. 
 
-\fixme{Explain that for the HC type the model has to be of a form that allows factorization of the scores psi
-into a working residual times regressor vector. Preferably, the clustered HCs would then also connect to this.}
+The building blocks for the calculation of the sandwich are provided by the \pkg{sandwich} package.
+A natural idea for an object-oriented implementation of such estimators is to provide for various functions that compute different estimators for the meat $M(\theta)$ based on an \code{estfun()} extractor function that extracts the empirical estimating functions $\psi(y, x, \theta)$ from a fitted model object. 
+\code{meat()}, \code{meatHAC()} and \code{meatHC()} compute outer product, HAC and HC estimators for the meat, respectively, given the existence of an \code{estfun()} method.
+\code{bread()} extracts the empirical version of the inverse Hessian.
 
 \subsection{Clustered covariances} 
 
 A simple and natural estimator for the meat matrix is the outer product of the empirical estimating functions $\hat M$.
-For (one-way) clustered covariances, the level of aggregation changes from individuals to clusters/groups, which leads to changes in the meat matrix. 
-\fixme{Explain the switch to the notation with double index.}
-The empirical estimating functions are first summed groupwise (e.g., for $g = 1, \ldots, G$ cluster, with $n_{g}$ observations per cluster), returning a $G \times k$ matrix of empirical estimating functions
-\readme{I changed the notation here to explicitly show the some, hoping this is easier to understand. Also, this should probably have
-number to be able to refer back and forth between the unaggregated and cluster-aggregated version of this matrix.}
- \[ \left( \begin{array}{c} \psi(y_{11}, x_{1}, \hat \theta) + \dots + \psi(y_{n_1 1}, x_{n_1 1}, \hat \theta)\\
+For (one-way) clustered covariances, the level of aggregation changes from individuals to clusters/groups, which leads to changes in the meat. 
+The double index introduced in the following shows in first place the observation within a cluster, ranging from $1, \ldots , n_g$, and in second place the cluster $g = 1, \ldots, G$ in which the observation is located.
+The empirical estimating functions are summed over $g = 1, \ldots, G$ clusters, with $n_1, \ldots, n_G$ observations per cluster, returning a $G \times k$ matrix of empirical estimating functions
+\begin{eqnarray} \label{eq:estfun-cl}
+\left( \begin{array}{c} \psi(y_{11}, x_{11}, \hat \theta) + \dots + \psi(y_{n_1 1}, x_{n_1 1}, \hat \theta)\\
            \vdots \\
-	   \psi(y_{1G}, x_{1G}, \hat \theta) + \dots + \psi(y_{n_G 1}, x_{n_G 1}, \hat \theta)
-           \end{array} \right), \]
+	   \psi(y_{1G}, x_{1G}, \hat \theta) + \dots + \psi(y_{n_G G}, x_{n_G G}, \hat \theta)
+           \end{array} \right),
+\end{eqnarray}  
 before the outer product is calculated
 \begin{equation} \label{eq:meatCL}
   \hat M_\mathrm{CL} \quad = \quad \frac{1}{n} \sum_{g = 1}^G\sum_{i = 1}^{n_{g}}\psi(y_{ig}, x_{ig}, \hat \theta) \psi(y_{ig}, x_{ig}, \hat \theta)^\top.
 \end{equation}
-The clustered covariance estimator generalizes White's famous covariance estimator \citep{hac:White:1980}.
-If it is the case that each observation is its own cluster, clustered covariances correspond to the White estimator.
-
-\fixme{Rather than calling it `White' refer to Equation~6 where also a more neutral term should be adopted.}
+The clustered covariance estimator generalizes the standard sandwich estimator in Equation~\ref{eq:Bhat}.
+If it is the case that each observation is its own cluster, clustered covariances correspond to standard sandwich covariances.
 
 \subsubsection{Types of bias correction}
 The clustered covariance estimator controls for both heteroscedasticity across as well as within clusters, but this comes at the cost that the number of clusters approaches infinity, not the number of observations \citep{hac:Cameron+Gelbach+Miller:2008,hac:Cameron+Miller:2015}.
@@ -393,19 +393,27 @@ The cluster bias correction is defined as
 \end{equation} 
 where $G$ is again the number of clusters.
 The HC bias correction can additionally to the cluster bias correction be applied to the clustered covariance estimator.
-\fixme{try to convey at which point the HC adjustment needs to be inserted in Equation~9}
-This is an easy task for HC0 and HC1 types of bias correction, but more demanding for cluster generalizations of HC2 and HC3, which have been developed by \cite{hac:Kauermann+Carroll:2001} and \cite{hac:Bell+McCaffrey:2002}.
 HC0 to HC3 bias corrections are defined as
 \begin{eqnarray} \label{eq:biasadj1}
   \mathrm{HC0:} & = & 1 \\  \label{eq:biasadj2}
   \mathrm{HC1:} & = & \frac{n}{n - k} \\  \label{eq:biasadj3}
-  \mathrm{HC2:} & = & [\vI_{n_{g}} - \vH_{gg}]^{-0.5} \\  \label{eq:biasadj4}
-  \mathrm{HC3:} & = & [\vI_{n_{g}} - \vH_{gg}]^{-1}, 
+  \mathrm{HC2:} & = & (I_{n_{g}} - H_{gg})^{-0.5} \\  \label{eq:biasadj4}
+  \mathrm{HC3:} & = & (I_{n_{g}} - H_{gg})^{-1}, 
 \end{eqnarray}  
-\fixme{be consistent about bolding or not bolding matrix names}
-where $n$ is the number of observations and $k$ is the number of estimated parameters.
-$\vI_{n_{g}}$ is an identity matrix of size $n_{g}$, and $\vH_{gg}$ is a block-diagonal hat matrix.
-\fixme{When put together an overall H would be block-diagnoal but the individual $H_{gg}$ is not, is it?}
+where $n$ is the number of observations and $k$ is the number of estimated parameters,
+$I_{n_{g}}$ is an identity matrix of size $n_{g}$, and $H$ is a block-diagonal hat matrix.
+
+HC0 and HC1 types of bias correction can easily be multipied to $\hat M_\mathrm{CL}$ (Equation~\ref{eq:meatCL}), but is more demanding for cluster generalizations of HC2 and HC3 types of bias correction, that have been developed by \cite{hac:Kauermann+Carroll:2001} and \cite{hac:Bell+McCaffrey:2002}.
+Starting from Equation~\ref{eq:fact}, the groupwise aggregated empirical working residuals $r(y_{g}, x_{g}^\top \hat \theta)$ have to be first adjusted groupwise for cluster generalizations of HC2 and HC3 in
+Equations~\ref{eq:biasadj3} and \ref{eq:biasadj4} 
+\begin{equation} \label{eq:fact-adj}
+  \tilde r(y_{g}, x_{g}^\top \hat \theta) = (I_{n_{g}} - H_{gg})^\alpha \cdot r(y_{g}, x_{g}^\top \hat \theta)
+\end{equation}  
+with $\alpha = -0.5$ for HC2 type and $\alpha = -1$ for HC3 type of bias correction,
+before multiplying the adjusted empirical working residuals with the regressor vector
+\begin{equation} \label{eq:fact-reg}
+\tilde \psi(y_i, x_i, \hat\theta) = \tilde r(y_{i}, x_{i}^\top \hat \theta) \cdot x_i.
+\end{equation}  
 
 \subsubsection{Two-way and multi-way clustered covariances}
 Certainly, there can be more than one cluster dimension, as for example observations that are characterized by housholds within states or companies within industries. It can therefore sometimes be helpful that one-way clustered covariances can be extended to so-called multi-way clustering as shown by \cite{hac:Miglioretti+Heagerty:2007}, \cite{hac:Thompson:2011} and \cite{hac:Cameron+Gelbach+Miller:2011}.
@@ -413,15 +421,14 @@ Certainly, there can be more than one cluster dimension, as for example observat
 Multi-way clustered covariances comprise clustering on $2^{D} - 1$ dimensional combinations.
 Clustering in two dimensions, for example in $id$ and $time$, gives $D = 2$, such that the clustered covariance matrix is composed of $2^2 - 1 = 3$ one-way clustered covariance matrices that have to be added up or substracted off, respectively.
 For two-way clustered covariances with cluster dimensions $id$ and $time$, the one-way clustered covariance matrices on $id$ and on $time$ are added up, and the two-way clustered covariance matrix with clusters formed by the intersection of $id$ and $time$ is substacted off
-\fixme{in the equation below we would need M not S, right? For consistency, the subscript should follow the matrix name directly -- rather than after the brackets.}
+%\fixme{in the equation below we would need M not S, right? For consistency, the subscript should follow the matrix name directly -- %rather than after the brackets.}
 \begin{equation} \label{eq:twoway}
-S(\theta)_{id,time} \quad = \quad S(\theta)_{id} + S(\theta)_{time} - S(\theta)_{id \cap time}.
+M_{id,time} \quad = \quad M_{id} + M_{time} - M_{id \cap time}.
 \end{equation}
-Clustered covariance matrices like $S(\theta)_{id}$ and $S(\theta)_{time}$ with an odd number of cluster dimensions are added up, whereas those with an even number of cluster dimensions like $S(\theta)_{id \cap time}$ are substracted off to get the two-way clustered covariance estimator. The same heuristic applies to clustered covariances with more than two dimensions of clusters.
+Parts of the meat as $M_{id}$ and $M_{time}$ with an odd number of cluster dimensions are added up, whereas those with an even number of cluster dimensions like $M_{id \cap time}$ are substracted off to get the two-way clustered covariance estimator. The same heuristic applies to clustered covariances with more than two dimensions of clusters.
 
-\cite{hac:Petersen:2009}, \cite{hac:Thompson:2011} and \cite{hac:Ma:2014} suggest to substract the White covariance matrix as the last substracted matrix in case that the clusters formed by the intersection of $id$ and $time$ do only contain a single observation\footnote{If one wants to cluster by dimensions $id$ and $year$ in a sample of $id-month$ observations, each cluster is composed of 12 observations \citep{hac:Ma:2014}. In such a setting, the last substracted matrix should be a one-way clustered covariance matrix with clusters formed by the intersections of $id$ and $year$.}. 
-
-As \cite{hac:Ma:2014} argues, the White estimator does not take into account any bias adjustment, such that the cluster bias correction $\frac{G}{G-1}$ is larger. Thus, if always the clustered covariance matrix is substracted as the last substracted matrix instead of White's covariance, clustered covariances are underestimated and can thus lead to erroneous conclusions.
+\cite{hac:Petersen:2009}, \cite{hac:Thompson:2011} and \cite{hac:Ma:2014} suggest to substract the standard sandwich estimator  in case that the clusters formed by the intersection of $id$ and $time$ do only contain a single observation\footnote{If one wants to cluster by dimensions $id$ and $year$ in a sample of $id-month$ observations, each cluster is composed of 12 observations \citep{hac:Ma:2014}. In such a setting, the last substracted matrix should be a one-way clustered covariance matrix with clusters formed by the intersections of $id$ and $year$.}. 
+As \cite{hac:Ma:2014} argues, the standard sandwich estimator does not take into account any bias adjustment, such that the cluster bias correction $\frac{G}{G-1}$ is larger than one. Thus, covariances are underestimated if always the clustered covariance matrix with cluster bias correction $\frac{G}{G-1}$ is substracted as the last substracted matrix instead of standard sandwich covariances.
 
 \subsection{Clustered covariances for panel data}
 The information of panel data sets is often overstated, as cross-sectional as well as temporal dependencies may occur \citep{hac:Hoechle:2007}.
@@ -437,19 +444,15 @@ A panel Newey-West estimator can be obtained by setting the cross-sectional as w
 This can be put implicitly into the weights, just as in Equation~7.
 Finally, for notational consistency, if a comma in the subscript is needed here, it should also be used above in the clustered case.}
 \begin{equation} \label{eq:newey}
-  \hat M_\mathrm{PL}^ {NW} \quad = \quad \hat M + \sum_{l = 1}^L w_l[\hat \Omega_l + \hat \Omega_l^\top],
+  \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{i, j = 1}^n w_{|i-j|} \, \psi(y_{ig}, x_{ig}, \hat \theta) \psi(y_{jg}, x_{jg}, \hat \theta)^\top,
 \end{equation}  
-with
-\begin{equation}
-  \hat \Omega_l = \sum_{t = 1}^T\sum_{i = 1}^n \psi(y_{i,t}, x_{i,t}, \hat \theta) \psi(y_{i,t-l}, x_{i,t-l}, \hat \theta)^\top,
-\end{equation}
-where $w_l$ is a distance-decreasing kernel function, and $L$ the maximal lag length. As \cite{hac:Petersen:2009} noticed, the maximal lag length in a panel data set is the maximum number of years per firm minus one.
-\fixme{Avoid jargon with `years' and `firms'. Employ these only as illustrations in the beginning and then stick to `time' and `id' instead.}
+where $w_l$ is a distance-decreasing kernel function, and $L$ the maximal lag length. As \cite{hac:Petersen:2009} noticed, the maximal lag length in a panel data set is the maximum number of time periods per id minus one.
+%\fixme{Avoid jargon with `years' and `firms'. Employ these only as illustrations in the beginning and then stick to `time' and `id' instead.}
 
-Though, an underlying assumption is that although residuals are correlated within groups, they are uncorrelated between groups, which is often artificial and does often not reflect the nature of panel data \citep{hac:Hoechle:2007}. 
-To impose fewer restrictive assumptions, correlation within and between groups should be possible.
-\fixme{Is this paragraph necessary? It's currently `hanging' at the end of the subsection without a proper
-conclusion. Also, the notion of `residuals' is linear-model-specific and should ideally be avoided.}
+%Though, an underlying assumption is that although residuals are correlated within groups, they are uncorrelated between groups, %which is often artificial and does often not reflect the nature of panel data \citep{hac:Hoechle:2007}. 
+%To impose fewer restrictive assumptions, correlation within and between groups should be possible.
+%\fixme{Is this paragraph necessary? It's currently `hanging' at the end of the subsection without a proper
+%conclusion. Also, the notion of `residuals' is linear-model-specific and should ideally be avoided.}
 
 \subsubsection{Driscoll and Kraay}
 \cite{hac:Driscoll+Kraay:1998} have adapted the Newey-West approach and introduce a technique yielding standard error estimates that are robust to spatial and temporal dependence of general form, but with the caveat that a long enough time dimension exists.
