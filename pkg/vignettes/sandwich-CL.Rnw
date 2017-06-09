@@ -402,7 +402,7 @@ HC0 to HC3 bias corrections are defined as
   \mathrm{HC3:} & = & (I_{n_{g}} - H_{gg})^{-1}, 
 \end{eqnarray}  
 where $n$ is the number of observations and $k$ is the number of estimated parameters,
-$I_{n_{g}}$ is an identity matrix of size $n_{g}$, $H$ is a block-diagonal hat matrix with clusterwise segments of the full hat matrix $H_{gg}$.
+$I_{n_{g}}$ is an identity matrix of size $n_{g}$, $H$ is a block-diagonal hat matrix with cluster-wise segments of the full hat matrix $H_{gg}$.
 
 HC0 and HC1 types of bias correction can easily be multipied to $\hat M_\mathrm{CL}$ (Equation~\ref{eq:meatCL}), but is more demanding for cluster generalizations of HC2 and HC3 types of bias correction, that have been developed by \cite{hac:Kauermann+Carroll:2001} and \cite{hac:Bell+McCaffrey:2002}.
 Starting from Equation~\ref{eq:fact}, the groupwise aggregated empirical working residuals $r(y_{g}, x_{g}^\top \hat \theta)$ have to be first adjusted groupwise for cluster generalizations of HC2 and HC3 in
@@ -520,9 +520,12 @@ The \code{cluster} argument allows to supply one or more cluster variables. If n
 The bias correction is composed of two parts, the cluster bias correction defined in Equation~\ref{eq:biasadj0} and the HC bias correction defined in Equation~\ref{eq:biasadj1}--Equation~\ref{eq:biasadj4}. Both types of bias correction can be separately switched on and off.
 With the \code{cadjust} argument, the cluster bias adjustment can be turned on and off, the \code{type} argument allows to specify the HC type of bias correction.
 
-HC2 and HC3 types of bias correction are geared towards the linear model, but are also applicable for \code{glm} \citep{hac:Bell+McCaffrey:2002, hac:Kauermann+Carroll:2001}. Nevertheless, a precondition for the HC2 and HC3 corrections is the existence of a hat matrix or a weighted version of the hat matrix for GLMs, respectively.
-\fixme{Stress that not just the diagonal, as computed by hatvalues(), is needed but cluster-wise segments of the full hat matrix.
-But it is not necessary to extract the full n x n matrix, just the block pertaining to each cluster sequentially.}
+HC2 and HC3 types of bias correction are geared towards the linear model, but are also applicable for \code{glm} \citep{hac:Bell+McCaffrey:2002, hac:Kauermann+Carroll:2001}. Nevertheless, a precondition for the HC2 and HC3 bias corrections is the existence of a hat matrix or a weighted version of the hat matrix for GLMs, respectively.
+%\fixme{Stress that not just the diagonal, as computed by hatvalues(), is needed but cluster-wise segments of the full
+% hat matrix.
+% But it is not necessary to extract the full n x n matrix, just the block pertaining to each cluster sequentially.}
+As already seen in Equation~\ref{eq:fact-adj}, not only is the diagonal as computed by \code{hatvalues()} needed for HC2 and HC3 bias corrections, but cluster-wise segments of the full hat matrix. The blocks pertaining to each cluster are extracted sequentially, thus it is not needed to estract the full $n \times n$ matrix.
+
 Hence, this is the only part of \code{vcovCL()} that is not fully object-oriented, but just works for \code{lm} and \code{glm} model objects.
 However, beyond the \code{glm} case it's often not clear what the hat matrix should be.
 
