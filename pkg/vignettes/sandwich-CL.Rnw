@@ -318,9 +318,9 @@ Let $(y_{i},x_{i})$ for $i = 1, \ldots, n$ be data with some distribution
 controlled by a parameter vector $\theta$ with k dimensions. For a wide
 range of models the (quasi-)maximum likelihood estimator $\hat \theta$ is
 governed by a central limit theorem \citep{hac:White:1994} so that
-$\hat \approx \mathcal{N}(\theta, n^{-1} S(\theta))$. Moreover, the covariance
+$\hat \theta \approx \mathcal{N}(\theta, n^{-1} S(\theta))$. Moreover, the covariance
 matrix is of sandwich type with a meat matrix $M(\theta)$ between two slices
-of $B(\theta)$:
+of bread $B(\theta)$:
 \begin{eqnarray} \label{eq:sandwich}
   S(\theta) & = & B(\theta) \cdot M(\theta) \cdot B(\theta) \\  \label{eq:bread}
   B(\theta) & = & \left( \E[ - \psi'(y, x, \theta) ] \right)^{-1} \\  \label{obj}
