@@ -496,10 +496,14 @@ In the next section, the software implementation of the various types of cluster
 
 \section{Software} \label{sec:software}
 
-\fixme{Briefly repeat that the bread() in the sandwich() usually does not change and that `only' different
-meat functions are needed. And the main building block for that is estfun. When working residuals are needed
-these are obtained by dividing the estfun through the model.matrix. And based on this most of the estimators
-from the previous section can be established in an object-oriented way.}
+All in Chapter~\ref{sec:methods} introduced types of clustered covariances differ in the structure of the meat, whereas the bread remains the same.
+Thus, in the \pkg{sandwich} package, the \code{bread()} usually does not change, but different meat functions that are based on an \code{estfun()} extractor function are needed, though.
+In case that working residuals are needed, the \code{estfun} is divided through the \code{model.matrix} (see Equation~\ref{eq:fact}).
+Resting upon this, most of the estimators from Chapter~\ref{sec:methods} can be set up in an object-oriented way.
+%\fixme{Briefly repeat that the bread() in the sandwich() usually does not change and that `only' different
+%meat functions are needed. And the main building block for that is estfun. When working residuals are needed
+%these are obtained by dividing the estfun through the model.matrix. And based on this most of the estimators
+%from the previous section can be established in an object-oriented way.}
 
 \subsection{Clustered covariances}
 
