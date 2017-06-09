@@ -2,6 +2,7 @@
 \usepackage{thumbpdf,lmodern}
 \usepackage{amsmath,amssymb,bm}
 \usepackage{multicol}
+\usepackage{mathtools}
 %% need no \usepackage{Sweave}
 
 \newcommand{\newoperator}[3]{\newcommand*{#1}{\mathop{#2}#3}}
@@ -401,7 +402,7 @@ HC0 to HC3 bias corrections are defined as
   \mathrm{HC3:} & = & (I_{n_{g}} - H_{gg})^{-1}, 
 \end{eqnarray}  
 where $n$ is the number of observations and $k$ is the number of estimated parameters,
-$I_{n_{g}}$ is an identity matrix of size $n_{g}$, and $H$ is a block-diagonal hat matrix.
+$I_{n_{g}}$ is an identity matrix of size $n_{g}$, $H$ is a block-diagonal hat matrix with clusterwise segments of the full hat matrix $H_{gg}$.
 
 HC0 and HC1 types of bias correction can easily be multipied to $\hat M_\mathrm{CL}$ (Equation~\ref{eq:meatCL}), but is more demanding for cluster generalizations of HC2 and HC3 types of bias correction, that have been developed by \cite{hac:Kauermann+Carroll:2001} and \cite{hac:Bell+McCaffrey:2002}.
 Starting from Equation~\ref{eq:fact}, the groupwise aggregated empirical working residuals $r(y_{g}, x_{g}^\top \hat \theta)$ have to be first adjusted groupwise for cluster generalizations of HC2 and HC3 in
@@ -427,7 +428,7 @@ M_{id,time} \quad = \quad M_{id} + M_{time} - M_{id \cap time}.
 \end{equation}
 Parts of the meat as $M_{id}$ and $M_{time}$ with an odd number of cluster dimensions are added up, whereas those with an even number of cluster dimensions like $M_{id \cap time}$ are substracted off to get the two-way clustered covariance estimator. The same heuristic applies to clustered covariances with more than two dimensions of clusters.
 
-\cite{hac:Petersen:2009}, \cite{hac:Thompson:2011} and \cite{hac:Ma:2014} suggest to substract the standard sandwich estimator  in case that the clusters formed by the intersection of $id$ and $time$ do only contain a single observation\footnote{If one wants to cluster by dimensions $id$ and $year$ in a sample of $id-month$ observations, each cluster is composed of 12 observations \citep{hac:Ma:2014}. In such a setting, the last substracted matrix should be a one-way clustered covariance matrix with clusters formed by the intersections of $id$ and $year$.}. 
+\cite{hac:Petersen:2009}, \cite{hac:Thompson:2011} and \cite{hac:Ma:2014} suggest to substract the standard sandwich estimator  in case that the clusters formed by the intersection of $id$ and $time$ do only contain a single observation\footnote{If one wants to cluster by dimensions id and year in a sample of id-month observations, each cluster is composed of 12 observations \citep{hac:Ma:2014}. In such a setting, the last substracted matrix should be a one-way clustered covariance matrix with clusters formed by the intersections of id and year.}. 
 As \cite{hac:Ma:2014} argues, the standard sandwich estimator does not take into account any bias adjustment, such that the cluster bias correction $\frac{G}{G-1}$ is larger than one. Thus, covariances are underestimated if always the clustered covariance matrix with cluster bias correction $\frac{G}{G-1}$ is substracted as the last substracted matrix instead of standard sandwich covariances.
 
 \subsection{Clustered covariances for panel data}
@@ -435,18 +436,18 @@ The information of panel data sets is often overstated, as cross-sectional as we
 \citet[p.~702]{hac:Cameron+Trivedi:2005} noticed that ``$NT$ correlated observations have less information than $NT$ independent observations''. 
 For panel data, the source of dependence in the data is crucial to find out what kind of covariance is optimal \citep{hac:Petersen:2009}.
 In the following, panel Newey-West standard errors as well as Driscoll and Kraay standard errors are examined \citep[see also][]{hac:Millo:2014}.
+The cluster dimension is now $t$ with $t = 1, \ldots, T$ time periods and $n_t$ observations in a time period.
 
 \subsubsection{Panel Newey-West}
 \cite{hac:Newey+West:1987} proposed a heteroscedasticity and autocorrelation consistent standard error estimator that is traditionally used for time-series data, but can be modified for use in panel data by estimating correlations between lagged residuals in the same cluster \citep{hac:Petersen:2009}.
-
 A panel Newey-West estimator can be obtained by setting the cross-sectional as well as the cross-serial correlation to zero \citep{hac:Millo:2014}. The meat is composed of
-\fixme{Can the new Omega symbol be avoided? Ideally by using the same notation as in Equation~7. Also, we don't really need the lag L explicitly.
-This can be put implicitly into the weights, just as in Equation~7.
-Finally, for notational consistency, if a comma in the subscript is needed here, it should also be used above in the clustered case.}
+%\fixme{Can the new Omega symbol be avoided? Ideally by using the same notation as in Equation~7. Also, we don't %really need the lag L explicitly.
+%This can be put implicitly into the weights, just as in Equation~7.
+%Finally, for notational consistency, if a comma in the subscript is needed here, it should also be used above in the %clustered case.}
 \begin{equation} \label{eq:newey}
-  \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{i, j = 1}^n w_{|i-j|} \, \psi(y_{ig}, x_{ig}, \hat \theta) \psi(y_{jg}, x_{jg}, \hat \theta)^\top,
+  \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{i, j = 1}^n w_{|i-j|} \, \psi(y_{i}, x_{i}, \hat \theta) \psi(y_{j}, x_{j}, \hat \theta)^\top,
 \end{equation}  
-where $w_l$ is a distance-decreasing kernel function, and $L$ the maximal lag length. As \cite{hac:Petersen:2009} noticed, the maximal lag length in a panel data set is the maximum number of time periods per id minus one.
+where $w_{|i-j|} = 1 - \frac{|i-j|}{L + 1}$ is a distance-decreasing kernel function with a lag $\ell = |i-j|$, $L$ is the maximal lag length. As \cite{hac:Petersen:2009} noticed, the maximal lag length in a panel data set is the maximum number of time periods per id minus one.
 %\fixme{Avoid jargon with `years' and `firms'. Employ these only as illustrations in the beginning and then stick to `time' and `id' instead.}
 
 %Though, an underlying assumption is that although residuals are correlated within groups, they are uncorrelated between groups, %which is often artificial and does often not reflect the nature of panel data \citep{hac:Hoechle:2007}. 
@@ -461,34 +462,26 @@ Driscoll and Kraay standard errors are a generalization of Newey-West standard e
 
 They are obtained as the positive square root of the diagonal elements of the sandwich $S(\theta)$ with a meat
 \begin{equation} \label{eq:driscoll}
-  \hat M_\mathrm{PL}^ {DC} \quad = \quad \hat M_\mathrm{CL, t} + \sum_{l = 1}^{L} w_l[\hat \Omega_l + \hat \Omega_l^\top],
+  \hat M_\mathrm{PL}^{DC} \quad = \quad \frac{1}{n} \sum_{t = 1}^T \sum_{i, j = 1}^{n_t} w_{|i-j|} \, \psi(y_{it}, x_{it}, \hat \theta) \psi(y_{jt}, x_{jt}, \hat \theta)^\top,
 \end{equation}  
-where $i$ denotes the cross section and $t$ the time units with 
-\begin{equation}
-  \hat \Omega_l = \sum_{t = 1}^T \psi(y_{t}, x_{t}, \hat \theta) \psi(y_{t-l}, x_{t-l}, \hat \theta)^\top \quad \mathrm{and} \quad \psi(y_{t}, x_{t}, \hat \theta) = \sum_{i = 1}^{n_{t}}\psi(y_{i,t}, x_{i,t}, \hat \theta)
-\end{equation}
-\citep{hac:Hoechle:2007}. $w_l = 1 - \frac{l}{L + 1}$ are the modified Barttlett weights, and $L$ is the maximal lag length used \citep{hac:Hoechle:2007}.  For lag $l = 0$, $\hat \Omega_0 = \hat M_{CL, t}$, where $\hat M_{CL, t}$ is the meat of one-way clustered covariances clustered by time. 
+where $i$ denotes the cross section and $t$ the time periods. $w_{|i-j|}$ are again the modified Barttlett weights, and $L$ is the maximal lag length used \citep{hac:Hoechle:2007}. For $\ell = 0$, the meat is equal to one-way clustered covariances clustered by time dimension $t$. 
 
-\fixme{Emphasize that this is really combining the clustered idea, already introduced in the previous subsection, and the HAC idea.
-And then adapt the notation as above.}
+%\fixme{Emphasize that this is really combining the clustered idea, already introduced in the previous subsection, %and the HAC idea.
+%And then adapt the notation as above.}
 
 \subsection{Panel-corrected standard errors}
+%\fixme{The start of this subsection conveys the impression that this is very different from the ideas above:
+%The new TSCS abbreviation is introduced and some `Parks-Kmenta' method is mentioned. This can be quite
+%confusing. Instead focus from the beginning on what is similar to above and what is different.}
+Panel-corrected standard errors (hereinafter abbreviated to PCSE) as introduced by \cite{hac:Beck+Katz:1995} fit nicely for time-series-cross-section data characterized by having repeated observations on fixed units with moderate dimensions of time and cross-section \citep{hac:Millo:2014}.
+They are robust against panel heteroscedasticity and contemporaneously correlation, with the crucial assumption that contemporaneous correlation accross cluster follows a fixed pattern \citep{hac:Millo:2014, hac:Johnson:2004}. Autocorrelation within a cluster is either not present or has to be removed before PCSE are calculated.
 
-\fixme{The start of this subsection conveys the impression that this is very different from the ideas above:
-The new TSCS abbreviation is introduced and some `Parks-Kmenta' method is mentioned. This can be quite
-confusing. Instead focus from the beginning on what is similar to above and what is different.}
-
-For time-series-cross-section (hereinafter abbreviated to TSCS) data, panel-corrected standard errors (hereinafter abbreviated to PCSE) have been introduced by \cite{hac:Beck+Katz:1995} as an attempt to weaken the problems of the Parks-Kmenta method\footnote{For details, see \cite{hac:Hoechle:2007}.}. 
-According to \cite{hac:Beck+Katz:1995}, TSCS data are characterized by having repeated observations on fixed units (for example states), where the number of units normally is between 10 and 100, and the number of time periods ranges between 20 and 50 years. 
-
-Thus, TSCS data do often allow not only for heterocedasticity, but for spatial and temporal correlation as well.
-Furthermore, \cite{hac:Johnson:2004} points out that a crucial assumption of PCSE is that the contemporaneous correlation accross cluster follows a fixed pattern.
-The authors suggest to keep the OLS parameter estimates, but use PCSE instead of ordinary OLS standard errors.
+While the Driscoll and Kraay covariance estimator relies on large t-asymptotics and is robust to quite general forms of cross-sectional and temporal dependence and is consistent independently of the cross-sectional dimension,
+\cite{hac:Hoechle:2007} argues that for the PCSE estimator the finite sample properties are rather poor if the cross-sectional dimension is large compared to the time dimension.
 
 To calculate PCSE \citep{hac:Johnson:2004}, the empirical working residuals are separated by cluster dimension $g$, such that they are of form $r(y_1, x_1^\top \hat \theta), r(y_2, x_2^\top \hat \theta), \ldots, r(y_G, x_G^\top \hat \theta)$.
-
-The working residuals can be recovered from the empirical estimating function divided by $x_i$, as $\psi(y_i, x_i, \hat \theta) = r(y_i, x_i^\top \hat \theta) \cdot x_i$ \citep{hac:Zeileis:2006}.
-\fixme{The working residuals need to be introduced above so that they can be reused several times through this entire section.}
+%The working residuals can be recovered from the empirical estimating function divided by $x_i$, as $\psi(y_i, x_i, %\hat \theta) = r(y_i, x_i^\top \hat \theta) \cdot x_i$ \citep{hac:Zeileis:2006}.
+%\fixme{The working residuals need to be introduced above so that they can be reused several times through this %entire section.}
  Each empirical working residual is a vector with $t$ elements. Grouped together into a $t \times G$ matrix,
  \begin{equation} \label{eq:workres}
   E \quad = \quad [r(y_1, x_1^\top \hat \theta) \quad r(y_2, x_2^\top \hat \theta) \quad \ldots \quad r(y_G, x_G^\top \hat \theta)],
@@ -498,8 +491,6 @@ the meat of the panel-corrected covariance matrix is defined as \citep{hac:Beck+
  \hat M_\mathrm{PC} \quad = \quad \frac{1}{n} X^\top \bigg[ \frac{(E^\top E)}{t} \otimes \vI_t \bigg] X.
 \end{equation}
 Compared to White's estimator, where squared residuals are along the diagonal of the estimator, the covariance across clusters is estimated by the cross product of their residuals \citep{hac:Johnson:2004}. While Whites approach does not account for clustering and handles each observations separately, panel-corrected covariances utilize the clustering structure.
-
-With regard to the finite-sample propertiers of the PCSE estimator, \cite{hac:Hoechle:2007} argues that they are rather poor if the cross-sectional dimension $g$ is large compared to the time dimension $t$. The PCSE estimator will be quite imprecise for a small $t/g$ ratio, as the whole $g \times g$ cross-sectional covariance matrix is estimated.
 
 In the next section, the software implementation of the various types of clustered covariances is introduced.
 
