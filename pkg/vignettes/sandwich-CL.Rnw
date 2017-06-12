@@ -496,10 +496,13 @@ In the next section, the software implementation of the various types of cluster
 
 \section{Software} \label{sec:software}
 
-All in Chapter~\ref{sec:methods} introduced types of clustered covariances differ in the structure of the meat, whereas the bread remains the same.
-Thus, in the \pkg{sandwich} package, the \code{bread()} usually does not change, but different meat functions that are based on an \code{estfun()} extractor function are needed, though.
+All in Section~\ref{sec:methods} introduced types of clustered covariances differ in the structure of the meat, but the \code{bread()} and \code{estfun()} methods remain as previously implemented in \pkg{sandwich}.
+Model objects encompassing an \code{estfun} method are one of class \code{clm, coxph, glm, hurdle, lm, mlm, mlogit, nls, polr, rlm, survreg} or \code{zeroinfl}.
+Some other packages have their own \code{estfun()} method, as for example \pkg{MASS} \citep{hac:Venables+Ripley:2002}, \pkg{stats} \citep{hac:R:2017}, \pkg{survival} \citep{hac:Therneau:2015}, \pkg{betareg} \citep{hac:Cribari-Neto+Zeileis:2010,hac:Gruen+Kosmidis+Zeileis:2012} and \pkg{crch} \citep{hac:Messner+Mayr+Zeileis:2016}.
+
+Thus, for different types of clustered covariances, different meat functions that are based on an \code{estfun()} extractor function are required.
 In case that working residuals are needed, the \code{estfun} is divided through the \code{model.matrix} (see Equation~\ref{eq:fact}).
-Resting upon this, most of the estimators from Chapter~\ref{sec:methods} can be set up in an object-oriented way.
+Resting upon this, most of the estimators from Section~\ref{sec:methods} can be set up in an object-oriented way.
 %\fixme{Briefly repeat that the bread() in the sandwich() usually does not change and that `only' different
 %meat functions are needed. And the main building block for that is estfun. When working residuals are needed
 %these are obtained by dividing the estfun through the model.matrix. And based on this most of the estimators
@@ -507,7 +510,7 @@ Resting upon this, most of the estimators from Chapter~\ref{sec:methods} can be 
 
 \subsection{Clustered covariances}
 
-One-, two-, and multi-way clustered standard errors with the different types of bias correction introduced in Equation~\ref{eq:biasadj1}--Equation~\ref{eq:biasadj4} are implemented with the following arguments in the function
+One-, two-, and multi-way clustered standard errors with the different types of bias correction introduced in Equations~\ref{eq:biasadj1}--\ref{eq:biasadj4} are implemented with the following arguments in the function
 \begin{verbatim}
 vcovCL(x, cluster = NULL, type = NULL, sandwich = TRUE, fix = FALSE, ...)
 \end{verbatim}
@@ -517,21 +520,15 @@ As compared to classical sandwich estimators, the meat for clustered covariances
 meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, white = FALSE, ...).
 \end{verbatim}
 
-The first argument \code{x} is a fitted model object of class \code{lm}, \code{glm}, \code{zerotrunc}, \code{betareg} or \code{hurdle}, among others.
-
 The \code{cluster} argument allows to supply one or more cluster variables. If no cluster variable is supplied, each observation is its own cluster per default. In such a case, the clustered covariance estimator collapses to Whites robust covariance estimator.
 
-The bias correction is composed of two parts, the cluster bias correction defined in Equation~\ref{eq:biasadj0} and the HC bias correction defined in Equation~\ref{eq:biasadj1}--Equation~\ref{eq:biasadj4}. Both types of bias correction can be separately switched on and off.
+The bias correction is composed of two parts, the cluster bias correction defined in Equation~\ref{eq:biasadj0} and the HC bias correction defined in Equations~\ref{eq:biasadj1}--\ref{eq:biasadj4}. Both types of bias correction can be separately switched on and off.
 With the \code{cadjust} argument, the cluster bias adjustment can be turned on and off, the \code{type} argument allows to specify the HC type of bias correction.
-
-HC2 and HC3 types of bias correction are geared towards the linear model, but are also applicable for \code{glm} \citep{hac:Bell+McCaffrey:2002, hac:Kauermann+Carroll:2001}. Nevertheless, a precondition for the HC2 and HC3 bias corrections is the existence of a hat matrix or a weighted version of the hat matrix for GLMs, respectively.
-%\fixme{Stress that not just the diagonal, as computed by hatvalues(), is needed but cluster-wise segments of the full
-% hat matrix.
-% But it is not necessary to extract the full n x n matrix, just the block pertaining to each cluster sequentially.}
+HC2 and HC3 types of bias correction are geared towards the linear model, and are at the moment only applicable for \code{lm} and \code{glm} \citep{hac:Bell+McCaffrey:2002, hac:Kauermann+Carroll:2001}.
+Hence, this is the only part of \code{vcovCL()} that is not fully object-oriented.
+%Nevertheless, a precondition for the HC2 and HC3 bias corrections is the existence of a hat matrix or a %weighted version of the hat matrix for GLMs, respectively.
 As already seen in Equation~\ref{eq:fact-adj}, not only is the diagonal as computed by \code{hatvalues()} needed for HC2 and HC3 bias corrections, but cluster-wise segments of the full hat matrix. The blocks pertaining to each cluster are extracted sequentially, thus it is not needed to estract the full $n \times n$ matrix.
-
-Hence, this is the only part of \code{vcovCL()} that is not fully object-oriented, but just works for \code{lm} and \code{glm} model objects.
-However, beyond the \code{glm} case it's often not clear what the hat matrix should be.
+%However, beyond the \code{glm} case it's often not clear what the hat matrix should be.
 
 The \code{white} argument is executed only for two- and multi-way clustered covariances and specifies whether to substract White's covariance matrix as the last substracted matrix in Equation~\ref{eq:twoway} or the covariance matrix formed by the intersection of groups \citep{hac:Petersen:2009,hac:Thompson:2011,hac:Ma:2014}.
 
@@ -550,15 +547,14 @@ vcovPL(x, cluster = NULL, order.by = NULL, kernel = "Bartlett",
 as well as 
 \begin{verbatim}
 meatPL(x, cluster = NULL, order.by = NULL, kernel = "Bartlett",
- lag = "max", bw = NULL, adjust = TRUE, ...)
+ lag = "NW1987", bw = NULL, adjust = TRUE, ...)
 \end{verbatim}
 allow for estimation of Driscoll and Kraay type covariances \citep{hac:Driscoll+Kraay:1998} as well as Newey-West type covariances \citep{hac:Newey+West:1987}. Again, \code{vcovPL()} returns the full sandwich if the argument \code{sandwich = TRUE}, and \code{fix = TRUE} converts any negative eigenvalues to zero.
 
 The \code{cluster} argument allows to specify a variable indicating the cluster dimension, and resorts to cross-section if no cluster is supplied. A cluster can either be supplied explicitly or be an attribute of the model, or can be a list with both indexes \code{cluster} and \code{order.by}.
 The argument \code{order.by} allows to specify a variable indicating the aggregation within time periods.
 
-The \code{kernel} argument is a character specifying the kernel used. All kernels described in \cite{hac:Andrews:1991} are supported. See \cite{hac:Zeileis:2004} for details.
-
+The \code{kernel} argument is a character specifying the kernel used. Supported are all kernels described in \cite{hac:Andrews:1991}, considering truncated, Bartlett, Parzen, Tykey-Hanning and quadratic spectral kernel \citep[for details, see][]{hac:Zeileis:2004a}. The choice of an appropriate kernel function comes along with setting up a suitable bandwidth parameter. For the special case of a Bartlett kernel, the bandwidth corresponds to the lag.
 The \code{lag} argument indicates the lag length used, and can be either numeric or a character (one of ``\code{max}'', ``\code{NW1987}'' or ``\code{NW1994}''). ``\code{max}'' (or equivalently, ``\code{P2009}'' for \cite{hac:Petersen:2009}) indicates the maximum lag length $T - 1$, that is the number of time periods minus one.
 ``\code{NW1987}'' corresponds to \cite{hac:Newey+West:1987}, who have shown that their estimator is consistent if the number of lags increases with time periods $T$, but with speed less that $T^{1/4}$ \citep[see also][]{hac:Hoechle:2007}.
 ``\code{NW1994}'' sets the lag length to $\mathrm{floor}[4 \cdot (\frac{T}{100})^{2/9}]$ \citep{hac:Newey+West:1994}.
@@ -574,16 +570,16 @@ The \code{adjust} argument allows to make a finite sample adjustment, which amou
 
 Panel-corrected standard errors (PCSE) a la \cite{hac:Beck+Katz:1995} are implemented in functions
 \begin{verbatim}
-vcovPC(x, cluster = NULL, order.by = NULL, subsample = TRUE,
+vcovPC(x, cluster = NULL, order.by = NULL, subsample = FALSE,
  sandwich = TRUE, fix = FALSE, ...)
 \end{verbatim}
 and
 \begin{verbatim}
-meatPC(x,  cluster = NULL, order.by = NULL, subsample = TRUE,
- kronecker = TRUE, ...)
+meatPC(x,  cluster = NULL, order.by = NULL, subsample = FALSE,
+ kronecker = FALSE, ...)
 \end{verbatim}
 and are usually used for time-series-cross-section (TSCS) data with a large enough time dimension. 
-The arguments \code{sandwich} and \code{fix} do the same things as in \code{vcovCL()} and \code{vcovPL()}. The same holds true for \code{cluster} and \code{order.by}.
+The arguments \code{sandwich} and \code{fix} do the same things as in \code{vcovCL()} and \code{vcovPL()}, the same holds true for \code{cluster} and \code{order.by}.
 
 While an easy task for balanced panel, there are two alternatives to estimate the meat for unbalanced panel \citep{hac:Bailey+Katz:2011}. For \code{subsample = TRUE}, a balanced subset of the panel is employed, whereas for \code{subsample = FALSE}, a pairwise balaced sample is used. For details, see \cite{hac:Bailey+Katz:2011}.
 
@@ -748,7 +744,7 @@ even though these values can be interchanged without influencing the results\foo
 Response distributions examined include Gaussian (\code{gaussian}), binomial with a logit link (\code{binomial(logit)}), Poisson (\code{poisson}), zero-truncated Poisson (\code{zerotrunc}), Beta (\code{beta}) and zero-inflated Poisson (\code{zip}). \code{vcovCL()} allows estimation of clustered standard errors for all the abovementioned responses (and many more).
 
 \subsubsection{Sandwich covariances}
-Standard errors being compared to each other include iid standard errors without heteroscedasticity and without autocorrelation (\code{classical}), HC0 standard errors \citep{hac:White:1980}, Driscoll and Kraay standard errors (\code{DK}) \citep{hac:Driscoll+Kraay:1998}, panel-corrected standard errors (\code{PC}) a la \cite{hac:Beck+Katz:1995} and clustered standard errors with HC0 to HC3 adjustment (\code{HC0-cluster}, \code{HC1-cluster}, \code{HC2-cluster}, \code{HC3-cluster}). In addition, standard errors from a random effects model (\code{random}) and from a GEE with exchangeable correlation structure (\code{gee}) are compared.
+Covariances being compared to each other include standard covariances without heteroscedasticity and without autocorrelation (\code{standard}), basic sandwich standard errors (\code{basic}), Driscoll and Kraay standard errors (\code{PL}), panel-corrected standard errors (\code{PC}) a la \cite{hac:Beck+Katz:1995} and clustered standard errors with HC0 to HC3 adjustment (\code{CL-0}, \code{CL-1}, \code{CL-2}, \code{CL-3}). In addition, standard errors from a random effects model (\code{random}) and from a GEE with exchangeable correlation structure (\code{gee}) are compared.
 
 \subsubsection{Outcome measure}
 In order to assess the validity of statistical inference, the coverage rate is the outcome measure of interest.
@@ -782,24 +778,21 @@ Furthermore, to calculate clustered standard errors, the square root of the diag
 
 \begin{table}[t!]
   \centering
-\begin{tabular}{ | l | l | p{9cm} |}
+\begin{tabular}{llll}
   \hline
-  vcov label & model & covariance matrix \\ \hline
-  \code{classical} & \code{m} & \code{vcov(m)} \\ \hline
-  \code{HC0} & \code{m} & \code{sandwich(m)} \\ \hline
-%  \code{HC1} & \code{m} & \code{vcovHC(m, type = "HC1")} \\ \hline
-%  \code{HC2} &\code{m} & \code{vcovHC(m, type = "HC2")} \\ \hline
-%  \code{HC3} & \code{m} & \code{vcovHC(m, type = "HC3")} \\ \hline
-  \code{HC0-cluster} & \code{m} & \code{vcovCL(m, cluster = data\$id, type = "HC0")} \\ \hline
-  \code{HC1-cluster} & \code{m} & \code{vcovCL(m, cluster = data\$id, type = "HC1")} \\ \hline
-  \code{HC2-cluster} & \code{m} & \code{vcovCL(m, cluster = data\$id, type = "HC2")} \\ \hline
-  \code{HC3-cluster} & \code{m} & \code{vcovCL(m, cluster = data\$id, type = "HC3")} \\ \hline
-  \code{fixed} & \code{m_fe} & \code{vcov(m_fe)[1L:length(coef(m)), 1L:length(coef(m))]} \\ \hline
-  \code{random} & \code{m_re} & \code{vcov(m_re)} \\ \hline
-  \code{gee} & \code{m_gee}  & \code{m_gee\$geese\$vbeta} \\ \hline
-  \code{DK} & \code{m} & \code{vcovPL(m, cluster = data\$id, adjust = FALSE)} \\ \hline
-  \code{BK} & \code{m} & \code{vcovPC(m, cluster = data\$id,
-                             order.by = data\$round, kronecker = TRUE)} \\ \hline
+  label & model & object & vcov \\ \hline
+  \code{CL-0} & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC0")} \\ 
+  \code{CL-1} & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC1")} \\
+  \code{CL-2} & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC2")} \\ 
+  \code{CL-3} & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC3")} \\ 
+  \code{PL} & \code{lm} & \code{m} & \code{vcovPL(m, cluster = id, adjust = FALSE)} \\ 
+  \code{PC} & \code{lm} & \code{m} & \code{vcovPC(m, cluster = id,
+                           order.by = round, kronecker = TRUE)} \\ \hline
+  \code{standard} &\code{lm} & \code{m} & \code{vcov(m)} \\ 
+  \code{basic} & \code{lm} & \code{m} & \code{sandwich(m)} \\ \hline
+  \code{fixed} & \code{lm} & \code{m_fe} & \code{vcov(m_fe)[1:3, 1:3]} \\ 
+  \code{random} & \code{lmer} & \code{m_re} & \code{vcov(m_re)} \\
+  \code{gee} & \code{geeglm} & \code{m_gee}  & \code{m_gee\$geese\$vbeta} \\ \hline
 \end{tabular}
 \caption{\code{sim-CL.R}: covariance matrices for a Gaussian response}
 \label{tab:vcov}
@@ -838,7 +831,7 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s01$vcov) <- c("PC", "DK", "gee", "HC0", "HC0-cluster", "random", "classical")
+levels(s01$vcov) <- c("PC", "PL", "gee", "basic", "CL-0", "random", "standard")
 my.settings[["superpose.line"]]$col <- c("#006400", "#00868B", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
 my.settings[["superpose.symbol"]]$col <- c("#006400", "#00868B", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
 xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
@@ -866,7 +859,7 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s02$vcov) <- c("PC", "DK", "gee", "HC0", "HC0-cluster", "random", "classical")
+levels(s02$vcov) <- c("PC", "PL", "gee", "basic", "CL-0", "random", "standard")
 levels(s02$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("#006400", "#00868B", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
 my.settings[["superpose.symbol"]]$col <- c("#006400", "#00868B" , "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
@@ -893,7 +886,7 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s03$vcov) <- c("HC0", "HC0-cluster", "classical")
+levels(s03$vcov) <- c("basic", "CL-0", "standard")
 levels(s03$dist) <- c("betareg", "zerotrunc", "zeroinfl")
 my.settings[["superpose.line"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 my.settings[["superpose.symbol"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
@@ -921,7 +914,7 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s04$vcov) <- c("HC0-cluster", "HC1-cluster", "HC2-cluster", "HC3-cluster")
+levels(s04$vcov) <- c("CL-0", "CL-1", "CL-2", "CL-3")
 levels(s04$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("#377eb8", "#00E5EE", "#e41a1c", "#4daf4a")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8", "#00E5EE","#e41a1c", "#4daf4a")
@@ -991,7 +984,7 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s05$vcov) <- c("HC0", "HC0-cluster", "classical")
+levels(s05$vcov) <- c("basic", "CL-0", "standard")
 levels(s05$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 my.settings[["superpose.symbol"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
@@ -1012,7 +1005,7 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s05$vcov) <- c("HC0", "HC0-cluster", "classical")
+levels(s05$vcov) <- c("basic", "CL-0", "standard")
 levels(s05$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("slategray", "slategray", "slategray")
 my.settings[["superpose.symbol"]]$col <- c("slategray", "slategray", "slategray")
@@ -1042,12 +1035,12 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s02$vcov) <- c("PC", "DK", "gee", "HC0", "HC0-cluster", "random", "classical")
+levels(s02$vcov) <- c("PC", "PL", "gee", "basic", "CL-0", "random", "standard")
 levels(s02$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 my.settings[["superpose.symbol"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
-  data = s02[which(s02$vcov %in% c("classical", "HC0", "HC0-cluster")), ], subset = par != "(Intercept)",
+  data = s02[which(s02$vcov %in% c("standard", "basic", "CL-0")), ], subset = par != "(Intercept)",
   ylim = c(0, 1),
   type = "b", xlab = expression(rho), ylab = "coverage",
   auto.key = list(columns = 2),
@@ -1063,12 +1056,12 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s02$vcov) <- c("PC", "DK", "gee", "HC0", "HC0-cluster", "random", "classical")
+levels(s02$vcov) <- c("PC", "PL", "gee", "basic", "Cl-0", "random", "standard")
 levels(s02$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("slategray", "slategray", "slategray")
 my.settings[["superpose.symbol"]]$col <- c("slategray", "slategray", "slategray")
 xyplot(bias ~ rho | dist, groups = ~ factor(vcov),
-  data = s02[which(s02$vcov %in% c("classical", "HC0", "HC0-cluster")), ], subset = par != "(Intercept)",
+  data = s02[which(s02$vcov %in% c("standard", "basic", "CL-0")), ], subset = par != "(Intercept)",
   ylim = c(-0.5, 0.1),
   type = "b", xlab = expression(rho), ylab = "bias",
   par.strip.text = list(col = "black"), par.settings = my.settings,
