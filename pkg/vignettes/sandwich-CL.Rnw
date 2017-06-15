@@ -43,13 +43,13 @@
   the (generalized) linear regression model. In contrast, an object-oriented
   approach to ``robust'' covariance matrix estimation -- applicable beyond
   \code{lm()} and \code{glm()} -- is available in the \pkg{sandwich} package but
-  has been limited to the case of cross-section or time series data. However,
+  has been limited to the case of cross-section or time series data. Now,
   this shortcoming has been corrected in \pkg{sandwich} (starting from
   version~2.4.0): Based on methods for two generic functions (\code{estfun()} and
   \code{bread()}), clustered and panel covariances are now provided in
   \code{vcovCL()} and \code{vcovPL()}, respectively. These are directly
-  applicable to models from packages \pkg{MASS}, \pkg{pscl}, \pkg{countreg},
-  \pkg{betareg}, among many others. Some empirical illustrations are provided
+  applicable to models from many packages, e.g., including \pkg{MASS}, \pkg{pscl}, \pkg{countreg},
+  \pkg{betareg}, among others. Some empirical illustrations are provided
   as well as an assessment of the methods' performance in a simulation study.
 }
 
@@ -173,14 +173,14 @@ correlations in the data.
 
 Such clustering effects can emerge both in cross-section and in panel (or
 longitudinal) data. Typical examples for clustered cross-section data include
-firms within the same industry or students within the same school or call.
+firms within the same industry or students within the same school or class.
 In panel data, a common source of clustering is that observations for the
 same individual at different time points are correlated while the individuals
 may be independent \citep{hac:Cameron+Miller:2015}.
 
 This paper contributes to the literature particularly in two respects:
 %
-Most importantly, we discuss a set of computational tools for the \proglang{R} system for
+(1)~Most importantly, we discuss a set of computational tools for the \proglang{R} system for
 statistical computing \citep{hac:R:2017}, providing an object-oriented
 implementation of clustered covariances/standard errors in the \proglang{R}
 package \pkg{sandwich} \citep{hac:Zeileis:2004a,hac:Zeileis:2006}. Using this
@@ -193,7 +193,7 @@ many others. However, corresponding functions for clustered or panel data had
 not been available in \pkg{sandwich} but have been somewhat scattered or
 available only for certain modeling functions.
 
-Moreover, we perform a Monte Carlo simulation study for various response
+(2)~Moreover, we perform a Monte Carlo simulation study for various response
 distributions with the aim to assess the performance of clustered standard errors
 beyond \code{lm()} and \code{glm()}. This also includes special cases for which
 such a finite-sample assessment has not yet been carried out in the literature
@@ -228,7 +228,7 @@ potentially misspecified, e.g., due to a lack of independence as in the case
 of clustered correlations (see \citealp{hac:White:1994}, for a classic textbook,
 and \citealp{hac:Freedman:2006}, for a criticial review). This approach leaves
 the parameter estimator unchanged -- then also known as quasi-maximum likelihood
-(QML) estimator or, in GEE jargon, as independence working model -- but adjust
+(QML) estimator or, in GEE jargon, as independence working model -- but adjusts
 the covariance matrix by using a sandwich estimator, especially in Wald tests
 and corresponding confidence intervals.
 
@@ -248,7 +248,7 @@ But some packages also cover more general models.
 
 \subsection[R packages for sandwich covariances]{\proglang{R} packages for sandwich covariances}
 
-The standard \proglang{R} package to model sandwich covariance estimators is the
+The standard \proglang{R} package for sandwich covariance estimators is the
 \pkg{sandwich} package \citep{hac:Zeileis:2004a,hac:Zeileis:2006}, which
 provides an object-oriented implementation for the building blocks of the
 sandwich that rely only on a small set of extractor functions (\code{estfun()}
@@ -265,7 +265,7 @@ Further convenience interfaces \code{kernHAC()} for Andrews' kernel HAC
 in versions prior to 2.4.0 of \pkg{sandwich} no similarly object-oriented
 approach to clustered sandwich covariances was available.
 
-Another \proglang{R} package that includes heteroscedasticity consistent
+Another \proglang{R} package that includes heteroscedasticity-consistent
 covariance estimators (HC0--HC4), for models produced by \code{lm()} only,
 is the \pkg{car} package \citep{hac:Fox+Weisberg:2011} in function
 \code{hccm()}. Like \code{vcovHC()} from \pkg{sandwich} this is limited
