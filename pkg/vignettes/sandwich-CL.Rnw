@@ -604,9 +604,21 @@ into residuals and regressor matrix.
 
 \section{Software} \label{sec:software}
 
-All in Section~\ref{sec:methods} introduced types of clustered covariances differ in the structure of the meat, but the \code{bread()} and \code{estfun()} methods remain as previously implemented in \pkg{sandwich}.
-Model objects encompassing an \code{estfun} method are one of class \code{clm, coxph, glm, hurdle, lm, mlm, mlogit, nls, polr, rlm, survreg} or \code{zeroinfl}.
-Some other packages have their own \code{estfun()} method, as for example \pkg{MASS} \citep{hac:Venables+Ripley:2002}, \pkg{stats} \citep{hac:R:2017}, \pkg{survival} \citep{hac:Therneau:2015}, \pkg{betareg} \citep{hac:Cribari-Neto+Zeileis:2010,hac:Gruen+Kosmidis+Zeileis:2012} and \pkg{crch} \citep{hac:Messner+Mayr+Zeileis:2016}.
+As conveyed already in Section~\ref{sec:methods}, the \pkg{sandwich} package has been extended
+along the same lines it was originally established in \citep{hac:Zeileis:2006}. The new clustered
+and panel covariances require a new \code{meat*()} function that ideally only extracts the
+\code{estfun()} from a fitted model object. For the full sandwich covariance an accompanying
+\code{vcov*()} function is provided that couples the \code{meat*()} with the \code{bread()} estimate
+extracted from the model object. Model classes for which an \code{estfun} method is available currently
+include \code{betareg}, \code{clm}, \code{coxph}, \code{crch}, \code{glm}, \code{hurdle}, \code{lm}, \code{mlm}, \code{mlogit},
+\code{nls}, \code{polr}, \code{rlm}, \code{survreg}, or \code{zeroinfl} from packages 
+\pkg{stats} \citep{hac:R:2017}, 
+\pkg{betareg} \citep{hac:Cribari-Neto+Zeileis:2010,hac:Gruen+Kosmidis+Zeileis:2012},
+\pkg{crch} \citep{hac:Messner+Mayr+Zeileis:2016},
+\pkg{MASS} \citep{hac:Venables+Ripley:2002},
+\pkg{mlogit} \citep{hac:Croissant:2013}, 
+\pkg{ordinal} \citep{hac:Christensen:2015}, and
+\pkg{survival} \citep{hac:Therneau:2015}.
 
 Thus, for different types of clustered covariances, different meat functions that are based on an \code{estfun()} extractor function are required.
 In case that working residuals are needed, the \code{estfun} is divided through the \code{model.matrix} (see Equation~\ref{eq:fact}).
@@ -697,7 +709,7 @@ The argument \code{kronecker} relates to estimation of the meat and determines w
 The classical area of application for clustered standard errors is the linear model, with model errors that are correlated within clusters. In this section, replication and comparison of clustered standard errors available in a couple of \proglang{R} packages is shown on the basis of benchmark \cite{hac:Petersen:2009} data in Example \ref{ex-petersen}. Due to the nice feature of object-orientation, clustered covariances in \code{vcovCL()} are now available for models beyond \code{lm()} or \code{glm()}. Example \ref{ex-aghion} applies \code{vcovCL()} to a hurdle model, using data provided by \cite{hac:Aghion+VanReenen+Zingales:2013}.
 
 \subsection[Petersen (2009)]{\cite{hac:Petersen:2009}} \label{ex-petersen}
-Benchmark data for testing the clustered standard error estimates in the linear model is a simulated data set\footnote{\url{http://www.kellogg.northwestern.edu/faculty/petersen/htm/papers/se/test_data.txt}} provided by \cite{hac:Petersen:2009}, containing 500 firms over 10 years. The data include 4 variables, \code{firmid}, \code{year}, dependent variable \code{y} and explanatory variable \code{x} \citep[see also][]{hac:Graham+Arai+Hagstroemer:2016}.
+Benchmark data for testing the clustered standard error estimates in the linear model is a simulated data set\footnote{\url{http://www.kellogg.northwestern.edu/faculty/petersen/htm/papers/se/test_data.txt}} provided by \cite{hac:Petersen:2009}, containing 500 firms over 10 years. The data include 4 variables, \code{firm}, \code{year}, dependent variable \code{y} and explanatory variable \code{x} \citep[see also][]{hac:Graham+Arai+Hagstroemer:2016}.
 
 The data are available in \pkg{sandwich} as well as in \pkg{multiwayvcov}.
 <<petersen-data>>= 
@@ -712,14 +724,14 @@ and testing the estimated coefficients with \code{coeftest()} from package \pkg{
 library("lmtest")
 coeftest(p_lm)
 @ 
-However, the data are clustered by firms (\code{firmid}), with a total of 500 clusters. But ignoring dependency by using ``standard'' standard errors results in an overstate of estimator precision.
+However, the data are clustered by firms (\code{firm}), with a total of 500 clusters. But ignoring dependency by using ``standard'' standard errors results in an overstate of estimator precision.
 
 \subsubsection{One-way clustered standard errors}
-Thus, one-way clustered standard errors clustered by \code{firmid} are employed.
+Thus, one-way clustered standard errors clustered by \code{firm} are employed.
 It can be observed that clustered standard errors are larger than ``standard'' standard errors.
 <<petersen-onecl-firm>>=
 library("sandwich")
-coeftest(p_lm, vcov = vcovCL(p_lm, cluster = PetersenCL$firmid))
+coeftest(p_lm, vcov = vcovCL(p_lm, cluster = PetersenCL$firm))
 @ 
 Next, a comparison of clustered standard errors resulting from packages \pkg{sandwich}, \pkg{multiwayvcov}, \pkg{plm} and \pkg{geepack} is shown. 
 First, \code{vcovCL()} from \pkg{sandwich} and \code{cluster.vcov()} from \pkg{multiwayvcov} are compared. 
@@ -729,8 +741,8 @@ library("multiwayvcov")
 Both functions are closely related, as \code{vcovCL()} is partly based on \code{cluster.vcov()}.
 <<petersen-comparison1>>=
 vc <- list(
-  "sandwich" = vcovCL(p_lm, cluster = PetersenCL$firmid),
-  "multiwayvcov" = cluster.vcov(p_lm, cluster = PetersenCL$firmid)
+  "sandwich" = vcovCL(p_lm, cluster = PetersenCL$firm),
+  "multiwayvcov" = cluster.vcov(p_lm, cluster = PetersenCL$firm)
 )
 sapply(vc, function(x) sqrt(diag(x)))
 @ 
@@ -744,7 +756,7 @@ library("geepack")
 A pooling model is estimated with \code{plm()}, \code{geeglm()} fits a generalized estimating equation (GEE) with independence correlation structure.
 <<petersen-models>>=
 p_plm <- plm(y ~ x, data = PetersenCL, model = "pooling")
-p_gee <- geeglm(y ~ x, data = PetersenCL, id = PetersenCL$firmid,
+p_gee <- geeglm(y ~ x, data = PetersenCL, id = PetersenCL$firm,
   corstr = "independence", family = gaussian)
 @ 
 As there is no \code{vcov()}-method specified for \code{geeglm()}, the convenience function \code{vcov.geeglm()} is provided to make this contribution.
@@ -758,7 +770,7 @@ vcov.geeglm <- function(object) {
 Nevertheless, in order to accomplish exactly the same value for clustered standard errors using \code{plm} and \code{geepack}, the bias correction $\frac{G}{G - 1}\frac{n - 1}{n - k}$ has to be omitted from the clustered covariance matrix estimated by \code{vcovCL()}. This is achieved by setting the function arguments \code{cadjust = FALSE} and \code{type = "HC0"}.
 <<petersen-comparison2>>=
 vc <- list(
-  "sandwich" = vcovCL(p_lm, cluster = PetersenCL$firmid,
+  "sandwich" = vcovCL(p_lm, cluster = PetersenCL$firm,
                       cadjust = FALSE, type = "HC0"),
   "plm" = vcovHC(p_plm, type = "HC0", cluster = "group"),
   "geepack" = vcov(p_gee)
@@ -768,10 +780,10 @@ sapply(vc, function(x) sqrt(diag(x)))
 All packages examined produce the same clustered standard errors for \code{lm} model objects. For packages \pkg{plm} and \pkg{geepack}, one has to omit the HC bias correction factor as well as the cluster bias correction. In general, differences in clustered standard errors often coincide with different types of bias corrections.
 
 \subsubsection{Two-way clustered standard errors}
-Two-way clustered standard errors with cluster dimensions \code{firmid} as well as \code{year} are, at least for the explanatory variable \code{x}, a bit larger than one-way clustered standard errors clustered by \code{firmid}.
+Two-way clustered standard errors with cluster dimensions \code{firm} as well as \code{year} are, at least for the explanatory variable \code{x}, a bit larger than one-way clustered standard errors clustered by \code{firm}.
 <<petersen-twocl>>=
 coeftest(p_lm, vcov. = vcovCL(p_lm, 
-cluster = cbind(PetersenCL$firmid, PetersenCL$year)))
+cluster = cbind(PetersenCL$firm, PetersenCL$year)))
 @ 
  However, as cluster dimension \code{year} has a total of only 10 cluster, the results should be regarded with caution, as it is required by theory that each cluster dimension has many clusters \citep{hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,hac:Cameron+Miller:2015}.
  
