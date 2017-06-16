@@ -609,8 +609,14 @@ along the same lines it was originally established in \citep{hac:Zeileis:2006}. 
 and panel covariances require a new \code{meat*()} function that ideally only extracts the
 \code{estfun()} from a fitted model object. For the full sandwich covariance an accompanying
 \code{vcov*()} function is provided that couples the \code{meat*()} with the \code{bread()} estimate
-extracted from the model object. Model classes for which an \code{estfun} method is available currently
-include \code{betareg}, \code{clm}, \code{coxph}, \code{crch}, \code{glm}, \code{hurdle}, \code{lm}, \code{mlm}, \code{mlogit},
+extracted from the model object.
+
+The new sandwich covariances \code{vcovCL()} for clustered data and \code{vcovPL()} for panel data,
+as well as \code{vcovPC()} for panel-corrected covariances all follow this structure and are
+introduced in more detail below.
+
+Model classes which provide the necessary building blocks include \code{betareg},
+\code{clm}, \code{coxph}, \code{crch}, \code{glm}, \code{hurdle}, \code{lm}, \code{mlm}, \code{mlogit},
 \code{nls}, \code{polr}, \code{rlm}, \code{survreg}, or \code{zeroinfl} from packages 
 \pkg{stats} \citep{hac:R:2017}, 
 \pkg{betareg} \citep{hac:Cribari-Neto+Zeileis:2010,hac:Gruen+Kosmidis+Zeileis:2012},
@@ -619,14 +625,11 @@ include \code{betareg}, \code{clm}, \code{coxph}, \code{crch}, \code{glm}, \code
 \pkg{mlogit} \citep{hac:Croissant:2013}, 
 \pkg{ordinal} \citep{hac:Christensen:2015}, and
 \pkg{survival} \citep{hac:Therneau:2015}.
+For all of these an \code{estfun} method is available along with a \code{bread()} method
+(or the default method works). In case the models are based on a single linear predictor only,
+they also provide \code{model.matrix()} extractors so that the factorization from Equation~\ref{eq:fact}
+into working residuals and regressor matrix can be easily computed.
 
-Thus, for different types of clustered covariances, different meat functions that are based on an \code{estfun()} extractor function are required.
-In case that working residuals are needed, the \code{estfun} is divided through the \code{model.matrix} (see Equation~\ref{eq:fact}).
-Resting upon this, most of the estimators from Section~\ref{sec:methods} can be set up in an object-oriented way.
-%\fixme{Briefly repeat that the bread() in the sandwich() usually does not change and that `only' different
-%meat functions are needed. And the main building block for that is estfun. When working residuals are needed
-%these are obtained by dividing the estfun through the model.matrix. And based on this most of the estimators
-%from the previous section can be established in an object-oriented way.}
 
 \subsection{Clustered covariances}
 
