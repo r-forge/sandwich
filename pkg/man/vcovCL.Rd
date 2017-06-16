@@ -163,11 +163,11 @@ m <- lm(y ~ x, data = PetersenCL)
 
 ## clustered covariances
 ## one-way
-vcovCL(m, cluster = PetersenCL$firmid)
+vcovCL(m, cluster = PetersenCL$firm)
 ## one-way with HC2
-vcovCL(m, cluster = PetersenCL$firmid, type = "HC2")
+vcovCL(m, cluster = PetersenCL$firm, type = "HC2")
 ## two-way
-vcovCL(m, cluster = PetersenCL[, c("firmid", "year")])
+vcovCL(m, cluster = PetersenCL[, c("firm", "year")])
 
 ## comparison with cross-section sandwiches
 ## HC0

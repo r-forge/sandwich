@@ -126,15 +126,15 @@ m <- lm(y ~ x, data = PetersenCL)
 ## Driscoll and Kraay standard errors
 ## lag length set to: T - 1 (maximum lag length)
 ## as proposed by Petersen (2009)
-sqrt(diag(vcovPL(m, cluster = PetersenCL$firmid, adjust = FALSE)))
+sqrt(diag(vcovPL(m, cluster = PetersenCL$firm, adjust = FALSE)))
 
 ## lag length set to: floor(4 * (T / 100)^(2/9))
 ## rule of thumb proposed by Hoechle (2007) based on Newey & West (1994)
-sqrt(diag(vcovPL(m, cluster = PetersenCL$firmid, lag = "NW1994")))
+sqrt(diag(vcovPL(m, cluster = PetersenCL$firm, lag = "NW1994")))
 
 ## lag length set to: floor(T^(1/4))
 ## rule of thumb based on Newey & West (1987)
-sqrt(diag(vcovPL(m, cluster = PetersenCL$firmid, lag = "NW1987")))
+sqrt(diag(vcovPL(m, cluster = PetersenCL$firm, lag = "NW1987")))
 }
 
 \keyword{regression}

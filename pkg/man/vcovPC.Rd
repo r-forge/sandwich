@@ -86,14 +86,14 @@ m <- lm(y ~ x, data = PetersenCL)
 
 ## Beck and Katz (1995) standard errors
 ## balanced panel
-sqrt(diag(vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year)))
+sqrt(diag(vcovPC(m, cluster = PetersenCL$firm, order.by = PetersenCL$year)))
 
 ## calculation of the meat via the Kronecker-product 
 system.time(sqrt(diag(
-  vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year, kronecker = TRUE)
+  vcovPC(m, cluster = PetersenCL$firm, order.by = PetersenCL$year, kronecker = TRUE)
 )))
 system.time(sqrt(diag(
-  vcovPC(m, cluster = PetersenCL$firmid, order.by = PetersenCL$year, kronecker = FALSE)
+  vcovPC(m, cluster = PetersenCL$firm, order.by = PetersenCL$year, kronecker = FALSE)
 )))
 
 ## unbalanced panel

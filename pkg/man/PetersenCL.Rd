@@ -13,7 +13,7 @@
 \format{
 A data frame containing 5000 observations on 4 variables.
 \describe{
-  \item{firmid}{integer. Firm identifier (500 firms).}
+  \item{firm}{integer. Firm identifier (500 firms).}
   \item{year}{integer. Time variable (10 years per firm).}
   \item{x}{numeric. Independent regressor variable.}
   \item{y}{numeric. Dependent response variable.}
