@@ -308,14 +308,14 @@ or limited responses.
 \section{Methods} \label{sec:methods}
 
 To establish the theoretical background of sandwich covariances for
-clustered as well as panel data the notation of \citep{hac:Zeileis:2006}
-is adopted. Here, the conceptual building blocks from \citep{hac:Zeileis:2006}
+clustered as well as panel data the notation of \cite{hac:Zeileis:2006}
+is adopted. Here, the conceptual building blocks from \cite{hac:Zeileis:2006}
 are briefly repeated and then carried further for clustered covariances.
 
 \subsection{Sandwich covariances}
 
 Let $(y_{i},x_{i})$ for $i = 1, \ldots, n$ be data with some distribution
-controlled by a parameter vector $\theta$ with k dimensions. For a wide
+controlled by a parameter vector $\theta$ with $k$ dimensions. For a wide
 range of models the (quasi-)maximum likelihood estimator $\hat \theta$ is
 governed by a central limit theorem \citep{hac:White:1994} so that
 $\hat \theta \approx \mathcal{N}(\theta, n^{-1} S(\theta))$. Moreover, the covariance
@@ -330,14 +330,14 @@ An estimating function
 \begin{eqnarray}
   \psi(y, x, \theta) \quad = \quad \frac{\partial \Psi(y, x, \theta)}{\partial \theta}
 \end{eqnarray}
-is defined as the derivative of an objective function $\Psi(y, x, \theta)$, typically the log-likelihood, with respect to a parameter vector $\theta$.
+is defined as the derivative of an objective function $\Psi(y, x, \theta)$, typically the log-likelihood, with respect to the parameter vector $\theta$.
 Thus, an empirical estimating (or score) function evaluates an estimating function at the observed data and the estimated parameters
 such that an $n \times k$ matrix is obtained \citep{hac:Zeileis:2006}:
 \begin{eqnarray} \label{eq:estfun}
 \left( \begin{array}{c} \psi(y_1, x_1, \hat \theta) \\ \vdots \\ \psi(y_n, x_n, \hat \theta)
            \end{array} \right).
 \end{eqnarray}
-$\hat B$ extracts the empirical version of the inverse Hessian
+The estimate for $\hat B$ is based on second derivatives, i.e., the empirical version of the inverse Hessian
 \begin{equation} \label{eq:Bhat}
   \hat B \quad = \quad \left( \frac{1}{n} \sum_{i = 1}^n - \psi'(y_i, x_i, \hat \theta) \right)^{-1},
 \end{equation}
@@ -351,71 +351,118 @@ whereas $\hat M, \hat M_\mathrm{HAC}, \hat M_\mathrm{HC}$ compute outer product,
   0 & \cdots & \omega(r(y_n, x_n^\top \theta))
   \end{array} \right) X.
 \end{eqnarray}
-The outer product estimator in Equation~\ref{eq:meat-op} corresponds to the standard sandwich estimator \citep{hac:Eicker:1963,hac:Huber:1967,hac:White:1980}.
+The outer product estimator in Equation~\ref{eq:meat-op} corresponds to the basic sandwich estimator \citep{hac:Eicker:1963,hac:Huber:1967,hac:White:1980}.
 $w_{|i-j|}$ in Equation~\ref{eq:meat-hac} is a vector of weights \citep{hac:Zeileis:2004a}.
 In Equation~\ref{eq:meat-hc}, functions $\omega(\cdot)$ derive estimates of the variance of the empirical working residuals $r(y_1, x_1^\top \hat \theta), \ldots, r(y_n, x_n^\top \hat \theta)$ and may also depend on hat values as well as degrees of freedom \citep{hac:Zeileis:2006}.
 The HC type of the model in Equation~\ref{eq:meat-hc} has to be of a form that allows factorization of the scores
 \begin{equation} \label{eq:fact}
 \psi(y_i, x_i, \hat\theta)  =  r(y_i, x_i^\top \hat \theta) \cdot x_i
 \end{equation}  
-into empirical working residuals times the regressor vector. This is, however, only possible in situations where the response parameter depends on a single linear predictor. The decomposition of the scores into empirical working residuals and regressor vector requires the model matrix and hence the use of the \code{model.matrix()} method.
+into empirical working residuals times the regressor vector. This is, however, only possible in situations where the parameter
+of the response distribution depends on a single linear predictor (possibly through a link function).
 
-The building blocks for the calculation of the sandwich are provided by the \pkg{sandwich} package, where the \code{sandwich} function calculates the sandwich $S(\theta)$ given in Equation~\ref{eq:sandwich} by multiplying a meat (as seen in Equation~\ref{eq:meat}) between two slices of bread (given in Equation~\ref{eq:bread}).
-A natural idea for an object-oriented implementation of such estimators is to provide for various functions that compute different estimators for the meat $M(\theta)$ based on an \code{estfun()} extractor function that extracts the empirical estimating functions $\psi(y, x, \theta)$ from a fitted model object (Equation~\ref{eq:estfun}). The meat can be easily exchanged by Equation~\ref{eq:fact}, referring back to \code{estfun()} that extracts Equation~\ref{eq:estfun}.
-\code{meat()}, \code{meatHAC()} and \code{meatHC()} compute outer product (Equation~\ref{eq:meat-op}), HAC (Equation~\ref{eq:meat-hac}) and HC estimators (Equation~\ref{eq:meat-hc}) for the meat, respectively, given the existence of an \code{estfun()} method. In addition, the model matrix which is pulled out of the \code{model.matrix()} method is required for \code{meatHC()} (see Equations~\ref{eq:meat-hc} and \ref{eq:fact}).
-Additionally, \code{bread()} extracts the bread given in Equation~\ref{eq:bread}, that is the empirical version of the inverse Hessian.
+The building blocks for the calculation of the sandwich are provided by the
+\pkg{sandwich} package, where the \code{sandwich()} function calculates an
+estimator of the sandwich $S(\theta)$ (see Equation~\ref{eq:sandwich}) by
+multiplying estimators for the meat (from Equation~\ref{eq:meat}) between
+two slices of bread (from Equation~\ref{eq:bread}). A natural idea for an
+object-oriented implementation of these estimators is to provide common
+building blocks, namely a simple \code{bread()} extractor that computes
+$\hat B$ from Equation~\ref{eq:Bhat} and an \code{estfun()} extractor that
+returns the empirical estimating functions from Equation~\ref{eq:estfun}.
+On top of these extractors a number of meat estimators can be defined:
+\code{meat()} for $\hat M$ from Equation~\ref{eq:meat-op},
+\code{meatHAC()} for $\hat M_\mathrm{HAC}$ from Equation~\ref{eq:meat-hac},
+and \code{meatHC()} for $\hat M_\mathrm{HC}$ from Equation~\ref{eq:meat-hc},
+respectively. In addition to the \code{estfun()} method a \code{model.matrix()}
+method is needed in \code{meatHC()} for the decomposition of the scores into
+empirical working residuals and regressor matrix.
 
 \subsection{Clustered covariances} 
 
-A simple and natural estimator for the meat matrix is the outer product of the empirical estimating functions $\hat M$.
-For (one-way) clustered covariances, the level of aggregation changes from individuals to clusters/groups, which leads to changes in the meat. 
-The double index introduced in the following shows in first place the observation within a cluster, ranging from $1, \ldots , n_g$, and in second place the cluster $g = 1, \ldots, G$ in which the observation is located.
-The empirical estimating functions are summed over $g = 1, \ldots, G$ clusters, with $n_1, \ldots, n_G$ observations per cluster, returning a $G \times k$ matrix of empirical estimating functions
+For clustered observations, similar ideas as above can be employed but the data
+has more structure that needs to be incorporated into the meat estimators.
+Specifically, for one-way clustering there is not simply an observation
+$i$ from $1, \dots, n$ observations but an observation $(i,g)$ from
+$1, \dots, n_g$ observations within cluster/group $g$ (with $g = 1, \dots, G$
+and $n = n_1 + \dots + n_G$). As only the $G$ groups can be assumed to be
+independent while there might be correlation withing the cluster/group,
+the empirical estimation function is summed up within each group prior to
+computing meat estimators. Thus, the core idea of many clustered covariances is
+to replace Equation~\ref{eq:estfun} with the following equation and then
+proceeding ``as usual'' in the computation of meat estimators afterwards:
 \begin{eqnarray} \label{eq:estfun-cl}
 \left( \begin{array}{c} \psi(y_{11}, x_{11}, \hat \theta) + \dots + \psi(y_{n_1 1}, x_{n_1 1}, \hat \theta)\\
            \vdots \\
 	   \psi(y_{1G}, x_{1G}, \hat \theta) + \dots + \psi(y_{n_G G}, x_{n_G G}, \hat \theta)
-           \end{array} \right),
+           \end{array} \right).
 \end{eqnarray}  
-before the outer product is calculated
+The basic meat estimator based on the outer product then becomes:
 \begin{equation} \label{eq:meatCL}
   \hat M_\mathrm{CL} \quad = \quad \frac{1}{n} \sum_{g = 1}^G\sum_{i = 1}^{n_{g}}\psi(y_{ig}, x_{ig}, \hat \theta) \psi(y_{ig}, x_{ig}, \hat \theta)^\top.
 \end{equation}
-The clustered covariance estimator generalizes the standard sandwich estimator in Equation~\ref{eq:Bhat}.
-If it is the case that each observation is its own cluster, clustered covariances correspond to standard sandwich covariances.
+In the case where observation is its own cluster, the clustered $\hat M_\mathrm{CL}$
+corresponds to the basic~$\hat M$.
+
+The new function \code{meatCL()} in the \pkg{sandwich} package implements this
+basic trick along with several types of bias correction and the possibility for
+multi-way instead of one-way clustering.
+
 
 \subsubsection{Types of bias correction}
-The clustered covariance estimator controls for both heteroscedasticity across as well as within clusters, but this comes at the cost that the number of clusters approaches infinity, not the number of observations \citep{hac:Cameron+Gelbach+Miller:2008,hac:Cameron+Miller:2015}.
-Although many publications just refer to ``the'' clustered standard errors, there is a surprisingly wide variation in clustered covariances, particularly due to different flavors of bias corrections.
-The bias correction factor can be split in two parts, a ``cluster bias correction'' and an ``HC bias correction''.
-The cluster bias correction is defined as 
+
+The clustered covariance estimator controls for both heteroscedasticity across
+as well as within clusters, but this comes at the cost that the number of
+clusters $G$ must approach infinity, not just the number of observations $n$
+\citep{hac:Cameron+Gelbach+Miller:2008,hac:Cameron+Miller:2015}. Although many
+publications just refer to ``the'' clustered standard errors, there is a
+surprisingly wide variation in clustered covariances, particularly due to
+different flavors of bias corrections. The bias correction factor can be split
+in two parts, a ``cluster bias correction'' and an ``HC bias correction''. The
+cluster bias correction captures the effect of having just a finite number of
+clusters $G$ and it is defined as 
 \begin{equation} \label{eq:biasadj0}
- \frac{G}{G - 1},
+ \frac{G}{G - 1}.
 \end{equation} 
-where $G$ is again the number of clusters.
-The HC bias correction can additionally to the cluster bias correction be applied to the clustered covariance estimator.
-HC0 to HC3 bias corrections are defined as
+The HC bias correction can be applied additionally similar to the corresponding
+cross-section data estimators. HC0 to HC3 bias corrections for cluster $g$ are
+defined as
 \begin{eqnarray} \label{eq:biasadj1}
-  \mathrm{HC0:} & = & 1 \\  \label{eq:biasadj2}
-  \mathrm{HC1:} & = & \frac{n}{n - k} \\  \label{eq:biasadj3}
-  \mathrm{HC2:} & = & (I_{n_{g}} - H_{gg})^{-0.5} \\  \label{eq:biasadj4}
-  \mathrm{HC3:} & = & (I_{n_{g}} - H_{gg})^{-1}, 
+  \mathrm{HC0:} &  & 1 \\  \label{eq:biasadj2}
+  \mathrm{HC1:} &  & \frac{n}{n - k} \\  \label{eq:biasadj3}
+  \mathrm{HC2:} &  & (I_{n_{g}} - H_{gg})^{-0.5} \\  \label{eq:biasadj4}
+  \mathrm{HC3:} &  & (I_{n_{g}} - H_{gg})^{-1}, 
 \end{eqnarray}  
 where $n$ is the number of observations and $k$ is the number of estimated parameters,
-$I_{n_{g}}$ is an identity matrix of size $n_{g}$, $H$ is a hat matrix where a block for each cluster $H_{gg}$ is extracted.
+$I_{n_{g}}$ is an identity matrix of size $n_{g}$, $H_{gg}$ is the block from the hat
+matrix $H$ that pertains to cluster~$g$.
 
-HC0 and HC1 types of bias correction can easily be multipied to $\hat M_\mathrm{CL}$ (Equation~\ref{eq:meatCL}), but is more demanding for cluster generalizations of HC2 and HC3 types of bias correction, that have been developed by \cite{hac:Kauermann+Carroll:2001} and \cite{hac:Bell+McCaffrey:2002}.
-It should be noted that HC2 and HC3 types of bias correction as seen in Equations~\ref{eq:biasadj3} and \ref{eq:biasadj4} are only available for \code{lm} and \code{glm} objects.
-Starting from Equation~\ref{eq:fact}, the groupwise aggregated empirical working residuals $r(y_{g}, x_{g}^\top \hat \theta)$ have to be first adjusted groupwise for cluster generalizations of HC2 and HC3 in
-Equations~\ref{eq:biasadj3} and \ref{eq:biasadj4} 
+Thus, it is completely straightforward to add the factors for HC0 and HC1
+to $\hat M_\mathrm{CL}$ (Equation~\ref{eq:meatCL}). However, but is more demanding
+to apply the cluster generalizations of HC2 and HC3
+\citep[due to][]{hac:Kauermann+Carroll:2001,hac:Bell+McCaffrey:2002} for which
+the correction factors from Equations~\ref{eq:biasadj3} and~\ref{eq:biasadj4} have
+to be applied to the (working) residuals prior to computing the clustered meat matrix.
+More precisely, the empirical working residuals $r(y_{g}, x_{g}^\top \hat \theta)$
+in group $g$ are adjusted via
 \begin{equation} \label{eq:fact-adj}
   \tilde r(y_{g}, x_{g}^\top \hat \theta) = (I_{n_{g}} - H_{gg})^\alpha \cdot r(y_{g}, x_{g}^\top \hat \theta)
 \end{equation}  
-with $\alpha = -0.5$ for HC2 type and $\alpha = -1$ for HC3 type of bias correction,
-before multiplying the adjusted empirical working residuals with the regressor vector
+with $\alpha = -0.5$ for HC2 and $\alpha = -1$ for HC3, before obtaining the adjusted
+empirical estimating functions based on Equation~\ref{eq:fact} as
 \begin{equation} \label{eq:fact-reg}
 \tilde \psi(y_i, x_i, \hat\theta) = \tilde r(y_{i}, x_{i}^\top \hat \theta) \cdot x_i.
 \end{equation}  
+Then these adjusted estimating functions can be employed ``as usual'' to obtain the
+$\hat M_\mathrm{CL}$.
+
+Note that in terms of methods in \proglang{R}, it is not sufficient to have just \code{estfun()}
+and\linebreak
+\code{model.matrix()} extractors but an extractor for (blocks of) the full hat matrix
+are required as well. Currently, no such extractor method is available in base \proglang{R}
+(as \code{hatvalues()} just extracts $\mathrm{diag} H$) and hence HC2 and HC3 in \code{meatCL()}
+are just available for \code{lm} and \code{glm} objects.
+
 
 \subsubsection{Two-way and multi-way clustered covariances}
 Certainly, there can be more than one cluster dimension, as for example observations that are characterized by housholds within states or companies within industries. It can therefore sometimes be helpful that one-way clustered covariances can be extended to so-called multi-way clustering as shown by \cite{hac:Miglioretti+Heagerty:2007}, \cite{hac:Thompson:2011} and \cite{hac:Cameron+Gelbach+Miller:2011}.
@@ -425,23 +472,53 @@ Clustering in two dimensions, for example in $id$ and $time$, gives $D = 2$, suc
 For two-way clustered covariances with cluster dimensions $id$ and $time$, the one-way clustered covariance matrices on $id$ and on $time$ are added up, and the two-way clustered covariance matrix with clusters formed by the intersection of $id$ and $time$ is substacted off
 %\fixme{in the equation below we would need M not S, right? For consistency, the subscript should follow the matrix name directly -- %rather than after the brackets.}
 \begin{equation} \label{eq:twoway}
-M_{id,time} \quad = \quad M_{id} + M_{time} - M_{id \cap time}.
+\hat M_{\mathrm{CL}(id,time)} \quad = \quad \hat M_{\mathrm{CL}(id)} + \hat M_{\mathrm{CL}(time)} - \hat M_{\mathrm{CL}(id \cap time)}.
 \end{equation}
-Parts of the meat as $M_{id}$ and $M_{time}$ with an odd number of cluster dimensions are added up, whereas those with an even number of cluster dimensions like $M_{id \cap time}$ are substracted off to get the two-way clustered covariance estimator. The same heuristic applies to clustered covariances with more than two dimensions of clusters.
+The same idea is used for obtaining clustered covariances with more than two clustering dimensions:
+Meat parts with an odd number of cluster dimensions are added up, whereas those with an even number
+are substracted. 
 
-\cite{hac:Petersen:2009}, \cite{hac:Thompson:2011} and \cite{hac:Ma:2014} suggest to substract the standard sandwich estimator  in case that the clusters formed by the intersection of $id$ and $time$ do only contain a single observation\footnote{If one wants to cluster by dimensions \emph{id} and \emph{year} in a sample of \emph{id-month} observations, each cluster is composed of 12 observations \citep{hac:Ma:2014}. In such a setting, the last substracted matrix should be a one-way clustered covariance matrix with clusters formed by the intersections of \emph{id} and \emph{year}.}. 
-As \cite{hac:Ma:2014} argues, the standard sandwich estimator does not take into account any bias adjustment, such that the cluster bias correction $\frac{G}{G-1}$ is larger than one. Thus, covariances are underestimated if always the clustered covariance matrix with cluster bias correction $\frac{G}{G-1}$ is substracted as the last substracted matrix instead of standard sandwich covariances.
+\cite{hac:Petersen:2009}, \cite{hac:Thompson:2011} and \cite{hac:Ma:2014}
+suggest to substract the standard sandwich estimator  in case that the clusters
+formed by the intersection of $id$ and $time$ do only contain a single
+observation.
+% \footnote{If one wants to cluster by dimensions \emph{id} and \emph{year} in a sample
+% of \emph{id-month} observations, each cluster is composed of 12 observations \citep{hac:Ma:2014}.
+% In such a setting, the last substracted matrix should be a one-way clustered covariance matrix
+% with clusters formed by the intersections of \emph{id} and \emph{year}.}.
+As \cite{hac:Ma:2014} argues, the standard sandwich estimator does not take into
+account any bias adjustment, such that the cluster bias correction
+$\frac{G}{G-1}$ is larger than one. Thus, covariances are underestimated if
+always the clustered covariance matrix with cluster bias correction
+$\frac{G}{G-1}$ is substracted as the last substracted matrix instead of
+standard sandwich covariances.
 
-Various flavours of clustered covariances have been newly implemented in the \pkg{sandwich} package, relying on the same building blocks as in previous package versions. Again, clustered covariances rely on the same structure as seen in Equations~\ref{eq:sandwich}--\ref{eq:meat}. But instead of calling one out of the already implemented meat functions in Equations~\ref{eq:meat-op}--\ref{eq:meat-hc}, \code{meatCL()} is an implementation of the meat as in Equation~\ref{eq:meatCL} and is called via the function \code{vcovCL()} to calculate clustered covariances.
-The meat in Equation~\ref{eq:meatCL} is conceptually the same as in Equation~\ref{eq:meat-op}, but with the difference that the score is aggregated at the cluster level as in Equation~\ref{eq:estfun-cl} instead of the unaggregated scores in Equation~\ref{eq:estfun}.
-More details about both functions \code{meatCL()} and \code{vcovCL()} are given in the next section.
+% Various flavours of clustered covariances have been newly implemented in the
+% \pkg{sandwich} package, relying on the same building blocks as in previous
+% package versions. Again, clustered covariances rely on the same structure as
+% seen in Equations~\ref{eq:sandwich}--\ref{eq:meat}. But instead of calling one
+% out of the already implemented meat functions in
+% Equations~\ref{eq:meat-op}--\ref{eq:meat-hc}, \code{meatCL()} is an
+% implementation of the meat as in Equation~\ref{eq:meatCL} and is called via the
+% function \code{vcovCL()} to calculate clustered covariances. The meat in
+% Equation~\ref{eq:meatCL} is conceptually the same as in
+% Equation~\ref{eq:meat-op}, but with the difference that the score is aggregated
+% at the cluster level as in Equation~\ref{eq:estfun-cl} instead of the
+% unaggregated scores in Equation~\ref{eq:estfun}. More details about both
+% functions \code{meatCL()} and \code{vcovCL()} are given in the next section.
 
 \subsection{Clustered covariances for panel data}
+
 The information of panel data sets is often overstated, as cross-sectional as well as temporal dependencies may occur \citep{hac:Hoechle:2007}.
 \citet[p.~702]{hac:Cameron+Trivedi:2005} noticed that ``$NT$ correlated observations have less information than $NT$ independent observations''. 
 For panel data, the source of dependence in the data is crucial to find out what kind of covariance is optimal \citep{hac:Petersen:2009}.
-In the following, panel Newey-West standard errors as well as Driscoll and Kraay standard errors are examined \citep[see also][]{hac:Millo:2014}.
-The cluster dimension is now $t$ with $t = 1, \ldots, T$ time periods and $n_t$ observations within a time period.
+In the following, panel Newey-West standard errors as well as Driscoll and Kraay standard errors are examined
+\citep[see also][for a unifying view]{hac:Millo:2014}.
+
+To reflect that the data are now panel data with time ordering within each cluster/group/id we change our notation
+to an index $(i, t)$ for $i = 1, \dots, n_t$ observations at time $t = 1, \dots, T$ (with $n = n_1 + \dots + n_T$).
+Note that compared to the notation from the clustered case above,
+the variable $i$ now denotes the group/id (e.g., firm) which was previously denoted by $g$.
 
 \subsubsection{Panel Newey-West}
 \cite{hac:Newey+West:1987} proposed a heteroscedasticity and autocorrelation consistent standard error estimator that is traditionally used for time-series data, but can be modified for use in panel data \citep[see for example][]{hac:Petersen:2009}.
@@ -450,45 +527,80 @@ A panel Newey-West estimator can be obtained by setting the cross-sectional as w
 %This can be put implicitly into the weights, just as in Equation~7.
 %Finally, for notational consistency, if a comma in the subscript is needed here, it should also be used above in the %clustered case.}
 \begin{equation} \label{eq:newey}
-  \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{i, j = 1}^n w_{|i-j|} \, \psi(y_{i}, x_{i}, \hat \theta) \psi(y_{j}, x_{j}, \hat \theta)^\top,
-\end{equation}  
-where $w_{|i-j|} = 1 - \frac{|i-j|}{L + 1}$ is a distance-decreasing kernel function with a lag $\ell = |i-j|$, $L$ is the maximal lag length. As \cite{hac:Petersen:2009} noticed, the maximal lag length in a panel data set is the maximum number of \emph{time} periods per \emph{id} minus one.
+  \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{i, j = 1}^n w_{|i-j|} \, \psi(y_{i}, x_{i}, \hat \theta) \psi(y_{j}, x_{j}, \hat \theta)^\top.
+\end{equation}
+\cite{hac:Newey+West:1987} employ a Bartlett kernel for obtaining the weights as  
+$w_{|i-j|} = 1 - \frac{|i-j|}{L + 1}$ at lag $\ell = |i-j|$ up to lag $L$.
+As \cite{hac:Petersen:2009} noticed, the maximal lag length $L$ in a panel data set is $n_t - 1$,
+i.e., the maximum number of \emph{time} periods per \emph{id} minus one.
 
 \subsubsection{Driscoll and Kraay}
-\cite{hac:Driscoll+Kraay:1998} have adapted the Newey-West approach and introduce a technique yielding standard error estimates that are robust to spatial and temporal dependence of general form, but with the caveat that a long enough time dimension exists.
-Independent of the cross-section dimension, Driscoll and Kraay standard errors are consistent.
 
-Driscoll and Kraay standard errors are a generalization of Newey-West standard errors, applied to the time series of cross-section averages of $\psi(y_{i,t}, x_{i,t}, \hat \theta)$ \citep{hac:Hoechle:2007}.
-For the special case that each observation is its own cluster, Driscoll and Kraay standard errors converge to Panel Newey-West standard errors.
+\cite{hac:Driscoll+Kraay:1998} have adapted the Newey-West approach by using
+the aggregated estimating functions at each time point. This can be shown to be
+robust to spatial and temporal dependence of general form, but with the caveat
+that a long enough time dimension must be available.
 
-They are obtained as the positive square root of the diagonal elements of the sandwich $S(\theta)$ with a meat
+Thus, the idea is again
+to replace Equation~\ref{eq:estfun} by Equation~\ref{eq:estfun-cl} before computing
+$\hat M_\mathrm{HAC}$ from Equation~\ref{eq:meat-hac}. Note, however, that the aggregation
+is now done across cluster/id within each time period $t$. This yields a panel
+sandwich estimator where the meat is computed as
 \begin{equation} \label{eq:driscoll}
-  \hat M_\mathrm{PL} \quad = \quad \frac{1}{n} \sum_{t = 1}^T \sum_{i, j = 1}^{n_t} w_{|i-j|} \, \psi(y_{it}, x_{it}, \hat \theta) \psi(y_{jt}, x_{jt}, \hat \theta)^\top,
-\end{equation}  
-where $i$ denotes the cross section and $t$ the time periods. $w_{|i-j|}$ are again the modified Barttlett weights, and $L$ is the maximal lag length used \citep{hac:Hoechle:2007}. For $\ell = 0$, the meat is equal to one-way clustered covariances clustered by time dimension $t$. 
+  \hat M_\mathrm{PL} \quad = \quad \frac{1}{n} \sum_{t = 1}^T \sum_{i, j = 1}^{n_t} w_{|i-j|} \,
+    \psi(y_{it}, x_{it}, \hat \theta) \psi(y_{jt}, x_{jt}, \hat \theta)^\top,
+\end{equation}
+The weights $w_{|i-j|}$ are usually again the Bartlett weights up to lag $L$.
+Note that for $L = 0$, $\hat M_\mathrm{PL}$ reduced to $\hat M_{\mathrm{CL}(\mathit{time})}$,
+i.e., the one-way covariance clustered by time. Also, for the special case that there is just
+one observation at each time point $t$, this panel covariance by \cite{hac:Driscoll+Kraay:1998}
+simply yields the panel Newey-West covariance.
 
-Equation~\ref{eq:driscoll} does the same thing as Equation~\ref{eq:newey} and Equation~\ref{eq:meat-hac}, respectively, but using aggregated scores from Equation~\ref{eq:estfun-cl} instead of those from Equation~\ref{eq:estfun}.
-Driscoll and Kraay as well as Panel Newey-West meat and covariances are implemented in \pkg{sandwich} in functions \code{meatPL()} and \code{vcovPL()}, respectively. They are as well discussed in the Software Section.
+The new function \code{meatPL()} in the \pkg{sandwich} package implements this
+approach analogously to \code{meatCL()}. For the computation of the weights $w_\ell$
+the same function is employed that \code{meatHAC()} uses.
+
 
 \subsection{Panel-corrected standard errors}
-Panel-corrected standard errors (hereinafter abbreviated to PCSE) as introduced by \cite{hac:Beck+Katz:1995} fit nicely for time-series-cross-section data characterized by having repeated observations on fixed units with moderate dimensions of time and cross-section \citep{hac:Millo:2014}.
-They are robust against panel heteroscedasticity and contemporaneously correlation, with the crucial assumption that contemporaneous correlation accross cluster follows a fixed pattern \citep{hac:Millo:2014, hac:Johnson:2004}. Autocorrelation within a cluster is either not present or has to be removed before PCSE are calculated.
 
-To calculate PCSE \citep{hac:Johnson:2004}, the empirical working residuals are separated by cluster dimension $g$, such that they are of form $r(y_1, x_1^\top \hat \theta), r(y_2, x_2^\top \hat \theta), \ldots, r(y_G, x_G^\top \hat \theta)$.
- For balanced data, each empirical working residual is a vector with $t$ elements. Grouped together into a $t \times G$ matrix,
+\cite{hac:Beck+Katz:1995} proposed another form or panel-corrected covariances -- typically
+referred to as panel-corrected standard errors (PCSE). They are intended for panel data
+(also called time-series-cross-section data in this literature) with moderate dimensions of
+time and cross-section \citep{hac:Millo:2014}. They are robust against panel heteroscedasticity
+and contemporaneously correlation, with the crucial assumption that contemporaneous correlation
+accross cluster follows a fixed pattern \citep{hac:Millo:2014, hac:Johnson:2004}. Autocorrelation
+within a cluster is assumed to be absent.
+
+\cite{hac:Hoechle:2007} argues that for the PCSE estimator the finite sample properties are rather
+poor if the cross-sectional dimension is large compared to the time dimension. This is in contrast
+to the panel covariance by \cite{hac:Driscoll+Kraay:1998} which relies on large-$t$ asymptotics and
+is robust to quite general forms of cross-sectional and temporal dependence and is consistent
+independently of the cross-sectional dimension.
+
+To emphasize that now both cross section \emph{and} and time ordering are considered,
+index $(t,g)$ is employed for the observation from cluster/group $g = 1, \dots, G$ at time
+$t = 1, \dots, n_g$. In the balanced case (that we focus on below) $n_g = T$ for all groups~$g$
+so that there are $n = G \cdot T$ observations overall.
+
+The basic idea for PCSE is to employ the outer product of (working) residuals within each cluster~$g$.
+Thus, the working residuals are split into vectors for each cluster $g$:
+$r(y_1, x_1^\top \hat \theta), \dots, r(y_G, x_G^\top \hat \theta)$.
+For balanced data these can be arranged in a $T \times G$ matrix,
  \begin{equation} \label{eq:workres}
-  E \quad = \quad [r(y_1, x_1^\top \hat \theta) \quad r(y_2, x_2^\top \hat \theta) \quad \ldots \quad r(y_G, x_G^\top \hat \theta)],
- \end{equation}  
-the meat of the panel-corrected covariance matrix is defined as \citep{hac:Beck+Katz:1995}
+  R \quad = \quad [r(y_1, x_1^\top \hat \theta) \quad r(y_2, x_2^\top \hat \theta) \quad \ldots \quad r(y_G, x_G^\top \hat \theta)],
+ \end{equation}
+and the meat of the panel-corrected covariance matrix can be computed using the Kronecker product as
 \begin{equation} \label{eq:pcse}
- \hat M_\mathrm{PC} \quad = \quad \frac{1}{n} X^\top \bigg[ \frac{(E^\top E)}{t} \otimes \vI_t \bigg] X.
+ \hat M_\mathrm{PC} \quad = \quad \frac{1}{n} X^\top \bigg[ \frac{(R^\top R)}{T} \otimes \vI_T \bigg] X.
 \end{equation}
-The issue of how to handle unbalanced data sets is discussed in \cite{hac:Bailey+Katz:2011}.
+The details for the unbalanced case are omitted here for brevity but are discussed in detail in
+\cite{hac:Bailey+Katz:2011}.
 
-While the Driscoll and Kraay covariance estimator relies on large t-asymptotics and is robust to quite general forms of cross-sectional and temporal dependence and is consistent independently of the cross-sectional dimension,
-\cite{hac:Hoechle:2007} argues that for the PCSE estimator the finite sample properties are rather poor if the cross-sectional dimension is large compared to the time dimension.
+The new function \code{meatPC()} in the \pkg{sandwich} package implements both the balanced and
+unbalanced case. As for \code{meatHC()} it is necessary to have a \code{model.matrix()} extractor
+in addition to the \code{estfun()} extractor for splitting up the empirical estimating functions
+into residuals and regressor matrix.
 
-The newly implemented function \code{vcovPC()} calls \code{meatPC()} to calculate panel-corrected standard errors, and is together with the aforementioned types of clustered covariances for panel as well as cross-section data discussed in detail in the following Section.
 
 \section{Software} \label{sec:software}
 
@@ -516,7 +628,7 @@ As compared to standard sandwich estimators, the meat for clustered covariances 
 meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, white = FALSE, ...).
 \end{verbatim}
 
-The \code{cluster} argument allows to supply one or more cluster variables. If no cluster variable is supplied, each observation is its own cluster per default. In such a case, the clustered covariance estimator collapses to Whites robust covariance estimator.
+The \code{cluster} argument allows to supply one or more cluster variables. If no cluster variable is supplied, each observation is its own cluster per default. In such a case, the clustered covariance estimator collapses to White's robust covariance estimator.
 
 The bias correction is composed of two parts, the cluster bias correction defined in Equation~\ref{eq:biasadj0} and the HC bias correction defined in Equations~\ref{eq:biasadj1}--\ref{eq:biasadj4}. Both types of bias correction can be separately switched on and off.
 With the \code{cadjust} argument, the cluster bias adjustment can be turned on and off, the \code{type} argument allows to specify the HC type of bias correction.
@@ -776,21 +888,21 @@ Furthermore, to calculate clustered standard errors, the square root of the diag
   \centering
 \begin{tabular}{llll}
   \hline
-  label & model & object & vcov \\ \hline
-  \code{CL-0} & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC0")} \\ 
-  \code{CL-1} & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC1")} \\
-  \code{CL-2} & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC2")} \\ 
-  \code{CL-3} & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC3")} \\ 
-  \code{PL} & \code{lm} & \code{m} & \code{vcovPL(m, cluster = id, adjust = FALSE)} \\ 
-  \code{PC} & \code{lm} & \code{m} & \code{vcovPC(m, cluster = id, order.by = round)} \\ \hline
-  \code{standard} &\code{lm} & \code{m} & \code{vcov(m)} \\ 
-  \code{basic} & \code{lm} & \code{m} & \code{sandwich(m)} \\ \hline
-  \code{fixed} & \code{lm} & \code{m_fe} & \code{vcov(m_fe)[1:3, 1:3]} \\ 
-  \code{random} & \code{lmer} & \code{m_re} & \code{vcov(m_re)} \\
-  \code{gee} & \code{geeglm} & \code{m_gee}  & \code{m_gee\$geese\$vbeta} \\ \hline
+  Label & Model & Object & Variance-covariance matrix \\ \hline
+  CL-0 & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC0")} \\ 
+  CL-1 & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC1")} \\
+  CL-2 & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC2")} \\ 
+  CL-3 & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC3")} \\ 
+  PL & \code{lm} & \code{m} & \code{vcovPL(m, cluster = id, adjust = FALSE)} \\ 
+  PC & \code{lm} & \code{m} & \code{vcovPC(m, cluster = id, order.by = round)} \\ \hline
+  standard &\code{lm} & \code{m} & \code{vcov(m)} \\ 
+  basic & \code{lm} & \code{m} & \code{sandwich(m)} \\ \hline
+  fixed & \code{lm} & \code{m_fe} & \code{vcov(m_fe)[1:3, 1:3]} \\ 
+  random & \code{lmer} & \code{m_re} & \code{vcov(m_re)} \\
+  gee & \code{geeglm} & \code{m_gee}  & \code{m_gee\$geese\$vbeta} \\ \hline
 \end{tabular}
-\caption{\code{sim-CL.R}: covariance matrices for a Gaussian response}
-\label{tab:vcov}
+\caption{Covariance matrices for a Gaussian response in \code{sim-CL.R}.
+\label{tab:vcov}}
 \end{table}
 
 \subsection{Results}
