@@ -1,5 +1,3 @@
-bread.default <- function(x, ...) vcov(x) * nobs(x)
-
 ## data generating process (dgp)
 dgp <- function(nid = 100L, nround = 5L,
   coef = c(0, 0.85, 0.5, 0.7), rho = 0.5, xrho = 0.5,
