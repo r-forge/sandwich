@@ -9,7 +9,9 @@ vcovBS <- function(x, cluster = NULL, R = 250, ...)
   
   ## set up coefficient matrix
   cf <- coef(x)
-  cf <- matrix(rep.int(0, length(cf) * R), ncol = length(cf))
+  cf <- matrix(rep.int(0, length(cf) * R), ncol = length(cf),
+    dimnames = list(NULL, names(cf)))
+
 
   ## update on bootstrap samples
   for(i in 1:R) {
