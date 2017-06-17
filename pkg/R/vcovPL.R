@@ -35,11 +35,8 @@ meatPL <- function(x, cluster = NULL, order.by = NULL,
   }
 
   ## Newey-West type standard errors if neither cluster nor order.by is specified
-    if(is.null(cluster) && is.null(order.by)) cluster <- rep(1, n)
+  if(is.null(cluster) && is.null(order.by)) cluster <- rep(1, n)
         
-  ## resort to cross-section if no clusters are supplied
-  if(is.null(cluster)) cluster <- 1L:n
-    
   ## longitudinal time variable
   if(is.null(order.by)) order.by <- attr(x, "order.by")
   if(is.null(order.by)) {
