@@ -11,7 +11,7 @@
 
 \usage{
 vcovCL(x, cluster = NULL, type = NULL, sandwich = TRUE, fix = FALSE, \dots)
-meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, white = FALSE, \dots)
+meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \dots)
 }
 
 \arguments{
@@ -28,7 +28,7 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, white = FALSE, \dots)
   \item{fix}{logical. Should the covariance matrix be fixed to be
     positive semi-definite in case it is not?}
   \item{cadjust}{logical. Should a cluster adjustment be applied?}
-  \item{white}{logical. Should the HC0 estimate be used for
+  \item{multi0}{logical. Should the HC0 estimate be used for
     the final adjustment in multi-way clustered covariances?}
   \item{\dots}{arguments passed to \code{meatCL}.}
 }
@@ -36,11 +36,10 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, white = FALSE, \dots)
 \details{
   Clustered sandwich estimators are used to adjust inference when errors
   are correlated within (but not between) clusters. \code{vcovCL} allows
-  for clustering in arbitrary many cluster dimensions (e.g. firm, time, industry), given all
-  dimensions have enough clusters (for more details, see Cameron et al. (2011)).
-  If each observation is its own cluster, the clustered sandwich standard
-  error collapses to the White (1980) standard error. Thus, clustered sandwich
-  standard errors are a generalization of White standard errors.
+  for clustering in arbitrary many cluster dimensions (e.g., firm, time, industry), given all
+  dimensions have enough clusters (for more details, see Cameron et al. 2011).
+  If each observation is its own cluster, the clustered sandwich
+  collapses to the basic sandwich covariance.
   
   The function \code{meatCL} is the work horse for estimating
   the meat of clustered sandwich estimators. \code{vcovCL} is a wrapper calling
@@ -61,12 +60,12 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, white = FALSE, \dots)
   intersection of both dimensions (\eqn{M_{id \cap time}}):
   \deqn{M = M_{id} + M_{time} - M_{id \cap time}}
   Instead of substracting \eqn{M_{id \cap time}} as the last
-  substacted matrix, Ma (2014) suggests to substract the White
+  substacted matrix, Ma (2014) suggests to substract the basic HC0
   covariance matrix when only a single observation is in each
   intersection of \eqn{id}  and \eqn{time}.
-  Set \code{white = TRUE} to substract the White covariance matrix as
-  the last substracted matrix. For details, see also Petersen (2009) and
-  Thompson (2011).
+  Set \code{multi0 = TRUE} to substract the basic HC0 covariance matrix as
+  the last substracted matrix in multi-way clustering. For details,
+  see also Petersen (2009) and Thompson (2011).
   
   With the \code{type} argument, HC0 to HC3 types of
   bias adjustment can be employed.
@@ -137,11 +136,6 @@ Thompson SB (2011).
     and Time},
   \emph{Journal of Financial Economics}, \bold{99}(1), 1--10.
   \doi{10.1016/j.jfineco.2010.08.016}
-  
-White H (1980).
-  \dQuote{A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity},
-  \emph{Econometrica}, 817--838.
-  \doi{10.2307/1912934}
   
 Zeileis A (2004).
   \dQuote{Econometric Computing with HC and HAC Covariance Matrix Estimator},

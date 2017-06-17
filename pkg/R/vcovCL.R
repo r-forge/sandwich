@@ -14,7 +14,7 @@ vcovCL <- function(x, cluster = NULL, type = NULL, sandwich = TRUE, fix = FALSE,
   return(rval)
 }
 
-meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, white = FALSE, ...)
+meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, ...)
 {
   ## extract estimating functions / aka scores
   if (is.list(x) && !is.null(x$na.action)) class(x$na.action) <- "omit"
@@ -49,7 +49,7 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, white = FALSE
     for (i in (p + 1L):length(cl)) {
       cluster <- cbind(cluster, Reduce(paste0, cluster[, cl[[i]] ])) ## faster than: interaction()
     }
-    if(white) cluster[[length(cl)]] <- 1L:n
+    if(multi0) cluster[[length(cl)]] <- 1L:n
   } else {
     cl <- list(1)
     sign <- 1
@@ -116,7 +116,7 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, white = FALSE
 
     ## adjustments for bias correction (sigh...)
     adj <- if(type %in% c("HC0", "HC1")) {
-       if(white & (i == length(cl))) {
+       if(multi0 & (i == length(cl))) {
          if(type == "HC1") (n - k)/(n - 1L) else 1
        } else {
          g[i]/(g[i] - 1L)

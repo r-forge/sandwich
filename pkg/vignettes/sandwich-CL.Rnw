@@ -640,7 +640,7 @@ are implemented in
 \end{verbatim}
 for a fitted-model-object \code{x} with the underlying meat estimator in
 \begin{verbatim}
-  meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, white = FALSE, ...)
+  meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, ...)
 \end{verbatim}
 The essential idea is to aggregate the empirical estimating functions within
 each cluster and then compute a HC covariance analogous to \code{vcovHC()}.
@@ -663,11 +663,11 @@ elements as in \code{hatvalues()}). Hence, the hat matrices of (generalized)
 linear models are provided directly in \code{meatCL()} and are not object-oriented
 in the current implementation.
 
-The \code{white} argument is executed only for two- and multi-way clustered
-covariances and specifies whether to substract White's covariance matrix as the
-last substracted matrix in Equation~\ref{eq:twoway} or the covariance matrix
-formed by the intersection of groups
-\citep{hac:Petersen:2009,hac:Thompson:2011,hac:Ma:2014}.
+The \code{multi0} argument is relevant only for multi-way clustered
+covariances with more than one clustering dimension. It specifies whether to
+substract the basic cross-section HC0 covariance matrix as the last substracted
+matrix in Equation~\ref{eq:twoway} instead of the covariance matrix formed by
+the intersection of groups \citep{hac:Petersen:2009,hac:Thompson:2011,hac:Ma:2014}.
 
 For consistency with \cite{hac:Zeileis:2004a}, the \code{sandwich} argument
 specifies whether the full sandwich estimator is computed (default) or only
