@@ -772,8 +772,8 @@ is considered in Section~\ref{ex-petersen}. This focuses on the classical linear
 regression case with model errors that are correlated within clusters. It is shown
 how the results from various other \proglang{R} packages (\pkg{multiwayvcov},
 \pkg{plm}, \pkg{geepack}, \pkg{pcse}) can be replicated using the new \pkg{sandwich}
-package.
-
+package. One- and two-way clustered standard errors from \code{vcovCL()} from \pkg{sandwich} are compared to those obtained from \code{cluster.vcov()} from \pkg{multiwayvcov}. Furthermore, one-way clustered standard errors can also be obtained from \pkg{plm} and \pkg{geepack}, and are additionally benchmarked against the results from \pkg{sandwich}. Function \code{vcovSCC()} from \pkg{plm} gives Driscoll and Kraay type standard errors, its results are compared to the outcome of \code{vcovPL()} from \pkg{sandwich}. Also, panel-corrected standard errors can be estimated by function \code{vcovPC()} from \pkg{pcse} and are benchmarked against \code{vcovPC()} from \pkg{sandwich}.
+ 
 \subsection[Aghion et al. (2013) and Berger et al. (2017)]{\cite{hac:Aghion+VanReenen+Zingales:2013} and \cite{hac:Berger+Stocker+Zeileis:2017}} \label{ex-aghion}
 In this section, in a further example we will make use of the object-orientation of \code{vcovCL()}, and estimate clustered standard errors for a count data hurdle model.
 
@@ -805,7 +805,7 @@ library("sandwich")
 vc <- list(
   "standard" = vcov(h.innov),
   "basic" = sandwich(h.innov),
-  "cluster" = vcovCL(h.innov, cluster = InstInnovation$company)
+  "CL-1" = vcovCL(h.innov, cluster = InstInnovation$company)
 )
 sapply(vc, function(x) sqrt(diag(x)))
 @
@@ -839,7 +839,9 @@ It can be observed that clustered standard errors are larger than ``standard'' s
 library("sandwich")
 coeftest(p_lm, vcov = vcovCL(p_lm, cluster = PetersenCL$firm))
 @ 
-Next, a comparison of clustered standard errors resulting from packages \pkg{sandwich}, \pkg{multiwayvcov}, \pkg{plm} and \pkg{geepack} is shown. 
+Next, it is shown how the results from various other \proglang{R} packages (\pkg{multiwayvcov},
+\pkg{plm}, \pkg{geepack}, \pkg{pcse}) can be replicated using the new \pkg{sandwich} package.
+
 First, \code{vcovCL()} from \pkg{sandwich} and \code{cluster.vcov()} from \pkg{multiwayvcov} are compared. 
 <<petersen-packages1>>=
 library("multiwayvcov")
@@ -847,8 +849,8 @@ library("multiwayvcov")
 Both functions are closely related, as \code{vcovCL()} is partly based on \code{cluster.vcov()}.
 <<petersen-comparison1>>=
 vc <- list(
-  "sandwich" = vcovCL(p_lm, cluster = PetersenCL$firm),
-  "multiwayvcov" = cluster.vcov(p_lm, cluster = PetersenCL$firm)
+"sandwich" = vcovCL(p_lm, cluster = PetersenCL$firm),
+"multiwayvcov" = cluster.vcov(p_lm, cluster = PetersenCL$firm)
 )
 sapply(vc, function(x) sqrt(diag(x)))
 @ 
@@ -861,41 +863,70 @@ library("geepack")
 @ 
 A pooling model is estimated with \code{plm()}, \code{geeglm()} fits a generalized estimating equation (GEE) with independence correlation structure.
 <<petersen-models>>=
-p_plm <- plm(y ~ x, data = PetersenCL, model = "pooling")
+p_plm <- plm(y ~ x, data = PetersenCL, model = "pooling",
+ indexes = c("firmid", "year"))
 p_gee <- geeglm(y ~ x, data = PetersenCL, id = PetersenCL$firm,
-  corstr = "independence", family = gaussian)
+ corstr = "independence", family = gaussian)
 @ 
 As there is no \code{vcov()}-method specified for \code{geeglm()}, the convenience function \code{vcov.geeglm()} is provided to make this contribution.
 <<petersen-convenience>>=
 vcov.geeglm <- function(object) {
-  vc <- object$geese$vbeta
-  rownames(vc) <- colnames(vc) <- names(coef(object))
-  return(vc)
+vc <- object$geese$vbeta
+rownames(vc) <- colnames(vc) <- names(coef(object))
+return(vc)
 }
 @ 
 Nevertheless, in order to accomplish exactly the same value for clustered standard errors using \code{plm} and \code{geepack}, the bias correction $\frac{G}{G - 1}\frac{n - 1}{n - k}$ has to be omitted from the clustered covariance matrix estimated by \code{vcovCL()}. This is achieved by setting the function arguments \code{cadjust = FALSE} and \code{type = "HC0"}.
 <<petersen-comparison2>>=
 vc <- list(
-  "sandwich" = vcovCL(p_lm, cluster = PetersenCL$firm,
-    cadjust = FALSE, type = "HC0"),
-  "plm" = vcovHC(p_plm, type = "HC0", cluster = "group"),
-  "geepack" = vcov(p_gee)
+"sandwich" = vcovCL(p_lm, cluster = PetersenCL$firm,
+ cadjust = FALSE, type = "HC0"),
+"plm" = vcovHC(p_plm, type = "HC0", cluster = "group"),
+"geepack" = vcov(p_gee)
 )
 sapply(vc, function(x) sqrt(diag(x)))
 @
 All packages examined produce the same clustered standard errors for \code{lm} model objects. For packages \pkg{plm} and \pkg{geepack}, one has to omit the HC bias correction factor as well as the cluster bias correction. In general, differences in clustered standard errors often coincide with different types of bias corrections.
 
 \subsubsection{Two-way clustered standard errors}
-Two-way clustered standard errors with cluster dimensions \code{firm} as well as \code{year} are, at least for the explanatory variable \code{x}, a bit larger than one-way clustered standard errors clustered by \code{firm}.
+Two-way clustered standard errors with cluster dimensions \code{firm} as well as \code{year} are, at least for the explanatory variable \code{x}, a bit larger than one-way clustered standard errors clustered by \code{firm}. 
+
+It can be observed that \code{vcovCL()} from \pkg{sandwich} and \code{cluster.vcov()} from \pkg{multiwayvcov} deliver equivalent results.
 <<petersen-twocl>>=
-coeftest(p_lm, vcov. = vcovCL(p_lm, 
-cluster = cbind(PetersenCL$firm, PetersenCL$year)))
+cluster <- cbind(PetersenCL$firm, PetersenCL$year)
+vc <- list(
+"sandwich" = vcovCL(p_lm, cluster = cluster),
+"multiwayvcov" = cluster.vcov(p_lm, cluster = cluster)
+)
+sapply(vc, function(x) sqrt(diag(x)))
+@ 
 @ 
 However, as cluster dimension \code{year} has a total of only 10 cluster, the results should be regarded with caution, as it is required by theory that each cluster dimension has many clusters \citep{hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,hac:Cameron+Miller:2015}.
 
-\fixme{still need plm::vcovSCC and pcse::vcovPC}
+\subsubsection{Driscoll and Kraay standard errors}
+For Driscoll and Kraay standard errors, \code{vcovPL()} and \code{vcovSCC} from \pkg{plm} deliver equivalent results, given the same lag length and bias-correction. Here, the maximum lag length is chosen (which is equal to \code{length(PetersenCL$year) - 1}) with a \code{HC1} bias correction.
+<<petersen-comparison3>>=
+vc <- list(
+"sandwich" = vcovPL(p_lm, cluster = PetersenCL$firm,
+ cadjust = TRUE, lag = "max"),
+"plm" = plm::vcovSCC(p_plm, maxlag = 9, inner = "cluster",
+ type = "HC1")
+)
+sapply(vc, function(x) sqrt(diag(x)))
+@
+\subsubsection{Panel-corrected standard errors}
+Panel-corrected standard errors can as well be calculated from \pkg{sandwich} in function \code{vcovPC()}, which gives the same results as \code{vcovPC} from \pkg{pcse}.
+<<petersen-comparison4>>=
+library("pcse")
+vc <- list(
+"sandwich" = sandwich::vcovPC(p_lm, cluster = PetersenCL$firm,
+ order.by = PetersenCL$year),
+"pcse" = pcse::vcovPC(p_lm, groupN = PetersenCL$firm,
+ groupT = PetersenCL$year)
+)
+sapply(vc, function(x) sqrt(diag(x)))
+@
 
- 
 \section{Simulation} \label{sec:simulation}
 
 Next, we run a Monte Carlo simulation to assess the methods' performance in a simulation study.
