@@ -962,7 +962,11 @@ While \code{dgp()} specifies the data generating process and generates a data fr
 %\end{table}
 
 Table~\ref{tab:vcov} shows how the different types of covariances are calculated for a Gaussian response.
-Four models are fitted: A pooled model (\code{m}), a fixed effects model (\code{m_fe}), a random effects model (\code{m_re}) and a GEE with an exchangeable correlation structure (\code{m_gee}). The fixed effects model includes fixed \code{id} effects, the random effects model is specified as a model with random intercepts. Model fittig for random effects models and GEEs requires the packages \pkg{lme4} and \pkg{geepack}, respectively.
+Four models are fitted: A pooled model (\code{m}),
+% a fixed effects model (\code{m_fe}),
+a random effects model (\code{m_re}) and a GEE with an exchangeable correlation structure (\code{m_gee}). 
+%The fixed effects model includes fixed \code{id} effects,
+The random effects model is specified as a model with random intercepts. Model fittig for random effects models and GEEs requires the packages \pkg{lme4} and \pkg{geepack}, respectively.
 It has to be noticed, however, that it is not possible to fit all model types for all mentioned response distributions. There are some limitations for random effects models as well as for GEEs.
 
 Furthermore, to calculate clustered standard errors, the square root of the diagonal elements of the covariance matrices in Table~\ref{tab:vcov} is calculated.
@@ -980,7 +984,7 @@ Furthermore, to calculate clustered standard errors, the square root of the diag
   PC & \code{lm} & \code{m} & \code{vcovPC(m, cluster = id, order.by = round)} \\ \hline
   standard &\code{lm} & \code{m} & \code{vcov(m)} \\ 
   basic & \code{lm} & \code{m} & \code{sandwich(m)} \\ \hline
-  fixed & \code{lm} & \code{m_fe} & \code{vcov(m_fe)[1:3, 1:3]} \\ 
+ % fixed & \code{lm} & \code{m_fe} & \code{vcov(m_fe)[1:3, 1:3]} \\ 
   random & \code{lmer} & \code{m_re} & \code{vcov(m_re)} \\
   gee & \code{geeglm} & \code{m_gee}  & \code{m_gee\$geese\$vbeta} \\ \hline
 \end{tabular}
@@ -1020,9 +1024,11 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s01$vcov) <- c("PC", "PL", "gee", "basic", "CL-0", "random", "standard")
-my.settings[["superpose.line"]]$col <- c("#006400", "green", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
-my.settings[["superpose.symbol"]]$col <- c("#006400", "green", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
+levels(s01$vcov)[c(5,2,1,7,4,6,3)] <- c("CL-0", "PL", "PC", "standard", "basic", "random", "gee")
+s01$vcov <- factor(s01$vcov, levels(s01$vcov)[c(5,2,1,7,4,6,3)])
+my.settings[["superpose.line"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
+my.settings[["superpose.symbol"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
+my.settings[["superpose.symbol"]]$pch <- c(rep(1,3), rep(2,2), rep(3,2))
 xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
   data = s01, subset = par != "(Intercept)",
   ylim = c(0, 1),
@@ -1049,10 +1055,12 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s02$vcov) <- c("PC", "PL", "gee", "basic", "CL-0", "random", "standard")
 levels(s02$dist) <- c("gaussian", "binomial(logit)", "poisson")
-my.settings[["superpose.line"]]$col <- c("#006400", "green", "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
-my.settings[["superpose.symbol"]]$col <- c("#006400", "green" , "#e41a1c", "#f781bf", "#377eb8", "#984ea3", "#ff7f00")
+levels(s02$vcov)[c(5,2,1,7,4,6,3)] <- c("CL-0", "PL", "PC", "standard", "basic", "random", "gee")
+s02$vcov <- factor(s02$vcov, levels(s02$vcov)[c(5,2,1,7,4,6,3)])
+my.settings[["superpose.line"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
+my.settings[["superpose.symbol"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
+my.settings[["superpose.symbol"]]$pch <- c(rep(1,3), rep(2,2), rep(3,2))
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   data = s02, subset = par != "(Intercept)",
   ylim = c(0.5, 1),
@@ -1076,10 +1084,12 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s03$vcov) <- c("basic", "CL-0", "standard")
-levels(s03$dist) <- c("betareg", "zerotrunc", "zeroinfl")
-my.settings[["superpose.line"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
-my.settings[["superpose.symbol"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
+levels(s03$vcov)[c(2,3,1)]  <- c("CL-0", "standard", "basic")
+levels(s03$dist)[c(1,2,3)] <- c("betareg", "zerotrunc", "zeroinfl")
+s03$vcov <- factor(s03$vcov, levels(s03$vcov)[c(2,3,1)])
+my.settings[["superpose.line"]]$col <- c("#377eb8", "#ff7f00", "#f781bf")
+my.settings[["superpose.symbol"]]$col <- c("#377eb8", "#ff7f00", "#f781bf")
+my.settings[["superpose.symbol"]]$pch <- c(1, rep(2,2))
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   data = s03, subset = par != "(Intercept)",
   ylim = c(0.8, 1),
@@ -1106,8 +1116,9 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s04$vcov) <- c("CL-0", "CL-1", "CL-2", "CL-3")
-levels(s04$dist) <- c("gaussian", "binomial(logit)", "poisson")
+levels(s04$vcov)[c(1:4)] <- c("CL-0", "CL-1", "CL-2", "CL-3")
+s04$vcov <- factor(s04$vcov, levels(s04$vcov)[c(1:4)])
+levels(s04$dist)[c(1:3)] <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("#377eb8", "#00E5EE", "#e41a1c", "#4daf4a")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8", "#00E5EE","#e41a1c", "#4daf4a")
 xyplot(coverage ~ nid | dist, groups = ~ factor(vcov),
@@ -1176,10 +1187,13 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s05$vcov) <- c("basic", "CL-0", "standard")
+levels(s05$vcov) <- c("CL-0", "standard", "basic")
+levels(s05$vcov)[c(2,3,1)]  <- c("CL-0", "standard", "basic")
+s05$vcov <- factor(s05$vcov, levels(s05$vcov)[c(2,3,1)])
 levels(s05$dist) <- c("gaussian", "binomial(logit)", "poisson")
-my.settings[["superpose.line"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
-my.settings[["superpose.symbol"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
+my.settings[["superpose.line"]]$col <- c("#377eb8", "#ff7f00", "#f781bf")
+my.settings[["superpose.symbol"]]$col <- c("#377eb8", "#ff7f00", "#f781bf")
+my.settings[["superpose.symbol"]]$pch <- c(1, rep(2,2))
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   data = s05, subset = par != "(Intercept)",
   ylim = c(0, 1),
@@ -1197,7 +1211,7 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s05$vcov) <- c("basic", "CL-0", "standard")
+levels(s05$vcov)[c(1:3)] <- c("basic", "CL-0", "standard")
 levels(s05$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("slategray", "slategray", "slategray")
 my.settings[["superpose.symbol"]]$col <- c("slategray", "slategray", "slategray")
@@ -1227,10 +1241,12 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s02$vcov) <- c("PC", "PL", "gee", "basic", "CL-0", "random", "standard")
 levels(s02$dist) <- c("gaussian", "binomial(logit)", "poisson")
-my.settings[["superpose.line"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
-my.settings[["superpose.symbol"]]$col <- c("#f781bf", "#377eb8", "#ff7f00")
+levels(s02$vcov)[c(5,2,1,7,4,6,3)] <- c("CL-0", "PL", "PC", "standard", "basic", "random", "gee")
+s02$vcov <- factor(s02$vcov, levels(s02$vcov)[c(5,2,1,7,4,6,3)])
+my.settings[["superpose.line"]]$col <- c("#377eb8", "#ff7f00", "#f781bf")
+my.settings[["superpose.symbol"]]$col <- c("#377eb8", "#ff7f00", "#f781bf")
+my.settings[["superpose.symbol"]]$pch <- c(1, rep(2,2))
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   data = s02[which(s02$vcov %in% c("standard", "basic", "CL-0")), ], subset = par != "(Intercept)",
   ylim = c(0, 1),
@@ -1248,8 +1264,9 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s02$vcov) <- c("PC", "PL", "gee", "basic", "Cl-0", "random", "standard")
 levels(s02$dist) <- c("gaussian", "binomial(logit)", "poisson")
+levels(s02$vcov)[c(5,2,1,7,4,6,3)] <- c("CL-0", "PL", "PC", "standard", "basic", "random", "gee")
+s02$vcov <- factor(s02$vcov, levels(s02$vcov)[c(5,2,1,7,4,6,3)])
 my.settings[["superpose.line"]]$col <- c("slategray", "slategray", "slategray")
 my.settings[["superpose.symbol"]]$col <- c("slategray", "slategray", "slategray")
 xyplot(bias ~ rho | dist, groups = ~ factor(vcov),
