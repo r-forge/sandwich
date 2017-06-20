@@ -895,8 +895,9 @@ It can be observed that \code{vcovCL()} from \pkg{sandwich} and \code{cluster.vc
 <<petersen-twocl>>=
 cluster <- cbind(PetersenCL$firm, PetersenCL$year)
 vc <- list(
-"sandwich" = vcovCL(p_lm, cluster = cluster),
-"multiwayvcov" = cluster.vcov(p_lm, cluster = cluster)
+"sandwich" = vcovCL(p_lm, cluster = cluster, cadjust = TRUE, type = "HC1"),
+"multiwayvcov" = cluster.vcov(p_lm, cluster = cluster, use_white = FALSE,
+df_correction = TRUE)
 )
 sapply(vc, function(x) sqrt(diag(x)))
 @ 
