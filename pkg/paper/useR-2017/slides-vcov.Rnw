@@ -56,7 +56,7 @@ panel.xyref <- function(x, y, ...) {
   panel.abline(h = 0.95, col = 2)
   panel.xyplot(x, y, ...)  
 }
-options(prompt = "R> ", continue = "+   ")
+options(prompt = "R> ", continue = "+   ", digits = 1)
 @ 
 
 % simulations
@@ -109,26 +109,38 @@ save(s04, file = "sim-04.rda")
 }
 @
 
-\title{Various versatile variances: An~object-oriented implementation of clustered covariances in R}
+\title{Various Versatile Variances}
+\subtitle{An Object-Oriented Implementation of Clustered Covariances in R}
 \author{Susanne Berger, Nathaniel Graham, Achim Zeileis}
-\URL{}
+\URL{https://R-Forge.R-project.org/projects/sandwich/}
 
 \begin{document}
 \section{Motivation}
 
 \begin{frame}
   \frametitle{Motivation}  
-  \textbf{Goals} \par\medskip
-  (1) Object-oriented implementation of clustered covariances in R \par
-  (2) Monte Carlo simulation study to assess the performance of clustered standard errors beyond \code{lm()} and \code{glm()}.\par\medskip
-  \textbf{Idea} \par\medskip
-  Strategies for clustered dependencies: Random effects, GEEs, QML \par
-  QML assumes a correctly specified score function but a potentially misspecified remaining likelihood \par
-  Special cases of QML with sandwich covariances:
+
+  \textbf{Goals:}
   \begin{itemize}
-    \item \textbf{Cross-section data}: Heteroscedasticity consistent (\textbf{HC}) covariances
-    \item \textbf{Time series data}: Heteroskedasticity and autocorrelation consistent (\textbf{HAC}) covariances
-    \item \textbf{Clustered/Panel data}: Clustered sandwich covariances for clustered or panel data
+  \item Object-oriented implementation of clustered covariances in R.
+  \item Monte Carlo simulation study to assess the performance of clustered standard errors beyond \code{lm()} and \code{glm()}.
+  \end{itemize}
+  
+  \medskip
+  
+  \textbf{Strategies:}
+  \begin{itemize}
+  \item Account for clustered dependencies: Random effects, GEEs.
+  \item Quasi-ML: Assumes a correctly specified score function but a potentially misspecified remaining likelihood.
+  \end{itemize}
+  
+  \medskip
+  
+  \textbf{Special cases:} QML with sandwich covariances.
+  \begin{itemize}
+    \item \emph{Cross-section data}: Heteroscedasticity consistent ({HC}).
+    \item \emph{Time series data}: Heteroskedasticity and autocorrelation consistent ({HAC}).
+    \item \emph{Clustered/Panel data}: Panel Newey-West, Beck \& Katz, \dots
   \end{itemize}
 \end{frame}
 
@@ -176,15 +188,27 @@ save(s04, file = "sim-04.rda")
   For the full sandwich covariance a \texttt{vcov*()} function couples the \texttt{meat*()} with the \texttt{bread()} estimate.
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{R implementation}  
-  \textbf{One-, two-, and multi-way clustered covariances for clustered data:} \par\bigskip
-  \texttt{vcovCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \ldots)} \par\medskip
-  \texttt{cluster}: Supply one or more cluster variables, and resort to cross-section if no cluster is supplied \par\medskip
-  \texttt{type}: Specifies the type of bias correction: HC0--HC3 \par\medskip
-  \texttt{cadjust}: Switch cluster adjustment $\frac{G}{G-1}$ on and off \par\medskip
-  \texttt{multi0}: Should the HC0 estimate be used for the final adjustment in multi-way clustered covariances? \par\medskip
-  Idea: Sum up \code{estfun} within each cluster prior to computing the \code{meat} \par + HC bias correction
+  \textbf{Clustered data:} One-, two-, and multi-way clustering.
+  
+  \bigskip
+  
+  \textbf{Idea:} Aggregate \code{estfun} within each cluster prior to computing an HC-type \code{meat}.
+
+  \bigskip
+  
+  \textbf{New R function:}
+\begin{verbatim}
+  vcovCL(x, cluster = NULL,
+    type = NULL, cadjust = TRUE, multi0 = FALSE, ...)
+\end{verbatim}
+  \begin{itemize}
+    \item \texttt{cluster}: One or more cluster variables (cross-section if none).
+    \item \texttt{type}: Type of bias correction: HC0--HC3.
+    \item \texttt{cadjust}: Switch cluster adjustment $\frac{G}{G-1}$ on and off.
+    \item \texttt{multi0}: Should the HC0 estimate be used for the final adjustment in multi-way clustered covariances?
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -246,25 +270,38 @@ sapply(vc, function(x) sqrt(diag(x)))
 
 \begin{frame}
   \frametitle{Simulation}  
-  \textbf{Response distribution and linear predictor} \par
-$y_{ig} \sim F(\mu_{ig})$ \par
-Normal/Gaussian, binomial (logit link), Poisson, zero-truncated Poisson, beta, zero-inflated Poisson (ZIP) \par\medskip
-$h(\mu_{ig}) = \beta_{0} + \beta_{1} \cdot x_{1,ig}$ \par
-$x_{1,ig}$ exhibits within cluster correlation $\rho_x = 0.25$ \par
-Data (with cluster correlation $\rho$) are generated using a colpula. \par\medskip
-\textbf{Replications}: 10,000 | \textbf{Coefficients}: $\vbeta = (0, 0.85, 0, 0)^\top$ \par
-\textbf{Number of clusters}: $G = 100$ | \textbf{Observations/cluster}: $N_{g} = \frac{n}{G} = 5$ \par\medskip
-%\textbf{Total observations}: $n = 5 \cdot G$ \par\bigskip
-\textbf{Coverage}: Proportion of $95\%$ confidence intervals that include $\beta_{1}$ \par\medskip
-    $<0.95$ indicates downward bias (toward Type I errors) \par
-    $>0.95$ indicates a conservative (Type II error) bias \par\medskip
+  \textbf{Response:} $y_{ig} \sim F(\mu_{ig})$. $F =$ Normal/Gaussian, binomial (logit), Poisson, zero-truncated Poisson, beta, zero-inflated Poisson (ZIP).
+  
+  \bigskip
+  
+  \textbf{Regression:} $h(\mu_{ig}) = 0 + 0.85 \cdot x_{ig}$.
+
+  \bigskip
+
+  \textbf{Correlations:}
+  \begin{itemize}
+    \item Cluster correlation $\rho$ for response $y_{ig}$ (via Gaussian copula).
+    \item Regressor $x_{ig}$ has within cluster correlation $0.25$
+  \end{itemize}
+
+  \bigskip
+
+  \textbf{Setup:} 10,000 replications, 500 observations (5 obs.\ per 100 clusters).
+
+  \bigskip
+
+  \textbf{Outcome:} Empirical coverage of $95\%$ confidence intervals for slope.
+  %% \begin{itemize}
+  %%   \item $<0.95$ indicates downward bias (toward Type I errors).
+  %%   \item $>0.95$ indicates a conservative (Type II error) bias.
+  %% \end{itemize}
 \end{frame}
 
 \begin{frame}[containsverbatim] 
 \frametitle{Simulation}
-\textbf{Experiment I}
-\setkeys{Gin}{width=\textwidth}
-\begin{figure}
+
+\hspace*{-0.5cm}%
+\setkeys{Gin}{width=1.1\textwidth}%
 <<sim-02-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
@@ -284,15 +321,14 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
 @  
-\end{figure}
-Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, binomial, Poisson.
+
 \end{frame}
 
 \begin{frame}[containsverbatim] 
 \frametitle{Simulation}
-\textbf{Experiment II}
-\setkeys{Gin}{width=\textwidth}
-\begin{figure}
+
+\hspace*{-0.5cm}%
+\setkeys{Gin}{width=1.1\textwidth}%
 <<sim-03-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 s03 <- na.omit(s03)
 my.settings <- canonical.theme(color = TRUE)
@@ -314,14 +350,18 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   panel = panel.xyref)
 @ 
 @ 
-\end{figure}
-Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = $beta, z.-truc. Poisson, ZIP.
+
 \end{frame}
 
 \begin{frame}[allowframebreaks]
   \frametitle{References}
 {\small
   \textbf{On R-Forge:} \url{https://R-Forge.R-project.org/projects/sandwich/}
+
+  \bigskip
+  
+  \textbf{New manuscript:} \texttt{vignette("sandwich-CL", package = "sandwich")}
+
 }
 
 \bigskip
@@ -355,11 +395,11 @@ Cameron AC,  Miller DL (2015).
   \emph{Journal of Human Resources}, $\bold{50}(2)$,
   317--372.
 
-\medskip  
-
-McCaffrey DF, Bell RM (2002).
-  Bias Reduction in Standard Errors for Linear Regression with Multi-Stage Samples,
-  \emph{Survey Methodology}, $\bold{28}(2)$, 169--181.
+%% \medskip  
+%% 
+%% McCaffrey DF, Bell RM (2002).
+%%   Bias Reduction in Standard Errors for Linear Regression with Multi-Stage Samples,
+%%   \emph{Survey Methodology}, $\bold{28}(2)$, 169--181.
 
 \medskip
 
