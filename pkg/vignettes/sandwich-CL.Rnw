@@ -772,7 +772,9 @@ is considered in Section~\ref{ex-petersen}. This focuses on the classical linear
 regression case with model errors that are correlated within clusters. It is shown
 how the results from various other \proglang{R} packages (\pkg{multiwayvcov},
 \pkg{plm}, \pkg{geepack}, \pkg{pcse}) can be replicated using the new \pkg{sandwich}
-package. One- and two-way clustered standard errors from \code{vcovCL()} from \pkg{sandwich} are compared to those obtained from \code{cluster.vcov()} from \pkg{multiwayvcov}. Furthermore, one-way clustered standard errors can also be obtained from \pkg{plm} and \pkg{geepack}, and are additionally benchmarked against the results from \pkg{sandwich}. Function \code{vcovSCC()} from \pkg{plm} gives Driscoll and Kraay type standard errors, its results are compared to the outcome of \code{vcovPL()} from \pkg{sandwich}. Also, panel-corrected standard errors can be estimated by function \code{vcovPC()} from \pkg{pcse} and are benchmarked against \code{vcovPC()} from \pkg{sandwich}.
+package. One- and two-way clustered standard errors from \code{vcovCL()} from \pkg{sandwich} are compared to those obtained using \code{cluster.vcov()} from \pkg{multiwayvcov} package. Furthermore, one-way clustered standard errors can also be obtained from packages \pkg{plm} and \pkg{geepack}, and are additionally benchmarked against the results from \pkg{sandwich}. 
+Function \code{vcovSCC()} from \pkg{plm} gives Driscoll and Kraay type standard errors, the estimates are compared to \code{vcovPL()} from \pkg{sandwich}. 
+Also, panel-corrected standard errors can be estimated by function \code{vcovPC()} from \pkg{pcse} and are benchmarked against \code{vcovPC()} from \pkg{sandwich}.
  
 \subsection[Aghion et al. (2013) and Berger et al. (2017)]{\cite{hac:Aghion+VanReenen+Zingales:2013} and \cite{hac:Berger+Stocker+Zeileis:2017}} \label{ex-aghion}
 In this section, in a further example we will make use of the object-orientation of \code{vcovCL()}, and estimate clustered standard errors for a count data hurdle model.
@@ -784,7 +786,6 @@ This motivates the use of count data models.
 
 \cite{hac:Aghion+VanReenen+Zingales:2013} mostly employ Poisson and negative binomial models in a quasi-maximum likelihood approach and cluster standard errors by either companies or industries.
 Still, one limitation of standard count data models is that the zeros and the nonzeros (positives) are assumed to come from the same data-generating process.
-
 From an economic perspective, there is a difference in determinants of ``first innovation'' and ``continuing innovation''. The rationale behind this is the notion of nonlinearities in the innovation process.
 In case that the first innovation is especially hard to obtain in comparison to succeeding innovations, hurdle models offer a useful way that allows for a distinction to be made between these two processes \citep{hac:Berger+Stocker+Zeileis:2017}.
 Therefore, \cite{hac:Berger+Stocker+Zeileis:2017} employ two-part hurdle models with a binary part that models the decision to innovate at all, and a count part that models ongoing innovation, respectively.
@@ -909,7 +910,7 @@ For Driscoll and Kraay standard errors, \code{vcovPL()} and \code{vcovSCC} from 
 <<petersen-comparison3>>=
 vc <- list(
 "sandwich" = vcovPL(p_lm, cluster = PetersenCL$firm,
- cadjust = TRUE, lag = "max"),
+ adjust = TRUE, lag = "max"),
 "plm" = plm::vcovSCC(p_plm, maxlag = 9, inner = "cluster",
  type = "HC1")
 )
