@@ -16,7 +16,7 @@ vcovPL <- function(x, cluster = NULL, order.by = NULL,
 }
 
 meatPL <- function(x, cluster = NULL, order.by = NULL,
-  kernel = "Bartlett", lag = "max", bw = NULL, adjust = TRUE, ...) ## adjust/cadjust?
+  kernel = "Bartlett", lag = "NW1987", bw = NULL, adjust = TRUE, ...) ## adjust/cadjust?
 {
   ## extract estimating functions / aka scores
   if (is.list(x) && !is.null(x$na.action)) class(x$na.action) <- "omit"
