@@ -15,7 +15,7 @@ vcovPL(x, cluster = NULL, order.by = NULL,
   kernel = "Bartlett", sandwich = TRUE, fix = FALSE, \dots)
 
 meatPL(x, cluster = NULL, order.by = NULL,
-  kernel = "Bartlett", lag = "max", bw = NULL,
+  kernel = "Bartlett", lag = "NW1987", bw = NULL,
   adjust = TRUE, \dots)
 }
 
