@@ -1,0 +1,436 @@
+\documentclass[11pt,compress,t]{beamer}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsmath,amssymb,bm}
+\usepackage{color,graphicx}
+%% need no \usepackage{Sweave}
+
+\definecolor{dunkelgrau}{rgb}{0.8,0.8,0.8}
+\definecolor{hellgrau}{rgb}{0.95,0.95,0.95}
+\newcommand{\newoperator}[3]{\newcommand*{#1}{\mathop{#2}#3}}
+\newcommand{\renewoperator}[3]{\renewcommand*{#1}{\mathop{#2}#3}}
+
+\newcommand{\va}{\bm a}
+\newcommand{\ve}{\bm e}
+\newcommand{\vr}{\bm r}
+\newcommand{\vs}{\bm s}
+\newcommand{\vu}{\bm u}
+\newcommand{\vx}{\bm x}
+\newcommand{\vy}{\bm y}
+
+\newcommand{\vB}{\bm B}
+\newcommand{\vE}{\bm E}
+\newcommand{\vH}{\bm H}
+\newcommand{\vI}{\bm I}
+\newcommand{\vS}{\bm S}
+\newcommand{\vV}{\bm V}
+\newcommand{\vX}{\bm X}
+
+\newcommand{\vbeta}{\bm \beta}
+\newcommand{\vdelta}{\bm \delta}
+\newcommand{\vomega}{\bm \omega}
+\newcommand{\vtheta}{\bm \theta}
+
+\newcommand{\vOmega}{\bm \Omega}
+\newcommand{\vSigma}{\bm \Sigma}
+\newcommand{\vPsi}{\bm \Psi}
+
+%\newcommand{\E}{\text{E}}
+%\newcommand{\Var}{\text{Var}}
+%\newcommand{\Cov}{\text{Cov}}
+\newcommand{\diag}{\text{diag}}
+\newcommand{\rom}[1]{%
+  \textup{\uppercase\expandafter{\romannumeral#1}}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usetheme{Z}
+
+<<preliminaries,echo=FALSE,results=hide>>=
+library("sandwich")
+library("pscl")
+library("lattice")
+library("countreg")
+library("lme4")
+source("../../vignettes/sim-CL.R")
+panel.xyref <- function(x, y, ...) {
+  panel.abline(h = 0.95, col = 2)
+  panel.xyplot(x, y, ...)  
+}
+options(prompt = "R> ", continue = "+   ")
+@ 
+
+% simulations
+
+<<sim-01,echo=FALSE,results=hide>>=
+if(file.exists("../../vignettes/sim-01.rda")) load("../../vignettes/sim-01.rda") else {
+set.seed(1)
+s01 <- sim(nrep = 10000, nid = 100, nround = 5,
+           dist = "gaussian", rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
+           coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
+           vcov = c("without", "HC0", "HC0-id", "random", "gee", "bk", "dk"),
+           type = "copula")
+save(s01, file = "sim-01.rda")
+}
+@
+
+<<sim-02,echo=FALSE,results=hide>>=
+if(file.exists("../../vignettes/sim-02.rda")) load("../../vignettes/sim-02.rda") else {
+set.seed(2)
+s02 <- sim(nrep = 10000, nid = 100, nround = 5,
+           dist = c("gaussian", "logit", "poisson"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
+           coef = c(0, 0.85, 0, 0), formula = response ~ x1,
+           vcov = c("without", "HC0", "HC0-id", "random", "gee", "bk", "dk"),
+           type = "copula")
+save(s02, file = "sim-02.rda")
+}
+@
+
+<<sim-03,echo=FALSE,results=hide>>=
+if(file.exists("../../vignettes/sim-03.rda")) load("../../vignettes/sim-03.rda") else {
+set.seed(3)
+s03 <- sim(nrep = 10000, nid = 100, nround = 5,
+           dist = c("zerotrunc", "zip", "beta"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
+           coef = c(0, 0.85, 0, 0), formula = response ~ x1,
+           vcov = c("without", "HC0", "HC0-id"),
+           type = "copula")
+save(s03, file = "sim-03.rda")
+}
+@
+
+<<sim-04,echo=FALSE,results=hide>>=
+if(file.exists("../../vignettes/sim-04.rda")) load("../../vignettes/sim-04.rda") else {
+set.seed(4)
+s04 <- sim(nrep = 10000, nid = c(10, seq(50, 250, by = 50)), nround = 5,
+           dist = c("gaussian","poisson", "logit"), rho = 0.25, xrho = 0.25,
+           coef = c(0, 0.85, 0, 0), formula = response ~ x1,
+           vcov = c("HC0-id","HC1-id","HC2-id","HC3-id"),
+           type = "copula")
+save(s04, file = "sim-04.rda")
+}
+@
+
+\title{Various versatile variances: An~object-oriented implementation of clustered covariances in R}
+\author{Susanne Berger, Nathaniel Graham, Achim Zeileis}
+\URL{}
+
+\begin{document}
+\section{Motivation}
+
+\begin{frame}
+  \frametitle{Motivation}  
+  \textbf{Goals} \par\medskip
+  (1) Object-oriented implementation of clustered covariances in R \par
+  (2) Monte Carlo simulation study to assess the performance of clustered standard errors beyond \code{lm()} and \code{glm()}.\par\medskip
+  \textbf{Idea} \par\medskip
+  Strategies for clustered dependencies: Random effects, GEEs, QML \par
+  QML assumes a correctly specified score function but a potentially misspecified remaining likelihood \par
+  Special cases of QML with sandwich covariances:
+  \begin{itemize}
+    \item \textbf{Cross-section data}: Heteroscedasticity consistent (\textbf{HC}) covariances
+    \item \textbf{Time series data}: Heteroskedasticity and autocorrelation consistent (\textbf{HAC}) covariances
+    \item \textbf{Clustered/Panel data}: Clustered sandwich covariances for clustered or panel data
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Motivation}  
+  \begin{itemize}
+    \item Object-oriented implementation: \texttt{betareg}, \texttt{clm}, \texttt{crch},
+\texttt{hurdle}, \texttt{lm}, \texttt{mlm}, \texttt{mlogit}, \texttt{nls}, \texttt{polr}, \texttt{survreg}, \texttt{zeroinfl} \ldots
+\item \texttt{sandwich} (Zeileis, 2004, 2006)
+    \item Cross-section: \texttt{vcovHC(x, \ldots)} (default: HC3)\\
+      and \texttt{sandwich(x, \ldots)} (default: HC0)
+    \item Time series: \texttt{vcovHAC(x, \ldots)}\\
+      Convenience functions \texttt{kernHAC(x, \ldots)} (Andrews' kernel HAC),
+     \texttt{NeweyWest(x, \ldots)} (Newey-West-style HAC)
+  \end{itemize} 
+   \bigskip
+    Problem: No clustered/panel covariance \emph{up to now\dots}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Motivation}  
+  \textbf{R packages for clustered sandwich covariances} \par\medskip
+  \begin{itemize}
+    \item \texttt{multiwayvcov} for \texttt{lm}/\texttt{glm}(-like) objects
+    \item \texttt{plm} for \texttt{plm} objects
+    \item \texttt{geepack} for \texttt{geeglm} objects
+    \item \texttt{lfe} for \texttt{felm} objects
+    \item among others (\texttt{clusterSEs}, \texttt{clubSandwich}, \dots)
+  \end{itemize}
+\bigskip
+  Problem: No object-oriented implementation for clustered data  \emph{up to now\dots}
+\end{frame}
+
+\begin{frame}
+  \frametitle{R implementation}  
+  \textbf{Building blocks provided by R package sandwich} \par\medskip
+  \texttt{sandwich(x, \ldots)} calculates an estimator of the sandwich $S(\theta) = B(\theta) \cdot M(\theta) \cdot B(\theta)$ \par\medskip  
+  \texttt{bread(x, \ldots)} returns the bread $B(\theta)$, typically an empirical version of the inverse Hessian \par\medskip
+  \texttt{estfun(x, \ldots)} extracts empirical estimating functions from a fitted model object \texttt{x}
+  (typically $\partial \ell/\partial \theta$).\par\medskip  
+  \texttt{meat(x, \ldots)}, \texttt{meatHC(x, \ldots)}, \texttt{meatHAC(x, \ldots)} return different ``flavors''
+  of meat $M(\theta)$ -- relying on the model just through \texttt{estfun(x)}.\par
+  \bigskip
+  \textbf{Needed:} A new \texttt{meat*()} function that only extracts the \texttt{estfun()}. \par
+  For the full sandwich covariance a \texttt{vcov*()} function couples the \texttt{meat*()} with the \texttt{bread()} estimate.
+\end{frame}
+
+\begin{frame}
+  \frametitle{R implementation}  
+  \textbf{One-, two-, and multi-way clustered covariances for clustered data:} \par\bigskip
+  \texttt{vcovCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \ldots)} \par\medskip
+  \texttt{cluster}: Supply one or more cluster variables, and resort to cross-section if no cluster is supplied \par\medskip
+  \texttt{type}: Specifies the type of bias correction: HC0--HC3 \par\medskip
+  \texttt{cadjust}: Switch cluster adjustment $\frac{G}{G-1}$ on and off \par\medskip
+  \texttt{multi0}: Should the HC0 estimate be used for the final adjustment in multi-way clustered covariances? \par\medskip
+  Idea: Sum up \code{estfun} within each cluster prior to computing the \code{meat} \par + HC bias correction
+\end{frame}
+
+\begin{frame}
+  \frametitle{R implementation}  
+  \textbf{Driscoll and Kraay and Panel Newey-West covariances:} \par\bigskip
+  \texttt{vcovPL(x, cluster = NULL, order.by = NULL, kernel = "Bartlett", lag = "NW1987", \ldots)} \par\medskip
+  Idea: Sum up \code{estfun} across clusters within each time period prior to computing the \code{meat} + HAC bias correction \par\medskip
+  \textbf{Panel-corrected standard errors (Beck and Katz, 1995):} \par\medskip
+  \texttt{vcovPC(x, cluster = NULL, order.by = NULL, subsample = FALSE, sandwich = TRUE, fix = FALSE, \ldots)} \par\medskip
+  \medskip
+  Idea: Employ the outer product of (working) residuals (\code{estfun/model.matrix}) within each cluster, and expand each component with an identity matrix of size \code{length(order.by)}
+\end{frame}
+
+\begin{frame}[containsverbatim]
+  \frametitle{Innovation data}
+  \textbf{Motivation} \par
+ Applicability of clustered covariances to models beyond \texttt{lm()} or \texttt{glm()}. \par\medskip
+  \textbf{Data} \par
+  Aghion et al. (2013) investigate the effect of institutional ownership (proportion of stock owned by institutions) on innovation (cite-weighted patent counts) \par\medskip
+  \textbf{Original analysis by Aghion et al. (2013)} \par
+  Quasi-Poisson with clustered standard errors \par\medskip
+  \textbf{Reanalysis by Berger et al. (2017)}\par
+  Clustered covariances were provided for negative binomial hurdle models \par
+  \nocite{vcov:Berger+Stocker+Zeileis:2016}
+  \nocite{vcov:Aghion+VanReenen+ZIngales:2013}
+\end{frame}
+
+\begin{frame}[containsverbatim]
+  \frametitle{Innovation data}
+  Data and model fit \par
+<<example-innovation-01,echo=TRUE>>= 
+data(InstInnovation, package = "sandwich")
+library("countreg")
+m <- hurdle(
+  cites ~ institutions + log(capital/employment) + log(sales),
+  data = InstInnovation,
+  dist = "negbin", zero.dist = "negbin", separate = FALSE)
+@
+
+Customizing covariances: ``standard'', basic sandwich- and clustered covariances \par
+<<example-innovation-02,echo=TRUE>>= 
+library("sandwich")
+vc <- list(
+  "standard" = vcov(m),
+  "basic" = sandwich(m),
+  "CL-1" = vcovCL(m, cluster = InstInnovation$company)
+)
+@
+\end{frame}
+
+\begin{frame}[containsverbatim] 
+\frametitle{Innovation data}
+<<example-innovation-03,echo=TRUE>>= 
+sapply(vc, function(x) sqrt(diag(x)))
+@
+ When data are grouped into clusters, ``standard'' standard errors can greatly overstate estimator precision \par\medskip
+ Clustered standard errors are scaled up by factors between $1.47$ and $1.86$ compared to basic sandwich standard errors
+\end{frame}
+
+\begin{frame}
+  \frametitle{Simulation}  
+  \textbf{Response distribution and linear predictor} \par
+$y_{ig} \sim F(\mu_{ig})$ \par
+Normal/Gaussian, binomial (logit link), Poisson, zero-truncated Poisson, beta, zero-inflated Poisson (ZIP) \par\medskip
+$h(\mu_{ig}) = \beta_{0} + \beta_{1} \cdot x_{1,ig}$ \par
+$x_{1,ig}$ exhibits within cluster correlation $\rho_x = 0.25$ \par
+Data (with cluster correlation $\rho$) are generated using a colpula. \par\medskip
+\textbf{Replications}: 10,000 | \textbf{Coefficients}: $\vbeta = (0, 0.85, 0, 0)^\top$ \par
+\textbf{Number of clusters}: $G = 100$ | \textbf{Observations/cluster}: $N_{g} = \frac{n}{G} = 5$ \par\medskip
+%\textbf{Total observations}: $n = 5 \cdot G$ \par\bigskip
+\textbf{Coverage}: Proportion of $95\%$ confidence intervals that include $\beta_{1}$ \par\medskip
+    $<0.95$ indicates downward bias (toward Type I errors) \par
+    $>0.95$ indicates a conservative (Type II error) bias \par\medskip
+\end{frame}
+
+\begin{frame}[containsverbatim] 
+\frametitle{Simulation}
+\textbf{Experiment I}
+\setkeys{Gin}{width=\textwidth}
+\begin{figure}
+<<sim-02-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
+my.settings <- canonical.theme(color = TRUE)
+my.settings[["strip.background"]]$col <- "gray"
+my.settings[["strip.border"]]$col <- "black"
+my.settings[["superpose.line"]]$lwd <- 1
+levels(s02$dist) <- c("gaussian", "binomial(logit)", "poisson")
+levels(s02$vcov)[c(5,2,1,7,4,6,3)] <- c("CL-0", "PL", "PC", "standard", "basic", "random", "gee")
+s02$vcov <- factor(s02$vcov, levels(s02$vcov)[c(5,2,1,7,4,6,3)])
+my.settings[["superpose.line"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
+my.settings[["superpose.symbol"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
+my.settings[["superpose.symbol"]]$pch <- c(rep(1,3), rep(2,2), rep(3,2))
+xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
+  data = s02, subset = par != "(Intercept)",
+  ylim = c(0.5, 1),
+  type = "b", xlab = expression(rho), ylab = "coverage",
+  auto.key = list(columns = 3),
+  par.strip.text = list(col = "black"), par.settings = my.settings,
+  panel = panel.xyref)
+@  
+\end{figure}
+Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$, binomial, Poisson.
+\end{frame}
+
+\begin{frame}[containsverbatim] 
+\frametitle{Simulation}
+\textbf{Experiment II}
+\setkeys{Gin}{width=\textwidth}
+\begin{figure}
+<<sim-03-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
+s03 <- na.omit(s03)
+my.settings <- canonical.theme(color = TRUE)
+my.settings[["strip.background"]]$col <- "gray"
+my.settings[["strip.border"]]$col <- "black"
+my.settings[["superpose.line"]]$lwd <- 1
+levels(s03$vcov)[c(2,3,1)]  <- c("CL-0", "standard", "basic")
+levels(s03$dist)[c(1,2,3)] <- c("betareg", "zerotrunc", "zeroinfl")
+s03$vcov <- factor(s03$vcov, levels(s03$vcov)[c(2,3,1)])
+my.settings[["superpose.line"]]$col <- c("#377eb8", "#ff7f00", "#f781bf")
+my.settings[["superpose.symbol"]]$col <- c("#377eb8", "#ff7f00", "#f781bf")
+my.settings[["superpose.symbol"]]$pch <- c(1, rep(2,2))
+xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
+  data = s03, subset = par != "(Intercept)",
+  ylim = c(0.8, 1),
+  type = "b", xlab = expression(rho), ylab = "coverage",
+  auto.key = list(columns = 2),
+  par.strip.text = list(col = "black"), par.settings = my.settings,
+  panel = panel.xyref)
+@ 
+@ 
+\end{figure}
+Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = $beta, z.-truc. Poisson, ZIP.
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+  \frametitle{References}
+{\small
+  \textbf{On R-Forge:} \url{https://R-Forge.R-project.org/projects/sandwich/}
+}
+
+\bigskip
+
+{\scriptsize
+ Aghion P, Van Reenen J, Zingales L (2013).
+  Innovation and Institutional Ownership.
+  \emph{The American Economic Review}, $\bold{103}(1)$, 277--304.
+  \doi{10.1257/aer.103.1.277}
+
+\medskip
+
+Berger S, Stocker H, Zeileis A (2017).
+  Innovation and Institutional Ownership Revisited: An Empirical Investigation with Count Data Models.
+  \emph{Empirical Economics}, $\bold{52}(4)$,
+  1675--1688
+  \doi{10.1007/s00181-016-1118-0}
+
+\medskip
+
+Cameron AC, Gelbach JB, Miller DL (2011).
+  Robust Inference With Multiway Clustering,
+  \emph{Journal of Business \& Ecomomic Statistics}, $\bold{29}(2)$,
+  238--249.
+  \doi{10.1198/jbes.2010.07136}  
+
+\medskip
+
+Cameron AC,  Miller DL (2015).
+  A Practitioner's Guide to Cluster-Robust Inference,
+  \emph{Journal of Human Resources}, $\bold{50}(2)$,
+  317--372.
+
+\medskip  
+
+McCaffrey DF, Bell RM (2002).
+  Bias Reduction in Standard Errors for Linear Regression with Multi-Stage Samples,
+  \emph{Survey Methodology}, $\bold{28}(2)$, 169--181.
+
+\medskip
+
+Zeileis A (2004).
+  Econometric Computing with HC and HAC Covariance Matrix Estimator,
+  \emph{Journal of Statistical Software}, $\bold{11}(10)$, 1--17.
+  \doi{10.18637/jss.v011.i10}
+  \par\medskip
+
+Zeileis A (2006).
+  Object-Oriented Computation of Sandwich Estimators,
+  \emph{Journal of Statistical Software}, $\bold{16}(9)$, 1--16.
+  \doi{10.18637/jss.v016.i09}
+ 
+}
+\end{frame}
+
+\begin{frame}[containsverbatim] 
+\frametitle{Simulation}  
+\textbf{Experiment III}
+\setkeys{Gin}{width=\textwidth}
+\begin{figure}
+<<sim-01-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
+my.settings <- canonical.theme(color = TRUE)
+my.settings[["strip.background"]]$col <- "gray"
+my.settings[["strip.border"]]$col <- "black"
+my.settings[["superpose.line"]]$lwd <- 1
+levels(s01$vcov)[c(5,2,1,7,4,6,3)] <- c("CL-0", "PL", "PC", "standard", "basic", "random", "gee")
+s01$vcov <- factor(s01$vcov, levels(s01$vcov)[c(5,2,1,7,4,6,3)])
+my.settings[["superpose.line"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
+my.settings[["superpose.symbol"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
+my.settings[["superpose.symbol"]]$pch <- c(rep(1,3), rep(2,2), rep(3,2))
+xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
+  data = s01, subset = par != "(Intercept)",
+  ylim = c(0, 1),
+  type = "b", xlab = expression(rho), ylab = "coverage",
+  auto.key = list(columns = 3),
+  par.strip.text = list(col = "black"), par.settings = my.settings,
+  panel = panel.xyref)
+@ 
+\end{figure}
+Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$.
+\end{frame}
+
+\begin{frame}[containsverbatim] 
+\frametitle{Simulation}
+\textbf{Experiment IV}
+\setkeys{Gin}{width=\textwidth}
+\begin{figure}
+<<sim-04-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
+my.settings <- canonical.theme(color = TRUE)
+my.settings[["strip.background"]]$col <- "gray"
+my.settings[["strip.border"]]$col <- "black"
+my.settings[["superpose.line"]]$lwd <- 1
+levels(s04$vcov)[c(1:4)] <- c("CL-0", "CL-1", "CL-2", "CL-3")
+s04$vcov <- factor(s04$vcov, levels(s04$vcov)[c(1:4)])
+levels(s04$dist)[c(1:3)] <- c("gaussian", "binomial(logit)", "poisson")
+my.settings[["superpose.line"]]$col <- c("#377eb8", "#00E5EE", "#e41a1c", "#4daf4a")
+my.settings[["superpose.symbol"]]$col <- c("#377eb8", "#00E5EE","#e41a1c", "#4daf4a")
+xyplot(coverage ~ nid | dist, groups = ~ factor(vcov),
+  data = na.omit(s04), subset = par != "(Intercept)",
+  type = "b", xlab = "G", ylab = "coverage",
+  auto.key = list(columns = 2),
+  par.strip.text = list(col = "black"), par.settings = my.settings,
+  panel = panel.xyref)
+@
+\end{figure}
+Fixed: $N_{g} = 5$, $\rho_{x} = 0.25$, $\rho = 0.25$, $F = \mathcal{N}$, binomial, Poisson.
+\end{frame}
+
+
+
+\end{document}
+
