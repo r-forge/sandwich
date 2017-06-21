@@ -31,8 +31,7 @@ meatPL(x, cluster = NULL, order.by = NULL,
   \item{lag}{character or numeric, indicating the lag length used.
     Three rules of thumb (\code{"max"} or equivalently \code{"P2009"},
     \code{"NW1987"}, or \code{"NW1994"}) can be specified, or a numeric
-    number of lags can be specified directly. By default, the maximal lag
-    length \eqn{T - 1} is used.}
+    number of lags can be specified directly. By default, \code{"NW1987"} is used.}
   \item{bw}{numeric. The bandwidth of the kernel which by default corresponds
     to \code{lag + 1}. Only one of \code{lag} and \code{bw} should be
     used.}
@@ -64,12 +63,12 @@ meatPL(x, cluster = NULL, order.by = NULL,
   covariance matrix estimators. \code{vcovPL} is a wrapper calling
   \code{\link{sandwich}} and \code{\link{bread}} (Zeileis 2006).
 
-  Default lag length is the maximal lag length \eqn{T - 1}. For
-  \code{lag = "NW1994"},
+  Default lag length is the \code{"NW1987"}. 
+  For \code{lag = "NW1987"}, the lag length is chosen from the heuristic
+  \eqn{floor[T^{(1/4)}]}. More details on lag length selection in Hoechle (2007). 
+  For \code{lag = "NW1994"},
   the lag length is taken from the first step of Newey and West's
   (1994) plug-in procedure.
-  For \code{lag = "NW1987"}, the lag length is chosen from the heuristic
-  \eqn{floor[T^{(1/4)}]}. More details on lag length selection in Hoechle (2007).
   
 }
 
@@ -126,7 +125,7 @@ m <- lm(y ~ x, data = PetersenCL)
 ## Driscoll and Kraay standard errors
 ## lag length set to: T - 1 (maximum lag length)
 ## as proposed by Petersen (2009)
-sqrt(diag(vcovPL(m, cluster = PetersenCL$firm, adjust = FALSE)))
+sqrt(diag(vcovPL(m, cluster = PetersenCL$firm, lag = "max", adjust = FALSE)))
 
 ## lag length set to: floor(4 * (T / 100)^(2/9))
 ## rule of thumb proposed by Hoechle (2007) based on Newey & West (1994)
