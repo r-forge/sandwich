@@ -146,39 +146,40 @@ save(s04, file = "sim-04.rda")
 
 \begin{frame}
   \frametitle{Motivation}  
+  \textbf{R package for sandwich covariances} \par\medskip
   \begin{itemize}
     \item Object-oriented implementation: \texttt{betareg}, \texttt{clm}, \texttt{crch},
 \texttt{hurdle}, \texttt{lm}, \texttt{mlm}, \texttt{mlogit}, \texttt{nls}, \texttt{polr}, \texttt{survreg}, \texttt{zeroinfl} \ldots
-\item \texttt{sandwich} (Zeileis, 2004, 2006)
+\item \texttt{sandwich} (Zeileis, 2004, 2006).
     \item Cross-section: \texttt{vcovHC(x, \ldots)} (default: HC3)\\
-      and \texttt{sandwich(x, \ldots)} (default: HC0)
-    \item Time series: \texttt{vcovHAC(x, \ldots)}\\
+      and \texttt{sandwich(x, \ldots)} (default: HC0).
+    \item Time series: \texttt{vcovHAC(x, \ldots)}.\\
       Convenience functions \texttt{kernHAC(x, \ldots)} (Andrews' kernel HAC),
-     \texttt{NeweyWest(x, \ldots)} (Newey-West-style HAC)
+     \texttt{NeweyWest(x, \ldots)} (Newey-West-style HAC).
   \end{itemize} 
    \bigskip
-    Problem: No clustered/panel covariance \emph{up to now\dots}
+    \textbf{Problem:} No clustered/panel covariance \emph{up to now\dots}
 \end{frame}
 
 \begin{frame}
   \frametitle{Motivation}  
   \textbf{R packages for clustered sandwich covariances} \par\medskip
   \begin{itemize}
-    \item \texttt{multiwayvcov} for \texttt{lm}/\texttt{glm}(-like) objects
-    \item \texttt{plm} for \texttt{plm} objects
-    \item \texttt{geepack} for \texttt{geeglm} objects
-    \item \texttt{lfe} for \texttt{felm} objects
+    \item \texttt{multiwayvcov} for \texttt{lm}/\texttt{glm}(-like) objects.
+    \item \texttt{plm} for \texttt{plm} objects.
+    \item \texttt{geepack} for \texttt{geeglm} objects.
+    \item \texttt{lfe} for \texttt{felm} objects.
     \item among others (\texttt{clusterSEs}, \texttt{clubSandwich}, \dots)
   \end{itemize}
 \bigskip
-  Problem: No object-oriented implementation for clustered data  \emph{up to now\dots}
+  \textbf{Problem:} No object-oriented implementation \emph{up to now\dots}
 \end{frame}
 
 \begin{frame}
   \frametitle{R implementation}  
   \textbf{Building blocks provided by R package sandwich} \par\medskip
-  \texttt{sandwich(x, \ldots)} calculates an estimator of the sandwich $S(\theta) = B(\theta) \cdot M(\theta) \cdot B(\theta)$ \par\medskip  
-  \texttt{bread(x, \ldots)} returns the bread $B(\theta)$, typically an empirical version of the inverse Hessian \par\medskip
+  \texttt{sandwich(x, \ldots)} calculates an estimator of the sandwich $S(\theta) = B(\theta) \cdot M(\theta) \cdot B(\theta)$. \par\medskip  
+  \texttt{bread(x, \ldots)} returns the bread $B(\theta)$, typically an empirical version of the inverse Hessian. \par\medskip
   \texttt{estfun(x, \ldots)} extracts empirical estimating functions from a fitted model object \texttt{x}
   (typically $\partial \ell/\partial \theta$).\par\medskip  
   \texttt{meat(x, \ldots)}, \texttt{meatHC(x, \ldots)}, \texttt{meatHAC(x, \ldots)} return different ``flavors''
@@ -206,39 +207,81 @@ save(s04, file = "sim-04.rda")
   \begin{itemize}
     \item \texttt{cluster}: One or more cluster variables (cross-section if none).
     \item \texttt{type}: Type of bias correction: HC0--HC3.
-    \item \texttt{cadjust}: Switch cluster adjustment $\frac{G}{G-1}$ on and off.
-    \item \texttt{multi0}: Should the HC0 estimate be used for the final adjustment in multi-way clustered covariances?
+    \item \texttt{cadjust}: Cluster adjustment: $\frac{G}{G-1}$.
+    \item \texttt{multi0}: Multi-way clustering: HC0 estimate for final adjustment.
   \end{itemize}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{R implementation}  
-  \textbf{Driscoll and Kraay and Panel Newey-West covariances:} \par\bigskip
-  \texttt{vcovPL(x, cluster = NULL, order.by = NULL, kernel = "Bartlett", lag = "NW1987", \ldots)} \par\medskip
-  Idea: Sum up \code{estfun} across clusters within each time period prior to computing the \code{meat} + HAC bias correction \par\medskip
-  \textbf{Panel-corrected standard errors (Beck and Katz, 1995):} \par\medskip
-  \texttt{vcovPC(x, cluster = NULL, order.by = NULL, subsample = FALSE, sandwich = TRUE, fix = FALSE, \ldots)} \par\medskip
-  \medskip
-  Idea: Employ the outer product of (working) residuals (\code{estfun/model.matrix}) within each cluster, and expand each component with an identity matrix of size \code{length(order.by)}
+  \textbf{Panel data:} Driscoll \& Kraay and Panel Newey \& West covariances.
+  
+  \bigskip
+  
+  \textbf{Idea:} Sum up \code{estfun} across clusters within each time period prior to computing an HAC-type \code{meat}.
+
+  \bigskip
+  
+  \textbf{New R function:}
+\begin{verbatim}
+  vcovPL(x, cluster = NULL, order.by = NULL,
+    kernel = "Bartlett", lag = "NW1987", ...)
+\end{verbatim}
+  \begin{itemize}
+    \item \texttt{cluster}: Cluster/group/id variable (or list of cluster and time).
+    \item \texttt{order.by}: Time variable.
+    \item \texttt{kernel}: Kernel functions: ``Bartlett'', ``truncated'', ``Tukey-Hanning'', ``quadratic spectral''.
+    \item \texttt{lag}: Lag length: ``NW1987'', ``NW1994'', ``max'' (or ``P2009'').
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{R implementation}  
+  \textbf{Panel data:} Panel-corrected covariances (Beck and Katz, 1995).
+  
+  \bigskip
+  
+  \textbf{Idea:} Outer product of (working) residuals (\code{estfun/model.matrix}) within each cluster, each component expanded with an identity matrix of size \code{length(order.by)}.
+
+  \bigskip
+  
+  \textbf{New R function:}
+\begin{verbatim}
+  vcovPC(x, cluster = NULL, order.by = NULL,
+    subsample = FALSE, ...)
+\end{verbatim}
+  \begin{itemize}
+    \item \texttt{cluster}: Cluster/group/id variable (or list of cluster and time).
+    \item \texttt{order.by}: Time variable.
+    \item \texttt{subsample}: Pairwise balanced sample or balanced subset.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}[containsverbatim]
   \frametitle{Innovation data}
-  \textbf{Motivation} \par
- Applicability of clustered covariances to models beyond \texttt{lm()} or \texttt{glm()}. \par\medskip
-  \textbf{Data} \par
-  Aghion et al. (2013) investigate the effect of institutional ownership (proportion of stock owned by institutions) on innovation (cite-weighted patent counts) \par\medskip
-  \textbf{Original analysis by Aghion et al. (2013)} \par
-  Quasi-Poisson with clustered standard errors \par\medskip
-  \textbf{Reanalysis by Berger et al. (2017)}\par
-  Clustered covariances were provided for negative binomial hurdle models \par
+  \textbf{Motivation:} Applicability of clustered covariances to models beyond \texttt{lm()} or \texttt{glm()}. 
+  
+  \bigskip
+  
+  \textbf{Data:} Aghion et al.\ (2013) analyze the effect of (the share of stock owned by) institutions on innovation (cite-weighted patents).
+  
+  \bigskip
+  
+  \textbf{Original analysis by Aghion et al. (2013):} Quasi-Poisson with clustered standard errors.
+  
+  \bigskip
+  
+  \textbf{Reanalysis by Berger et al. (2017):} Clustered covariances were provided for negative binomial hurdle models. 
   \nocite{vcov:Berger+Stocker+Zeileis:2016}
   \nocite{vcov:Aghion+VanReenen+ZIngales:2013}
 \end{frame}
 
 \begin{frame}[containsverbatim]
   \frametitle{Innovation data}
-  Data and model fit \par
+  \textbf{Data and model fit:}
+  
+  \medskip
+  
 <<example-innovation-01,echo=TRUE>>= 
 data(InstInnovation, package = "sandwich")
 library("countreg")
@@ -248,7 +291,11 @@ m <- hurdle(
   dist = "negbin", zero.dist = "negbin", separate = FALSE)
 @
 
-Customizing covariances: ``standard'', basic sandwich- and clustered covariances \par
+ \medskip
+ 
+\textbf{Customizing covariances:} ``Standard'', basic and clustered covariances. 
+
+ \medskip
 <<example-innovation-02,echo=TRUE>>= 
 library("sandwich")
 vc <- list(
@@ -264,8 +311,14 @@ vc <- list(
 <<example-innovation-03,echo=TRUE>>= 
 sapply(vc, function(x) sqrt(diag(x)))
 @
- When data are grouped into clusters, ``standard'' standard errors can greatly overstate estimator precision \par\medskip
- Clustered standard errors are scaled up by factors between $1.47$ and $1.86$ compared to basic sandwich standard errors
+
+\bigskip
+
+For clustered data, standard errors can overstate estimator precision.
+
+\bigskip
+
+Compared to \code{basic}, \code{CL-1} standard errors are scaled up by factors between $1.47$ and $2$.
 \end{frame}
 
 \begin{frame}
@@ -281,7 +334,7 @@ sapply(vc, function(x) sqrt(diag(x)))
   \textbf{Correlations:}
   \begin{itemize}
     \item Cluster correlation $\rho$ for response $y_{ig}$ (via Gaussian copula).
-    \item Regressor $x_{ig}$ has within cluster correlation $0.25$
+    \item Regressor $x_{ig}$ has within cluster correlation $0.25$.
   \end{itemize}
 
   \bigskip
