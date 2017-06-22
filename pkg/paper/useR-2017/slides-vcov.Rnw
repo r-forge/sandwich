@@ -402,7 +402,7 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
 @ 
-@ 
+
 
 \end{frame}
 
@@ -472,9 +472,12 @@ Zeileis A (2006).
 
 \begin{frame}[containsverbatim] 
 \frametitle{Simulation}  
-\textbf{Experiment III}
-\setkeys{Gin}{width=\textwidth}
-\begin{figure}
+F = Gaussian with correlated, clustered, and uncorrelated regressors.
+
+\bigskip
+
+\hspace*{-0.5cm}%
+\setkeys{Gin}{width=1.1\textwidth}%
 <<sim-01-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
@@ -492,16 +495,17 @@ xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
   auto.key = list(columns = 3),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
-@ 
-\end{figure}
-Fixed: $N_{g} = 5$, $G = 100$, $\rho_{x} = 0.25$, $F = \mathcal{N}$.
+@  
 \end{frame}
 
 \begin{frame}[containsverbatim] 
 \frametitle{Simulation}
-\textbf{Experiment IV}
-\setkeys{Gin}{width=\textwidth}
-\begin{figure}
+Increase number of clusters (observations per cluster constant).
+
+\bigskip
+
+\hspace*{-0.5cm}%
+\setkeys{Gin}{width=1.1\textwidth}%
 <<sim-04-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
@@ -519,8 +523,6 @@ xyplot(coverage ~ nid | dist, groups = ~ factor(vcov),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
 @
-\end{figure}
-Fixed: $N_{g} = 5$, $\rho_{x} = 0.25$, $\rho = 0.25$, $F = \mathcal{N}$, binomial, Poisson.
 \end{frame}
 
 
