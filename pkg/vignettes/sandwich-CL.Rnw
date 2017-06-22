@@ -714,9 +714,9 @@ respectively.
 The weights in the panel sandwich covariance are set up by means of a \code{kernel} function
 along with a bandwidth \code{bw} or the corresponding \code{lag}. All kernels described
 in \cite{hac:Andrews:1991} and implemented in \code{vcovHAC()} by \cite{hac:Zeileis:2004}
-are available, namely truncated, Bartlett, Parzen, Tykey-Hanning, and quadratic spectral. 
+are available, namely truncated, Bartlett, Parzen, Tukey-Hanning, and quadratic spectral. 
 For the default case of the Bartlett kernel, the bandwidth \code{bw} corresponds to \code{lag + 1}
-and only of the two arguments should be specified. The \code{lag} argument can either be an
+and only one of the two arguments should be specified. The \code{lag} argument can either be an
 integer or one of three character specifications: \code{"max"}, \code{"NW1987"}, or \code{"NW1994"}).
 \code{"max"} (or equivalently, \code{"P2009"} for \citealp{hac:Petersen:2009}) indicates the maximum lag length $T - 1$, i.e., the number of time periods minus one.
 \code{"NW1987"} corresponds to \cite{hac:Newey+West:1987}, who have shown that their estimator is consistent
