@@ -383,6 +383,11 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
 \hspace*{-0.5cm}%
 \setkeys{Gin}{width=1.1\textwidth}%
 <<sim-03-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
+panel.xyref <- function(x, y, ...) {
+  panel.abline(h = 0.95, col = 2)
+  panel.xyplot(x, y, ...)  
+}
+options(prompt = "R> ", continue = "+   ", digits = 2)
 s03 <- na.omit(s03)
 my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
