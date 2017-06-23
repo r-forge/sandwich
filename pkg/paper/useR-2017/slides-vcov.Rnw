@@ -109,6 +109,36 @@ save(s04, file = "sim-04.rda")
 }
 @
 
+<<sim-06,echo=FALSE,results=hide>>=
+if(file.exists("../../vignettes/sim-06.rda")) load("../../vignettes/sim-06.rda") else {
+set.seed(6)
+s06 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
+           dist = "gaussian", rho = 0.25, xrho = 0.25,
+           coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
+           vcov = c("HC0-cluster", "PC", "DK"), type = "copula")
+save(s06, file = "sim-06.rda")
+}
+@
+
+<<sim-07,echo=FALSE,results=hide>>=
+if(file.exists("../../vignettes/sim-07.rda")) load("../../vignettes/sim-07.rda") else {
+set.seed(7)
+s07 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
+           dist = "gaussian", rho = 0.25, xrho = 0.25,
+           coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
+           vcov = c("HC0-cluster", "PC", "DK"), type = "copula-ar1")
+save(s07, file = "sim-07.rda")
+}
+@
+
+<<sim-67,echo=FALSE,results=hide>>=
+load("../../vignettes/sim-06.rda")
+load("../../vignettes/sim-07.rda")
+s06$copula <- as.factor("copula")
+s07$copula <- as.factor("copula-ar1")
+s0607 <- rbind(s06, s07)
+@ 
+
 \title{Various Versatile Variances}
 \subtitle{An Object-Oriented Implementation of Clustered Covariances in R}
 \author{Susanne Berger, Nathaniel Graham, Achim Zeileis}
@@ -394,7 +424,7 @@ my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
 levels(s03$vcov)[c(2,3,1)]  <- c("CL-0", "standard", "basic")
-levels(s03$dist)[c(1,2,3)] <- c("betareg", "zerotrunc", "zeroinfl")
+levels(s03$dist)[c(1,2,3)] <- c("beta", "zerotrunc", "zeroinfl")
 s03$vcov <- factor(s03$vcov, levels(s03$vcov)[c(2,3,1)])
 my.settings[["superpose.line"]]$col <- c("#377eb8", "#ff7f00", "#f781bf")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8", "#ff7f00", "#f781bf")
@@ -473,6 +503,32 @@ Zeileis A (2006).
   \doi{10.18637/jss.v016.i09}
  
 }
+\end{frame}
+
+\begin{frame}[containsverbatim] 
+\frametitle{Simulation}  
+Copula with AR(1) correlation structure.
+
+\bigskip
+
+\hspace*{-0.5cm}%
+\setkeys{Gin}{width=1.1\textwidth}%
+<<sim-0607-figure,echo=FALSE,fig=TRUE,height=5.5,width=10>>=
+my.settings <- canonical.theme(color = TRUE)
+my.settings[["strip.background"]]$col <- "gray"
+my.settings[["strip.border"]]$col <- "black"
+my.settings[["superpose.line"]]$lwd <- 1
+levels(s0607$vcov)[c(2,1,3)] <- c("CL-0", "PL", "PC")
+s0607$vcov <- factor(s0607$vcov, levels(s0607$vcov)[c(2,1,3)])
+my.settings[["superpose.line"]]$col <- c("#377eb8","green", "#006400")
+my.settings[["superpose.symbol"]]$col <- c("#377eb8","green", "#006400")
+xyplot(coverage ~ nround | factor(par) + factor(copula), groups = ~ factor(vcov),
+  data = na.omit(s0607), subset = par != "(Intercept)",
+  type = "b", xlab = "G", ylab = "coverage",
+  auto.key = list(columns = 2),
+  par.strip.text = list(col = "black"), par.settings = my.settings,
+  panel = panel.xyref)
+@  
 \end{frame}
 
 \begin{frame}[containsverbatim] 
