@@ -148,9 +148,9 @@ save(s04, file = "sim-04.rda")
   \frametitle{Motivation}  
   \textbf{R package for sandwich covariances} \par\medskip
   \begin{itemize}
+    \item \texttt{sandwich} (Zeileis, 2004, 2006).
     \item Object-oriented implementation: \texttt{betareg}, \texttt{clm}, \texttt{crch},
 \texttt{hurdle}, \texttt{lm}, \texttt{mlm}, \texttt{mlogit}, \texttt{nls}, \texttt{polr}, \texttt{survreg}, \texttt{zeroinfl} \ldots
-\item \texttt{sandwich} (Zeileis, 2004, 2006).
     \item Cross-section: \texttt{vcovHC(x, \ldots)} (default: HC3)\\
       and \texttt{sandwich(x, \ldots)} (default: HC0).
     \item Time series: \texttt{vcovHAC(x, \ldots)}.\\
