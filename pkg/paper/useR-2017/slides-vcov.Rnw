@@ -1,4 +1,5 @@
-\documentclass[11pt,compress,t]{beamer}
+\documentclass[11pt,t,usepdftitle=false,aspectratio=43]{beamer}
+\usetheme{uibk}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{amsmath,amssymb,bm}
 \usepackage{color,graphicx}
@@ -43,7 +44,6 @@
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usetheme{Z}
 
 <<preliminaries,echo=FALSE,results=hide>>=
 library("sandwich")
@@ -141,8 +141,11 @@ s0607 <- rbind(s06, s07)
 
 \title{Various Versatile Variances}
 \subtitle{An Object-Oriented Implementation of Clustered Covariances in R}
-\author{Susanne Berger, Nathaniel Graham, Achim Zeileis}
-\URL{https://R-Forge.R-project.org/projects/sandwich/}
+\URL{http://R-Forge.R-project.org/projects/sandwich}
+\author{\fontsize{13.2}{14}\selectfont Susanne Berger, Nathaniel Graham, Achim Zeileis}
+\Conference{useR! 2017}
+\date{2017-07-05}
+
 
 \begin{document}
 \section{Motivation}
@@ -152,7 +155,7 @@ s0607 <- rbind(s06, s07)
 
   \textbf{Goals:}
   \begin{itemize}
-  \item Object-oriented implementation of clustered covariances in R.
+  \item Object-oriented clustered covariance implementation in R.
   \item Monte Carlo simulation study to assess the performance of clustered standard errors beyond \code{lm()} and \code{glm()}.
   \end{itemize}
   
@@ -176,16 +179,16 @@ s0607 <- rbind(s06, s07)
 
 \begin{frame}
   \frametitle{Motivation}  
-  \textbf{R package for sandwich covariances} \par\medskip
+  \textbf{R package for sandwich covariances:} \par\medskip
   \begin{itemize}
-    \item \texttt{sandwich} (Zeileis, 2004, 2006).
-    \item Object-oriented implementation: \texttt{betareg}, \texttt{clm}, \texttt{crch},
-\texttt{hurdle}, \texttt{lm}, \texttt{mlm}, \texttt{mlogit}, \texttt{nls}, \texttt{polr}, \texttt{survreg}, \texttt{zeroinfl} \ldots
-    \item Cross-section: \texttt{vcovHC(x, \ldots)} (default: HC3)\\
-      and \texttt{sandwich(x, \ldots)} (default: HC0).
-    \item Time series: \texttt{vcovHAC(x, \ldots)}.\\
-      Convenience functions \texttt{kernHAC(x, \ldots)} (Andrews' kernel HAC),
-     \texttt{NeweyWest(x, \ldots)} (Newey-West-style HAC).
+    \item \pkg{sandwich} (Zeileis, 2004, 2006).
+    \item Object-oriented implementation: \code{betareg}, \code{clm}, \code{crch},
+\code{hurdle}, \code{lm}, \code{mlm}, \code{mlogit}, \code{nls}, \code{polr}, \code{survreg}, \code{zeroinfl}, \ldots
+    \item Cross-section: \code{vcovHC(x, ...)} (default: HC3)\\
+      and \code{sandwich(x, ...)} (default: HC0).
+    \item Time series: \code{vcovHAC(x, ...)}.\\
+      Convenience functions \code{kernHAC(x, ...)} (Andrews' kernel HAC),
+     \code{NeweyWest(x, ...)} (Newey-West-style HAC).
   \end{itemize} 
    \bigskip
     \textbf{Problem:} No clustered/panel covariance \emph{up to now\dots}
@@ -193,13 +196,13 @@ s0607 <- rbind(s06, s07)
 
 \begin{frame}
   \frametitle{Motivation}  
-  \textbf{R packages for clustered sandwich covariances} \par\medskip
+  \textbf{R packages for clustered sandwich covariances:} \par\medskip
   \begin{itemize}
-    \item \texttt{multiwayvcov} for \texttt{lm}/\texttt{glm}(-like) objects.
-    \item \texttt{plm} for \texttt{plm} objects.
-    \item \texttt{geepack} for \texttt{geeglm} objects.
-    \item \texttt{lfe} for \texttt{felm} objects.
-    \item among others (\texttt{clusterSEs}, \texttt{clubSandwich}, \dots)
+    \item \pkg{multiwayvcov} for \code{lm}/\code{glm}(-like) objects.
+    \item \pkg{plm} for \code{plm} objects.
+    \item \pkg{geepack} for \code{geeglm} objects.
+    \item \pkg{lfe} for \code{felm} objects.
+    \item among others (\pkg{clusterSEs}, \pkg{clubSandwich}, \dots)
   \end{itemize}
 \bigskip
   \textbf{Problem:} No object-oriented implementation \emph{up to now\dots}
@@ -207,16 +210,24 @@ s0607 <- rbind(s06, s07)
 
 \begin{frame}
   \frametitle{R implementation}  
-  \textbf{Building blocks provided by R package sandwich} \par\medskip
-  \texttt{sandwich(x, \ldots)} calculates an estimator of the sandwich $S(\theta) = B(\theta) \cdot M(\theta) \cdot B(\theta)$. \par\medskip  
-  \texttt{bread(x, \ldots)} returns the bread $B(\theta)$, typically an empirical version of the inverse Hessian. \par\medskip
-  \texttt{estfun(x, \ldots)} extracts empirical estimating functions from a fitted model object \texttt{x}
-  (typically $\partial \ell/\partial \theta$).\par\medskip  
-  \texttt{meat(x, \ldots)}, \texttt{meatHC(x, \ldots)}, \texttt{meatHAC(x, \ldots)} return different ``flavors''
-  of meat $M(\theta)$ -- relying on the model just through \texttt{estfun(x)}.\par
+  \textbf{Building blocks:} Provided by R package \pkg{sandwich}.
+  \begin{itemize}
+  
+    \item \code{sandwich(x, ...)} calculates an estimator of the sandwich $S(\theta) = B(\theta) \cdot M(\theta) \cdot B(\theta)$.
+  
+    \item \code{bread(x, ...)} returns the bread $B(\theta)$, typically an empirical version of the inverse Hessian.
+  
+    \item \code{estfun(x, ...)} extracts empirical estimating functions from a fitted model object \code{x}
+         (typically $\partial \ell/\partial \theta$).
+  
+    \item \code{meat(x, ...)}, \code{meatHC(x, ...)}, \code{meatHAC(x, ...)} return different ``flavors''
+         of meat $M(\theta)$ -- relying on the model just through \code{estfun(x)}.
+  \end{itemize}
+  
   \bigskip
-  \textbf{Needed:} A new \texttt{meat*()} function that only extracts the \texttt{estfun()}. \par
-  For the full sandwich covariance a \texttt{vcov*()} function couples the \texttt{meat*()} with the \texttt{bread()} estimate.
+  
+  \textbf{Needed:} New \code{meat*()} functions only based on \code{estfun()}.
+  Full sandwich covariance \code{vcov*()} couples the \code{meat*()} with the \code{bread()} estimate.
 \end{frame}
 
 \begin{frame}[fragile]
@@ -235,16 +246,16 @@ s0607 <- rbind(s06, s07)
     type = NULL, cadjust = TRUE, multi0 = FALSE, ...)
 \end{verbatim}
   \begin{itemize}
-    \item \texttt{cluster}: One or more cluster variables (cross-section if none).
-    \item \texttt{type}: Type of bias correction: HC0--HC3.
-    \item \texttt{cadjust}: Cluster adjustment: $\frac{G}{G-1}$.
-    \item \texttt{multi0}: Multi-way clustering: HC0 estimate for final adjustment.
+    \item \code{cluster}: One/more cluster variables (cross-section if none).
+    \item \code{type}: Type of bias correction: HC0--HC3.
+    \item \code{cadjust}: Cluster adjustment: $\frac{G}{G-1}$.
+    \item \code{multi0}: Multi-way clustering: HC0 for final adjustment.
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{R implementation}  
-  \textbf{Panel data:} Driscoll \& Kraay and Panel Newey \& West covariances.
+  \textbf{Panel data:} Driscoll \& Kraay and Panel Newey \& West.
   
   \bigskip
   
@@ -258,16 +269,16 @@ s0607 <- rbind(s06, s07)
     kernel = "Bartlett", lag = "NW1987", ...)
 \end{verbatim}
   \begin{itemize}
-    \item \texttt{cluster}: Cluster/group/id variable (or list of cluster and time).
-    \item \texttt{order.by}: Time variable.
-    \item \texttt{kernel}: Kernel functions: ``Bartlett'', ``truncated'', ``Tukey-Hanning'', ``quadratic spectral''.
-    \item \texttt{lag}: Lag length: ``NW1987'', ``NW1994'', ``max'' (or ``P2009'').
+    \item \code{cluster}: Cluster/group/id variable (or list of cluster/time).
+    \item \code{order.by}: Time variable.
+    \item \code{kernel}: Kernel functions: \code{"Bartlett"}, \code{"truncated"}, \code{"Tukey-Hanning"}, \code{"quadratic spectral"}.
+    \item \code{lag}: Lag length: \code{"NW1987"}, \code{"NW1994"}, \code{"max"} (or \code{"P2009"}).
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{R implementation}  
-  \textbf{Panel data:} Panel-corrected covariances (Beck and Katz, 1995).
+  \textbf{Panel data:} Panel-corrected covariances (Beck \& Katz).
   
   \bigskip
   
@@ -281,15 +292,15 @@ s0607 <- rbind(s06, s07)
     subsample = FALSE, ...)
 \end{verbatim}
   \begin{itemize}
-    \item \texttt{cluster}: Cluster/group/id variable (or list of cluster and time).
-    \item \texttt{order.by}: Time variable.
-    \item \texttt{subsample}: Pairwise balanced sample or balanced subset.
+    \item \code{cluster}: Cluster/group/id variable (or list of cluster/time).
+    \item \code{order.by}: Time variable.
+    \item \code{subsample}: Pairwise balanced sample or balanced subset.
   \end{itemize}
 \end{frame}
 
 \begin{frame}[containsverbatim]
   \frametitle{Innovation data}
-  \textbf{Motivation:} Applicability of clustered covariances to models beyond \texttt{lm()} or \texttt{glm()}. 
+  \textbf{Motivation:} Applicability of clustered covariances to models beyond \code{lm()} or \code{glm()}. 
   
   \bigskip
   
@@ -353,7 +364,7 @@ Compared to \code{basic}, \code{CL-1} standard errors are scaled up by factors b
 
 \begin{frame}
   \frametitle{Simulation}  
-  \textbf{Response:} $y_{ig} \sim F(\mu_{ig})$. $F =$ Normal/Gaussian, binomial (logit), Poisson, zero-truncated Poisson, beta, zero-inflated Poisson (ZIP).
+  \textbf{Response:} $y_{ig} \sim F(\mu_{ig})$. $F =$ Normal/Gaussian, binomial (logit), Poisson, zero-truncated Poisson, beta, zero-inflated Poisson.
   
   \bigskip
   
@@ -369,7 +380,7 @@ Compared to \code{basic}, \code{CL-1} standard errors are scaled up by factors b
 
   \bigskip
 
-  \textbf{Setup:} 10,000 replications, 500 observations (5 obs.\ per 100 clusters).
+  \textbf{Setup:} 10,000 replications, 500 observations (5 per cluster).
 
   \bigskip
 
@@ -444,11 +455,11 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
 \begin{frame}[allowframebreaks]
   \frametitle{References}
 {\small
-  \textbf{On R-Forge:} \url{https://R-Forge.R-project.org/projects/sandwich/}
+  \textbf{URL:} \url{https://R-Forge.R-project.org/projects/sandwich/}
 
   \bigskip
   
-  \textbf{New manuscript:} \texttt{vignette("sandwich-CL", package = "sandwich")}
+  \textbf{New manuscript:} \code{vignette("sandwich-CL", package="sandwich")}
 
 }
 
@@ -504,6 +515,9 @@ Zeileis A (2006).
  
 }
 \end{frame}
+
+
+\appendix
 
 \begin{frame}[containsverbatim] 
 \frametitle{Simulation}  
@@ -585,7 +599,6 @@ xyplot(coverage ~ nid | dist, groups = ~ factor(vcov),
   panel = panel.xyref)
 @
 \end{frame}
-
 
 
 \end{document}
