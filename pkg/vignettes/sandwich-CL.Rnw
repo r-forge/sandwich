@@ -102,7 +102,7 @@ set.seed(1)
 s01 <- sim(nrep = 10000, nid = 100, nround = 5,
            dist = "gaussian", rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
            coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
-           vcov = c("without", "HC0", "HC0-id", "random", "gee", "bk", "dk"),
+           vcov = c("classical", "HC0", "HC0-cluster", "random", "gee", "PC", "DK"),
            type = "copula")
 save(s01, file = "sim-01.rda")
 }
@@ -112,9 +112,9 @@ save(s01, file = "sim-01.rda")
 if(file.exists("sim-02.rda")) load("sim-02.rda") else {
 set.seed(2)
 s02 <- sim(nrep = 10000, nid = 100, nround = 5,
-           dist = c("gaussian", "logit", "poisson"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
+           dist = c("gaussian", "binomial(logit)", "poisson"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,
-           vcov = c("without", "HC0", "HC0-id", "random", "gee", "bk", "dk"),
+           vcov = c("classical", "HC0", "HC0-cluster", "random", "gee", "PC", "DK"),
            type = "copula")
 save(s02, file = "sim-02.rda")
 }
@@ -126,7 +126,7 @@ set.seed(3)
 s03 <- sim(nrep = 10000, nid = 100, nround = 5,
            dist = c("zerotrunc", "zip", "beta"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,
-           vcov = c("without", "HC0", "HC0-id"),
+           vcov = c("classical", "HC0", "HC0-cluster"),
            type = "copula")
 save(s03, file = "sim-03.rda")
 }
@@ -136,9 +136,9 @@ save(s03, file = "sim-03.rda")
 if(file.exists("sim-04.rda")) load("sim-04.rda") else {
 set.seed(4)
 s04 <- sim(nrep = 10000, nid = c(10, seq(50, 250, by = 50)), nround = 5,
-           dist = c("gaussian","poisson", "logit"), rho = 0.25, xrho = 0.25,
+           dist = c("gaussian","poisson", "binomial(logit)"), rho = 0.25, xrho = 0.25,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,
-           vcov = c("HC0-id","HC1-id","HC2-id","HC3-id"),
+           vcov = c("HC0-cluster","HC1-cluster","HC2-cluster","HC3-cluster"),
            type = "copula")
 save(s04, file = "sim-04.rda")
 }
@@ -148,13 +148,43 @@ save(s04, file = "sim-04.rda")
 if(file.exists("sim-05.rda")) load("sim-05.rda") else {
 set.seed(5)
 s05 <- sim(nrep = 10000, nid = 100, nround = 5,
-           dist = c("gaussian", "logit", "poisson"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
+           dist = c("gaussian", "binomial(logit)", "poisson"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,
-           vcov = c("without", "HC0", "HC0-id"),
+           vcov = c("classical", "HC0", "HC0-cluster"),
            type = "ranef")
 save(s05, file = "sim-05.rda")
 }
 @
+
+<<sim-06,echo=FALSE,results=hide>>=
+if(file.exists("sim-06.rda")) load("sim-06.rda") else {
+set.seed(6)
+s06 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
+           dist = "gaussian", rho = 0.25, xrho = 0.25,
+           coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
+           vcov = c("HC0-cluster", "PC", "DK"), type = "copula")
+save(s06, file = "sim-06.rda")
+}
+@
+
+<<sim-07,echo=FALSE,results=hide>>=
+if(file.exists("sim-07.rda")) load("sim-07.rda") else {
+set.seed(7)
+s07 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
+           dist = "gaussian", rho = 0.25, xrho = 0.25,
+           coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
+           vcov = c("HC0-cluster", "PC", "DK"), type = "copula-ar1")
+save(s07, file = "sim-07.rda")
+}
+@
+
+<<sim-67,echo=FALSE,results=hide>>=
+load("sim-06.rda")
+load("sim-07.rda")
+s06$copula <- as.factor("copula")
+s07$copula <- as.factor("copula-ar1")
+s0607 <- rbind(s06, s07)
+@ 
 
 \section{Introduction} \label{sec:intro}
 
@@ -935,18 +965,16 @@ Next, we run a Monte Carlo simulation to assess the methods' performance in a si
 The aim is to test clustered standard errors beyond linear and generalized linear models. For the linear model, there are a couple of simulation studies in the literature \citep{hac:Cameron+Gelbach+Miller:2008,hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,hac:Harden:2011,hac:Thompson:2011,hac:Cameron+Miller:2015,hac:Jin:2015}, far less for generalized linear models \citep[see for example][]{hac:Miglioretti+Heagerty:2007} and, up to our knowledge, none for models beyond \code{lm()} and \code{glm()}.
 
 \subsection{Simulation design}
-The simulations are each composed of $10,000$ replications.
-We systematically vary parameters $\rho$ and $G$. $\rho$ determines the strength of cluster correlation and varies from $0$ to $0.9$. The number of clusters $G$ ranges from $10$ to $50, 100, 150, 200$ to $250$. Numerous studies \citep{hac:Green+Vavreck:2008,hac:Arceneaux+Nickerson:2009,hac:Harden:2011} confirmed that the higher the number of clusters, the lower the bias of the standard errors (in linear regression models). Furthermore, we only have a look at balanced cluster, observations per cluster are fixed to $5$.
+Parameters $\rho$ and $G$ vary systematically, where $\rho$ determines the strength of cluster correlation and varies from $0$ to $0.9$. The number of clusters $G$ ranges from $10$ to $50, 100, 150, 200$ to $250$. Numerous studies \citep{hac:Green+Vavreck:2008,hac:Arceneaux+Nickerson:2009,hac:Harden:2011} confirmed that for the linear regression case, the higher the number of clusters, the less standard errors are biased. Furthermore, only balanced cluster are investigated, with the number of  observations per cluster fixed to $5$.
 
 \subsubsection{Linear predictor}
 The linear predictor is
 \begin{eqnarray} \label{eq:predictor}
-h(\mu_{ig}) = \beta_{0} + \beta_{1} \cdot x_{1,ig} + \beta_{2} \cdot x_{2,g} + \beta_{3} \cdot x_{3,ig}
+h(\mu_{ig}) = \beta_{0} + \beta_{1} \cdot x_{1,ig} + \beta_{2} \cdot x_{2,g} + \beta_{3} \cdot x_{3,ig},
 \end{eqnarray}
 with a link function $h$ and expected value $\mu_{ig}$. 
-In order to generate within cluster error correlation, there are two possible options. The first option is to take the marginal model Equation~\ref{eq:predictor} and introduce correlation via a copula. The second option is to add a random effect in Equation~\ref{eq:predictor}. 
-
-It has to be mentioned that for the linear model with an identity link function $h(\cdot)$, both options amount to the same thing. Though for models other than \code{lm()}, the two options are different. In the simulation exercises, the copula option is favoured, because for models other than \code{lm()}, including a random effect simultaneously includes a bias, too.
+In order to introduce cluster correlation in the response, two options are investigated. The first option is to take the marginal model Equation~\ref{eq:predictor} and introduce correlation via a Gaussian copula. The second option is to add a random effect in Equation~\ref{eq:predictor}. For the linear model with an identity link function $h(\cdot)$, both options amount to the same thing. Though for models other than \code{lm()}, the alternatives are different.
+The copula option is favored in the simulation exercises, as for models other than \code{lm()}, including a random effect comes along with including a bias.
 
 We analyze three regressor variables
 \begin{eqnarray} \label{eq:regressors}
@@ -954,9 +982,9 @@ x_{1,ig} & \sim & \rho_{x} \cdot \mathcal{N}_{g}(0, 1) + (1 - \rho_{x}) \cdot \m
 x_{2,g} & \sim & \mathcal{N}_{g}(0, 1) \label{x2} \\
 x_{3,ig} & \sim & \mathcal{N}_{ig}(0, 1) \label{x3}
 \end{eqnarray}
-Regressor $x_{1,ig}$ in Equation~\ref{x1} is composed of a linear combination of a random draw at cluster level ($\mathcal{N}_{g}$) and a random draw at individual level ($\mathcal{N}_{ig}$), regressor $x_{2,g}$ in Equation~\ref{x2} is composed of a random draw at cluster level, and regressor $x_{3,ig}$ in Equation~\ref{x3} consists of a random draw at individual level. In most of the simulations, only a single regressor $x_{1,ig}$ is used.
+Regressor $x_{1,ig}$ in Equation~\ref{x1} is composed of a linear combination of a random draw at cluster level ($\mathcal{N}_{g}$) and a random draw at individual level ($\mathcal{N}_{ig}$). Regressor $x_{2,g}$ in Equation~\ref{x2} is composed of a random draw at cluster level, and regressor $x_{3,ig}$ in Equation~\ref{x3} consists of a random draw at individual level. In most of the simulations, only a single regressor $x_{1,ig}$ is used.
 
-In line with \cite{hac:Harden:2011}, this is done to produce variation at cluster level, individual level and at a combination of both levels. The cluster correlation of $x_{1,ig}$ is controlled by parameter $\rho_{x}$, and is set to 0.25 per default. This implies at least some within cluster correlation of regressor $x_{1,ig}$. If $\rho_{x} = 1$, regressor $x_{1,ig}$ is equivalent to regressor $x_{2,g}$. Furthermore, if $\rho_{x} = 0$, regressor $x_{1,ig}$ corresponds to regressor $x_{3,ig}$.
+In line with \cite{hac:Harden:2011}, this setup is used to introduce correlated (\ref{x1}), clustered (\ref{x2}) and uncorrelated regressors (\ref{x3}). The cluster correlation of $x_{1,ig}$ is controlled by parameter $\rho_{x}$, and set to 0.25 per default. This implies at least some within cluster correlation of regressor $x_{1,ig}$. For $\rho_{x} = 1$, regressors $x_{1,ig}$ and $x_{2,g}$ are equivalent. Furthermore, if $\rho_{x} = 0$, regressor $x_{1,ig}$ corresponds to regressor $x_{3,ig}$.
 
 The vector of coefficients is fixed to
 \begin{eqnarray} \label{eq:coefs}
@@ -965,18 +993,18 @@ The vector of coefficients is fixed to
 \end{eqnarray}
 even though these values can be interchanged without influencing the results\footnote{Values are equivalent to \cite{hac:Harden:2011}.}.
 
-Response distributions examined include Gaussian (\code{gaussian}), binomial with a logit link (\code{binomial(logit)}), Poisson (\code{poisson}), zero-truncated Poisson (\code{zerotrunc}), Beta (\code{beta}) and zero-inflated Poisson (\code{zip}). \code{vcovCL()} allows estimation of clustered standard errors for all the abovementioned responses (and many more).
+Response distributions examined include Gaussian (\code{gaussian}), binomial with a logit link (\code{binomial(logit)}), Poisson (\code{poisson}), zero-truncated Poisson (\code{zerotrunc}), Beta (\code{beta}) and zero-inflated Poisson (\code{zip}). \code{vcovCL()} allows estimation of clustered covariances for all abovementioned responses (and many more).
 
 \subsubsection{Sandwich covariances}
-Covariances being compared to each other include ``standard''  standard covariances without heteroscedasticity and without autocorrelation (\code{standard}), basic sandwich standard errors (\code{basic}), Driscoll and Kraay standard errors (\code{PL}), panel-corrected standard errors (\code{PC}) a la \cite{hac:Beck+Katz:1995} and clustered standard errors with HC0 to HC3 adjustment (\code{CL-0}, \code{CL-1}, \code{CL-2}, \code{CL-3}). In addition, standard errors from a random effects model (\code{random}) and from a GEE with exchangeable correlation structure (\code{gee}) are compared.
+Covariances being compared to each other include ``standard'' covariances without heteroscedasticity and without autocorrelation (\code{standard}), basic sandwich covariances (\code{basic}), Driscoll and Kraay type covariances (\code{PL}), panel-corrected covariances (\code{PC}) a la \cite{hac:Beck+Katz:1995} and clustered covariances with HC0 to HC3 adjustment (\code{CL-0}, \code{CL-1}, \code{CL-2}, \code{CL-3}). In addition, covariances from a random effects model (\code{random}) and from a GEE with exchangeable correlation structure (\code{gee}) are estimated.
 
 \subsubsection{Outcome measure}
-In order to assess the validity of statistical inference, the coverage rate is the outcome measure of interest.
-If standard errors are estimated accurately, the coverage rate of the $95$\% confidence interval should be close to 0.95. 
+In order to assess the validity of statistical inference, the empirical coverage rate is the outcome measure of interest.
+If standard errors are estimated accurately, the empirical coverage rate of the $95$\% confidence interval should be close to 0.95. 
 Values less than 0.925 will be considered to have underestimated standard errors towards a Type I error, while values greater than 0.975 will be considered to have overestimated standard errors towards a Type II error.
 
 \subsubsection{Simulation code}
-The \proglang{R} script \code{sim-CL.R} comprises the simulation code that simulates the data generating process that has been described above and includes three functions: \code{dgp()}, \code{fit()} and \code{sim()}.
+The \proglang{R} script \code{sim-CL.R} comprises the simulation code for the data generating process  described above and includes functions \code{dgp()}, \code{fit()} and \code{sim()}.
 While \code{dgp()} specifies the data generating process and generates a data frame with (at most) three regressors \code{x1}, \code{x2}, \code{x3} as well as cluster dimensions \code{id} and \code{time}.
 \code{fit()} is responsible for the model fitting, the covariances as well as further outcomes (bias, mad, power and coverage). \code{sim()} conducts all simulations and provides for parallelization support.
 
@@ -994,13 +1022,13 @@ While \code{dgp()} specifies the data generating process and generates a data fr
 %  \label{tab:models}
 %\end{table}
 
-Table~\ref{tab:vcov} shows how the different types of covariances are calculated for a Gaussian response.
-Four models are fitted: A pooled model (\code{m}),
+Table~\ref{tab:vcov} shows exemplary how the different types of covariances are calculated for a Gaussian response.
+A pooled model (\code{m}),
 % a fixed effects model (\code{m_fe}),
-a random effects model (\code{m_re}) and a GEE with an exchangeable correlation structure (\code{m_gee}). 
+a random effects model (\code{m_re}) and a GEE with an exchangeable correlation structure (\code{m_gee}) is fitted. 
 %The fixed effects model includes fixed \code{id} effects,
 The random effects model is specified as a model with random intercepts. Model fittig for random effects models and GEEs requires the packages \pkg{lme4} and \pkg{geepack}, respectively.
-It has to be noticed, however, that it is not possible to fit all model types for all mentioned response distributions. There are some limitations for random effects models as well as for GEEs.
+However, it is not possible to fit all model types for all mentioned response distributions. There are some limitations for random effects models as well as for GEEs.
 
 Furthermore, to calculate clustered standard errors, the square root of the diagonal elements of the covariance matrices in Table~\ref{tab:vcov} is calculated.
 
@@ -1026,19 +1054,19 @@ Furthermore, to calculate clustered standard errors, the square root of the diag
 \end{table}
 
 \subsection{Results}
-The questions of interest in our simulation study can be summarized in the following four experiments:
+The questions which should be discussed and answered by the simulation study are:
 \begin{itemize}
-   \item Experiment I: How do the different model/covariance estimators perform for different types of regressors in the linear regression model?
-   \item Experiment II: How do clustered covariances perform for glm type of responses?
-   \item Experiment III: How do clustered covariances perform for beyond glm responses?
-   \item Experiment IV: How do clustered covariances with HC0--HC3 bias correction perform for different type of responses?
+   \item Experiment I: How do clustered covariances perform for different types of regressors for a Gaussian response distribution?
+   \item Experiment II: How do clustered covariances perform for glm response distributions?
+   \item Experiment III: How do clustered covariances perform for more general model response distributions?
+   \item Experiment IV: Which type of HC0--HC3 bias correction performs best?
 \end{itemize}
-Figure~\ref{fig:sim-01} shows the results from Experiment I and plots the coverage probabilities for the coefficients \code{x1} in Equation~\ref{x1}, \code{x2} in Equation~\ref{x2} and \code{x3} in Equation~\ref{x3} on the y-axis. Regressor \code{x1} is composed of a combination of a random draw at cluster level and a random draw at individual level, with a cluster correlation of 0.25. Regressor \code{x2} consists of a random draw at cluster level, and regressor \code{x3} is composed of a random draw at individual level. 
+Figure~\ref{fig:sim-01} shows the results from Experiment I and plots the coverage probabilities for coefficients \code{x1} (Equation~\ref{x1}), \code{x2} (Equation~\ref{x2}) and \code{x3} (Equation~\ref{x3}) on the y-axis.
+On the x-axis the cluster correlation of the response $\rho$ is shown, running from 0 (no correlation) to 0.9 (high correlation).
+Depending on the regressors, the implications of running the cluster correlation $\rho$ from 0 to 0.9 on the coverage of different covariance estimators are substantial.
 
-On the x-axis the within cluster correlation $\rho$ is shown, running from 0 (no correlation) to 0.9 (high correlation).
-Depending on the regressors, the implications of running the cluster correlation $\rho$ from 0 to 0.9 on different covariance estimators are substantial.
-
-Starting with regressor \code{x1}, at $\rho = 0$, all standard errors except the Driscoll and Kraay standard errors perform well. It can be observed that when the number of observations within each cluster is small with only $N_g = 5$, Driscoll and Kraay standard errors are substantially underestimated, even for a $\rho$ of 0.
+Starting with regressor \code{x1} at $\rho = 0$, all standard errors except the Driscoll and Kraay standard errors perform well and are close to the ``true'' standard error. As the number of observations per cluster is small with only $N_g = 5$, Driscoll and Kraay standard errors are substantially underestimated, even at a $\rho$ of 0. 
+In a Monte-Carlo study, \cite{hac:Driscoll+Kraay:1998} put the minimum of $N_g > 20 - 25$.
 Panel-corrected standard errors for regressor \code{x1} underestimate the ``true'' standard errors, that applies all the more the higher $\rho$. To a smaller extent, the same holds true for ``standard'' standard errors as well as basic sandwich standard errors.
 As noted by \cite{hac:Hoechle:2007}, PCSE can be quite imprecise if the crosss-sectional dimension is large compared to the time dimension.
 
@@ -1057,14 +1085,14 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s01$vcov)[c(5,2,1,7,4,6,3)] <- c("CL-0", "PL", "PC", "standard", "basic", "random", "gee")
-s01$vcov <- factor(s01$vcov, levels(s01$vcov)[c(5,2,1,7,4,6,3)])
+levels(s01$vcov)[c(5,2,6,1,4,7,3)] <- c("CL-0", "PL", "PC", "standard", "basic", "random", "gee")
+s01$vcov <- factor(s01$vcov, levels(s01$vcov)[c(5,2,6,1,4,7,3)])
 my.settings[["superpose.line"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
 my.settings[["superpose.symbol"]]$pch <- c(rep(1,3), rep(2,2), rep(3,2))
 xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
   data = s01, subset = par != "(Intercept)",
-  ylim = c(0, 1),
+  ylim = c(0.1, 1),
   type = "b", xlab = expression(rho), ylab = "coverage",
   auto.key = list(columns = 3),
   par.strip.text = list(col = "black"), par.settings = my.settings,
@@ -1089,8 +1117,8 @@ my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
 levels(s02$dist) <- c("gaussian", "binomial(logit)", "poisson")
-levels(s02$vcov)[c(5,2,1,7,4,6,3)] <- c("CL-0", "PL", "PC", "standard", "basic", "random", "gee")
-s02$vcov <- factor(s02$vcov, levels(s02$vcov)[c(5,2,1,7,4,6,3)])
+levels(s02$vcov)[c(5,2,6,1,4,7,3)] <- c("CL-0", "PL", "PC", "standard", "basic", "random", "gee")
+s02$vcov <- factor(s02$vcov, levels(s02$vcov)[c(5,2,6,1,4,7,3)])
 my.settings[["superpose.line"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
 my.settings[["superpose.symbol"]]$pch <- c(rep(1,3), rep(2,2), rep(3,2))
@@ -1164,6 +1192,27 @@ xyplot(coverage ~ nid | dist, groups = ~ factor(vcov),
 \caption{Experiment IV}
 \footnotesize{Experiment IV explores how clustered covariances with HC0-HC3 correction perform for Gaussian, binomial and Poisson responses, the cluster correlation is fixed at $\rho = 0.25$. The data are composed of $G = 10, 50, 100, \ldots, 250$ (balanced) clusters each with $N_{g} = 5$ observations. The simulations of Experiment IV are composed of $10,000$ replications. There is only a single regressor included in the model, \code{x1} is composed of a linear combination of random draw at cluster level and a random draw at individual level with cluster correlation $\rho_x = 0.25$. The coverage is plotted on the y-axis, the number of clusters $G$ on the x-axis.}
 \label{fig:sim-04}
+\end{figure}
+
+
+\begin{figure}[t!]
+<<sim-0607-figure,echo=FALSE,fig=TRUE,height=7,width=10>>=
+my.settings <- canonical.theme(color = TRUE)
+my.settings[["strip.background"]]$col <- "gray"
+my.settings[["strip.border"]]$col <- "black"
+my.settings[["superpose.line"]]$lwd <- 1
+levels(s0607$vcov)[c(2,1,3)] <- c("CL-0", "PL", "PC")
+s0607$vcov <- factor(s0607$vcov, levels(s0607$vcov)[c(2,1,3)])
+my.settings[["superpose.line"]]$col <- c("#377eb8","green", "#006400")
+my.settings[["superpose.symbol"]]$col <- c("#377eb8","green", "#006400")
+xyplot(coverage ~ nround | factor(par) + factor(copula), groups = ~ factor(vcov),
+  data = na.omit(s0607), subset = par != "(Intercept)",
+  type = "b", xlab = "G", ylab = "coverage",
+  auto.key = list(columns = 2),
+  par.strip.text = list(col = "black"), par.settings = my.settings,
+  panel = panel.xyref)
+@ 
+\label{fig:sim-0607}
 \end{figure}
 
 \section*{Computation details}
@@ -1245,6 +1294,7 @@ my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
 levels(s05$vcov)[c(1:3)] <- c("basic", "CL-0", "standard")
+s05$vcov <- factor(s05$vcov, levels(s05$vcov)[c(1:3)])
 levels(s05$dist) <- c("gaussian", "binomial(logit)", "poisson")
 my.settings[["superpose.line"]]$col <- c("slategray", "slategray", "slategray")
 my.settings[["superpose.symbol"]]$col <- c("slategray", "slategray", "slategray")
