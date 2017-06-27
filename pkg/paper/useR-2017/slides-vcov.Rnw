@@ -156,7 +156,7 @@ s0607 <- rbind(s06, s07)
   \textbf{Goals:}
   \begin{itemize}
   \item Object-oriented clustered covariance implementation in R.
-  \item Monte Carlo simulation study to assess the performance of clustered standard errors beyond \code{lm()} and \code{glm()}.
+  \item Monte Carlo study to assess the performance of clustered standard errors beyond \code{lm()} and \code{glm()}.
   \end{itemize}
   
   \medskip
@@ -164,7 +164,7 @@ s0607 <- rbind(s06, s07)
   \textbf{Strategies:}
   \begin{itemize}
   \item Account for clustered dependencies: Random effects, GEEs.
-  \item Quasi-ML: Assumes a correctly specified score function but a potentially misspecified remaining likelihood.
+  \item Quasi-ML: Assume a correctly specified score function but a potentially misspecified remaining likelihood.
   \end{itemize}
   
   \medskip
@@ -304,15 +304,15 @@ s0607 <- rbind(s06, s07)
   
   \bigskip
   
-  \textbf{Data:} Aghion et al.\ (2013) analyze the effect of (the share of stock owned by) institutions on innovation (cite-weighted patents).
+  \textbf{Data:} Aghion \emph{et al.} (2013) analyze the effect of (the share of stock owned by) institutions on innovation (cite-weighted patents).
   
   \bigskip
   
-  \textbf{Original analysis by Aghion et al. (2013):} Quasi-Poisson with clustered standard errors.
+  \textbf{Original analysis by Aghion \emph{et al.} (2013):} Quasi-Poisson with clustered standard errors.
   
   \bigskip
   
-  \textbf{Reanalysis by Berger et al. (2017):} Clustered covariances were provided for negative binomial hurdle models. 
+  \textbf{Reanalysis by Berger \emph{et al.} (2017):} Clustered covariances were provided for negative binomial hurdle models. 
   \nocite{vcov:Berger+Stocker+Zeileis:2016}
   \nocite{vcov:Aghion+VanReenen+ZIngales:2013}
 \end{frame}
@@ -547,7 +547,7 @@ xyplot(coverage ~ nround | factor(par) + factor(copula), groups = ~ factor(vcov)
 
 \begin{frame}[containsverbatim] 
 \frametitle{Simulation}  
-F = Gaussian with correlated, clustered, and uncorrelated regressors.
+$F =$ Gaussian with correlated, clustered, and uncorrelated regressors.
 
 \bigskip
 
