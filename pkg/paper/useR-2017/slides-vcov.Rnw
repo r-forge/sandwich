@@ -282,8 +282,9 @@ s0607 <- rbind(s06, s07)
   
   \bigskip
   
-  \textbf{Idea:} Outer product of (working) residuals (\code{estfun/model.matrix}) within each cluster, each component expanded with an identity matrix of size \code{length(order.by)}.
-
+  \textbf{Idea:} Decompose \code{estfun} into regressor matrix and working residuals,
+  and employ outer product in each cluster.
+  
   \bigskip
   
   \textbf{New R function:}
@@ -396,6 +397,7 @@ Compared to \code{basic}, \code{CL-1} standard errors are scaled up by factors b
 
 \hspace*{-0.5cm}%
 \setkeys{Gin}{width=1.1\textwidth}%
+%\setkeys{Gin}{width=0.95\textwidth}%
 <<sim-02-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
@@ -424,6 +426,7 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
 
 \hspace*{-0.5cm}%
 \setkeys{Gin}{width=1.1\textwidth}%
+%\setkeys{Gin}{width=0.95\textwidth}%
 <<sim-03-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 panel.xyref <- function(x, y, ...) {
   panel.abline(h = 0.95, col = 2)
@@ -528,6 +531,7 @@ Copula with AR(1) correlation structure.
 
 \hspace*{-0.5cm}%
 \setkeys{Gin}{width=1.1\textwidth}%
+%\setkeys{Gin}{width=0.85\textwidth}%
 <<sim-0607-figure,echo=FALSE,fig=TRUE,height=5.5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
@@ -554,6 +558,7 @@ $F =$ Gaussian with correlated, clustered, and uncorrelated regressors.
 
 \hspace*{-0.5cm}%
 \setkeys{Gin}{width=1.1\textwidth}%
+%\setkeys{Gin}{width=0.9\textwidth}%
 <<sim-01-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
@@ -582,6 +587,7 @@ Increase number of clusters (observations per cluster constant).
 
 \hspace*{-0.5cm}%
 \setkeys{Gin}{width=1.1\textwidth}%
+%\setkeys{Gin}{width=0.9\textwidth}%
 <<sim-04-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
