@@ -53,7 +53,7 @@ library("countreg")
 library("lme4")
 source("../../vignettes/sim-CL.R")
 panel.xyref <- function(x, y, ...) {
-  panel.abline(h = 0.95, col = 2)
+  panel.abline(h = 0.95, col = "slategray")
   panel.xyplot(x, y, ...)  
 }
 options(prompt = "R> ", continue = "+   ", digits = 1)
@@ -431,10 +431,6 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
 \setkeys{Gin}{width=1.1\textwidth}%
 %\setkeys{Gin}{width=0.95\textwidth}%
 <<sim-03-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
-panel.xyref <- function(x, y, ...) {
-  panel.abline(h = 0.95, col = 2)
-  panel.xyplot(x, y, ...)  
-}
 options(prompt = "R> ", continue = "+   ", digits = 2)
 s03 <- na.omit(s03)
 my.settings <- canonical.theme(color = TRUE)
