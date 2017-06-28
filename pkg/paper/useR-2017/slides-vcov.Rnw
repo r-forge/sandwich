@@ -148,7 +148,8 @@ s0607 <- rbind(s06, s07)
 
 
 \begin{document}
-\section{Motivation}
+\section{Presentation}
+\subsection{Motivation}
 
 \begin{frame}
   \frametitle{Motivation}  
@@ -207,6 +208,7 @@ s0607 <- rbind(s06, s07)
 \bigskip
   \textbf{Problem:} No object-oriented implementation \emph{up to now\dots}
 \end{frame}
+\subsection{R implementation}
 
 \begin{frame}
   \frametitle{R implementation}  
@@ -298,7 +300,7 @@ s0607 <- rbind(s06, s07)
     \item \code{subsample}: Pairwise balanced sample or balanced subset.
   \end{itemize}
 \end{frame}
-
+\subsection{Innovation data}
 \begin{frame}[containsverbatim]
   \frametitle{Innovation data}
   \textbf{Motivation:} Applicability of clustered covariances to models beyond \code{lm()} or \code{glm()}. 
@@ -365,6 +367,7 @@ Compared to \code{basic}, \code{CL-1} standard errors are scaled up by factors b
 
 \begin{frame}
   \frametitle{Simulation}  
+  
   \textbf{Response:} $y_{ig} \sim F(\mu_{ig})$. $F =$ Normal/Gaussian, binomial (logit), Poisson, zero-truncated Poisson, beta, zero-inflated Poisson.
   
   \bigskip
