@@ -141,11 +141,14 @@ s0607 <- rbind(s06, s07)
 
 \title{Various Versatile Variances}
 \subtitle{An Object-Oriented Implementation of Clustered Covariances in R}
-\URL{http://R-Forge.R-project.org/projects/sandwich}
-\author{\fontsize{13.2}{14}\selectfont Susanne Berger, Nathaniel Graham, Achim Zeileis}
-\Conference{useR! 2017}
-\date{2017-07-06}
 
+\setbeamerfont{author}{size*={13.2pt}{14.5pt},series=\mdseries}
+\author{Susanne Berger, Nathaniel Graham, Achim Zeileis}
+
+\setbeamerfont{url}{size*={11.5pt}{13pt},series=\mdseries}
+\URL{https://R-Forge.R-project.org/projects/sandwich/}
+
+\headerimage{3}
 
 \begin{document}
 \section{Presentation}
