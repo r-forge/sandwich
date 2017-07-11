@@ -39,7 +39,29 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
   ## working residuals
   res <- rowMeans(ef/X, na.rm = TRUE)
   res[apply(abs(ef) < .Machine$double.eps, 1L, all)] <- 0
-  
+
+    ## balanced panel
+    bal <- split(order.by, cluster)
+    balanced <- isTRUE(length(unique(sapply(bal, length))) == 1L)
+    if(balanced) {
+    ## split residuals by cluster
+    e <- split(res, cluster)    
+    ## bind into matrix
+    e <- do.call("cbind", e)
+    ## set up omega
+    N <- prod(dim(e))
+    t <- dim(e)[1L]
+    n <- dim(e)[2L]
+    sigma <- crossprod(e) / t
+    if(kronecker) {
+        omega <- kronecker(sigma, diag(1L, t))           
+    } else {
+        xx <- split(X, cluster)
+        xxCL <- lapply(1L:n, function(i) matrix(xx[[i]], t, ncol(X)))
+        omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]] / N))))
+    }
+    } 
+   if(!balanced) { 
   ## extract balanced subsample
     if(subsample) {
     ## split residuals by cluster
@@ -51,17 +73,17 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
     ## bind into matrix
     e <- do.call("cbind", e)
     ## set up omega
-    N <- prod(dim(e))    
-    sigma <- crossprod(e) / NROW(e)
+    N <- prod(dim(e))
     t <- dim(e)[1L]
     n <- dim(e)[2L]
-    xx <- split(X, cluster)
-    xx <- xx[names(xx) %in% colnames(e)]
+    sigma <- crossprod(e) / t
     if(kronecker) {
-        omega <- kronecker(sigma, diag(x = 1L, nrow = t, ncol = t))
-        X <- X[cluster %in% names(xx), ]    
+        X <- X[cluster %in% colnames(e), ]
+        omega <- kronecker(sigma, diag(1L, t))           
     } else {
-        xxCL <- lapply(1L:n, function(i) matrix(xx[[i]], nrow = t, ncol = ncol(X)))
+        xx <- split(X, cluster)
+        xx <- xx[names(xx) %in% colnames(e)]
+        xxCL <- lapply(1L:n, function(i) matrix(xx[[i]], t, ncol(X)))
         omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]] / N))))
     }
     } else {
@@ -87,17 +109,18 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
     e <- t(e)
     sigma <- crossprod(e) / denoma
     if(kronecker) {
-        omega <- kronecker(sigma, diag(x = 1L, nrow = NROW(e), ncol = NROW(e)))
+        omega <- kronecker(sigma, diag(1L, NROW(e)))
         X <- as.matrix(X)
     } else {
         t <- length(unique(pair$order.by))
         n <- length(unique(pair$cluster))
         xx <- split(X, pair$cluster)
-        xxCL <- lapply(1L:n, function(i) as.matrix(xx[[i]], nrow = t, ncol = ncol(X)))
+        xxCL <- lapply(1L:n, function(i) as.matrix(xx[[i]], t, ncol(X)))
         omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]] / N))))
     }
-    }    
-    if(kronecker) {      
+    }
+       }
+    if(kronecker) {
         rval <- t(X) %*% omega %*% X / N
     } else {
         rval <- omega
