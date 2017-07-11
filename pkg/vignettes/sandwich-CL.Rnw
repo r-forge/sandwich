@@ -87,6 +87,7 @@ library("lattice")
 library("countreg")
 library("lme4")
 source("sim-CL.R")
+source("../R/vcovBS.R")
 panel.xyref <- function(x, y, ...) {
   panel.abline(h = 0.95, col = "slategray")
   panel.xyplot(x, y, ...)  
