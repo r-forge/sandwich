@@ -53,15 +53,17 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
     ## set up omega
     N <- prod(dim(e))    
     sigma <- crossprod(e) / NROW(e)
-    t <- length(unique(order.by))
-    n <- length(unique(cluster))
+    t <- dim(e)[1L]
+    n <- dim(e)[2L]
     xx <- split(X, cluster)
-    xxCL <- lapply(1L:n, function(i) matrix(xx[[i]], nrow = t, ncol = ncol(X)))
+    xx <- xx[names(xx) %in% colnames(e)]
     if(kronecker) {
-            omega <- kronecker(sigma, diag(x = 1L, nrow = NROW(e), ncol = NROW(e)))
-        } else {
-            omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]]/(n*t)))))
-            }
+        omega <- kronecker(sigma, diag(x = 1L, nrow = t, ncol = t))
+        X <- X[cluster %in% names(xx), ]    
+    } else {
+        xxCL <- lapply(1L:n, function(i) matrix(xx[[i]], nrow = t, ncol = ncol(X)))
+        omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]] / N))))
+    }
     } else {
     ## use pairwise calculation for omega (Bailey and Katz, 2011)
     N <- dim(X)[1L]    
@@ -86,16 +88,16 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
     sigma <- crossprod(e) / denoma
     if(kronecker) {
         omega <- kronecker(sigma, diag(x = 1L, nrow = NROW(e), ncol = NROW(e)))
+        X <- as.matrix(X)
     } else {
         t <- length(unique(pair$order.by))
         n <- length(unique(pair$cluster))
         xx <- split(X, pair$cluster)
         xxCL <- lapply(1L:n, function(i) as.matrix(xx[[i]], nrow = t, ncol = ncol(X)))
-        omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]] /  N))))
+        omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]] / N))))
     }
-    }   
-    if(kronecker) {
-        X <- as.matrix(X)
+    }    
+    if(kronecker) {      
         rval <- t(X) %*% omega %*% X / N
     } else {
         rval <- omega
