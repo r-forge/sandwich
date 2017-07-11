@@ -268,13 +268,11 @@ fit <- function(data,
       coef = coef(m_gee), se = sqrt(diag(m_gee$geese$vbeta)), par = names(coef(m_gee)),
       vcov = "gee", stringsAsFactors = FALSE))
   }
-
   if("DK" %in% vcov) {
     rval <- rbind(rval, data.frame(
-      coef = coef(m), se = sqrt(diag(vcovPL(m, cluster = data$id, adjust = FALSE))), par = names(coef(m)),
+      coef = coef(m), se = sqrt(diag(vcovPL(m, cluster = data$id, lag = "NW1987", adjust = FALSE))), par = names(coef(m)),
       vcov = "DK", stringsAsFactors = FALSE))
   }
-
   if("PC" %in% vcov) {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcovPC(m, cluster = data$id, order.by = data$round, kronecker = TRUE))), par = names(coef(m)),
