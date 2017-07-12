@@ -35,7 +35,6 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
   X <- model.matrix(x)
   if (any(alias <- is.na(coef(x)))) X <- X[, !alias, drop = FALSE]
   attr(X, "assign") <- NULL
-    nn <- dim(X)[1L]
     
   ## working residuals
   res <- rowMeans(ef/X, na.rm = TRUE)
@@ -66,7 +65,7 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
     }
     }
     
-  ## unbalanced panel  
+    ## unbalanced panel  
     if(!balanced) {
         pair <- data.frame(cluster = cluster, order.by = order.by)
         pair$res <- res
@@ -74,7 +73,7 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
         Tij <- expand.grid(cluster = unique(cluster), order.by = unique(order.by))
         pair <- merge(pair, Tij, by = c("cluster", "order.by"), all = TRUE)
         
-  ## extract balanced subsample
+    ## extract balanced subsample
        if(subsample) {
            
     ## extract "full" clusters   
