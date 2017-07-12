@@ -35,6 +35,7 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
   X <- model.matrix(x)
   if (any(alias <- is.na(coef(x)))) X <- X[, !alias, drop = FALSE]
   attr(X, "assign") <- NULL
+    nn <- dim(X)[1L]
     
   ## working residuals
   res <- rowMeans(ef/X, na.rm = TRUE)
@@ -44,10 +45,13 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
     bal <- split(order.by, cluster)
     balanced <- isTRUE(length(unique(sapply(bal, length))) == 1L)
     if(balanced) {
+
     ## split residuals by cluster
     e <- split(res, cluster)    
+
     ## bind into matrix
     e <- do.call("cbind", e)
+        
     ## set up omega
     N <- prod(dim(e))
     t <- dim(e)[1L]
@@ -60,40 +64,50 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
         xxCL <- lapply(1L:n, function(i) matrix(xx[[i]], t, ncol(X)))
         omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]] / N))))
     }
-    } 
-   if(!balanced) { 
+    }
+    
+  ## unbalanced panel  
+    if(!balanced) {
+        pair <- data.frame(cluster = cluster, order.by = order.by)
+        pair$res <- res
+        pair <- data.frame(pair, X)
+        Tij <- expand.grid(cluster = unique(cluster), order.by = unique(order.by))
+        pair <- merge(pair, Tij, by = c("cluster", "order.by"), all = TRUE)
+        
   ## extract balanced subsample
-    if(subsample) {
+       if(subsample) {
+           
+    ## extract "full" clusters   
+    rem <- subset(pair$order.by, is.na(pair$res))
+    pair <- pair[-which(pair$order.by %in% rem), ]
+    res <- pair[, 3L]
+    X <- pair[, 4L:dim(pair)[2L]]
+    X <- as.matrix(X)
+    clpair <- pair[, 1L]
+    obpair <- pair[, 2L]
+        
     ## split residuals by cluster
-    e <- split(res, cluster)    
-    ## cluster sizes
-    ne <- sapply(e, length)
-    ## extract "full" clusters
-    e <- e[ne == max(ne)]
+    e <- split(res, clpair)    
+
     ## bind into matrix
     e <- do.call("cbind", e)
+        
     ## set up omega
     N <- prod(dim(e))
     t <- dim(e)[1L]
     n <- dim(e)[2L]
     sigma <- crossprod(e) / t
     if(kronecker) {
-        X <- X[cluster %in% colnames(e), ]
         omega <- kronecker(sigma, diag(1L, t))           
     } else {
-        xx <- split(X, cluster)
-        xx <- xx[names(xx) %in% colnames(e)]
+        xx <- split(X, clpair)
         xxCL <- lapply(1L:n, function(i) matrix(xx[[i]], t, ncol(X)))
         omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]] / N))))
     }
     } else {
+        
     ## use pairwise calculation for omega (Bailey and Katz, 2011)
     N <- dim(X)[1L]    
-    pair <- data.frame(cluster = cluster, order.by = order.by)
-    pair$res <- res
-    pair <- data.frame(pair, X)
-    Tij <- expand.grid(cluster = unique(cluster), order.by = unique(order.by))
-    pair <- merge(pair, Tij, by = c("cluster", "order.by"), all = TRUE)
     e <- pair[, 3L]
     X <- pair[, 4L:dim(pair)[2L]]
    
@@ -123,7 +137,7 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
     if(kronecker) {
         rval <- t(X) %*% omega %*% X / N
     } else {
-        rval <- omega
+        rval <- omega 
     }
   return(rval = rval)
 }
