@@ -78,29 +78,39 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
            
     ## extract "full" clusters   
     rem <- subset(pair$order.by, is.na(pair$res))
-    pair <- pair[-which(pair$order.by %in% rem), ]
-    res <- pair[, 3L]
+    pair[which(pair$order.by %in% rem), 3L:dim(X)[2L]] <- NA
+    pairNA <- na.omit(pair)
+    pair[is.na(pair)] <- 0
+
+    res <- pairNA[, 3L]
     X <- pair[, 4L:dim(pair)[2L]]
     X <- as.matrix(X)
+    XNA <- pair[, 4L:dim(pairNA)[2L]]
+    XNA <- as.matrix(XNA)
+           
+    clpairNA <- pairNA[, 1L]
+    obpairNA <- pairNA[, 2L]
     clpair <- pair[, 1L]
     obpair <- pair[, 2L]
-        
+           
     ## split residuals by cluster
-    e <- split(res, clpair)    
+    e <- split(res, clpairNA)    
 
     ## bind into matrix
     e <- do.call("cbind", e)
         
     ## set up omega
-    N <- prod(dim(e))
+    N <- dim(X)[1L]
     t <- dim(e)[1L]
     n <- dim(e)[2L]
+    tt <- length(unique(order.by))
     sigma <- crossprod(e) / t
+    
     if(kronecker) {
-        omega <- kronecker(sigma, diag(1L, t))           
+        omega <- kronecker(sigma, diag(1L, tt))
     } else {
         xx <- split(X, clpair)
-        xxCL <- lapply(1L:n, function(i) matrix(xx[[i]], t, ncol(X)))
+        xxCL <- lapply(1L:n, function(i) matrix(xx[[i]], tt, ncol(X)))
         omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]] / N))))
     }
     } else {
