@@ -57,17 +57,20 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
     n <- dim(e)[2L]
     sigma <- crossprod(e) / t
     if(kronecker) {
-        omega <- kronecker(sigma, diag(1L, t))           
+        omega <- kronecker(sigma, diag(1L, t))
+        omega <- t(X) %*% omega %*% X / N
     } else {
         xx <- split(X, cluster)
         xxCL <- lapply(1L:n, function(i) matrix(xx[[i]], t, ncol(X)))
         omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]] / N))))
     }
     }
+
     
     ## unbalanced panel  
     if(!balanced) {
         pair <- data.frame(cluster = cluster, order.by = order.by)
+        num <- dim(pair)[1L]
         pair$res <- res
         pair <- data.frame(pair, X)
         Tij <- expand.grid(cluster = unique(cluster), order.by = unique(order.by))
@@ -78,20 +81,15 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
            
     ## extract "full" clusters   
     rem <- subset(pair$order.by, is.na(pair$res))
+    pairX <- as.matrix(pair[, 4L:dim(pair)[2L]])    
+    pairX[is.na(pairX)] <- 0
     pair[which(pair$order.by %in% rem), 3L:dim(X)[2L]] <- NA
+    
     pairNA <- na.omit(pair)
     pair[is.na(pair)] <- 0
-
     res <- pairNA[, 3L]
-    X <- pair[, 4L:dim(pair)[2L]]
-    X <- as.matrix(X)
-    XNA <- pair[, 4L:dim(pairNA)[2L]]
-    XNA <- as.matrix(XNA)
-           
     clpairNA <- pairNA[, 1L]
-    obpairNA <- pairNA[, 2L]
     clpair <- pair[, 1L]
-    obpair <- pair[, 2L]
            
     ## split residuals by cluster
     e <- split(res, clpairNA)    
@@ -100,7 +98,6 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
     e <- do.call("cbind", e)
         
     ## set up omega
-    N <- dim(X)[1L]
     t <- dim(e)[1L]
     n <- dim(e)[2L]
     tt <- length(unique(order.by))
@@ -108,10 +105,11 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
     
     if(kronecker) {
         omega <- kronecker(sigma, diag(1L, tt))
+        omega <- t(pairX) %*% omega %*% pairX / num
     } else {
-        xx <- split(X, clpair)
+        xx <- split(pairX, clpair)
         xxCL <- lapply(1L:n, function(i) matrix(xx[[i]], tt, ncol(X)))
-        omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]] / N))))
+        omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]] / num))))
     }
     } else {
         
@@ -134,6 +132,8 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
     if(kronecker) {
         omega <- kronecker(sigma, diag(1L, NROW(e)))
         X <- as.matrix(X)
+        X[is.na(X)] <- 0L
+        omega <- t(X) %*% omega %*% X / N
     } else {
         t <- length(unique(pair$order.by))
         n <- length(unique(pair$cluster))
@@ -142,11 +142,9 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
         omega <- Reduce("+", lapply(1L:n, function(j) Reduce("+", lapply(1L:n, function(i) sigma[j,i] * t(xxCL[[j]]) %*% xxCL[[i]] / N))))
     }
     }
-       }
-    if(kronecker) {
-        rval <- t(X) %*% omega %*% X / N
-    } else {
-        rval <- omega 
     }
+    
+    rval <- omega
+    
   return(rval = rval)
 }
