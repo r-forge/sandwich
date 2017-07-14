@@ -139,7 +139,7 @@ dgp <- function(nid = 100L, nround = 5L,
 fit <- function(data,
   formula = response ~ x1 + x2 + x3,
   dist = c("gaussian", "poisson", "zip", "hurdle", "beta", "binomial(logit)", "zerotrunc"),
-  vcov = c("classical", "HC0", "HC1", "HC2", "HC3", "HC0-cluster", "HC1-cluster", "HC2-cluster", "HC3-cluster", "fixed", "random", "gee", "DK", "PC"),
+  vcov = c("classical", "HC0", "HC1", "HC2", "HC3", "HC0-cluster", "HC1-cluster", "HC2-cluster", "HC3-cluster", "fixed", "random", "gee", "DK", "PC", "BS"),
   level = 0.95)
 {
   
@@ -278,6 +278,11 @@ fit <- function(data,
       coef = coef(m), se = sqrt(diag(vcovPC(m, cluster = data$id, order.by = data$round, kronecker = TRUE))), par = names(coef(m)),
       vcov = "PC", stringsAsFactors = FALSE))
   }
+    if("BS" %in% vcov) {
+    rval <- rbind(rval, data.frame(
+      coef = coef(m), se = sqrt(diag(vcovBS(m, cluster = data$id))), par = names(coef(m)),
+      vcov = "BS", stringsAsFactors = FALSE))
+  }
     
   ## reorder columns
   rownames(rval) <- NULL
@@ -300,7 +305,7 @@ fit <- function(data,
 sim <- function(nrep = 1000, nid = 100L, nround = 5L,
   dist = "gaussian", rho = 0.5, xrho = 0.5,
   coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
-  vcov = c("classical", "HC0", "HC1", "HC2", "HC3", "HC0-cluster", "HC1-cluster", "HC2-cluster", "HC3-cluster", "fixed", "random", "gee", "DK", "PC"),
+  vcov = c("classical", "HC0", "HC1", "HC2", "HC3", "HC0-cluster", "HC1-cluster", "HC2-cluster", "HC3-cluster", "fixed", "random", "gee", "DK", "PC", "BS"),
   ...,
   cores = NULL)
 {
