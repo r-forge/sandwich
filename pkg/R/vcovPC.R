@@ -102,7 +102,7 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
     n <- dim(e)[2L]
     tt <- length(unique(order.by))
     sigma <- crossprod(e) / t
-    
+
     if(kronecker) {
         omega <- kronecker(sigma, diag(1L, tt))
         omega <- t(pairX) %*% omega %*% pairX / num
