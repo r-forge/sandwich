@@ -278,9 +278,15 @@ fit <- function(data,
       coef = coef(m), se = sqrt(diag(vcovPC(m, cluster = data$id, order.by = data$round, kronecker = TRUE))), par = names(coef(m)),
       vcov = "PC", stringsAsFactors = FALSE))
   }
-    if("BS" %in% vcov) {
+  if("BS" %in% vcov) {
+      bootBS <- function(formula) {
+          m <- lm(formula, data)
+          seBS <- sqrt(diag(vcovBS(m, cluster = data$id)))
+          return(seBS)
+      }
+    #seBS <- bootBS(m)
     rval <- rbind(rval, data.frame(
-      coef = coef(m), se = sqrt(diag(vcovBS(m, cluster = data$id))), par = names(coef(m)),
+      coef = coef(m), se = seBS, par = names(coef(m)),
       vcov = "BS", stringsAsFactors = FALSE))
   }
     
