@@ -42,7 +42,7 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
 
     ## balanced panel
     bal <- split(order.by, cluster)
-    balanced <- isTRUE(length(unique(sapply(bal, length))) == 1L)
+    balanced <- isTRUE(length(unique(table(cluster, order.by))) == 1L)
     if(balanced) {
 
     ## split residuals by cluster
