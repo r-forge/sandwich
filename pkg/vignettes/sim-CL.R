@@ -142,6 +142,8 @@ fit <- function(data,
   vcov = c("classical", "HC0", "HC1", "HC2", "HC3", "HC0-cluster", "HC1-cluster", "HC2-cluster", "HC3-cluster", "fixed", "random", "gee", "DK", "PC", "BS"),
   level = 0.95)
 {
+  ## assure formula to be in current environment
+  environment(formula) <- environment(response ~ x1 + x2 + x3)
   
   ## response distributions and vcov types
   dist <- match.arg(dist)
