@@ -303,7 +303,7 @@ fit <- function(data,
 
 
 sim <- function(nrep = 1000, nid = 100L, nround = 5L,
-  dist = "gaussian", rho = 0.5, xrho = 0.5, data = d,
+  dist = "gaussian", rho = 0.5, xrho = 0.5,
   coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
   vcov = c("classical", "HC0", "HC1", "HC2", "HC3", "HC0-cluster", "HC1-cluster", "HC2-cluster", "HC3-cluster", "fixed", "random", "gee", "DK", "PC", "BS"),
   ...,
