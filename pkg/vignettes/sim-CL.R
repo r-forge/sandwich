@@ -278,15 +278,9 @@ fit <- function(data,
       coef = coef(m), se = sqrt(diag(vcovPC(m, cluster = data$id, order.by = data$round, kronecker = TRUE))), par = names(coef(m)),
       vcov = "PC", stringsAsFactors = FALSE))
   }
-  if("BS" %in% vcov) {
-      bootBS <- function(formula) {
-          m <- lm(formula, data)
-          seBS <- sqrt(diag(vcovBS(m, cluster = data$id)))
-          return(seBS)
-      }
-    #seBS <- bootBS(m)
+    if("BS" %in% vcov) {
     rval <- rbind(rval, data.frame(
-      coef = coef(m), se = seBS, par = names(coef(m)),
+      coef = coef(m), se = sqrt(diag(vcovBS(m, cluster = data$id))), par = names(coef(m)),
       vcov = "BS", stringsAsFactors = FALSE))
   }
     
@@ -309,7 +303,7 @@ fit <- function(data,
 
 
 sim <- function(nrep = 1000, nid = 100L, nround = 5L,
-  dist = "gaussian", rho = 0.5, xrho = 0.5,
+  dist = "gaussian", rho = 0.5, xrho = 0.5, data = d,
   coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
   vcov = c("classical", "HC0", "HC1", "HC2", "HC3", "HC0-cluster", "HC1-cluster", "HC2-cluster", "HC3-cluster", "fixed", "random", "gee", "DK", "PC", "BS"),
   ...,
@@ -328,9 +322,9 @@ sim <- function(nrep = 1000, nid = 100L, nround = 5L,
 
   ## conduct all simulations
   rval <- lapply(1L:nrow(par), function(i) {
-    rvali <- applyfun(1L:nrep, function(j) {
+      rvali <- applyfun(1L:nrep, function(j) {      
       d <- dgp(nid = par$nid[i], nround = par$nround[i], dist = par$dist[i],
-        rho = par$rho[i], xrho = par$xrho[i], coef = coef, ...)
+               rho = par$rho[i], xrho = par$xrho[i], coef = coef, ...)
       try(fit(d, formula = formula, dist = par$dist[i], vcov = vcov))
     })
     rvali <- rvali[sapply(rvali, class) == "data.frame"]
