@@ -5,6 +5,9 @@ Changes in Version 2.4-0
     Beck & Katz in vcovPC(). A new vignette("sandwich-CL", package = "sandwich")
     introduces all functions and illustrates their use and properties.
 
+  o The new function vcovBS() provides a basic (clustered) bootstrap
+    covariance matrix estimate, using case-based resampling.
+
 
 Changes in Version 2.3-4
 
