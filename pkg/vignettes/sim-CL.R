@@ -252,7 +252,7 @@ fit <- function(data,
   if("CL-3" %in% vcov & dist != "zeroinfl") {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcovCL(m, cluster = data$id, type = "HC3"))), par = names(coef(m)),
-      vcov = "HC3-id", stringsAsFactors = FALSE))
+      vcov = "CL-3", stringsAsFactors = FALSE))
   }
   if("fixed" %in% vcov) {
     k <- length(coef(m))
@@ -273,7 +273,7 @@ fit <- function(data,
   if("PL " %in% vcov) {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcovPL(m, cluster = data$id, lag = "NW1987", adjust = FALSE))), par = names(coef(m)),
-      vcov = "PL ", stringsAsFactors = FALSE))
+      vcov = "PL", stringsAsFactors = FALSE))
   }
   if("PC" %in% vcov) {
     rval <- rbind(rval, data.frame(
