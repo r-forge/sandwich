@@ -102,7 +102,7 @@ set.seed(1)
 s01 <- sim(nrep = 10000, nid = 100, nround = 5,
            dist = "gaussian", rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
            coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
-           vcov = c("classical", "HC0", "HC0-cluster", "random", "gee", "PC", "DK"),
+           vcov = c("standard", "basic", "CL-0", "random", "gee", "PC", "PL", "BS"),
            type = "copula")
 save(s01, file = "sim-01.rda")
 }
@@ -114,7 +114,7 @@ set.seed(2)
 s02 <- sim(nrep = 10000, nid = 100, nround = 5,
            dist = c("gaussian", "binomial(logit)", "poisson"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,
-           vcov = c("classical", "HC0", "HC0-cluster", "random", "gee", "PC", "DK"),
+           vcov = c("standard", "basic", "CL-0", "random", "gee", "PC", "PL", "BS"),
            type = "copula")
 save(s02, file = "sim-02.rda")
 }
@@ -126,7 +126,7 @@ set.seed(3)
 s03 <- sim(nrep = 10000, nid = 100, nround = 5,
            dist = c("zerotrunc", "zip", "beta"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,
-           vcov = c("classical", "HC0", "HC0-cluster"),
+           vcov = c("standard", "basic", "CL-0", "BS"),
            type = "copula")
 save(s03, file = "sim-03.rda")
 }
@@ -138,7 +138,7 @@ set.seed(4)
 s04 <- sim(nrep = 10000, nid = c(10, seq(50, 250, by = 50)), nround = 5,
            dist = c("gaussian","poisson", "binomial(logit)"), rho = 0.25, xrho = 0.25,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,
-           vcov = c("HC0-cluster","HC1-cluster","HC2-cluster","HC3-cluster"),
+           vcov = c("CL-0","CL-1","CL-2","CL-3"),
            type = "copula")
 save(s04, file = "sim-04.rda")
 }
@@ -150,7 +150,7 @@ set.seed(5)
 s05 <- sim(nrep = 10000, nid = 100, nround = 5,
            dist = c("gaussian", "binomial(logit)", "poisson"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,
-           vcov = c("classical", "HC0", "HC0-cluster"),
+           vcov = c("standard", "basic", "CL-0", "BS"),
            type = "ranef")
 save(s05, file = "sim-05.rda")
 }
@@ -162,7 +162,7 @@ set.seed(6)
 s06 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
            dist = "gaussian", rho = 0.25, xrho = 0.25,
            coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
-           vcov = c("HC0-cluster", "PC", "DK"), type = "copula")
+           vcov = c("CL-0", "PC", "PL"), type = "copula")
 save(s06, file = "sim-06.rda")
 }
 @
@@ -173,7 +173,7 @@ set.seed(7)
 s07 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
            dist = "gaussian", rho = 0.25, xrho = 0.25,
            coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
-           vcov = c("HC0-cluster", "PC", "DK"), type = "copula-ar1")
+           vcov = c("CL-0", "PC", "PL"), type = "copula-ar1")
 save(s07, file = "sim-07.rda")
 }
 @
@@ -192,7 +192,7 @@ set.seed(8)
 s08 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
            dist = c("binomial(logit)", "poisson"), rho = 0.25, xrho = 0.25,
            coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
-           vcov = c("HC0-cluster", "PC", "DK"), type = "copula-ar1")
+           vcov = c("CL-0", "PC", "PL"), type = "copula-ar1")
 save(s08, file = "sim-08.rda")
 }
 @
