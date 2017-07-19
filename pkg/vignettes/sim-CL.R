@@ -4,7 +4,7 @@ dgp <- function(nid = 100L, nround = 5L,
   dist = "gaussian", type = "copula", link = NULL, ...)
 {
   ## match distribution and type of correlation
-  dist <- match.arg(dist, c("gaussian", "poisson", "zip", "hurdle", "beta", "binomial(logit)", "zerotrunc"))
+  dist <- match.arg(dist, c("gaussian", "poisson", "zeroinfl", "hurdle", "betareg", "binomial(logit)", "zerotrunc"))
   type <- match.arg(type, c("copula","copula-ar1", "ranef"))
   
   ## sample size
@@ -65,7 +65,7 @@ dgp <- function(nid = 100L, nround = 5L,
         if(is.null(link)) link <- "log"
       },
       
-      "zip" = {
+      "zeroinfl" = {
         dist <- if(type == "ranef") {
 	  function(n, mu, ...) countreg::rzipois(n, lambda = mu, pi = 0.3)
 	} else {
@@ -83,7 +83,7 @@ dgp <- function(nid = 100L, nround = 5L,
         if(is.null(link)) link <- "log"
       },
 
-      "beta" = {
+      "betareg" = {
         dist <- if(type == "ranef") {
 	  function(n, mu, ...) rbeta(n, shape1 = mu * 10, shape2 = (1 - mu) * 10)
 	} else {
@@ -138,8 +138,8 @@ dgp <- function(nid = 100L, nround = 5L,
 ## model fitting and covariances
 fit <- function(data,
   formula = response ~ x1 + x2 + x3,
-  dist = c("gaussian", "poisson", "zip", "hurdle", "beta", "binomial(logit)", "zerotrunc"),
-  vcov = c("classical", "HC0", "HC1", "HC2", "HC3", "HC0-cluster", "HC1-cluster", "HC2-cluster", "HC3-cluster", "fixed", "random", "gee", "DK", "PC", "BS"),
+  dist = c("gaussian", "poisson", "zeroinfl", "hurdle", "betareg", "binomial(logit)", "zerotrunc"),
+  vcov = c("standard", "basic", "HC1", "HC2", "HC3", "CL-0", "CL-1", "CL-2", "CL-3", "fixed", "random", "gee", "PL ", "PC", "BS"),
   level = 0.95)
 {
   ## assure formula to be in current environment
@@ -152,9 +152,9 @@ fit <- function(data,
   m <- switch(dist,
     "gaussian" = lm(formula, data = data),
     "poisson" = glm(formula, data = data, family = poisson),
-    "zip" = countreg::zeroinfl(formula, data = data),
+    "zeroinfl" = countreg::zeroinfl(formula, data = data),
     "hurdle" = pscl::hurdle(formula, data = data),
-    "beta" = betareg::betareg(formula, data = data, phi = FALSE),
+    "betareg" = betareg::betareg(formula, data = data, phi = FALSE),
     "binomial(logit)" = glm(formula, data = data, family = binomial),
     "zerotrunc" = glm(formula, data = data, family = ztpoisson)
     #"zerotrunc" = zerotrunc(formula, data = data, dist = "poisson")
@@ -165,9 +165,9 @@ fit <- function(data,
     m_fe <- switch(dist,
       "gaussian" = lm(formula_fe, data = data),
       "poisson" = glm(formula_fe, data = data, family = poisson),
-      "zip" = countreg::zeroinfl(formula_fe, data = data),
+      "zeroinfl" = countreg::zeroinfl(formula_fe, data = data),
       "hurdle" = pscl::hurdle(formula_fe, data = data),
-      "beta" = betareg::betareg(formula_fe, data = data, phi = FALSE),
+      "betareg" = betareg::betareg(formula_fe, data = data, phi = FALSE),
       "binomial(logit)" = glm(formula_fe, data, family = binomial),
       "zerotrunc" = glm(formula_fe, data = data, family = ztpoisson)
       #"zerotrunc" = zerotrunc(formula_fe, data = data, dist = "poisson") 
@@ -181,9 +181,9 @@ fit <- function(data,
     m_re <- switch(dist,
       "gaussian" = lme4::lmer(formula_re, data = data, REML = FALSE),
       "poisson" = lme4::glmer(formula_re, data = data, family = poisson),
-      "zip" = NULL,
+      "zeroinfl" = NULL,
       "hurdle" = NULL,
-      "beta" = NULL,
+      "betareg" = NULL,
       "binomial(logit)" = lme4::glmer(formula_re, data = data, family = binomial),
       "zerotrunc" = NULL
     )
@@ -195,9 +195,9 @@ fit <- function(data,
     m_gee <- switch(dist,
       "gaussian" = geepack::geeglm(formula, data = data, id = id, corstr = "exchangeable", family = gaussian),
       "poisson" = geepack::geeglm(formula, data = data, id = id, corstr = "exchangeable", family = poisson),
-      "zip" = NULL,
+      "zeroinfl" = NULL,
       "hurdle" = NULL,
-      "beta" = NULL,
+      "betareg" = NULL,
       "binomial(logit)" = geepack::geeglm(formula, data = data, id = id, corstr = "exchangeable", family = binomial("logit")),
       "zerotrunc" = NULL
     )
@@ -209,15 +209,15 @@ fit <- function(data,
   rval <- data.frame(coef = numeric(0), se = numeric(0), par = character(0),
       vcov = character(0), stringsAsFactors = FALSE)
 
-  if("classical" %in% vcov) {
+  if("standard" %in% vcov) {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcov(m))), par = names(coef(m)),
-      vcov = "classical", stringsAsFactors = FALSE))
+      vcov = "standard", stringsAsFactors = FALSE))
   }
-  if("HC0" %in% vcov) {
+  if("basic" %in% vcov) {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(sandwich(m))), par = names(coef(m)),
-      vcov = "HC0", stringsAsFactors = FALSE))
+      vcov = "basic", stringsAsFactors = FALSE))
   }
   if("HC1" %in% vcov) {
     rval <- rbind(rval, data.frame(
@@ -234,22 +234,22 @@ fit <- function(data,
       coef = coef(m), se = sqrt(diag(vcovHC(m, type = "HC3"))), par = names(coef(m)),
       vcov = "HC3", stringsAsFactors = FALSE))
   }
-  if("HC0-cluster" %in% vcov) {
+  if("CL-0" %in% vcov) {
     rval <- rbind(rval, data.frame(
-      coef = coef(m), se = sqrt(diag(vcovCL(m, cluster = data$id, type = "HC0"))), par = names(coef(m)),
-      vcov = "HC0-cluster", stringsAsFactors = FALSE))
+      coef = coef(m), se = sqrt(diag(vcovCL(m, cluster = data$id, type = "basic"))), par = names(coef(m)),
+      vcov = "CL-0", stringsAsFactors = FALSE))
   }
-  if("HC1-cluster" %in% vcov) {
+  if("CL-1" %in% vcov) {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcovCL(m, cluster = data$id, type = "HC1"))), par = names(coef(m)),
-      vcov = "HC1-cluster", stringsAsFactors = FALSE))
+      vcov = "CL-1", stringsAsFactors = FALSE))
   }
-  if("HC2-cluster" %in% vcov & dist != "zip") {
+  if("CL-2" %in% vcov & dist != "zeroinfl") {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcovCL(m, cluster = data$id, type = "HC2"))), par = names(coef(m)),
-      vcov = "HC2-cluster", stringsAsFactors = FALSE))
+      vcov = "CL-2", stringsAsFactors = FALSE))
   }
-  if("HC3-cluster" %in% vcov & dist != "zip") {
+  if("CL-3" %in% vcov & dist != "zeroinfl") {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcovCL(m, cluster = data$id, type = "HC3"))), par = names(coef(m)),
       vcov = "HC3-id", stringsAsFactors = FALSE))
@@ -270,10 +270,10 @@ fit <- function(data,
       coef = coef(m_gee), se = sqrt(diag(m_gee$geese$vbeta)), par = names(coef(m_gee)),
       vcov = "gee", stringsAsFactors = FALSE))
   }
-  if("DK" %in% vcov) {
+  if("PL " %in% vcov) {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcovPL(m, cluster = data$id, lag = "NW1987", adjust = FALSE))), par = names(coef(m)),
-      vcov = "DK", stringsAsFactors = FALSE))
+      vcov = "PL ", stringsAsFactors = FALSE))
   }
   if("PC" %in% vcov) {
     rval <- rbind(rval, data.frame(
@@ -282,7 +282,7 @@ fit <- function(data,
   }
     if("BS" %in% vcov) {
     rval <- rbind(rval, data.frame(
-      coef = coef(m), se = sqrt(diag(vcovBS(m, cluster = data$id))), par = names(coef(m)),
+      coef = coef(m), se = sqrt(diag(vcovBS(m, cluster = data$id, start = TRUE))), par = names(coef(m)),
       vcov = "BS", stringsAsFactors = FALSE))
   }
     
@@ -307,7 +307,7 @@ fit <- function(data,
 sim <- function(nrep = 1000, nid = 100L, nround = 5L,
   dist = "gaussian", rho = 0.5, xrho = 0.5,
   coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
-  vcov = c("classical", "HC0", "HC1", "HC2", "HC3", "HC0-cluster", "HC1-cluster", "HC2-cluster", "HC3-cluster", "fixed", "random", "gee", "DK", "PC", "BS"),
+  vcov = c("standard", "basic", "HC1", "HC2", "HC3", "CL-0", "CL-1", "CL-2", "CL-3", "fixed", "random", "gee", "PL", "PC", "BS"),
   ...,
   cores = NULL)
 {
@@ -327,7 +327,8 @@ sim <- function(nrep = 1000, nid = 100L, nround = 5L,
       rvali <- applyfun(1L:nrep, function(j) {      
       d <- dgp(nid = par$nid[i], nround = par$nround[i], dist = par$dist[i],
                rho = par$rho[i], xrho = par$xrho[i], coef = coef, ...)
-      try(fit(d, formula = formula, dist = par$dist[i], vcov = vcov))
+      ff <- formula
+      try(fit(d, formula = ff, dist = par$dist[i], vcov = vcov))
     })
     rvali <- rvali[sapply(rvali, class) == "data.frame"]
     rvali[[1L]][, -(1L:2L)] <- Reduce("+", lapply(rvali, "[", , -(1:2)))/length(rvali)
