@@ -236,7 +236,7 @@ fit <- function(data,
   }
   if("CL-0" %in% vcov) {
     rval <- rbind(rval, data.frame(
-      coef = coef(m), se = sqrt(diag(vcovCL(m, cluster = data$id, type = "basic"))), par = names(coef(m)),
+      coef = coef(m), se = sqrt(diag(vcovCL(m, cluster = data$id, type = "HC0"))), par = names(coef(m)),
       vcov = "CL-0", stringsAsFactors = FALSE))
   }
   if("CL-1" %in% vcov) {
