@@ -91,7 +91,7 @@ panel.xyref <- function(x, y, ...) {
   panel.abline(h = 0.95, col = "slategray")
   panel.xyplot(x, y, ...)  
 }
-options(prompt = "R> ", continue = "+   ")
+options(prompt = "R> ", continue = "+  ", digits = 5)
 @ 
 
 % simulations
@@ -805,82 +805,109 @@ The main motivation for the new object-oriented implementation of clustered cova
 in \pkg{sandwich} was the applicability to models beyond \code{lm()} or \code{glm()}.
 Specifically when working on \cite{hac:Berger+Stocker+Zeileis:2017} -- an extended
 replication of \cite{hac:Aghion+VanReenen+Zingales:2013} -- clustered covariances
-for negative binomial hurdle models were provided. In Section~\ref{ex-aghion} it is
-illustrated how these can now be easily obtained.
+for negative binomial hurdle models were needed to confirm reproducibility. After
+doing this ``by hand'' in \cite{hac:Berger+Stocker+Zeileis:2017}, we show in
+Section~\ref{ex-aghion} how the same results can now conveniently obtained with the
+new general \code{vcovCL()} framework.
 
-To replicate further classic results, the benchmark data from \cite{hac:Petersen:2009}
-is considered in Section~\ref{ex-petersen}. This focuses on the classical linear
-regression case with model errors that are correlated within clusters. It is shown
-how the results from various other \proglang{R} packages (\pkg{multiwayvcov},
-\pkg{plm}, \pkg{geepack}, \pkg{pcse}) can be replicated using the new \pkg{sandwich}
-package. One- and two-way clustered standard errors from \code{vcovCL()} from \pkg{sandwich} are compared to those obtained using \code{cluster.vcov()} from \pkg{multiwayvcov} package. Furthermore, one-way clustered standard errors can also be obtained from packages \pkg{plm} and \pkg{geepack}, and are additionally benchmarked against the results from \pkg{sandwich}. 
-Function \code{vcovSCC()} from \pkg{plm} gives Driscoll and Kraay type standard errors, the estimates are compared to \code{vcovPL()} from \pkg{sandwich}. 
-Also, panel-corrected standard errors can be estimated by function \code{vcovPC()} from \pkg{pcse} and are benchmarked against \code{vcovPC()} from \pkg{sandwich}.
+Furthermore, to show that the new \pkg{sandwich} package can also replicate the
+classic linear regression results that are currently scattered over various packages,
+the benchmark data from \cite{hac:Petersen:2009} is considered in Section~\ref{ex-petersen}.
+This focuses on linear regression with model errors that are correlated within clusters.
+Section~\ref{ex-petersen} replicates a variety of clustered covariances from the
+\proglang{R} packages (\pkg{multiwayvcov}, \pkg{plm}, \pkg{geepack}, and \pkg{pcse}.
+More specifically, one- and two-way clustered standard errors from
+\pkg{multiwayvcov} are replicated with \code{vcovCL()}. Furthermore, one-way clustered
+standard errors from \pkg{plm} and \pkg{geepack} can also be obtained by \code{vcovCL()}.
+The Driscoll and Kraay standard errors from \pkg{plm}'s \code{vcovSCC()} can also be
+computed with the new \code{vcovPL()}. Finally, panel-corrected standard errors can be estimated by
+function \code{vcovPC()} from \pkg{pcse} and are benchmarked against the new
+\code{vcovPC()} from \pkg{sandwich}.
  
 \subsection[Aghion et al. (2013) and Berger et al. (2017)]{\cite{hac:Aghion+VanReenen+Zingales:2013} and \cite{hac:Berger+Stocker+Zeileis:2017}} \label{ex-aghion}
-In this section, in a further example we will make use of the object-orientation of \code{vcovCL()}, and estimate clustered standard errors for a count data hurdle model.
 
-\cite{hac:Aghion+VanReenen+Zingales:2013} investigate the effect of institutional owners (these are, for example, pension funds, insurance companies, etc.) on innovation.
-The authors use firm-level panel data on innovation and institutional ownership from 1991 to 1999 over 803 firms, with the data clustered at company as well as industry level. 
-To capture the differing value of patents, citation-weighted patent counts are used as a proxy for innovation, whereby the authors weight the patents by the number of future citations.
-This motivates the use of count data models.
+\cite{hac:Aghion+VanReenen+Zingales:2013} investigate the effect of
+institutional owners (these are, for example, pension funds, insurance
+companies, etc.) on innovation. The authors use firm-level panel data on
+innovation and institutional ownership from 1991 to 1999 over 803 firms, with
+the data clustered at company as well as industry level.  To capture the
+differing value of patents, citation-weighted patent counts are used as a proxy
+for innovation, whereby the authors weight the patents by the number of future
+citations. This motivates the use of count data models.
 
-\cite{hac:Aghion+VanReenen+Zingales:2013} mostly employ Poisson and negative binomial models in a quasi-maximum likelihood approach and cluster standard errors by either companies or industries.
-Still, one limitation of standard count data models is that the zeros and the nonzeros (positives) are assumed to come from the same data-generating process.
-From an economic perspective, there is a difference in determinants of ``first innovation'' and ``continuing innovation''. The rationale behind this is the notion of nonlinearities in the innovation process.
-In case that the first innovation is especially hard to obtain in comparison to succeeding innovations, hurdle models offer a useful way that allows for a distinction to be made between these two processes \citep{hac:Berger+Stocker+Zeileis:2017}.
-Therefore, \cite{hac:Berger+Stocker+Zeileis:2017} employ two-part hurdle models with a binary part that models the decision to innovate at all, and a count part that models ongoing innovation, respectively.
-The \cite{hac:Aghion+VanReenen+Zingales:2013} data are available in the \pkg{sandwich} package.
+\cite{hac:Aghion+VanReenen+Zingales:2013} mostly employ Poisson and negative
+binomial models in a quasi-maximum likelihood approach and cluster standard
+errors by either companies or industries. \cite{hac:Berger+Stocker+Zeileis:2017}
+argue that zero responses should be treated separately both for statistical and
+economic reasons, as there is a difference in determinants of ``first innovation''
+and ``continuing innovation''. Therefore, they employ two-part hurdle models with a
+binary part that models the decision to innovate at all, and a count part that
+models ongoing innovation, respectively. 
+
+A basic negative binomial hurdle model is fitted with the \code{hurdle} function from the \pkg{pscl}
+package \citep{hac:Zeileis+Kleiber+Jackman:2008} using the
+\cite{hac:Aghion+VanReenen+Zingales:2013} data provided in the \pkg{sandwich} package.
 <<innovation-data>>= 
 data("InstInnovation", package = "sandwich")
-@ 
-Hurdle models are fitted with the \code{hurdle} function from the \pkg{pscl} package \citep{hac:Zeileis+Kleiber+Jackman:2008}. Here, the count model family chosen is a negative binomial, and the zero hurdle model family is a binomial with logit link.
-<<innovation-model>>=
 library("pscl")
-h.innov <- hurdle(
+h_innov <- hurdle(
   cites ~ institutions + log(capital/employment) + log(sales),
   data = InstInnovation, dist = "negbin")
 @
-Below, a comparison of ``standard'' standard errors, basic sandwich standard errors and clustered standard errors for an exemplary hurdle model is shown. Standard errors are clustered by companies, with a total of 803 clusters.
-<<innovation-se>>= 
+The partial Wald tests for all coefficients based on clustered standard errors
+can be obtained by using \code{coeftest()} from \pkg{lmtest} \citep{hac:Zeileis+Hothorn:2002} and setting
+\code{vcov = vcovCL} and providing the company-level clustering (with a total of 803 clusters)
+via \code{cluster = InstInnovation$company}.
+<<innovation-coeftest>>=
 library("sandwich")
+library("lmtest")
+coeftest(h_innov, vcov = vcovCL, cluster = InstInnovation$company)
+@
+This shows that institutional owners are have a small but positive impact in both
+submodels but that only the coefficient in the zero hurdle is significant.
+
+Below, the need for clustering is brought out through a comparison of clustered standard errors
+with ``standard'' standard errors and basic (cross-section) sandwich standard
+errors. As an additional reference, a simple clustered bootstrap covariance can
+be computed by \code{vcovBS()}.
+<<innovation-se>>= 
+set.seed(0)
 vc <- list(
-  "standard" = vcov(h.innov),
-  "basic" = sandwich(h.innov),
-  "CL-1" = vcovCL(h.innov, cluster = InstInnovation$company)
+  "standard" = vcov(h_innov),
+  "basic" = sandwich(h_innov),
+  "CL-1" = vcovCL(h_innov, cluster = InstInnovation$company),
+  "boot" = vcovBS(h_innov, cluster = InstInnovation$company)
 )
 sapply(vc, function(x) sqrt(diag(x)))
 @
-What can be observed is that when the data are clustered, basic standard errors can greatly overstate estimator precision.
-Then, for the exemplary hurdle model, clustered standard errors are scaled up by factors between $1.48$ and $1.86$ even compared to standard sandwich standard errors.
+This clearly shows that the usual standard errors greatly overstate the precision
+of the estimators and the basic sandwich covariance are able to improve but not fully
+remedy the situation.
+The clustered standard errors are scaled up by factors between about $1.5$ and $2$,
+even compared to the basic sandwich standard errors. Moreover, the clustered and
+bootstrap covariances agree very well -- thus highlighting the need for clustering
+-- with \code{vcovBS()} being computationally much more demanding than \code{vcovCL()}
+due to the resampling.
+
 
 
 
 \subsection[Petersen (2009)]{\cite{hac:Petersen:2009}} \label{ex-petersen}
-Benchmark data for testing the clustered standard error estimates in the linear model is a simulated data set\footnote{\url{http://www.kellogg.northwestern.edu/faculty/petersen/htm/papers/se/test_data.txt}} provided by \cite{hac:Petersen:2009}, containing 500 firms over 10 years. The data include 4 variables, \code{firm}, \code{year}, dependent variable \code{y} and explanatory variable \code{x} \citep[see also][]{hac:Graham+Arai+Hagstroemer:2016}.
 
-The data are available in \pkg{sandwich} as well as in \pkg{multiwayvcov}.
-<<petersen-data>>= 
-data("PetersenCL", package = "sandwich")
-@ 
-A linear model is fitted with \code{lm()}, 
+\cite{hac:Petersen:2009} provides (simulated) benchmark data
+\url{http://www.kellogg.northwestern.edu/faculty/petersen/htm/papers/se/test_data.txt}
+for assessing clustered standard error estimates in the linear regression model.
+This data set contains a dependent variable \code{y} and regressor \code{x} for
+500 \code{firm}s over 10 \code{year}s. It is frequently used in illustration
+\citep[e.g., in \pkg{multiwayvcov}, see][]{hac:Graham+Arai+Hagstroemer:2016} and is
+also available in \pkg{sandwich}. The corresponding linear model is fitted with \code{lm()}.
 <<petersen-model>>=
+data("PetersenCL", package = "sandwich")
 p_lm <- lm(y ~ x, data = PetersenCL)
 @ 
-and testing the estimated coefficients with \code{coeftest()} from package \pkg{lmtest} gives
-<<petersen-coeftest>>=
-library("lmtest")
-coeftest(p_lm)
-@ 
-However, the data are clustered by firms (\code{firm}), with a total of 500 clusters. But ignoring dependency by using ``standard'' standard errors results in an overstate of estimator precision.
 
 \subsubsection{One-way clustered standard errors}
-Thus, one-way clustered standard errors clustered by \code{firm} are employed.
-It can be observed that clustered standard errors are larger than ``standard'' standard errors.
-<<petersen-onecl-firm>>=
-library("sandwich")
-coeftest(p_lm, vcov = vcovCL(p_lm, cluster = PetersenCL$firm))
-@ 
+
 Next, it is shown how the results from various other \proglang{R} packages (\pkg{multiwayvcov},
 \pkg{plm}, \pkg{geepack}, \pkg{pcse}) can be replicated using the new \pkg{sandwich} package.
 
@@ -910,12 +937,12 @@ p_plm <- plm(y ~ x, data = PetersenCL, model = "pooling",
 p_gee <- geeglm(y ~ x, data = PetersenCL, id = PetersenCL$firm,
  corstr = "independence", family = gaussian)
 @ 
-As there is no \code{vcov()}-method specified for \code{geeglm()}, the convenience function \code{vcov.geeglm()} is provided to make this contribution.
+As there is no \code{vcov()} method specified for \code{geeglm()}, the convenience function \code{vcov.geeglm()} is provided to make this contribution.
 <<petersen-convenience>>=
 vcov.geeglm <- function(object) {
-vc <- object$geese$vbeta
-rownames(vc) <- colnames(vc) <- names(coef(object))
-return(vc)
+  vc <- object$geese$vbeta
+  rownames(vc) <- colnames(vc) <- names(coef(object))
+  return(vc)
 }
 @ 
 Nevertheless, in order to accomplish exactly the same value for clustered standard errors using \code{plm} and \code{geepack}, the bias correction $\frac{G}{G - 1}\frac{n - 1}{n - k}$ has to be omitted from the clustered covariance matrix estimated by \code{vcovCL()}. This is achieved by setting the function arguments \code{cadjust = FALSE} and \code{type = "HC0"}.
