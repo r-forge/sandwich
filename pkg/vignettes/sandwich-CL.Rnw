@@ -1009,96 +1009,132 @@ ones mentioned above and then moving on to other types of maximum likelihood
 regression models.
 
 \subsection{Simulation design}
-Parameters $\rho$ and $G$ vary systematically, where $\rho$ determines the strength of cluster correlation and varies from $0$ to $0.9$. The number of clusters $G$ ranges from $10$ to $50, 100, 150, 200$ to $250$. Numerous studies \citep{hac:Green+Vavreck:2008,hac:Arceneaux+Nickerson:2009,hac:Harden:2011} confirmed that for the linear regression case, the higher the number of clusters, the less standard errors are biased. Furthermore, only balanced cluster are investigated, with the number of  observations per cluster fixed to $5$.
+
+The main focus of the simulation is to assess the performance of clustered covariances
+(and related methods) at varying degrees of correlation within the clusters. The two
+most important parameters to control for this are the cluster correlation $\rho$, obviously,
+and the number of clusters $G$ as bias decreases with increasing number of clusters
+\citep{hac:Green+Vavreck:2008,hac:Arceneaux+Nickerson:2009,hac:Harden:2011}. More specifically,
+the cluster correlation varies from $0$ to $0.9$ and the number of clusters $G$ ranges from
+$10$ to $50, 100, \dots, 250$.
+
+In a first step, only balanced clusters with a low number of observations per cluster ($5$) are
+considered. All models are specified through linear predictors (with up to three regressors)
+but with different response distributions. A Gaussian copula is employed to introduce the cluster
+correlation for the different response distributions. The methods considered are the different
+clustered covariances implemented in \pkg{sandwich} as well as competing methods such as basic
+sandwich covariances (without clustering), mixed-effects models with a random intercept, or
+generalized estimating equations with an exchangeable correlation structure.
 
 \subsubsection{Linear predictor}
-The linear predictor is
+
+Following \cite{hac:Harden:2011} the linear predictor considered for the simulation is composed
+of three regressors that are either \emph{correlated} with the clustering, \emph{clustered},
+or \emph{uncorrelated}. The model equation is given by
 \begin{eqnarray} \label{eq:predictor}
 h(\mu_{ig}) = \beta_{0} + \beta_{1} \cdot x_{1,ig} + \beta_{2} \cdot x_{2,g} + \beta_{3} \cdot x_{3,ig},
 \end{eqnarray}
-with a link function $h$ and expected value $\mu_{ig}$. 
-In order to introduce cluster correlation in the response, two options are investigated. The first option is to take the marginal model Equation~\ref{eq:predictor} and introduce correlation via a Gaussian copula. The second option is to add a random effect in Equation~\ref{eq:predictor}. For the linear model with an identity link function $h(\cdot)$, both options amount to the same thing. Though for models other than \code{lm()}, the alternatives are different.
-The copula option is favored in the simulation exercises, as for models other than \code{lm()}, including a random effect comes along with including a bias.
-
-We analyze three regressor variables
+where $\mu_{ig}$ is the expectation of the response for observation $i$ within cluster $g$ and the
+link function $h(\cdot)$ depends on the model type. The regressors variables are all drawn from standard
+normal distributions but at different levels (cluster vs.\ individual observation).
 \begin{eqnarray} \label{eq:regressors}
 x_{1,ig} & \sim & \rho_{x} \cdot \mathcal{N}_{g}(0, 1) + (1 - \rho_{x}) \cdot \mathcal{N}_{ig}(0, 1) \label{x1} \\ 
 x_{2,g} & \sim & \mathcal{N}_{g}(0, 1) \label{x2} \\
 x_{3,ig} & \sim & \mathcal{N}_{ig}(0, 1) \label{x3}
 \end{eqnarray}
-Regressor $x_{1,ig}$ in Equation~\ref{x1} is composed of a linear combination of a random draw at cluster level ($\mathcal{N}_{g}$) and a random draw at individual level ($\mathcal{N}_{ig}$). Regressor $x_{2,g}$ in Equation~\ref{x2} is composed of a random draw at cluster level, and regressor $x_{3,ig}$ in Equation~\ref{x3} consists of a random draw at individual level. In most simulations, a single regressor $x_{1,ig}$ is investigated.
+Regressor $x_{1,ig}$ is composed of a linear combination of a random draw at
+cluster level ($\mathcal{N}_{g}$) and a random draw at individual level ($\mathcal{N}_{ig}$) while
+regressors $x_{2,g}$ and $x_{3,ig}$ are drawn only at cluster and individual level, respectively.
+Emphasis is given to the investigation of regressor $x_{1,ig}$ with correlation (default: $\rho_{x} = 0.25$)
+which is probably the most common in practice. Furthermore, by considering the extremes $\rho_{x} = 1$ and
+$\rho_{x} = 0$ the properties of $x_{1,ig}$ coincide with those of $x_{2,g}$ and $x_{3,ig}$,
+respectively.
 
-In line with \cite{hac:Harden:2011}, this setup is used to introduce correlated (\ref{x1}), clustered (\ref{x2}) and uncorrelated regressors (\ref{x3}). The cluster correlation of $x_{1,ig}$ is controlled by parameter $\rho_{x}$, and set to 0.25 per default. This implies at least some within cluster correlation of regressor $x_{1,ig}$. For $\rho_{x} = 1$, regressors $x_{1,ig}$ and $x_{2,g}$ are equivalent. Furthermore, if $\rho_{x} = 0$, regressor $x_{1,ig}$ corresponds to regressor $x_{3,ig}$.
-
-The vector of coefficients is fixed to
+The vector of coefficients is fixed to either one of
 \begin{eqnarray} \label{eq:coefs}
 \beta_{1} & = & (0, 0.85, 0.5, 0.7)^\top \label{beta1} \\ 
 \beta_{2} & = & (0, 0.85, 0, 0)^\top \label{beta2}
 \end{eqnarray}
-even though these values can be interchanged without influencing the results\footnote{Values are equivalent to \cite{hac:Harden:2011}.}.
+which have been selected based on \cite{hac:Harden:2011}.
 
-Response distributions examined include Gaussian (\code{gaussian}), binomial with a logit link (\code{binomial(logit)}), Poisson (\code{poisson}), zero-truncated Poisson (\code{zerotrunc}), Beta (\code{beta}) and zero-inflated Poisson (\code{zip}). Again, \code{vcovCL()} allows estimation of clustered covariances for all abovementioned responses (and many more).
+\subsubsection{Response distributions}
+
+The response distributions encompass Gaussian (\code{gaussian}, with identity link) as the standard classical scenario
+as well as binary (\code{binomial}, with a size of one and a logit link) and Poisson (\code{poisson}, with log link) from the
+GLM exponential family. To move beyond the GLM, we also consider the beta (\code{beta}, with logit link and fixed precision parameter $\phi = 10$),
+zero-truncated Poisson(\code{zerotrunc}, with log link), andzero-inflated Poisson (\code{zip}, with log link and fixed inflation probability $\pi = 0.3$)
+distributions.
+
 
 \subsubsection{Sandwich covariances}
-Covariances being compared to each other include ``standard'' covariances without heteroscedasticity and without autocorrelation (\code{standard}), basic sandwich covariances (\code{basic}), Driscoll and Kraay type covariances (\code{PL}), panel-corrected covariances (\code{PC}) a la \cite{hac:Beck+Katz:1995} and clustered covariances with HC0 to HC3 adjustment (\code{CL-0}, \code{CL-1}, \code{CL-2}, \code{CL-3}). In addition, covariances from a random effects model (\code{random}) and from a GEE with exchangeable correlation structure (\code{gee}) are estimated.
+
+The types of covariances being compared include ``standard'' covariances
+(\code{standard}, without considering any heteroscedasticity or clustering/correlations),
+basic sandwich covariances (\code{basic}, without clustering),
+Driscoll and Kraay panel covariances (\code{PL}),
+Beck and Katz panel-corrected covariances (\code{PC}),
+and clustered covariances with HC0--HC3 adjustment (\code{CL-0}--\code{CL-3}).
+As further references, covariances from a clustered bootstrap (\code{BS}),
+a mixed-effects model with random intercept (\code{random}), and
+from a GEE with exchangeable correlation structure (\code{gee})
+are assessed..
 
 \subsubsection{Outcome measure}
-In order to assess the validity of statistical inference, the empirical coverage rate is the outcome measure of interest.
-If standard errors are estimated accurately, the empirical coverage rate of the $95$\% confidence interval should be close to 0.95. 
-Values less than 0.925 will be considered to have underestimated standard errors towards a Type I error, while values greater than 0.975 will be considered to have overestimated standard errors towards a Type II error.
+
+In order to assess the validity of statistical inference based on clustered
+covariances, the empirical coverage rate of the 95\% Wald confidence intervals
+is the outcome measure of interest. If standard errors are estimated
+accurately, the empirical coverage should match the nominal rate of $0.95$.
+And empirical coverages falling short of $0.95$ are typically due to underestimated
+standard errors and would lead to inflated type~I errors in partial Wald tests
+of the coefficients.
 
 \subsubsection{Simulation code}
-The \proglang{R} script \code{sim-CL.R} comprises the simulation code for the data generating process  described above and includes functions \code{dgp()}, \code{fit()} and \code{sim()}.
-While \code{dgp()} specifies the data generating process and generates a data frame with (at most) three regressors \code{x1}, \code{x2}, \code{x3} as well as cluster dimensions \code{id} and \code{time}.
-\code{fit()} is responsible for the model fitting, the covariances as well as further outcomes (bias, mad, power and coverage). \code{sim()} conducts all simulations and provides for parallelization support.
-
-%\begin{table}[t!]
-%  \centering
-%\begin{tabular}{| l | p{6cm} | p{7cm} |}
-%  \hline
-%  model & formula & model fit \\ \hline
-%  \code{m} & \code{formula <- response ~ x1 + x2 + x3} & \code{lm(formula, data = data)} \\ \hline
-%  \code{m_fe} & \code{formula_fe <- update(formula, . ~ . + id)} &\code{lm(formula_fe, data = data)} \\ \hline
-%  \code{m_re} & \code{formula_re <- update(formula, . ~ . + (1 | id))} & \code{lme4::lmer(formula_re, data = %data, REML = FALSE)} \\ \hline
-%  \code{m_gee} & \code{formula <- response ~ x1 + x2 + x3} & \code{geepack::geeglm(formula, data = data, id = %id, corstr = "exchangeable", family = gaussian)} \\ \hline
-%\end{tabular}
-%\caption{\code{sim-CL.R}: model fitting for a Gaussian response}
-%  \label{tab:models}
-%\end{table}
-
-Table~\ref{tab:vcov} shows exemplary how the different types of covariances are calculated for a Gaussian response.
-A pooled model (\code{m}),
-% a fixed effects model (\code{m_fe}),
-a random effects model (\code{m_re}) and a GEE with an exchangeable correlation structure (\code{m_gee}) is fitted. 
-%The fixed effects model includes fixed \code{id} effects,
-The random effects model is specified as a model with random intercepts. Model fittig for random effects models and GEEs requires the packages \pkg{lme4} and \pkg{geepack}, respectively.
-However, it is not possible to fit all model types for all mentioned response distributions. There are some limitations for random effects models as well as for GEEs.
-
-Furthermore, to calculate clustered standard errors, the square root of the diagonal elements of the covariance matrices in Table~\ref{tab:vcov} is calculated.
 
 \begin{table}[t!]
   \centering
 \begin{tabular}{llll}
   \hline
   Label & Model & Object & Variance-covariance matrix \\ \hline
-  CL-0 & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC0")} \\ 
-  CL-1 & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC1")} \\
-  CL-2 & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC2")} \\ 
-  CL-3 & \code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC3")} \\ 
-  PL & \code{lm} & \code{m} & \code{vcovPL(m, cluster = id, adjust = FALSE)} \\ 
-  PC & \code{lm} & \code{m} & \code{vcovPC(m, cluster = id, order.by = round)} \\ \hline
-  standard &\code{lm} & \code{m} & \code{vcov(m)} \\ 
-  basic & \code{lm} & \code{m} & \code{sandwich(m)} \\ \hline
- % fixed & \code{lm} & \code{m_fe} & \code{vcov(m_fe)[1:3, 1:3]} \\ 
-  random & \code{lmer} & \code{m_re} & \code{vcov(m_re)} \\
+  CL-0 & (\code{g})\code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC0")} \\ 
+  CL-1 & (\code{g})\code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC1")} \\
+  CL-2 & (\code{g})\code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC2")} \\ 
+  CL-3 & (\code{g})\code{lm} & \code{m} & \code{vcovCL(m, cluster = id, type = "HC3")} \\ 
+  PL & (\code{g})\code{lm} & \code{m} & \code{vcovPL(m, cluster = id, adjust = FALSE)} \\ 
+  PC & (\code{g})\code{lm} & \code{m} & \code{vcovPC(m, cluster = id, order.by = round)} \\ \hline
+  standard & (\code{g})\code{lm} & \code{m} & \code{vcov(m)} \\ 
+  basic & (\code{g})\code{lm} & \code{m} & \code{sandwich(m)} \\ \hline
+  random & (\code{g})\code{lmer} & \code{m_re} & \code{vcov(m_re)} \\
   gee & \code{geeglm} & \code{m_gee}  & \code{m_gee\$geese\$vbeta} \\ \hline
 \end{tabular}
-\caption{Covariance matrices for a Gaussian response in \code{sim-CL.R}.
+\caption{Covariance matrices for responses from the exponential family in `\code{sim-CL.R}'.
 \label{tab:vcov}}
 \end{table}
 
+The supplementary \proglang{R} script `\code{sim-CL.R}' comprises the simulation code for the
+data generating process  described above and includes functions \code{dgp()},
+\code{fit()}, and \code{sim()}. While \code{dgp()} specifies the data generating
+process and generates a data frame with (up to) three regressors \code{x1},
+\code{x2}, \code{x3} as well as cluster dimensions \code{id} and \code{round}.
+\code{fit()} is responsible for the model estimation as well as computation of the
+covariance matrix estimate and the empirical coverage. The function \code{sim()}
+sets up all factorial combinations of the specified scenarios and loops over the fits
+for each scenario (using multiple cores for parallelization).
+
+Table~\ref{tab:vcov} shows exemplary how the different types of covariances are
+calculated for responses from the exponential family. A pooled model (\code{m}),
+a random effects model (\code{m_re}, using \pkg{lme4}, \citealp{hac:Bates+Machler+Bolker:2015}),
+and a GEE with an exchangeable correlation structure (\code{m_gee}, using \pkg{geepack},
+\citealp{hac:Halekoh+Hojsgaard+Yan:2002}) are fitted. For the other (non-GLM)
+responses, the functions
+\code{betareg()} (from \pkg{betareg}, \citealp{hac:Cribari-Neto+Zeileis:2010}),
+\code{zerotrunc()} (from \pkg{countreg}, \citealp{hac:Zeileis+Kleiber:2017}),
+and \code{zeroinfl()} (from \pkg{pscl}/\pkg{countreg}, \citealp{hac:Zeileis+Kleiber+Jackman:2008}) are used
+
 \subsection{Results}
+
 The questions which should be discussed and answered by the simulation study are:
+%
 \begin{itemize}
    \item Experiment I: How do clustered covariances perform for different types of regressors for a Gaussian response distribution?
    \item Experiment II: How do clustered covariances perform for glm response distributions?
@@ -1107,12 +1143,13 @@ The questions which should be discussed and answered by the simulation study are
 \end{itemize}
 
 \subsubsection{Experiment I}
-Figure~\ref{fig:sim-01} shows the results from Experiment I and plots the coverage probabilities for coefficients \code{x1} (Equation~\ref{x1}), \code{x2} (Equation~\ref{x2}) and \code{x3} (Equation~\ref{x3}) on the y-axis.
+
+Figure~\ref{fig:sim-01} shows the results from Experiment~I and plots the coverage probabilities for coefficients \code{x1} (Equation~\ref{x1}), \code{x2} (Equation~\ref{x2}) and \code{x3} (Equation~\ref{x3}) on the y-axis.
 On the x-axis the cluster correlation of the response $\rho$ is shown, running from 0 (no correlation) to 0.9 (high correlation).
 Depending on the regressors, the implications of running the cluster correlation $\rho$ from 0 to 0.9 on the coverage of different covariance estimators are substantial.
 
 Starting with regressor \code{x1} at $\rho = 0$, all standard errors except the Driscoll and Kraay standard errors perform well and are close to the ``true'' standard error. As the number of observations per cluster is small with only $N_g = 5$, Driscoll and Kraay standard errors are substantially underestimated, even at a $\rho$ of 0. 
-In a Monte-Carlo study, \cite{hac:Driscoll+Kraay:1998} put the minimum of $N_g > 20 - 25$.
+In a Monte-Carlo study, \cite{hac:Driscoll+Kraay:1998} put the minimum of $N_g >$ 20--25.
 Panel-corrected standard errors for regressor \code{x1} underestimate the ``true'' standard errors, that applies all the more the higher $\rho$. To a smaller extent, the same holds true for ``standard'' standard errors as well as basic sandwich standard errors.
 As noted by \cite{hac:Hoechle:2007}, PCSE can be quite imprecise if the crosss-sectional dimension is large compared to the time dimension.
 
@@ -1146,14 +1183,14 @@ xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
   panel = panel.xyref)
 @ 
 \caption{Experiment I}
-\footnotesize{Experiment I explores how various types of (clustered) covariances perform for the linear regression model with Gaussian response and data composed of $G = 100$ (balanced) clusters each with $N_{g} = 5$ observations. The simulations of Experiment I are composed of $10,000$ replications. The regressors are included in the model, \code{x1} is composed of a linear combination of random draw at cluster level and a random draw at individual level with cluster correlation $\rho_x = 0.25$. \code{x2} consists of a random draw at cluster level, \code{x3} of a random draw at individual level. The coverage is plotted on the y-axis, the cluster correlation $\rho$ is plotted on the x-axis.
+\footnotesize{Experiment I explores how various types of (clustered) covariances perform for the linear regression model with Gaussian response and data composed of $G = 100$ (balanced) clusters each with $N_{g} = 5$ observations. The simulations of Experiment~I are composed of $10,000$ replications. The regressors are included in the model, \code{x1} is composed of a linear combination of random draw at cluster level and a random draw at individual level with cluster correlation $\rho_x = 0.25$. \code{x2} consists of a random draw at cluster level, \code{x3} of a random draw at individual level. The coverage is plotted on the y-axis, the cluster correlation $\rho$ is plotted on the x-axis.
 In a nutshell, if a regressor exhibits within cluster correlation even to a small extent, basic sandwich standard errors and ``standard'' standard errors that do not take the cluster dimension into account deteriorate with an increasing $\rho$. In addition, PCSE and Driscoll and Kraay standard errors do not perform sufficiently well because of a too small $N_g$. Nevertheless, clustered standard errors as well as standard errors from a random effects model and from a GEE with exchangeable correlation structure perform well.}
 \label{fig:sim-01}
 \end{figure}
 
 \subsubsection{Experiment II}
 
-Figure~\ref{fig:sim-02} illustrates the results from Experiment II. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. Three response distributions are compared: Gaussian, binomial (with a logit link) and Poisson. Unlike in Experiment I, only a single regressor \code{x1} is included, with a cluster correlation $\rho_x$ of 0.25.
+Figure~\ref{fig:sim-02} illustrates the results from Experiment~II. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. Three response distributions are compared: Gaussian, binomial (with a logit link) and Poisson. Unlike in Experiment~I, only a single regressor \code{x1} is included, with a cluster correlation $\rho_x$ of 0.25.
 The left panel depicts the coverage for the Gaussian response, and thus corresponds to the left panel in Figure~\ref{fig:sim-01}. 
 
 Results are qualitatively similar for the binomial and Poisson responses. The only exception are the standard errors from a random effects model, where the coverage is moving faster downwards than for the other standard errors. 
@@ -1180,13 +1217,13 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   panel = panel.xyref)
 @
 \caption{Experiment II}
-\footnotesize{Experiment II explores how various types of (clustered) covariances perform for Gaussian, binomial and Poisson responses, where the data are composed of $G = 100$ (balanced) clusters each with $N_{g} = 5$ observations. The simulations of Experiment II are composed of $10,000$ replications. There is only a single regressor included in the model, \code{x1} is composed of a linear combination of random draw at cluster level and a random draw at individual level with cluster correlation $\rho_x = 0.25$. The coverage is plotted on the y-axis, the cluster correlation $\rho$ is plotted on the x-axis. Compared to the Gaussian response, results are qualitatively similar for the binomial and Poisson responses. The only exception are the standard errors from a random effects model, where the coverage is moving faster downwards than for the other standard errors. One can thus conclude that clustered standard errors will also work for glm's.}
+\footnotesize{Experiment~II explores how various types of (clustered) covariances perform for Gaussian, binomial and Poisson responses, where the data are composed of $G = 100$ (balanced) clusters each with $N_{g} = 5$ observations. The simulations of Experiment~II are composed of $10,000$ replications. There is only a single regressor included in the model, \code{x1} is composed of a linear combination of random draw at cluster level and a random draw at individual level with cluster correlation $\rho_x = 0.25$. The coverage is plotted on the y-axis, the cluster correlation $\rho$ is plotted on the x-axis. Compared to the Gaussian response, results are qualitatively similar for the binomial and Poisson responses. The only exception are the standard errors from a random effects model, where the coverage is moving faster downwards than for the other standard errors. One can thus conclude that clustered standard errors will also work for glm's.}
 \label{fig:sim-02}  
 \end{figure}
 
 \subsubsection{Experiment III}
 
-Figure~\ref{fig:sim-03} shows the outcome of Experiment III and reveals the strength of the new function \code{vcovCL()} that comes with the feature that allows to estimate clustered covariances for models beyond glms. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. 
+Figure~\ref{fig:sim-03} shows the outcome of Experiment~III and reveals the strength of the new function \code{vcovCL()} that comes with the feature that allows to estimate clustered covariances for models beyond glms. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. 
 Comparisons are made between beta regression (\code{beta}), zero-truncated Poisson (\code{zerotrunc}) and zero-inflated Poisson (\code{zeroinfl}). For these response distributions, clustered standard errors perform well and remain nearly constant even for an increasing $\rho$. Standard errors that do not take into account the cluster correlation, like ``standard'' standard errors and basic sandwich standard errors underestimate the true standard errors the more the larger $\rho$.
 
 \begin{figure}[t!] 
@@ -1210,14 +1247,14 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   panel = panel.xyref)
 @ 
 \caption{Experiment III}
-\footnotesize{Experiment III explores how various types of (clustered) covariances perform for Beta, zero-truncated Poisson and zero-inflated Poisson (ZIP) responses, where the data are composed of $G = 100$ (balanced) clusters each with $N_{g} = 5$ observations. The simulations of Experiment III are composed of $10,000$ replications. There is only a single regressor included in the model, \code{x1} is composed of a linear combination of random draw at cluster level and a random draw at individual level with cluster correlation $\rho_x = 0.25$. The coverage is plotted on the y-axis, the cluster correlation $\rho$ is plotted on the x-axis.
+\footnotesize{Experiment~III explores how various types of (clustered) covariances perform for Beta, zero-truncated Poisson and zero-inflated Poisson (ZIP) responses, where the data are composed of $G = 100$ (balanced) clusters each with $N_{g} = 5$ observations. The simulations of Experiment~III are composed of $10,000$ replications. There is only a single regressor included in the model, \code{x1} is composed of a linear combination of random draw at cluster level and a random draw at individual level with cluster correlation $\rho_x = 0.25$. The coverage is plotted on the y-axis, the cluster correlation $\rho$ is plotted on the x-axis.
 Comparisons are made between beta regression, zero-truncated Poisson and zero-inflated Poisson. For these response distributions, clustered standard errors perform well and remain nearly constant even for an increasing $\rho$. Standard errors that do not take into account the cluster correlation, like ``standard'' standard errors and basic sandwich standard errors underestimate the true standard errors the more the larger $\rho$.}
 \label{fig:sim-03}
 \end{figure}
 
 \subsubsection{Experiment IV}
 
-Figure~\ref{fig:sim-04} depicts the findings of Experiment IV. The y-axis represents again the coverage, but in contrast to the other simulation experiments, the number of clusters $G$ is plotted on the x-axis, ranging from 10 to 50 clusters, and in further steps of 50 up to 250 clusters. Gaussian, binomial and Poisson responses are compared with each other, with the focus on clustered standard errors with HC0--HC3 types of bias correction.
+Figure~\ref{fig:sim-04} depicts the findings of Experiment~IV. The y-axis represents again the coverage, but in contrast to the other simulation experiments, the number of clusters $G$ is plotted on the x-axis, ranging from 10 to 50 clusters, and in further steps of 50 up to 250 clusters. Gaussian, binomial and Poisson responses are compared with each other, with the focus on clustered standard errors with HC0--HC3 types of bias correction.
 
 In most cases, all of the standard errors are underestimated for $G = 10$ clusters (except clustered standard errors with HC3 bias correction for the binomial response). The larger the number of clusters $G$, the better the coverage and the less standard errors are underestimated. It can be observed that about 50 clusters is often enough for accurate inference. This result is well known in the literature \citep[][among others]{hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Harden:2011,hac:Cameron+Miller:2015}.
 
@@ -1242,7 +1279,7 @@ xyplot(coverage ~ nid | dist, groups = ~ factor(vcov),
   panel = panel.xyref)
 @
 \caption{Experiment IV}
-\footnotesize{Experiment IV explores how clustered covariances with HC0-HC3 correction perform for Gaussian, binomial and Poisson responses, the cluster correlation is fixed at $\rho = 0.25$. The data are composed of $G = 10, 50, 100, \ldots, 250$ (balanced) clusters each with $N_{g} = 5$ observations. The simulations of Experiment IV are composed of $10,000$ replications. There is only a single regressor included in the model, \code{x1} is composed of a linear combination of random draw at cluster level and a random draw at individual level with cluster correlation $\rho_x = 0.25$. The coverage is plotted on the y-axis, the number of clusters $G$ on the x-axis.}
+\footnotesize{Experiment~IV explores how clustered covariances with HC0-HC3 correction perform for Gaussian, binomial and Poisson responses, the cluster correlation is fixed at $\rho = 0.25$. The data are composed of $G = 10, 50, 100, \ldots, 250$ (balanced) clusters each with $N_{g} = 5$ observations. The simulations of Experiment~IV are composed of $10,000$ replications. There is only a single regressor included in the model, \code{x1} is composed of a linear combination of random draw at cluster level and a random draw at individual level with cluster correlation $\rho_x = 0.25$. The coverage is plotted on the y-axis, the number of clusters $G$ on the x-axis.}
 \label{fig:sim-04}
 \end{figure}
 
