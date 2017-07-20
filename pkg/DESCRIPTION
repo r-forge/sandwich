@@ -1,6 +1,6 @@
 Package: sandwich
 Version: 2.4-0
-Date: 2017-04-13
+Date: 2017-07-20
 Title: Robust Covariance Matrix Estimators
 Authors@R: c(person(given = "Achim", family = "Zeileis", role = c("aut", "cre"), email = "Achim.Zeileis@R-project.org"),
              person(given = "Thomas", family = "Lumley", role = "aut", email = "tlumley@u.washington.edu"),
@@ -9,6 +9,6 @@ Authors@R: c(person(given = "Achim", family = "Zeileis", role = c("aut", "cre"),
 Description: Model-robust standard error estimators for cross-sectional, time series, clustered, panel, and longitudinal data.
 Depends: R (>= 2.10.0)
 Imports: stats, utils, zoo
-Suggests: AER, car, countreg, geepack, lattice, lme4, lmtest, MASS, multiwayvcov, pcse, plm, pscl, scatterplot3d, stats4, strucchange, survival
+Suggests: AER, car, geepack, lattice, lme4, lmtest, MASS, multiwayvcov, pcse, plm, pscl, scatterplot3d, stats4, strucchange, survival
 License: GPL-2 | GPL-3
 
