@@ -5,7 +5,7 @@ dgp <- function(nid = 100L, nround = 5L,
 {
   ## match distribution and type of correlation
   dist <- match.arg(dist, c("gaussian", "poisson", "zeroinfl", "hurdle", "betareg", "binomial(logit)", "zerotrunc"))
-  type <- match.arg(type, c("copula","copula-ar1", "ranef"))
+  type <- match.arg(type, c("copula", "copula-ar1", "ranef"))
   
   ## sample size
   n <- nid * nround
@@ -139,7 +139,7 @@ dgp <- function(nid = 100L, nround = 5L,
 fit <- function(data,
   formula = response ~ x1 + x2 + x3,
   dist = c("gaussian", "poisson", "zeroinfl", "hurdle", "betareg", "binomial(logit)", "zerotrunc"),
-  vcov = c("standard", "basic", "HC1", "HC2", "HC3", "CL-0", "CL-1", "CL-2", "CL-3", "fixed", "random", "gee", "PL ", "PC", "BS"),
+  vcov = c("standard", "basic", "HC1", "HC2", "HC3", "CL-0", "CL-1", "CL-2", "CL-3", "fixed", "random", "gee", "PL", "PC", "BS"),
   level = 0.95)
 {
   ## assure formula to be in current environment
@@ -270,7 +270,7 @@ fit <- function(data,
       coef = coef(m_gee), se = sqrt(diag(m_gee$geese$vbeta)), par = names(coef(m_gee)),
       vcov = "gee", stringsAsFactors = FALSE))
   }
-  if("PL " %in% vcov) {
+  if("PL" %in% vcov) {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcovPL(m, cluster = data$id, lag = "NW1987", adjust = FALSE))), par = names(coef(m)),
       vcov = "PL", stringsAsFactors = FALSE))
@@ -280,7 +280,7 @@ fit <- function(data,
       coef = coef(m), se = sqrt(diag(vcovPC(m, cluster = data$id, order.by = data$round, kronecker = TRUE))), par = names(coef(m)),
       vcov = "PC", stringsAsFactors = FALSE))
   }
-    if("BS" %in% vcov) {
+  if("BS" %in% vcov) {
     rval <- rbind(rval, data.frame(
       coef = coef(m), se = sqrt(diag(vcovBS(m, cluster = data$id, start = TRUE))), par = names(coef(m)),
       vcov = "BS", stringsAsFactors = FALSE))

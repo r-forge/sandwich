@@ -61,7 +61,8 @@
   Universit\"atsstr.~15\\
   6020 Innsbruck, Austria\\
   E-mail: \email{Susanne.Berger@uibk.ac.at}, \email{Achim.Zeileis@R-project.org}\\
-  URL: \url{https://www.uibk.ac.at/statistics/personal/berger/}, \url{https://eeecon.uibk.ac.at/~zeileis/}\\
+  URL: \url{https://www.uibk.ac.at/statistics/personal/berger/},\\
+  \phantom{URL: }\url{https://eeecon.uibk.ac.at/~zeileis/}\\
   
   Nathaniel Graham\\
   Department of Finance and Decision Sciences\\
@@ -90,6 +91,7 @@ panel.xyref <- function(x, y, ...) {
   panel.abline(h = 0.95, col = "slategray")
   panel.xyplot(x, y, ...)  
 }
+se <- function(vcov) sapply(vcov, function(x) sqrt(diag(x)))
 options(prompt = "R> ", continue = "+  ", digits = 5)
 @ 
 
@@ -708,7 +710,7 @@ based on
    lag = "NW1987", bw = NULL, adjust = TRUE, ...)
 \end{verbatim}
 computes sandwich covariances for panel data, specificially including
-panel \citep{hac:Newey+West:1987} and \citep{hac:Driscoll+Kraay:1998}.
+panel \cite{hac:Newey+West:1987} and \cite{hac:Driscoll+Kraay:1998}.
 The essential idea is to aggregate the empirical estimating functions within
 each time period and and then compute a HAC covariance analogous to \code{vcovHAC()}.
 
@@ -850,10 +852,11 @@ vc <- list(
   "CL-1" = vcovCL(h_innov, cluster = InstInnovation$company),
   "boot" = vcovBS(h_innov, cluster = InstInnovation$company)
 )
-sapply(vc, function(x) sqrt(diag(x)))
+se <- function(vcov) sapply(vcov, function(x) sqrt(diag(x)))
+se(vc)
 @
 <<innovation-se2, echo=FALSE, eval=TRUE>>= 
-sapply(vc_innov, function(x) sqrt(diag(x)))
+se(vc_innov)
 @
 This clearly shows that the usual standard errors greatly overstate the precision
 of the estimators and the basic sandwich covariance are able to improve but not fully
@@ -869,11 +872,12 @@ due to the resampling.
 
 \subsection[Petersen (2009)]{\cite{hac:Petersen:2009}} \label{ex-petersen}
 
-\cite{hac:Petersen:2009} provides (simulated) benchmark data
-\url{http://www.kellogg.northwestern.edu/faculty/petersen/htm/papers/se/test_data.txt}
+\cite{hac:Petersen:2009} provides simulated benchmark data
+(\url{http://www.kellogg.northwestern.edu/faculty/petersen/htm/papers/se/test_data.txt})
 for assessing clustered standard error estimates in the linear regression model.
 This data set contains a dependent variable \code{y} and regressor \code{x} for
-500 \code{firm}s over 10 \code{year}s. It is frequently used in illustration
+500 \code{firm}s over 10 \code{year}s. It is frequently used in illustrations
+of clustered covariances
 \citep[e.g., in \pkg{multiwayvcov}, see][]{hac:Graham+Arai+Hagstroemer:2016} and is
 also available in \pkg{sandwich}. The corresponding linear model is fitted with \code{lm()}.
 <<petersen-model>>=
@@ -883,117 +887,126 @@ p_lm <- lm(y ~ x, data = PetersenCL)
 
 \subsubsection{One-way clustered standard errors}
 
-Next, it is shown how the results from various other \proglang{R} packages (\pkg{multiwayvcov},
-\pkg{plm}, \pkg{geepack}, \pkg{pcse}) can be replicated using the new \pkg{sandwich} package.
+One-way clustered covariances for linear regression models are available in a number of different
+\proglang{R} packages. The implementations differ mainly in two aspects: (1) Whether a simple
+``\code{lm}'' object can be supplied or (re-)estimation of a dedicated model object is necessary.
+(2) Which kind of bias adjustment is done by default (HC type and/or cluster adjustment).
 
-First, \code{vcovCL()} from \pkg{sandwich} and \code{cluster.vcov()} from \pkg{multiwayvcov} are compared. 
-<<petersen-packages1>>=
-library("multiwayvcov")
-@ 
-Both functions are closely related, as \code{vcovCL()} is partly based on \code{cluster.vcov()}.
+The function \code{cluster.vcov()} from \pkg{multiwayvcov} (whose implementation strategy
+\code{vcovCL()} follows) can use ``\code{lm}'' objects directly and then applies both the HC1
+and cluster adjustment by default. In contrast, \pkg{plm} and \pkg{geepack} both require re-estimation
+of the model and then employ HC0 without cluster adjustment by default. In \pkg{plm}, a pooling
+model needs to be estimated with \code{plm()} and in \pkg{geepack} an independence working model
+needs to be fitted with \code{geeglm()}.
+
+The \pkg{multiwayvcov} results can be replicated as follows.
 <<petersen-comparison1>>=
-vc <- list(
-"sandwich" = vcovCL(p_lm, cluster = PetersenCL$firm),
-"multiwayvcov" = cluster.vcov(p_lm, cluster = PetersenCL$firm)
-)
-sapply(vc, function(x) sqrt(diag(x)))
+library("multiwayvcov")
+se(list(
+  "sandwich" = vcovCL(p_lm, cluster = PetersenCL$firm),
+  "multiwayvcov" = cluster.vcov(p_lm, cluster = PetersenCL$firm)
+))
 @ 
-The bias correction in \code{vcovCL()} is set to \code{cadjust = TRUE} and \code{type = "HC1"} by default, which is the same default as in \code{cluster.vcov()}.
-
-Furthermore, there are implementations for clustered covariances in packages \pkg{plm} and \pkg{geepack}.
-<<petersen-packages2>>=
+And the \pkg{plm} and \pkg{geepack} results can be replicated with the following code.
+(Note that \pkg{geepack} does not provide a \code{vcov()} method for ``\code{geeglm}'' objects,
+hence the necessary code is included below.)
+<<petersen-comparison2>>=
 library("plm")
-library("geepack")
-@ 
-A pooling model is estimated with \code{plm()}, \code{geeglm()} fits a generalized estimating equation (GEE) with independence correlation structure.
-<<petersen-models>>=
 p_plm <- plm(y ~ x, data = PetersenCL, model = "pooling",
  indexes = c("firmid", "year"))
-p_gee <- geeglm(y ~ x, data = PetersenCL, id = PetersenCL$firm,
- corstr = "independence", family = gaussian)
-@ 
-As there is no \code{vcov()} method specified for \code{geeglm()}, the convenience function \code{vcov.geeglm()} is provided to make this contribution.
-<<petersen-convenience>>=
+
+library("geepack")
 vcov.geeglm <- function(object) {
   vc <- object$geese$vbeta
   rownames(vc) <- colnames(vc) <- names(coef(object))
   return(vc)
 }
-@ 
-Nevertheless, in order to accomplish exactly the same value for clustered standard errors using \code{plm} and \code{geepack}, the bias correction $\frac{G}{G - 1}\frac{n - 1}{n - k}$ has to be omitted from the clustered covariance matrix estimated by \code{vcovCL()}. This is achieved by setting the function arguments \code{cadjust = FALSE} and \code{type = "HC0"}.
-<<petersen-comparison2>>=
-vc <- list(
-"sandwich" = vcovCL(p_lm, cluster = PetersenCL$firm,
- cadjust = FALSE, type = "HC0"),
-"plm" = vcovHC(p_plm, type = "HC0", cluster = "group"),
-"geepack" = vcov(p_gee)
-)
-sapply(vc, function(x) sqrt(diag(x)))
+p_gee <- geeglm(y ~ x, data = PetersenCL, id = PetersenCL$firm,
+ corstr = "independence", family = gaussian)
+se(list(
+  "sandwich" = vcovCL(p_lm, cluster = PetersenCL$firm,
+    cadjust = FALSE, type = "HC0"),
+  "plm" = vcovHC(p_plm, cluster = "group"),
+  "geepack" = vcov(p_gee)
+))
 @
-All packages examined produce the same clustered standard errors for \code{lm} model objects. For packages \pkg{plm} and \pkg{geepack}, one has to omit the HC bias correction factor as well as the cluster bias correction. In general, differences in clustered standard errors often coincide with different types of bias corrections.
 
 \subsubsection{Two-way clustered standard errors}
-At least for coefficient \code{x}, two-way clustered standard errors with cluster dimensions \code{firm} as well as \code{year} are even higher than one-way clustered standard errors.
-It can be observed that \code{vcovCL()} from \pkg{sandwich} and \code{cluster.vcov()} from \pkg{multiwayvcov} deliver equivalent results.
+
+It would also be feasible to cluster the covariances with respect to both dimensions, \code{firm} and \code{year},
+yielding similar but slightly larger standard errors. Again, \code{vcovCL()} from \pkg{sandwich} can replicate the
+results of \code{cluster.vcov()} from \pkg{multiwayvcov}. Only the default for the correction proposed by
+\cite{hac:Ma:2014} is different.
 <<petersen-twocl>>=
-cluster <- cbind(PetersenCL$firm, PetersenCL$year)
-vc <- list(
-"sandwich" = vcovCL(p_lm, cluster = cluster, cadjust = TRUE, type = "HC1"),
-"multiwayvcov" = cluster.vcov(p_lm, cluster = cluster, use_white = FALSE,
-df_correction = TRUE)
-)
-sapply(vc, function(x) sqrt(diag(x)))
-@ 
-@ 
-However, as cluster dimension \code{year} has a total of only 10 cluster, the results should be regarded with caution, as it is required by theory that each cluster dimension has many clusters \citep{hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,hac:Cameron+Miller:2015}.
+se(list(
+  "sandwich" = vcovCL(p_lm, cluster = PetersenCL[, 1:2], multi0 = TRUE),
+  "multiwayvcov" = cluster.vcov(p_lm, cluster = PetersenCL[, 1:2])
+))
+@  
+However, note that the results should be regarded with caution as cluster dimension \code{year} has a total
+of only 10 cluster. It is required by theory that each cluster dimension has many clusters
+\citep{hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,hac:Cameron+Miller:2015}.
+
 
 \subsubsection{Driscoll and Kraay standard errors}
-For Driscoll and Kraay standard errors, \code{vcovPL()} and \code{vcovSCC()} from \pkg{plm} deliver equivalent results, given the same lag length and bias-correction. Here, the maximum lag length is chosen (which is equal to \code{length(PetersenCL$year) - 1}) with a \code{HC1} bias correction.
+
+The Driscoll and Kraay standard errors for panel data are available in \code{vcovSCC()} from \pkg{plm},
+defaulting to a HC0-type adjustment. In \pkg{sandwich} the \code{vcovPL()} function can be used for
+replication, setting \code{adjust = FALSE} to match the HC0 (rather than HC1) adjustment.
 <<petersen-comparison3>>=
-vc <- list(
-"sandwich" = vcovPL(p_lm, cluster = PetersenCL$firm,
- adjust = TRUE, lag = "max"),
-"plm" = plm::vcovSCC(p_plm, maxlag = 9, inner = "cluster",
- type = "HC1")
-)
-sapply(vc, function(x) sqrt(diag(x)))
+se(list(
+  "sandwich" = vcovPL(p_lm, cluster = PetersenCL$firm, adjust = FALSE),
+  "plm" = vcovSCC(p_plm)
+))
 @
+
 \subsubsection{Panel-corrected standard errors}
-Panel-corrected standard can be obtained with function \code{vcovPC()} for balanced and unbalanced panels.
-For the balanced Petersen data, \code{pcse()} and \code{vcovPC()} deliver the same results.
+
+Panel-corrected covariance a la Beck and Katz are implemented in the package \pkg{pcse} -- providing the
+function that is also named \code{vcovPC()} -- which can handle both balanced and unbalanced panels.
+For the balanced Petersen data the two \code{vcovPC()} functions from \pkg{sandwich} and \pkg{pcse} agree.
 <<petersen-comparison4>>=
 library("pcse")
-vc <- list(
-"sandwich" = sandwich::vcovPC(p_lm, cluster = PetersenCL$firm,
- order.by = PetersenCL$year),
-"pcse" = pcse::vcovPC(p_lm, groupN = PetersenCL$firm,
- groupT = PetersenCL$year)
-)
-sapply(vc, function(x) sqrt(diag(x)))
+se(list(
+  "sandwich" = sandwich::vcovPC(p_lm, cluster = PetersenCL$firm,
+    order.by = PetersenCL$year),
+  "pcse" = pcse::vcovPC(p_lm, groupN = PetersenCL$firm,
+    groupT = PetersenCL$year)
+))
 @
-In case of an unbalanced panel, the \code{subsample} argument allows to choose either a pairwise balanced sample or a balanced subset of the panel.
-For illustrative purposes, an unbalanced version of the Petersen data is constructed,
+And also when omitting the last year for the first firm to obtain an unbalanced panel, the \pkg{pcse}
+results can be replicated. Both strategies for balancing the panel internally (pairwise vs.\ subsample)
+are illustrated in the following.
 <<petersen-unbalanced1>>=
-unbal <- sample(1:length(unique(PetersenCL$firm)), 10)
-PeUn <- PetersenCL[-unbal, ]
-un_lm <- lm(y ~ x, data = PeUn)
+PU <- subset(PetersenCL, !(firm == 1 & year == 10))
+pu_lm <- lm(y ~ x, data = PU)
 @ 
 and again, panel-corrected standard errors from \pkg{sandwich} are equivalent to those from \pkg{pcse}.
 <<petersen-unbalanced2>>=
-vc <- list(
-"sandwichF" = sandwich::vcovPC(un_lm, cluster = PeUn$firm,
-order.by = PeUn$year, subsample = FALSE),
-"pcseT" = pcse::vcovPC(un_lm, PeUn$firm, PeUn$year, pairwise = TRUE),
-"sandwichT" = sandwich::vcovPC(un_lm, cluster = PeUn$firm,
-order.by = PeUn$year, subsample = TRUE),
-"pcseF" = pcse::vcovPC(un_lm, PeUn$firm, PeUn$year, pairwise = FALSE)
-)
-sapply(vc, function(x) sqrt(diag(x)))
+se(list(
+  "sandwichF" = sandwich::vcovPC(pu_lm, cluster = PU$firm,
+    order.by = PU$year, subsample = FALSE),
+  "pcseT" = pcse::vcovPC(pu_lm, PU$firm, PU$year, pairwise = TRUE),
+  "sandwichT" = sandwich::vcovPC(pu_lm, cluster = PU$firm,
+    order.by = PU$year, subsample = TRUE),
+  "pcseF" = pcse::vcovPC(pu_lm, PU$firm, PU$year, pairwise = FALSE)
+))
 @ 
 
 \section{Simulation} \label{sec:simulation}
 
-For a more systematic analysis, a Monte Carlo simulation was carried out to assess the performance of clustered covariances beyond linear and generalized linear models. For the linear model, there are a couple of simulation studies in the literature \citep{hac:Cameron+Gelbach+Miller:2008,hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,hac:Harden:2011,hac:Thompson:2011,hac:Cameron+Miller:2015,hac:Jin:2015}, far less for generalized linear models \citep[see for example][]{hac:Miglioretti+Heagerty:2007} and, up to our knowledge, none for models beyond \code{lm()} and \code{glm()}.
+For a more systematic analysis, a Monte Carlo simulation is carried out to
+assess the performance of clustered covariances beyond linear and generalized
+linear models. For the linear model, there is a number of simulation studies in
+the literature \citep[including][]{hac:Cameron+Gelbach+Miller:2008,
+hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,
+hac:Harden:2011,hac:Thompson:2011,hac:Cameron+Miller:2015,hac:Jin:2015},
+far less for generalized linear models \citep[see for
+example][]{hac:Miglioretti+Heagerty:2007} and, up to our knowledge, no larger
+systematic comparisons for models beyond. Therefore, we try to fill this gap
+by starting out with simulations of (generalized) linear models similar to the
+ones mentioned above and then moving on to other types of maximum likelihood
+regression models.
 
 \subsection{Simulation design}
 Parameters $\rho$ and $G$ vary systematically, where $\rho$ determines the strength of cluster correlation and varies from $0$ to $0.9$. The number of clusters $G$ ranges from $10$ to $50, 100, 150, 200$ to $250$. Numerous studies \citep{hac:Green+Vavreck:2008,hac:Arceneaux+Nickerson:2009,hac:Harden:2011} confirmed that for the linear regression case, the higher the number of clusters, the less standard errors are biased. Furthermore, only balanced cluster are investigated, with the number of  observations per cluster fixed to $5$.
@@ -1119,8 +1132,8 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s01$vcov)[c(5,2,6,1,4,7,3)] <- c("CL-0", "PL", "PC", "standard", "basic", "random", "gee")
-s01$vcov <- factor(s01$vcov, levels(s01$vcov)[c(5,2,6,1,4,7,3)])
+#FIXME# levels(s01$vcov)[c(5,2,6,1,4,7,3)] <- c("CL-0", "PL", "PC", "standard", "basic", "random", "gee")
+#FIXME# s01$vcov <- factor(s01$vcov, levels(s01$vcov)[c(5,2,6,1,4,7,3)])
 my.settings[["superpose.line"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
 my.settings[["superpose.symbol"]]$pch <- c(rep(1,3), rep(2,2), rep(3,2))
@@ -1152,10 +1165,9 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s02$dist)[c(2,1,3)] <- c("gaussian", "binomial(logit)", "poisson")
-s02$dist <- factor(s02$dist, levels(s02$dist)[c(2,1,3)])
-levels(s02$vcov)[c(5,2,6,1,4,7,3)] <- c("CL-0", "PL", "PC", "standard", "basic", "random", "gee")
-s02$vcov <- factor(s02$vcov, levels(s02$vcov)[c(5,2,6,1,4,7,3)])
+s02$dist <- factor(as.character(s02$dist), levels = c("gaussian", "binomial(logit)", "poisson"))
+#FIXME# levels(s02$vcov)[c(5,2,6,1,4,7,3)] <- c("CL-0", "PL", "PC", "standard", "basic", "random", "gee")
+#FIXME# s02$vcov <- factor(s02$vcov, levels(s02$vcov)[c(5,2,6,1,4,7,3)])
 my.settings[["superpose.line"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8", "green","#006400", "#ff7f00", "#f781bf", "#984ea3", "#e41a1c")
 my.settings[["superpose.symbol"]]$pch <- c(rep(1,3), rep(2,2), rep(3,2))
@@ -1184,9 +1196,8 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s03$vcov)[c(2,3,1)]  <- c("CL-0", "standard", "basic")
-levels(s03$dist)[c(1,2,3)] <- c("betareg", "zerotrunc", "zeroinfl")
-s03$vcov <- factor(s03$vcov, levels(s03$vcov)[c(2,3,1)])
+#FIXME# levels(s03$vcov)[c(2,3,1)]  <- c("CL-0", "standard", "basic")
+#FIXME# s03$vcov <- factor(s03$vcov, levels(s03$vcov)[c(2,3,1)])
 my.settings[["superpose.line"]]$col <- c("#377eb8", "#ff7f00", "#f781bf")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8", "#ff7f00", "#f781bf")
 my.settings[["superpose.symbol"]]$pch <- c(1, rep(2,2))
@@ -1218,9 +1229,9 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s04$vcov)[c(1:4)] <- c("CL-0", "CL-1", "CL-2", "CL-3")
-s04$vcov <- factor(s04$vcov, levels(s04$vcov)[c(1:4)])
-levels(s04$dist)[c(1:3)] <- c("gaussian", "binomial(logit)", "poisson")
+#FIXME# levels(s04$vcov)[c(1:4)] <- c("CL-0", "CL-1", "CL-2", "CL-3")
+#FIXME# s04$vcov <- factor(s04$vcov, levels(s04$vcov)[c(1:4)])
+s04$dist <- factor(as.character(s04$dist), c("gaussian", "binomial(logit)", "poisson"))
 my.settings[["superpose.line"]]$col <- c("#377eb8", "#00E5EE", "#e41a1c", "#4daf4a")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8", "#00E5EE","#e41a1c", "#4daf4a")
 xyplot(coverage ~ nid | dist, groups = ~ factor(vcov),
@@ -1242,8 +1253,8 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s0607$vcov)[c(2,1,3)] <- c("CL-0", "PL", "PC")
-s0607$vcov <- factor(s0607$vcov, levels(s0607$vcov)[c(2,1,3)])
+#FIXME# levels(s0607$vcov)[c(2,1,3)] <- c("CL-0", "PL", "PC")
+#FIXME# s0607$vcov <- factor(s0607$vcov, levels(s0607$vcov)[c(2,1,3)])
 my.settings[["superpose.line"]]$col <- c("#377eb8","green", "#006400")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8","green", "#006400")
 xyplot(coverage ~ nround | factor(par) + factor(copula), groups = ~ factor(vcov),
@@ -1263,8 +1274,8 @@ my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-levels(s08$vcov)[c(2,1,3)] <- c("CL-0", "PL", "PC")
-s08$vcov <- factor(s08$vcov, levels(s08$vcov)[c(2,1,3)])
+#FIXME# levels(s08$vcov)[c(2,1,3)] <- c("CL-0", "PL", "PC")
+#FIXME# s08$vcov <- factor(s08$vcov, levels(s08$vcov)[c(2,1,3)])
 my.settings[["superpose.line"]]$col <- c("#377eb8","green", "#006400")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8","green", "#006400")
 xyplot(coverage ~ nround | factor(par) + factor(dist), groups = ~ factor(vcov),
