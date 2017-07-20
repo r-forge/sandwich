@@ -178,8 +178,7 @@ data("InstInnovation", package = "sandwich")
 ## and model 1, Table II in Berger et al. (2016)
 
 ## count regression formula
-f1 <- cites ~ institutions + log(capital/employment) + log(sales) +
-industry + year
+f1 <- cites ~ institutions + log(capital/employment) + log(sales) + industry + year
 
 ## model 3, Table I: Poisson model
 ## one-way clustered standard errors
@@ -192,9 +191,11 @@ if(require("lmtest")) {
 coeftest(tab_I_3_pois, vcov = vcov_pois)[2:4, ]
 }
 
+\dontrun{
 ## model 1, Table II: negative binomial hurdle model
 ## (requires "pscl" or alternatively "countreg" from R-Forge)
-if(require("pscl") & require("lmtest")) {
+library("pscl")
+library("lmtest")
 tab_II_3_hurdle <- hurdle(f1, data = InstInnovation, dist = "negbin")
 #  dist = "negbin", zero.dist = "negbin", separate = FALSE)
 vcov_hurdle <- vcovCL(tab_II_3_hurdle, InstInnovation$company)
