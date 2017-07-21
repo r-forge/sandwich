@@ -29,10 +29,26 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, pairwise = FALSE, kroneck
   ## cluster can either be supplied explicitly or
   ## be an attribute of the model  
   if(is.null(cluster)) cluster <- attr(x, "cluster")
-  if(is.null(order.by)) order.by <- attr(x, "order.by")
 
+  ## cluster can also be a list with both indexes
+  if(is.list(cluster)) {
+    if(length(cluster) > 1L & is.null(order.by)) order.by <- cluster[[2L]]
+    cluster <- cluster[[1L]]
+  }
+
+  ## longitudinal time variable
+  if(is.null(order.by)) order.by <- attr(x, "order.by")
+  if(is.null(order.by)) {
+    ix <- make.unique(as.character(cluster))
+    ix <- strsplit(ix, ".", fixed = TRUE)
+    ix <- sapply(ix, "[", 2L)
+    ix[is.na(ix)] <- "0"
+    order.by <- as.integer(ix) + 1L
+  }
+     
   ## model matrix
   X <- model.matrix(x)
+ 
   if (any(alias <- is.na(coef(x)))) X <- X[, !alias, drop = FALSE]
   attr(X, "assign") <- NULL
     
