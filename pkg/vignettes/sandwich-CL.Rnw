@@ -599,7 +599,7 @@ so that there are $n = G \cdot T$ observations overall.
 
 The basic idea for PCSE is to employ the outer product of (working) residuals within each cluster~$g$.
 Thus, the working residuals are split into vectors for each cluster $g$:
-$r(y_1, x_1^\top \hat \theta), \dots, r(y_G, x_G^\top \hat \theta)$.
+$r(y_1, x_1^\top \hat \theta), \dots,$\linebreak $r(y_G, x_G^\top \hat \theta)$.
 For balanced data these can be arranged in a $T \times G$ matrix,
  \begin{equation} \label{eq:workres}
   R \quad = \quad [r(y_1, x_1^\top \hat \theta) \quad r(y_2, x_2^\top \hat \theta) \quad \ldots \quad r(y_G, x_G^\top \hat \theta)],
@@ -976,7 +976,8 @@ se(list(
 @
 And also when omitting the last year for the first firm to obtain an unbalanced panel, the \pkg{pcse}
 results can be replicated. Both strategies for balancing the panel internally (pairwise vs.\ subsample)
-are illustrated in the following.
+are illustrated in the following. \fixme{Unless there is some reason against it: We should probably
+rename the `subsample' argument `pairwise' to conform with the pcse package and make it easier to switch.}
 <<petersen-unbalanced1>>=
 PU <- subset(PetersenCL, !(firm == 1 & year == 10))
 pu_lm <- lm(y ~ x, data = PU)
@@ -1083,7 +1084,7 @@ are assessed..
 
 In order to assess the validity of statistical inference based on clustered
 covariances, the empirical coverage rate of the 95\% Wald confidence intervals
-is the outcome measure of interest. If standard errors are estimated
+(from 10,000 replications) is the outcome measure of interest. If standard errors are estimated
 accurately, the empirical coverage should match the nominal rate of $0.95$.
 And empirical coverages falling short of $0.95$ are typically due to underestimated
 standard errors and would lead to inflated type~I errors in partial Wald tests
@@ -1129,38 +1130,21 @@ and a GEE with an exchangeable correlation structure (\code{m_gee}, using \pkg{g
 responses, the functions
 \code{betareg()} (from \pkg{betareg}, \citealp{hac:Cribari-Neto+Zeileis:2010}),
 \code{zerotrunc()} (from \pkg{countreg}, \citealp{hac:Zeileis+Kleiber:2017}),
-and \code{zeroinfl()} (from \pkg{pscl}/\pkg{countreg}, \citealp{hac:Zeileis+Kleiber+Jackman:2008}) are used
+and \code{zeroinfl()} (from \pkg{pscl}/\pkg{countreg}, \citealp{hac:Zeileis+Kleiber+Jackman:2008}) are used.
 
 \subsection{Results}
 
-The questions which should be discussed and answered by the simulation study are:
+Based on the design discussed above, the simulation study investigates the performance of clustered
+covariances for the following settings.
 %
 \begin{itemize}
-   \item Experiment I: How do clustered covariances perform for different types of regressors for a Gaussian response distribution?
-   \item Experiment II: How do clustered covariances perform for glm response distributions?
-   \item Experiment III: How do clustered covariances perform for more general model response distributions?
-   \item Experiment IV: Which type of HC0--HC3 bias correction performs best?
+   \item Experiment I: Different types of regressors for a Gaussian response distribution.
+   \item Experiment II: Different GLM response distributions.
+   \item Experiment III: Response distributions beyond the GLM.
+   \item Experiment IV: GLMs with HC0--HC3 bias corrections.
 \end{itemize}
 
 \subsubsection{Experiment I}
-
-Figure~\ref{fig:sim-01} shows the results from Experiment~I and plots the coverage probabilities for coefficients \code{x1} (Equation~\ref{x1}), \code{x2} (Equation~\ref{x2}) and \code{x3} (Equation~\ref{x3}) on the y-axis.
-On the x-axis the cluster correlation of the response $\rho$ is shown, running from 0 (no correlation) to 0.9 (high correlation).
-Depending on the regressors, the implications of running the cluster correlation $\rho$ from 0 to 0.9 on the coverage of different covariance estimators are substantial.
-
-Starting with regressor \code{x1} at $\rho = 0$, all standard errors except the Driscoll and Kraay standard errors perform well and are close to the ``true'' standard error. As the number of observations per cluster is small with only $N_g = 5$, Driscoll and Kraay standard errors are substantially underestimated, even at a $\rho$ of 0. 
-In a Monte-Carlo study, \cite{hac:Driscoll+Kraay:1998} put the minimum of $N_g >$ 20--25.
-Panel-corrected standard errors for regressor \code{x1} underestimate the ``true'' standard errors, that applies all the more the higher $\rho$. To a smaller extent, the same holds true for ``standard'' standard errors as well as basic sandwich standard errors.
-As noted by \cite{hac:Hoechle:2007}, PCSE can be quite imprecise if the crosss-sectional dimension is large compared to the time dimension.
-
-It can be observed that for regressor \code{x2}, Driscoll and Kraay standard errors, PCSE, and to a smaller extent also ``standard'' standard errors and basic sandwich standard errors are getting worse the larger the within cluster correlation. ``Standard'' standard errors are biased downwards because of the wrong assumption of independent observations \citep[see also][]{hac:Harden:2011}.
-
-For regressor \code{x3}, independent of the value of $\rho$, all methods perform well (except again the Driscoll and Kraay estimator).
-
-In summary, it holds for the linear model that if a regressor exhibits within cluster correlation even to a small extent, ``standard'' standard errors and basic sandwich standard errors that do not take the cluster dimension into account, deteriorate with an increasing $\rho$. In addition, PCSE and Driscoll and Kraay standard errors do not perform sufficiently well because of a too small $N_g$ and because of the correlation structure chosen for the copula. With an AR(1) correlation structure, both methods perform well.
-Figure \ref{fig:sim-08} shows that for a copula with AR(1) correlation, the coverage tends towards 0.95 for all regressors the higher the number of clusters \code{G}.
-
-As the effects of regressor \code{x1} are in between the effects of regressors \code{x2} (varies at cluster level) and \code{x3} (varies at individual level), we limit ourselves to a single regressor \code{x1} in the following simulation experiments.
 
 \setkeys{Gin}{width=\textwidth} 
 \begin{figure}[t!] 
@@ -1177,24 +1161,47 @@ my.settings[["superpose.symbol"]]$pch <- c(rep(1,3), rep(2,2), rep(3,2))
 xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
   data = s01, subset = par != "(Intercept)",
   ylim = c(0.1, 1),
-  type = "b", xlab = expression(rho), ylab = "coverage",
+  type = "b", xlab = expression(rho), ylab = "Empirical coverage",
   auto.key = list(columns = 3),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
 @ 
-\caption{Experiment I}
-\footnotesize{Experiment I explores how various types of (clustered) covariances perform for the linear regression model with Gaussian response and data composed of $G = 100$ (balanced) clusters each with $N_{g} = 5$ observations. The simulations of Experiment~I are composed of $10,000$ replications. The regressors are included in the model, \code{x1} is composed of a linear combination of random draw at cluster level and a random draw at individual level with cluster correlation $\rho_x = 0.25$. \code{x2} consists of a random draw at cluster level, \code{x3} of a random draw at individual level. The coverage is plotted on the y-axis, the cluster correlation $\rho$ is plotted on the x-axis.
-In a nutshell, if a regressor exhibits within cluster correlation even to a small extent, basic sandwich standard errors and ``standard'' standard errors that do not take the cluster dimension into account deteriorate with an increasing $\rho$. In addition, PCSE and Driscoll and Kraay standard errors do not perform sufficiently well because of a too small $N_g$. Nevertheless, clustered standard errors as well as standard errors from a random effects model and from a GEE with exchangeable correlation structure perform well.}
+\caption{Experiment I. Gaussian response with $G = 100$ (balanced) clusters of $5$ observations each.
+Regressor \code{x1} is correlated ($\rho_x = 0.25$), \code{x2} clustered, and \code{x3} uncorrelated.
+The coverage (from 10,000 replications) is plotted on the $y$-axis against the cluster correlation $\rho$ on the $x$-axis.
+The horizontal reference line indicates the nominal coverage of $0.95$.}
 \label{fig:sim-01}
 \end{figure}
 
+Figure~\ref{fig:sim-01} shows the results from Experiment~I and plots the
+empirical coverage probabilities (from 10,000 replications) on the $y$-axis for the
+coefficients of the correlated regressor \code{x1}, the clustered regressor \code{x2},
+and the uncorrelated regressor \code{x3} against the cluster correlation $\rho$ on the
+$y$-axis.
+
+While for the uncorrelated regressor \code{x3} all methods -- except the 
+Driscoll and Kraay PL estimator -- perform well and yield satisfactory coverage rates,
+the picture is different for the correlated and clustered regressors \code{x1} and
+\code{x2}. With increasing cluster correlation $\rho$ the performance of those methods
+deteriorate that either do not account for the clustering at all (i.e.,
+``standard'' covariance and basic sandwich covariance) or that treat the data as
+panel data (i.e., PL and PC).
+
+The reason for the poor performance of the panel data covariances is the low number of
+$5$ observations per cluster. This has already been documented in the literature:
+In a Monte-Carlo study, \cite{hac:Driscoll+Kraay:1998} use a minimum of 20--25
+observations per cluster and \cite{hac:Hoechle:2007} notes that the PC estimator 
+can be quite imprecise if the crosss-sectional dimension is large compared to the time dimension.
+As shown in Appendix~\ref{app:ar1}, the performance improves if an AR(1) correlation
+structure is employed in the simulation and the number of observations per
+cluster increase.
+
+As the effects of regressor \code{x1} are in between the effects of the clustered
+regressor \code{x2} and the uncorrelated regressor \code{x3}, the following simulation
+experiments focus on the situation with a single regressor \code{x1}.
+
+
 \subsubsection{Experiment II}
-
-Figure~\ref{fig:sim-02} illustrates the results from Experiment~II. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. Three response distributions are compared: Gaussian, binomial (with a logit link) and Poisson. Unlike in Experiment~I, only a single regressor \code{x1} is included, with a cluster correlation $\rho_x$ of 0.25.
-The left panel depicts the coverage for the Gaussian response, and thus corresponds to the left panel in Figure~\ref{fig:sim-01}. 
-
-Results are qualitatively similar for the binomial and Poisson responses. The only exception are the standard errors from a random effects model, where the coverage is moving faster downwards than for the other standard errors. 
-One can thus conclude that clustered standard errors will also work for glms.
 
 \begin{figure}[t!]
 <<sim-02-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
@@ -1211,20 +1218,33 @@ my.settings[["superpose.symbol"]]$pch <- c(rep(1,3), rep(2,2), rep(3,2))
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   data = s02, subset = par != "(Intercept)",
   ylim = c(0.5, 1),
-  type = "b", xlab = expression(rho), ylab = "coverage",
+  type = "b", xlab = expression(rho), ylab = "Empirical coverage",
   auto.key = list(columns = 3),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
 @
-\caption{Experiment II}
-\footnotesize{Experiment~II explores how various types of (clustered) covariances perform for Gaussian, binomial and Poisson responses, where the data are composed of $G = 100$ (balanced) clusters each with $N_{g} = 5$ observations. The simulations of Experiment~II are composed of $10,000$ replications. There is only a single regressor included in the model, \code{x1} is composed of a linear combination of random draw at cluster level and a random draw at individual level with cluster correlation $\rho_x = 0.25$. The coverage is plotted on the y-axis, the cluster correlation $\rho$ is plotted on the x-axis. Compared to the Gaussian response, results are qualitatively similar for the binomial and Poisson responses. The only exception are the standard errors from a random effects model, where the coverage is moving faster downwards than for the other standard errors. One can thus conclude that clustered standard errors will also work for glm's.}
+\caption{Experiment II. Exponential family response distributions with $G = 100$ (balanced) clusters of $5$ observations each.
+The only regressor \code{x1} is correlated ($\rho_x = 0.25$). The coverage (from 10,000 replications) is plotted on the
+$y$-axis against the cluster correlation $\rho$ (from a Gaussian copula) on the $x$-axis.
+The horizontal reference line indicates the nominal coverage of $0.95$.}
 \label{fig:sim-02}  
 \end{figure}
 
-\subsubsection{Experiment III}
+Figure~\ref{fig:sim-02} illustrates the results from Experiment~II. The settings
+are mostly analogous to Experiment~I with two important differences: (1)~A GLM
+framework with Gaussian/binomial/Poisson response distribution is used.
+(2)~There is only one regressor (\code{x1}, correlated with $\rho_{x} = 0.25$).
 
-Figure~\ref{fig:sim-03} shows the outcome of Experiment~III and reveals the strength of the new function \code{vcovCL()} that comes with the feature that allows to estimate clustered covariances for models beyond glms. The y-axis represents again the coverage, and $\rho$ is plotted on the x-axis. 
-Comparisons are made between beta regression (\code{beta}), zero-truncated Poisson (\code{zerotrunc}) and zero-inflated Poisson (\code{zeroinfl}). For these response distributions, clustered standard errors perform well and remain nearly constant even for an increasing $\rho$. Standard errors that do not take into account the cluster correlation, like ``standard'' standard errors and basic sandwich standard errors underestimate the true standard errors the more the larger $\rho$.
+Overall, the results for binomial and Poisson response are very similar to
+the Gaussian case in Experiment~I. Thus, this confirms that clustered covariances
+also work well with GLMs.
+
+The only major difference between the Gaussian and binomial/Poisson cases is
+the performance of the mixed-effects models with random intercept.
+\fixme{Marginal vs.\ conditional models.}
+
+
+\subsubsection{Experiment III}
 
 \begin{figure}[t!] 
 <<sim-03-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
@@ -1241,24 +1261,29 @@ my.settings[["superpose.symbol"]]$pch <- c(1, rep(2,2))
 xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
   data = s03, subset = par != "(Intercept)",
   ylim = c(0.8, 1),
-  type = "b", xlab = expression(rho), ylab = "coverage",
+  type = "b", xlab = expression(rho), ylab = "Empirical coverage",
   auto.key = list(columns = 2),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
 @ 
-\caption{Experiment III}
-\footnotesize{Experiment~III explores how various types of (clustered) covariances perform for Beta, zero-truncated Poisson and zero-inflated Poisson (ZIP) responses, where the data are composed of $G = 100$ (balanced) clusters each with $N_{g} = 5$ observations. The simulations of Experiment~III are composed of $10,000$ replications. There is only a single regressor included in the model, \code{x1} is composed of a linear combination of random draw at cluster level and a random draw at individual level with cluster correlation $\rho_x = 0.25$. The coverage is plotted on the y-axis, the cluster correlation $\rho$ is plotted on the x-axis.
-Comparisons are made between beta regression, zero-truncated Poisson and zero-inflated Poisson. For these response distributions, clustered standard errors perform well and remain nearly constant even for an increasing $\rho$. Standard errors that do not take into account the cluster correlation, like ``standard'' standard errors and basic sandwich standard errors underestimate the true standard errors the more the larger $\rho$.}
+\caption{Experiment III. Response distributions beyond the GLM (beta regression,
+zero-truncated Poisson, and zero-inflated Poisson) with $G = 100$ (balanced) clusters of $5$ observations each.
+The only regressor \code{x1} is correlated ($\rho_x = 0.25$). The coverage (from 10,000 replications) is plotted on the
+$y$-axis against the cluster correlation $\rho$ (from a Gaussian copula) on the $x$-axis.
+The horizontal reference line indicates the nominal coverage of $0.95$.}
 \label{fig:sim-03}
 \end{figure}
 
+Figure~\ref{fig:sim-03} shows the outcome of Experiment~III revealing that
+the clustered covariances from \code{vcovCL()} indeed work well for more
+general response distributions. Again, the performance of the non-clustered 
+covariances deteriorates with increasing cluster correlation.
+For the zero-truncated and zero-inflated Poisson distribution the empirical
+coverage rate is slightly lower than $0.95$. However, given that this does not
+depend on the extent of the correlation $\rho$ this is likely do to the quality
+of the normal approximation in the Wald confidence interval.
+
 \subsubsection{Experiment IV}
-
-Figure~\ref{fig:sim-04} depicts the findings of Experiment~IV. The y-axis represents again the coverage, but in contrast to the other simulation experiments, the number of clusters $G$ is plotted on the x-axis, ranging from 10 to 50 clusters, and in further steps of 50 up to 250 clusters. Gaussian, binomial and Poisson responses are compared with each other, with the focus on clustered standard errors with HC0--HC3 types of bias correction.
-
-In most cases, all of the standard errors are underestimated for $G = 10$ clusters (except clustered standard errors with HC3 bias correction for the binomial response). The larger the number of clusters $G$, the better the coverage and the less standard errors are underestimated. It can be observed that about 50 clusters is often enough for accurate inference. This result is well known in the literature \citep[][among others]{hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Harden:2011,hac:Cameron+Miller:2015}.
-
-Additionally, it can be observed that the higher the number of clusters, the less the different types of HC bias correction make the difference. However, for a small number of clusters, the HC3 correction works best, followed by HC2, HC1 and HC0. For the linear model, \cite{hac:Long+Ervin:2000} suggest to use HC3 for small samples (with less than 250 observations).
 
 \begin{figure}[t!] 
 <<sim-04-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
@@ -1273,16 +1298,82 @@ my.settings[["superpose.line"]]$col <- c("#377eb8", "#00E5EE", "#e41a1c", "#4daf
 my.settings[["superpose.symbol"]]$col <- c("#377eb8", "#00E5EE","#e41a1c", "#4daf4a")
 xyplot(coverage ~ nid | dist, groups = ~ factor(vcov),
   data = na.omit(s04), subset = par != "(Intercept)",
-  type = "b", xlab = "G", ylab = "coverage",
+  type = "b", xlab = "G", ylab = "Empirical coverage",
   auto.key = list(columns = 2),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
 @
-\caption{Experiment IV}
-\footnotesize{Experiment~IV explores how clustered covariances with HC0-HC3 correction perform for Gaussian, binomial and Poisson responses, the cluster correlation is fixed at $\rho = 0.25$. The data are composed of $G = 10, 50, 100, \ldots, 250$ (balanced) clusters each with $N_{g} = 5$ observations. The simulations of Experiment~IV are composed of $10,000$ replications. There is only a single regressor included in the model, \code{x1} is composed of a linear combination of random draw at cluster level and a random draw at individual level with cluster correlation $\rho_x = 0.25$. The coverage is plotted on the y-axis, the number of clusters $G$ on the x-axis.}
+\caption{Experiment IV. Exponential family response distributions with cluster correlation $\rho = 0.25$ (from a Gaussian copula).
+The only regressor \code{x1} is correlated ($\rho_x = 0.25$). The coverage (from 10,000 replications) on the
+$y$-axis for different types of bias adjustment (HC0--HC3) is plotted against the number of
+clusters $G$ on the $x$-axis. The number of clusters increases with $G = 10, 50, /dots, 250$ while
+the number of observations per cluster is fixed at $5$.
+The horizontal reference line indicates the nominal coverage of $0.95$.}
 \label{fig:sim-04}
 \end{figure}
 
+Figure~\ref{fig:sim-04} depicts the findings of Experiment~IV. The $y$-axis
+represents again the empirical coverage from 10,000 replications, but in contrast
+to the other simulation experiments, the number of clusters $G$ is plotted on the
+$x$-axis, ranging from 10 to 250 clusters. Gaussian,
+binomial and Poisson responses are compared with each other, with the focus on
+clustered standard errors with HC0--HC3 types of bias correction.
+
+In most cases, all of the standard errors are underestimated for $G = 10$
+clusters (except clustered standard errors with HC3 bias correction for the
+binomial and Poisson response). As found in previous studies \citep[][among
+others]{hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Harden:2011,hac:Cameron+Miller:2015},
+the larger the number of clusters $G$, the better the
+coverage and the less standard errors are underestimated. It can be observed
+that about 50 clusters is often enough for accurate coverage rates.
+
+Additionally, it can be observed that the higher the number of clusters, the
+less the different types of HC bias correction differ. However, for
+a small number of clusters, the HC3 correction works best, followed by HC2, HC1
+and HC0. This is also consistent with the findings for cross-sectional data,
+e.g., \cite{hac:Long+Ervin:2000} suggest to use HC3 in the linear model for
+small samples with less than 250 observations.
+
+
+\section{Summary}
+
+\fixme{Brief summary.}
+
+
+\section*{Computational details}
+
+The packages \pkg{sandwich}, \pkg{countreg}, \pkg{geepack}, \pkg{lattice}, \pkg{lme4}, \pkg{lmtest}, \pkg{multiwayvcov}, \pkg{plm} and \pkg{pscl} are
+required for the applications in this paper.
+For replication of the simulation study, the supplementary \proglang{R} script \code{sim-CL.R}
+is provided along with the corresponding results \code{sim-CL.rda}.
+
+\proglang{R} version \Sexpr{paste(R.Version()[6:7], collapse = ".")} has been used for computations.
+Package versions that have been employed are \pkg{sandwich}
+\Sexpr{gsub("-", "--", packageDescription("sandwich")$Version)},
+\pkg{countreg} \Sexpr{gsub("-", "--", packageDescription("countreg")$Version)},
+\pkg{geepack} \Sexpr{gsub("-", "--", packageDescription("geepack")$Version)},
+\pkg{lattice} \Sexpr{gsub("-", "--", packageDescription("lattice")$Version)},
+\pkg{lme4} \Sexpr{gsub("-", "--", packageDescription("lme4")$Version)},
+\pkg{lmtest} \Sexpr{gsub("-", "--", packageDescription("lmtest")$Version)},
+\pkg{multiwayvcov} \Sexpr{gsub("-", "--", packageDescription("multiwayvcov")$Version)},
+\pkg{plm} \Sexpr{gsub("-", "--", packageDescription("plm")$Version)},
+and \pkg{pscl} \Sexpr{gsub("-", "--", packageDescription("pscl")$Version)}
+have been used.
+
+\proglang{R} itself and all packages (except \pkg{countreg}) used are available from
+CRAN at \url{https://CRAN.R-project.org/}. 
+\pkg{countreg} is available from \url{https://R-Forge.R-project.org/projects/countreg/}.
+
+
+\bibliography{hac}
+
+\newpage
+
+\begin{appendix}
+
+\section{Simulation results for panel data with AR(1) correlations} \label{app:ar1}
+
+\fixme{Explanations for panel simulations.}
 
 \begin{figure}[t!]
 <<sim-0607-figure,echo=FALSE,fig=TRUE,height=7,width=10>>=
@@ -1296,7 +1387,7 @@ my.settings[["superpose.line"]]$col <- c("#377eb8","green", "#006400")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8","green", "#006400")
 xyplot(coverage ~ nround | factor(par) + factor(copula), groups = ~ factor(vcov),
   data = na.omit(s0607), subset = par != "(Intercept)",
-  type = "b", xlab = "G", ylab = "coverage",
+  type = "b", xlab = "G", ylab = "Empirical coverage",
   auto.key = list(columns = 2),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
@@ -1317,7 +1408,7 @@ my.settings[["superpose.line"]]$col <- c("#377eb8","green", "#006400")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8","green", "#006400")
 xyplot(coverage ~ nround | factor(par) + factor(dist), groups = ~ factor(vcov),
   data = na.omit(s08), subset = par != "(Intercept)",
-  type = "b", xlab = "G", ylab = "coverage",
+  type = "b", xlab = "G", ylab = "Empirical coverage",
   auto.key = list(columns = 2),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
@@ -1326,30 +1417,7 @@ xyplot(coverage ~ nround | factor(par) + factor(dist), groups = ~ factor(vcov),
 \label{fig:sim-08}
 \end{figure}
 
-\section*{Computation details}
 
-The packages \pkg{sandwich}, \pkg{countreg}, \pkg{geepack}, \pkg{lattice}, \pkg{lme4}, \pkg{lmtest},\pkg{multiwayvcov}, \pkg{plm} and \pkg{pscl} are
-required for the applications in this paper.
-For replication of the simulation exercises, the \proglang{R} script \code{sim-CL.R} is required.
-
-\proglang{R} version \Sexpr{paste(R.Version()[6:7], collapse = ".")} has been used for computations.
-Package versions that have been employed are \pkg{sandwich}
-\Sexpr{gsub("-", "--", packageDescription("sandwich")$Version)},
-\pkg{countreg} \Sexpr{gsub("-", "--", packageDescription("countreg")$Version)},
-\pkg{geepack} \Sexpr{gsub("-", "--", packageDescription("geepack")$Version)},
-\pkg{lattice} \Sexpr{gsub("-", "--", packageDescription("lattice")$Version)},
-\pkg{lme4} \Sexpr{gsub("-", "--", packageDescription("lme4")$Version)},
-\pkg{lmtest} \Sexpr{gsub("-", "--", packageDescription("lmtest")$Version)},
-\pkg{multiwayvcov} \Sexpr{gsub("-", "--", packageDescription("multiwayvcov")$Version)},
-\pkg{plm} \Sexpr{gsub("-", "--", packageDescription("plm")$Version)},
-and \pkg{pscl} \Sexpr{gsub("-", "--", packageDescription("pscl")$Version)}
-have been used.
-
-\proglang{R} itself and all packages (except \pkg{countreg}) used are available from
-CRAN at \url{https://CRAN.R-project.org/}. 
-\pkg{countreg} is accessible from \url{https://R-Forge.R-project.org/projects/countreg/}.
-
-
-\bibliography{hac}
+\end{appendix}
 
 \end{document}
