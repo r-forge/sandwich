@@ -1,3 +1,5 @@
+## Simulation infrastructure -----------------------------------------------------------------------
+
 ## data generating process (dgp)
 dgp <- function(nid = 100L, nround = 5L,
   coef = c(0, 0.85, 0.5, 0.7), rho = 0.5, xrho = 0.5,
@@ -153,11 +155,10 @@ fit <- function(data,
     "gaussian" = lm(formula, data = data),
     "poisson" = glm(formula, data = data, family = poisson),
     "zeroinfl" = countreg::zeroinfl(formula, data = data),
-    "hurdle" = pscl::hurdle(formula, data = data),
+    "hurdle" = countreg::hurdle(formula, data = data),
     "betareg" = betareg::betareg(formula, data = data, phi = FALSE),
     "binomial(logit)" = glm(formula, data = data, family = binomial),
-    "zerotrunc" = glm(formula, data = data, family = ztpoisson)
-    #"zerotrunc" = zerotrunc(formula, data = data, dist = "poisson")
+    "zerotrunc" = countreg::zerotrunc(formula, data = data, dist = "poisson")
   )
   ## fixed effects
   if("fixed" %in% vcov) {
@@ -166,11 +167,10 @@ fit <- function(data,
       "gaussian" = lm(formula_fe, data = data),
       "poisson" = glm(formula_fe, data = data, family = poisson),
       "zeroinfl" = countreg::zeroinfl(formula_fe, data = data),
-      "hurdle" = pscl::hurdle(formula_fe, data = data),
+      "hurdle" = countreg::hurdle(formula_fe, data = data),
       "betareg" = betareg::betareg(formula_fe, data = data, phi = FALSE),
       "binomial(logit)" = glm(formula_fe, data, family = binomial),
-      "zerotrunc" = glm(formula_fe, data = data, family = ztpoisson)
-      #"zerotrunc" = zerotrunc(formula_fe, data = data, dist = "poisson") 
+      "zerotrunc" = countreg::zerotrunc(formula_fe, data = data, dist = "poisson") 
     )
   } else {
     m_fe <- NULL
@@ -277,12 +277,12 @@ fit <- function(data,
   }
   if("PC" %in% vcov) {
     rval <- rbind(rval, data.frame(
-      coef = coef(m), se = sqrt(diag(vcovPC(m, cluster = data$id, order.by = data$round, kronecker = TRUE))), par = names(coef(m)),
+      coef = coef(m), se = sqrt(diag(vcovPC(m, cluster = data$id, order.by = data$round))), par = names(coef(m)),
       vcov = "PC", stringsAsFactors = FALSE))
   }
   if("BS" %in% vcov) {
     rval <- rbind(rval, data.frame(
-      coef = coef(m), se = sqrt(diag(vcovBS(m, cluster = data$id, start = FALSE))), par = names(coef(m)),
+      coef = coef(m), se = sqrt(diag(vcovBS(m, cluster = data$id))), par = names(coef(m)),
       vcov = "BS", stringsAsFactors = FALSE))
   }
     
@@ -303,7 +303,7 @@ fit <- function(data,
   return(rval)
 }
 
-
+## loop over simulation scenarios
 sim <- function(nrep = 1000, nid = 100L, nround = 5L,
   dist = "gaussian", rho = 0.5, xrho = 0.5,
   coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
@@ -353,3 +353,113 @@ sim <- function(nrep = 1000, nid = 100L, nround = 5L,
 
   return(rval)
 }
+
+
+## Bootstrap for InstInnovation hurdle model -------------------------------------------------------
+
+library("sandwich")
+library("pscl")
+
+data("InstInnovation", package = "sandwich")
+h_innov <- hurdle(
+  cites ~ institutions + log(capital/employment) + log(sales),
+  data = InstInnovation, dist = "negbin")
+
+set.seed(0)
+vc_innov <- list(
+  "standard" = vcov(h_innov),
+  "basic" = sandwich(h_innov),
+  "CL-1" = vcovCL(h_innov, cluster = InstInnovation$company),
+  "boot" = vcovBS(h_innov, cluster = InstInnovation$company)
+)
+
+
+## Simulation study --------------------------------------------------------------------------------
+
+library("copula")
+library("lme4")
+library("geepack")
+library("countreg")
+library("betareg")
+
+set.seed(1)
+s01 <- sim(nrep = 10000, nid = 100, nround = 5,
+           dist = "gaussian", rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
+           coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
+           vcov = c("standard", "basic", "CL-0", "random", "gee", "PC", "PL", "BS"),
+           type = "copula", cores = 16)
+save(s01, file = "s01.rda")
+
+set.seed(2)
+s02 <- sim(nrep = 10000, nid = 100, nround = 5,
+           dist = c("gaussian", "binomial(logit)", "poisson"),
+	   rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
+           coef = c(0, 0.85, 0, 0), formula = response ~ x1,
+           vcov = c("standard", "basic", "CL-0", "random", "gee", "PC", "PL", "BS"),
+           type = "copula", cores = 16)
+save(s02, file = "s02.rda")
+
+set.seed(3)
+s03 <- sim(nrep = 10000, nid = 100, nround = 5,
+           dist = c("zerotrunc", "zeroinfl", "betareg"),
+	   rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
+           coef = c(0, 0.85, 0, 0), formula = response ~ x1,
+           vcov = c("standard", "basic", "CL-0"),
+           type = "copula", cores = 16)
+save(s03, file = "s03.rda")
+
+set.seed(4)
+s04 <- sim(nrep = 10000, nid = c(10, seq(50, 250, by = 50)), nround = 5,
+           dist = c("gaussian","poisson", "binomial(logit)"),
+	   rho = 0.25, xrho = 0.25,
+           coef = c(0, 0.85, 0, 0), formula = response ~ x1,
+           vcov = c("CL-0", "CL-1", "CL-2", "CL-3"),
+           type = "copula", cores = 16)
+save(s04, file = "s04.rda")
+
+set.seed(6)
+s06 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
+           dist = "gaussian", rho = 0.25, xrho = 0.25,
+           coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
+           vcov = c("CL-0", "PC", "PL"),
+	   type = "copula", cores = 16)
+save(s06, file = "s06.rda")
+
+set.seed(7)
+s07 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
+           dist = "gaussian", rho = 0.25, xrho = 0.25,
+           coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
+           vcov = c("CL-0", "PC", "PL"),
+	   type = "copula-ar1", cores = 16)
+save(s07, file = "s07.rda")
+
+set.seed(8)
+s08 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
+           dist = c("binomial(logit)", "poisson"), rho = 0.25, xrho = 0.25,
+           coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
+           vcov = c("CL-0", "PC", "PL"),
+	   type = "copula-ar1", cores = 16)
+save(s08, file = "s08.rda")
+
+set.seed(33)
+s33 <- sim(nrep = 1000, nid = 100, nround = 5,
+           dist = c("zerotrunc", "zeroinfl", "betareg"),
+	   rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
+           coef = c(0, 0.85, 0, 0), formula = response ~ x1,
+           vcov = "BS",
+           type = "copula", cores = 16)
+save(s33, file = "s33.rda")
+
+
+s06$copula <- factor(rep.int("copula",     nrow(s06)), levels = c("copula", "copula-ar1"))
+s07$copula <- factor(rep.int("copula-ar1", nrow(s07)), levels = c("copula", "copula-ar1"))
+s0607 <- rbind(s06, s07)
+
+s03$vcov <- as.character(s03$vcov)
+s33$vcov <- as.character(s33$vcov)
+s33 <- rbind(s03, s33)
+s33$vcov <- factor(s33$vcov)
+
+save(s01, s02, s03, s04, s06, s07, s0607, s08, vc_innov, s33, file = "sim-CL.rda")
+
+## -------------------------------------------------------------------------------------------------

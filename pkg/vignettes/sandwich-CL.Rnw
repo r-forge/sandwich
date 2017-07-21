@@ -77,98 +77,34 @@
 
 \SweaveOpts{engine=R,eps=FALSE}
 %\VignetteIndexEntry{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R}
-%\VignetteDepends{sandwich,pscl,lattice,geepack,multiwayvcov,plm}
+%\VignetteDepends{sandwich,geepack,lattice,lmtest,multiwayvcov,pcse,plm,pscl}
 %\VignetteKeywords{clustered data, clustered covariance matrix estimators, object orientation, simulation, R}
 %\VignettePackage{sandwich}
 
 <<preliminaries,echo=FALSE,results=hide>>=
 library("sandwich")
-library("pscl")
+library("geepack")
 library("lattice")
-library("lme4")
-source("sim-CL.R")
-source("../R/vcovBS.R")
+library("lmtest")
+library("multiwayvcov")
+library("pcse")
+library("plm")
+library("pscl")
+
 panel.xyref <- function(x, y, ...) {
   panel.abline(h = 0.95, col = "slategray")
   panel.xyplot(x, y, ...)  
 }
 se <- function(vcov) sapply(vcov, function(x) sqrt(diag(x)))
+
 options(prompt = "R> ", continue = "+  ", digits = 5)
-@ 
 
-<<sim,echo=FALSE,results=hide>>=
-if(file.exists("sim-CL.rda")) load("sim-CL.rda") else {
-
-data("InstInnovation", package = "sandwich")
-h_innov <- hurdle(
-  cites ~ institutions + log(capital/employment) + log(sales),
-  data = InstInnovation, dist = "negbin")
-
-set.seed(0)
-vc_innov <- list(
-  "standard" = vcov(h_innov),
-  "basic" = sandwich(h_innov),
-  "CL-1" = vcovCL(h_innov, cluster = InstInnovation$company),
-  "boot" = vcovBS(h_innov, cluster = InstInnovation$company)
-)
-
-
-set.seed(1)
-s01 <- sim(nrep = 10000, nid = 100, nround = 5,
-           dist = "gaussian", rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
-           coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
-           vcov = c("standard", "basic", "CL-0", "random", "gee", "PC", "PL", "BS"),
-           type = "copula") ##, cores = 12)
-
-set.seed(2)
-s02 <- sim(nrep = 10000, nid = 100, nround = 5,
-           dist = c("gaussian", "binomial(logit)", "poisson"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
-           coef = c(0, 0.85, 0, 0), formula = response ~ x1,
-           vcov = c("standard", "basic", "CL-0", "random", "gee", "PC", "PL", "BS"),
-           type = "copula") ##, cores = 12)
-
-set.seed(3)
-s03 <- sim(nrep = 10000, nid = 100, nround = 5,
-           dist = c("zerotrunc", "zeroinfl", "betareg"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
-           coef = c(0, 0.85, 0, 0), formula = response ~ x1,
-           vcov = c("standard", "basic", "CL-0", "BS"),
-           type = "copula") ##, cores = 12)
-
-set.seed(4)
-s04 <- sim(nrep = 10000, nid = c(10, seq(50, 250, by = 50)), nround = 5,
-           dist = c("gaussian","poisson", "binomial(logit)"), rho = 0.25, xrho = 0.25,
-           coef = c(0, 0.85, 0, 0), formula = response ~ x1,
-           vcov = c("CL-0", "CL-1", "CL-2", "CL-3"),
-           type = "copula") ##, cores = 4)
-
-set.seed(6)
-s06 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
-           dist = "gaussian", rho = 0.25, xrho = 0.25,
-           coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
-           vcov = c("CL-0", "PC", "PL"),
-	   type = "copula") ##, cores = 4)
-
-set.seed(7)
-s07 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
-           dist = "gaussian", rho = 0.25, xrho = 0.25,
-           coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
-           vcov = c("CL-0", "PC", "PL"),
-	   type = "copula-ar1") ##, cores = 4)
-
-set.seed(8)
-s08 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
-           dist = c("binomial(logit)", "poisson"), rho = 0.25, xrho = 0.25,
-           coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
-           vcov = c("CL-0", "PC", "PL"),
-	   type = "copula-ar1") ##, cores = 4)
-
-s06$copula <- factor(rep.int("copula",     nrow(s06)), levels = c("copula", "copula-ar1"))
-s07$copula <- factor(rep.int("copula-ar1", nrow(s07)), levels = c("copula", "copula-ar1"))
-s0607 <- rbind(s06, s07)
-
-save(s01, s02, s03, s04, s06, s07, s0607, s08, vc_innov, file = "sim-CL.rda")
+if(file.exists("sim-CL.rda")) {
+  load("sim-CL.rda")
+} else {
+  source("sim-CL.R")
 }
-@
+@ 
 
 
 
