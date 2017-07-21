@@ -1,4 +1,4 @@
-vcovPC <- function(x, cluster = NULL, order.by = NULL, pairwise = TRUE, sandwich = TRUE, fix = FALSE, ...)
+vcovPC <- function(x, cluster = NULL, order.by = NULL, pairwise = FALSE, sandwich = TRUE, fix = FALSE, ...)
 {
   ## compute meat of sandwich
   rval <- meatPC(x, cluster = cluster, order.by = order.by, pairwise = pairwise, ...)
@@ -14,7 +14,7 @@ vcovPC <- function(x, cluster = NULL, order.by = NULL, pairwise = TRUE, sandwich
   return(rval)
 }
 
-meatPC <- function(x, cluster = NULL, order.by = NULL, pairwise = TRUE, kronecker = TRUE, ...)
+meatPC <- function(x, cluster = NULL, order.by = NULL, pairwise = FALSE, kronecker = TRUE, ...)
 {
   ## extract estimating functions / aka scores
   if (is.list(x) && !is.null(x$na.action)) class(x$na.action) <- "omit"
