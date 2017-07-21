@@ -748,12 +748,12 @@ observations, and $k$ is the number of estimated parameters.
 
 Panel-corrected covariances and panel-corrected standard errors (PCSE) a la \cite{hac:Beck+Katz:1995} are implemented in
 \begin{verbatim}
-  vcovPC(x, cluster = NULL, order.by = NULL, subsample = FALSE,
+  vcovPC(x, cluster = NULL, order.by = NULL, pairwise = FALSE,
    sandwich = TRUE, fix = FALSE, ...)
 \end{verbatim}
 based on
 \begin{verbatim}
-  meatPC(x,  cluster = NULL, order.by = NULL, subsample = FALSE,
+  meatPC(x,  cluster = NULL, order.by = NULL, pairwise = FALSE,
    kronecker = FALSE, ...)
 \end{verbatim}
 They are usually used for panel data or time-series-cross-section (TSCS) data with a large enough time dimension. 
@@ -761,9 +761,9 @@ The arguments \code{sandwich}, \code{fix}, \code{cluster}, and \code{order.by}
 have the same meaning as in \code{vcovCL()} and \code{vcovPL()}.
 
 While estimation in balanced panels is straightforward, there are two alternatives to estimate
-the meat for unbalanced panels \citep{hac:Bailey+Katz:2011}. For \code{subsample
-= TRUE}, a balanced subset of the panel is employed, whereas for \code{subsample
-= FALSE}, a pairwise balanced sample is used. For details, see
+the meat for unbalanced panels \citep{hac:Bailey+Katz:2011}. For \code{pairwise
+= TRUE}, a pairwise balanced sample is employed, whereas for \code{pairwise
+= FALSE}, the largest balanced subset of the panel is used. For details, see
 \cite{hac:Bailey+Katz:2011}.
 
 The argument \code{kronecker} relates to estimation of the meat and determines
@@ -976,9 +976,8 @@ se(list(
 ))
 @
 And also when omitting the last year for the first firm to obtain an unbalanced panel, the \pkg{pcse}
-results can be replicated. Both strategies for balancing the panel internally (pairwise vs.\ subsample)
-are illustrated in the following. \fixme{Unless there is some reason against it: We should probably
-rename the `subsample' argument `pairwise' to conform with the pcse package and make it easier to switch.}
+results can be replicated. Both strategies for balancing the panel internally (pairwise vs.\ casewise)
+are illustrated in the following.
 <<petersen-unbalanced1>>=
 PU <- subset(PetersenCL, !(firm == 1 & year == 10))
 pu_lm <- lm(y ~ x, data = PU)
@@ -987,10 +986,10 @@ and again, panel-corrected standard errors from \pkg{sandwich} are equivalent to
 <<petersen-unbalanced2>>=
 se(list(
   "sandwichF" = sandwich::vcovPC(pu_lm, cluster = PU$firm,
-    order.by = PU$year, subsample = FALSE),
+    order.by = PU$year, pairwise = TRUE),
   "pcseT" = pcse::vcovPC(pu_lm, PU$firm, PU$year, pairwise = TRUE),
   "sandwichT" = sandwich::vcovPC(pu_lm, cluster = PU$firm,
-    order.by = PU$year, subsample = TRUE),
+    order.by = PU$year, pairwise = FALSE),
   "pcseF" = pcse::vcovPC(pu_lm, PU$firm, PU$year, pairwise = FALSE)
 ))
 @ 
