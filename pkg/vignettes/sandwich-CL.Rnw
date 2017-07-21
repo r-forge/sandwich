@@ -87,6 +87,7 @@ library("pscl")
 library("lattice")
 library("lme4")
 source("sim-CL.R")
+source("../R/vcovBS.R")
 panel.xyref <- function(x, y, ...) {
   panel.abline(h = 0.95, col = "slategray")
   panel.xyplot(x, y, ...)  
@@ -128,7 +129,7 @@ s02 <- sim(nrep = 10000, nid = 100, nround = 5,
 
 set.seed(3)
 s03 <- sim(nrep = 10000, nid = 100, nround = 5,
-           dist = c("zerotrunc", "zip", "beta"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
+           dist = c("zerotrunc", "zeroinfl", "betareg"), rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,
            vcov = c("standard", "basic", "CL-0", "BS"),
            type = "copula") ##, cores = 12)
