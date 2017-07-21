@@ -10,10 +10,10 @@
 
 \usage{
 vcovPC(x, cluster = NULL, order.by = NULL,
-  subsample = TRUE, sandwich = TRUE, fix = FALSE, \dots)
+  pairwise = FALSE, sandwich = TRUE, fix = FALSE, \dots)
 
 meatPC(x, cluster = NULL, order.by = NULL,
-  subsample = TRUE, kronecker = TRUE, \dots)
+  pairwise = FALSE, kronecker = TRUE, \dots)
 }
 
 \arguments{
@@ -22,7 +22,7 @@ meatPC(x, cluster = NULL, order.by = NULL,
     or a \code{list} (or \code{data.frame}) thereof. By default,
     either \code{attr(x, "cluster")} is used.}
   \item{order.by}{a variable indicating the aggregation within time periods.}
-  \item{subsample}{logical. For unbalanced panels. Indicating whether
+  \item{pairwise}{logical. For unbalanced panels. Indicating whether
   the meat should be estimated pair- or casewise.}
   \item{sandwich}{logical. Should the sandwich estimator be computed?
     If set to \code{FALSE} only the meat matrix is returned.}
@@ -47,8 +47,8 @@ meatPC(x, cluster = NULL, order.by = NULL,
 
   Following Bailey and Katz (2011), there are two alternatives to
   estimate the meat for unbalanced panels.
-  For \code{subsample = TRUE}, a balanced subset of the panel is used,
-  whereas for \code{subsample = FALSE}, a pairwise balanced sample is
+  For \code{pairwise = FALSE}, a balanced subset of the panel is used,
+  whereas for \code{pairwise = TRUE}, a pairwise balanced sample is
   employed.
 }
 
@@ -101,7 +101,7 @@ if(requireNamespace("pcse", quietly = TRUE)) {
 data("aglUn", package = "pcse")
 agllm <- lm(growth ~ lagg1 + opengdp + openex + openimp + central +
 leftc + inter, data = aglUn)
-sqrt(diag(vcovPC(agllm, aglUn$country, aglUn$year, subsample = FALSE)))
+sqrt(diag(vcovPC(agllm, aglUn$country, aglUn$year)))
 }
 }
 
