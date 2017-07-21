@@ -1,7 +1,7 @@
-vcovPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, sandwich = TRUE, fix = FALSE, ...)
+vcovPC <- function(x, cluster = NULL, order.by = NULL, pairwise = TRUE, sandwich = TRUE, fix = FALSE, ...)
 {
   ## compute meat of sandwich
-  rval <- meatPC(x, cluster = cluster, order.by = order.by, subsample = subsample, ...)
+  rval <- meatPC(x, cluster = cluster, order.by = order.by, pairwise = pairwise, ...)
     
   ## full sandwich
   if (sandwich) rval <- sandwich(x, meat. = rval)
@@ -14,7 +14,7 @@ vcovPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, sandwic
   return(rval)
 }
 
-meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kronecker = TRUE, ...)
+meatPC <- function(x, cluster = NULL, order.by = NULL, pairwise = TRUE, kronecker = TRUE, ...)
 {
   ## extract estimating functions / aka scores
   if (is.list(x) && !is.null(x$na.action)) class(x$na.action) <- "omit"
@@ -75,8 +75,8 @@ meatPC <- function(x, cluster = NULL, order.by = NULL, subsample = TRUE, kroneck
         Tij <- expand.grid(cluster = unique(cluster), order.by = unique(order.by))
         pair <- merge(pair, Tij, by = c("cluster", "order.by"), all = TRUE)
         
-    ## extract balanced subsample
-       if(subsample) {
+    ## balance panel
+       if(!pairwise) {
            
     ## extract "full" clusters   
     rem <- subset(pair$order.by, is.na(pair$res))
