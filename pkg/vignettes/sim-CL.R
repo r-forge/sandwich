@@ -388,7 +388,6 @@ s01 <- sim(nrep = 10000, nid = 100, nround = 5,
            coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
            vcov = c("standard", "basic", "CL-0", "random", "gee", "PC", "PL", "BS"),
            type = "copula", cores = 16)
-save(s01, file = "s01.rda")
 
 set.seed(2)
 s02 <- sim(nrep = 10000, nid = 100, nround = 5,
@@ -397,16 +396,14 @@ s02 <- sim(nrep = 10000, nid = 100, nround = 5,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,
            vcov = c("standard", "basic", "CL-0", "random", "gee", "PC", "PL", "BS"),
            type = "copula", cores = 16)
-save(s02, file = "s02.rda")
 
 set.seed(3)
 s03 <- sim(nrep = 10000, nid = 100, nround = 5,
            dist = c("zerotrunc", "zeroinfl", "betareg"),
 	   rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,
-           vcov = c("standard", "basic", "CL-0"),
+           vcov = c("standard", "basic", "CL-0"), ## BS with lower nrep below (s33)
            type = "copula", cores = 16)
-save(s03, file = "s03.rda")
 
 set.seed(4)
 s04 <- sim(nrep = 10000, nid = c(10, seq(50, 250, by = 50)), nround = 5,
@@ -415,7 +412,6 @@ s04 <- sim(nrep = 10000, nid = c(10, seq(50, 250, by = 50)), nround = 5,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,
            vcov = c("CL-0", "CL-1", "CL-2", "CL-3"),
            type = "copula", cores = 16)
-save(s04, file = "s04.rda")
 
 set.seed(6)
 s06 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
@@ -423,7 +419,6 @@ s06 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
            coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
            vcov = c("CL-0", "PC", "PL"),
 	   type = "copula", cores = 16)
-save(s06, file = "s06.rda")
 
 set.seed(7)
 s07 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
@@ -431,7 +426,6 @@ s07 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
            coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
            vcov = c("CL-0", "PC", "PL"),
 	   type = "copula-ar1", cores = 16)
-save(s07, file = "s07.rda")
 
 set.seed(8)
 s08 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
@@ -439,7 +433,6 @@ s08 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
            coef = c(0, 0.85, 0.5, 0.7), formula = response ~ x1 + x2 + x3,
            vcov = c("CL-0", "PC", "PL"),
 	   type = "copula-ar1", cores = 16)
-save(s08, file = "s08.rda")
 
 set.seed(33)
 s33 <- sim(nrep = 1000, nid = 100, nround = 5,
@@ -448,11 +441,10 @@ s33 <- sim(nrep = 1000, nid = 100, nround = 5,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,
            vcov = "BS",
            type = "copula", cores = 16)
-save(s33, file = "s33.rda")
 
 
-s06$copula <- factor(rep.int("copula",     nrow(s06)), levels = c("copula", "copula-ar1"))
-s07$copula <- factor(rep.int("copula-ar1", nrow(s07)), levels = c("copula", "copula-ar1"))
+s06$copula <- factor(rep.int("copula",     nrow(s06)), levels = c("copula-ar1", "copula"), labels = c("AR(1)", "Exchangeable"))
+s07$copula <- factor(rep.int("copula-ar1", nrow(s07)), levels = c("copula-ar1", "copula"), labels = c("AR(1)", "Exchangeable"))
 s0607 <- rbind(s06, s07)
 
 s03$vcov <- as.character(s03$vcov)
