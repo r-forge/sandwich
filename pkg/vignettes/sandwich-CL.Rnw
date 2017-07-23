@@ -1306,12 +1306,12 @@ CRAN at \url{https://CRAN.R-project.org/}.
 
 \section{Simulation results for panel data with AR(1) correlations} \label{app:ar1}
 As observed in Figures~\ref{fig:sim-01}--\ref{fig:sim-02}, the estimators for panel covariances \code{PL} and \code{PC} have problems with ``short'' panels comprising only 5 observations per cluster, and hence perform poorly.
-By observing this, we took a closer look at panel covariances in case of (1) ``longer'' panels, and (2) an AR(1) structure instead of on exchangeable correlation structure.
+Observing this, we took a closer look at panel covariances in case of (1) ``longer'' panels, and (2) an AR(1) structure instead of on exchangeable correlation structure.
 
 Figure~\ref{fig:sim-0607} illustrates the performance of panel covariances (\code{PL}, \code{PC}) as well as clustered covariances (\code{CL-0}).
 The number of observations per cluster $n_{g}$ is plotted on the $x$-axis, ranging from $5$ (as in Experiments I--III) to $50$.
 When modeling the dependency of a Gaussian response via a copula with an AR(1) correlation structure, the empirical coverage converges towards the desired value of $0.95$ for all regressors the ``longer'' the panel (that is, the higher the number of observations per cluster). In case of an exchangeable correlation structure, it is the other way around for regressors containing cluster correlation (that is, for regressors \code{x1} and \code{x2}).
-For the uncorrelated regressor \code{x3}, panel-corrected covariances perform well even for $5$ observations per cluster, but underestimation is getting even more pronounced the higher the cluster correlation of a regressor.
+For the uncorrelated regressor \code{x3}, panel-corrected covariances (\code{PC}) perform well even for $5$ observations per cluster, but underestimation is getting even more pronounced the higher the cluster correlation of a regressor.
 
 \code{PL} and \code{PC} covariances are based on the assumption that correlation is dying out, which is the case for an AR(1) structure, but not for an exchangeable correlation structure, and can explain -- together with the ``short'' panels used in the simulations -- the poor performance of panel covariances. Nevertheless, independent of both the number of observations per cluster and the correlation structures, clustered covariances perform well. 
 
