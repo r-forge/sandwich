@@ -321,7 +321,7 @@ respectively. In addition to the \code{estfun()} method a \code{model.matrix()}
 method is needed in \code{meatHC()} for the decomposition of the scores into
 empirical working residuals and regressor matrix.
 
-\subsection{Clustered covariances} 
+\subsection{Clustered covariances}
 
 For clustered observations, similar ideas as above can be employed but the data
 has more structure that needs to be incorporated into the meat estimators.
@@ -570,7 +570,7 @@ they also provide \code{model.matrix()} extractors so that the factorization fro
 into working residuals and regressor matrix can be easily computed.
 
 
-\subsection{Clustered covariances}
+\subsection{Clustered covariances} \label{sec:vcovcl}
 
 One-, two-, and multi-way clustered covariances with HC0--HC3 bias correction
 are implemented in
@@ -767,7 +767,7 @@ submodels but that only the coefficient in the zero hurdle is significant.
 Below, the need for clustering is brought out through a comparison of clustered standard errors
 with ``standard'' standard errors and basic (cross-section) sandwich standard
 errors. As an additional reference, a simple clustered bootstrap covariance can
-be computed by \code{vcovBS()}.
+be computed by \code{vcovBS()} (by default with \code{R = 250} bootstrap samples).
 <<innovation-se, echo=TRUE, eval=FALSE>>= 
 set.seed(0)
 vc <- list(
@@ -959,7 +959,7 @@ or \emph{uncorrelated}. The model equation is given by
 h(\mu_{ig}) = \beta_{0} + \beta_{1} \cdot x_{1,ig} + \beta_{2} \cdot x_{2,g} + \beta_{3} \cdot x_{3,ig},
 \end{eqnarray}
 where $\mu_{ig}$ is the expectation of the response for observation $i$ within cluster $g$ and the
-link function $h(\cdot)$ depends on the model type. The regressors variables are all drawn from standard
+link function $h(\cdot)$ depends on the model type. The regressor variables are all drawn from standard
 normal distributions but at different levels (cluster vs.\ individual observation).
 \begin{eqnarray} \label{eq:regressors}
 x_{1,ig} & \sim & \rho_{x} \cdot \mathcal{N}_{g}(0, 1) + (1 - \rho_{x}) \cdot \mathcal{N}_{ig}(0, 1) \label{x1} \\ 
@@ -986,7 +986,7 @@ which have been selected based on \cite{hac:Harden:2011}.
 The response distributions encompass Gaussian (\code{gaussian}, with identity link) as the standard classical scenario
 as well as binary (\code{binomial}, with a size of one and a logit link) and Poisson (\code{poisson}, with log link) from the
 GLM exponential family. To move beyond the GLM, we also consider the beta (\code{betareg}, with logit link and fixed precision parameter $\phi = 10$),
-zero-truncated Poisson(\code{zerotrunc}, with log link), andzero-inflated Poisson (\code{zip}, with log link and fixed inflation probability $\pi = 0.3$)
+zero-truncated Poisson(\code{zerotrunc}, with log link), and zero-inflated Poisson (\code{zeroinfl}, with log link and fixed inflation probability $\pi = 0.3$)
 distributions.
 
 
@@ -995,12 +995,12 @@ distributions.
 The types of covariances being compared include ``standard'' covariances
 (\code{standard}, without considering any heteroscedasticity or clustering/correlations),
 basic sandwich covariances (\code{basic}, without clustering),
-Driscoll and Kraay panel covariances (\code{PL}),
-Beck and Katz panel-corrected covariances (\code{PC}),
-and clustered covariances with HC0--HC3 adjustment (\code{CL-0}--\code{CL-3}).
-As further references, covariances from a clustered bootstrap (\code{BS}),
-a mixed-effects model with random intercept (\code{random}), and
-from a GEE with exchangeable correlation structure (\code{gee})
+Driscoll and Kraay panel covariances ({PL}),
+Beck and Katz panel-corrected covariances ({PC}),
+and clustered covariances with HC0--HC3 adjustment ({CL-0}--{CL-3}).
+As further references, covariances from a clustered bootstrap ({BS}),
+a mixed-effects model with random intercept ({random}), and
+from a GEE with exchangeable correlation structure ({gee})
 are assessed.
 
 \subsubsection{Outcome measure}
@@ -1045,8 +1045,8 @@ covariance matrix estimate and the empirical coverage. The function \code{sim()}
 sets up all factorial combinations of the specified scenarios and loops over the fits
 for each scenario (using multiple cores for parallelization).
 
-Table~\ref{tab:vcov} shows exemplary how the different types of covariances are
-calculated for responses from the exponential family. A pooled model (\code{m}),
+Table~\ref{tab:vcov} shows exemplarily how the different types of covariances are
+calculated for responses from the exponential family. A pooled or marginal model (\code{m}),
 a random effects model (\code{m_re}, using \pkg{lme4}, \citealp{hac:Bates+Machler+Bolker:2015}),
 and a GEE with an exchangeable correlation structure (\code{m_gee}, using \pkg{geepack},
 \citealp{hac:Halekoh+Hojsgaard+Yan:2002}) are fitted. For the other (non-GLM)
@@ -1066,6 +1066,8 @@ covariances for the following settings.
    \item Experiment III: Response distributions beyond the GLM.
    \item Experiment IV: GLMs with HC0--HC3 bias corrections.
 \end{itemize}
+
+\pagebreak
 
 \subsubsection{Experiment I}
 
@@ -1110,17 +1112,17 @@ deteriorate that either do not account for the clustering at all (i.e.,
 panel data (i.e., PL and PC).
 
 The reason for the poor performance of the panel data covariances is the low number of
-$5$ observations per cluster. This has already been documented in the literature:
+$5$~observations per cluster. This has already been documented in the literature:
 In a Monte-Carlo study, \cite{hac:Driscoll+Kraay:1998} use a minimum of 20--25
 observations per cluster and \cite{hac:Hoechle:2007} notes that the PC estimator 
 can be quite imprecise if the crosss-sectional dimension is large compared to the time dimension.
-As shown in Appendix~\ref{app:ar1}, the performance improves if an AR(1) correlation
-structure is employed in the simulation and the number of observations per
-cluster increase.
+As shown in Appendix~\ref{app:ar1}, the performance improves if an exponentially decaying
+AR(1) correlation structure is employed instead of the exchangeable structure and
+if the number of observations per cluster increases.
 
 As the effects of regressor \code{x1} are in between the effects of the clustered
 regressor \code{x2} and the uncorrelated regressor \code{x3}, the following simulation
-experiments focus on the situation with a single regressor \code{x1}.
+experiments focus on the situation with a single correlated regressor \code{x1}.
 
 
 \subsubsection{Experiment II}
@@ -1160,17 +1162,17 @@ Overall, the results for binomial and Poisson response are very similar to
 the Gaussian case in Experiment~I. Thus, this confirms that clustered covariances
 also work well with GLMs.
 
-The only major difference between the Gaussian and binomial/Poisson cases is the
+The only major difference between the linear Gaussian and nonlinear binomial/Poisson cases is the
 performance of the mixed-effects models with random intercept. While in linear
 models the marginal (or ``population-averaged'') approach employed with
 clustered covariances leads to analogous models compared to mixed-effects
 models, this is not the case in nonlinear models. With nonlinear links,
 mixed-effects models correspond to ``conditional'' rather than ``marginal'' models
 and for obtaining marginal expectations the random effects have to be integrated out
-\citep[see]{hac:Molenberghs+Kenward+Verbeke+Iddi+Efendi:2013,hac:Fitzmaurice:2014}.
+\citep[see][]{hac:Molenberghs+Kenward+Verbeke+Iddi+Efendi:2013,hac:Fitzmaurice:2014}.
 Consequently, fixed effects have to be interpreted differently and their
-confidence intervals do not contain the population-averaged effects as assessed
-in Experiment~II.
+confidence intervals do not contain the population-averaged effects, thus
+leading to the results in Experiment~II.
 
 \subsubsection{Experiment III}
 
@@ -1202,14 +1204,18 @@ The horizontal reference line indicates the nominal coverage of $0.95$.}
 \label{fig:sim-03}
 \end{figure}
 
-Figure~\ref{fig:sim-03} shows the outcome of Experiment~III revealing that
-the clustered covariances from \code{vcovCL()} indeed work well for more
-general response distributions. Again, the performance of the non-clustered 
+Figure~\ref{fig:sim-03} shows the outcome of Experiment~III whose settings are similar
+to the previous Experiment~I. But now more general response distributions beyond the
+classic GLM framework are amployed, revealing that the clustered covariances 
+from \code{vcovCL()} indeed also work well in this setup. Again, the performance of the non-clustered 
 covariances deteriorates with increasing cluster correlation.
 For the zero-truncated and zero-inflated Poisson distribution the empirical
 coverage rate is slightly lower than $0.95$. However, given that this does not
-depend on the extent of the correlation $\rho$ this is likely do to the quality
-of the normal approximation in the Wald confidence interval.
+depend on the extent of the correlation $\rho$ this is more likely due to the quality
+of the normal approximation in the Wald confidence interval. The clustered bootstrap covariance
+(BS) performs similarly to the clustered HC0 covariance but is computationally much more
+demanding due to the need for resampling and refitting the model (here with \code{R = 250}
+bootstrap samples).
 
 \subsubsection{Experiment IV}
 
@@ -1243,15 +1249,20 @@ represents again the empirical coverage from 10,000 replications, but in contras
 to the other simulation experiments, the number of clusters $G$ is plotted on the
 $x$-axis, ranging from 10 to 250 clusters. Gaussian,
 binomial and Poisson responses are compared with each other, with the focus on
-clustered standard errors with HC0--HC3 types of bias correction.
+clustered standard errors with HC0--HC3 types of bias correction. (Recall
+that HC2 and HC3 require blockwise components of the full hat matrix and hence
+are at the moment only available for \code{lm()} and \code{glm()} fits, see
+Section~\ref{sec:vcovcl}.)
 
 In most cases, all of the standard errors are underestimated for $G = 10$
 clusters (except clustered standard errors with HC3 bias correction for the
-binomial and Poisson response). As found in previous studies \citep[][among
+binomial and Poisson response). As found in previous studies for clustered
+HC0/HC1 covariances \citep[][among
 others]{hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Harden:2011,hac:Cameron+Miller:2015},
 the larger the number of clusters $G$, the better the
 coverage and the less standard errors are underestimated. It can be observed
-that about 50 clusters is often enough for accurate coverage rates.
+that in our study about 50--100 clusters are enough for sufficiently accurate
+coverage rates.
 
 Additionally, it can be observed that the higher the number of clusters, the
 less the different types of HC bias correction differ. However, for
@@ -1260,6 +1271,8 @@ and HC0. This is also consistent with the findings for cross-sectional data,
 e.g., \cite{hac:Long+Ervin:2000} suggest to use HC3 in the linear model for
 small samples with less than 250 observations.
 
+
+\vspace*{-0.3cm}	
 
 \section{Summary}
 
@@ -1270,8 +1283,12 @@ that were somewhat scattered over several packages, the implementation in \pkg{s
 ``flavors'' of clustered covariances and, most importantly, is applicable to any model object that provides methods
 to extract the \code{estfun()} (estimating functions; observed score matrix) and \code{bread()} (inverse Hessian).
 Therefore, it is possible to apply the new functions \code{vcovCL()}, \code{vcovPL()}, and \code{vcovPC()} to models
-beyond linear regression. A Monte Carlo study shows that clustered covariances work reasonably well in the models
-investigated but some care is needed when applying panel estimators in panel data with ``short'' panels.
+beyond linear regression. A thorough Monte Carlo assesses the performance of these functions in regressions
+beyond the standard linear Gaussian scenario, e.g., for exponential family distributions and beyond and
+for the less frequently used HC2 and HC3 adjustments. This shows that clustered covariances work reasonably well
+in the models investigated but some care is needed when applying panel estimators (\code{vcovPL()} and \code{vcovPC()})
+in panel data with ``short'' panels and/or non-decaying autocorrelations.
+
 
 \section*{Computational details}
 
@@ -1298,6 +1315,13 @@ CRAN at \url{https://CRAN.R-project.org/}.
 \pkg{countreg} is available from \url{https://R-Forge.R-project.org/projects/countreg/}.
 
 
+\section*{Acknowledgments}
+
+The authors are grateful to Keith Goldfeld (NYU School of Medicine) for providing insights
+and references regarding the differences of conditional and marginal models for clustered
+data.
+
+
 \bibliography{hac}
 
 \newpage
@@ -1305,19 +1329,8 @@ CRAN at \url{https://CRAN.R-project.org/}.
 \begin{appendix}
 
 \section{Simulation results for panel data with AR(1) correlations} \label{app:ar1}
-As observed in Figures~\ref{fig:sim-01}--\ref{fig:sim-02}, the estimators for panel covariances \code{PL} and \code{PC} have problems with ``short'' panels comprising only 5 observations per cluster, and hence perform poorly.
-Observing this, we took a closer look at panel covariances in case of (1) ``longer'' panels, and (2) an AR(1) structure instead of on exchangeable correlation structure.
 
-Figure~\ref{fig:sim-0607} illustrates the performance of panel covariances (\code{PL}, \code{PC}) as well as clustered covariances (\code{CL-0}).
-The number of observations per cluster $n_{g}$ is plotted on the $x$-axis, ranging from $5$ (as in Experiments I--III) to $50$.
-When modeling the dependency of a Gaussian response via a copula with an AR(1) correlation structure, the empirical coverage converges towards the desired value of $0.95$ for all regressors the ``longer'' the panel (that is, the higher the number of observations per cluster). In case of an exchangeable correlation structure, it is the other way around for regressors containing cluster correlation (that is, for regressors \code{x1} and \code{x2}).
-For the uncorrelated regressor \code{x3}, panel-corrected covariances (\code{PC}) perform well even for $5$ observations per cluster, but underestimation is getting even more pronounced the higher the cluster correlation of a regressor.
-
-\code{PL} and \code{PC} covariances are based on the assumption that correlation is dying out, which is the case for an AR(1) structure, but not for an exchangeable correlation structure, and can explain -- together with the ``short'' panels used in the simulations -- the poor performance of panel covariances. Nevertheless, independent of both the number of observations per cluster and the correlation structures, clustered covariances perform well. 
-
-Additionally, Figure~\ref{fig:sim-08} shows that for binomial and Poisson response distributions a similar picture emerges for an AR(1) structure.
-
-\begin{figure}[t!]
+\begin{figure}[b!]
 <<sim-0607-figure,echo=FALSE,fig=TRUE,height=7,width=10>>=
 my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
@@ -1328,14 +1341,46 @@ my.settings[["superpose.line"]]$col <- c("#377eb8","green", "#006400")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8","green", "#006400")
 xyplot(coverage ~ nround | factor(par) + factor(copula), groups = ~ factor(vcov),
   data = na.omit(s0607), subset = par != "(Intercept)",
-  type = "b", xlab = expression("n"[g]), ylab = "Empirical coverage",
+  type = "b", xlab = "Observations per cluster", ylab = "Empirical coverage",
   auto.key = list(columns = 2),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
 @ 
-\caption{Copula with AR(1) correlation structure: Gaussian}
+\caption{Supplementary simulation experiment. Gaussian response with $G = 100$ (balanced) clusters of
+$5$, $10$, $20$, or $50$ observations each. Regressor \code{x1} is correlated ($\rho_x = 0.25$), \code{x2} clustered, and \code{x3} uncorrelated.
+Either an exchangeable cluster correlation of $\rho = 0.25$ or an exponentially decaying AR(1) correlation structure
+with autoregressive coefficient $\rho = 0.25$ is used. The coverage (from 10,000 replications) is plotted on the $y$-axis
+against the number of observations per cluster on the $x$-axis.
+The horizontal reference line indicates the nominal coverage of $0.95$.}
 \label{fig:sim-0607}
 \end{figure}
+
+As observed in Figures~\ref{fig:sim-01}--\ref{fig:sim-02}, the estimators for
+panel covariances ({PL} and \code{PC}) have problems with the ``short'' panels
+of only 5~observations per cluster. To assess whether the estimators perform
+correctly in those situations they were designed for, we take a closer look
+at (a)~``longer'' panels (with up to $50$~observations per cluster), and
+(b)~an exponentially decaying autoregressive (AR) correlation structure of order~1
+instead of an exchangeable correlation structure.
+
+Figure~\ref{fig:sim-0607} shows the results from a supplementary simulation
+experiment that is analogous to Experiment~I. The two differences are:
+(1)~The cluster correlation $rho = 0.25$ is fixed and the number of observations
+per cluster is increased from $5$ up to $50$. (2)~Additionally, an AR(1)
+correlation structure is considered. Somewhat surprisingly, the standard
+clustered HC0 covariance performs satisfactorily in all scenarios and better
+than the panel estimators (PL and PC). The latter approach the desired coverage
+of $0.95$ when the panels become longer (i.e., the number of observations per
+cluster increases) and the correlation structure is AR(1). However, in case of
+an exchangeable correlation structure and correlated/clustered regressors,
+the coverage even decreases for longer panels. The reason for this is that
+the panel covariance estimators are based on the assumption that correlations
+are dying out, which is the case for an AR(1) structure, but not for an
+exchangeable correlation structure.
+
+Additionally, Figure~\ref{fig:sim-08} brings out that the AR(1) findings are
+not limited to the Gaussian case but can be confirmed for binomial and Poisson
+GLMs as well.
 
 \begin{figure}[t!]
 <<sim-08-figure,echo=FALSE,fig=TRUE,height=7,width=10>>=
@@ -1348,12 +1393,16 @@ my.settings[["superpose.line"]]$col <- c("#377eb8","green", "#006400")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8","green", "#006400")
 xyplot(coverage ~ nround | factor(par) + factor(dist), groups = ~ factor(vcov),
   data = na.omit(s08), subset = par != "(Intercept)",
-  type = "b", xlab = expression("n"[g]), ylab = "Empirical coverage",
+  type = "b", xlab = "Observations per cluster", ylab = "Empirical coverage",
   auto.key = list(columns = 2),
   par.strip.text = list(col = "black"), par.settings = my.settings,
   panel = panel.xyref)
 @ 
-\caption{Copula with AR(1) correlation structure: Binomial, Poisson}
+\caption{Supplementary simulation experiment. Poisson and binomial response with $G = 100$ (balanced) clusters of
+$5$, $10$, $20$, or $50$ observations each. Regressor \code{x1} is correlated ($\rho_x = 0.25$), \code{x2} clustered, and \code{x3} uncorrelated.
+An exponentially decaying AR(1) correlation structure with autoregressive coefficient $\rho = 0.25$ is used.
+The coverage (from 10,000 replications) is plotted on the $y$-axis against the number of observations per cluster on the $x$-axis.
+The horizontal reference line indicates the nominal coverage of $0.95$.}
 \label{fig:sim-08}
 \end{figure}
 
