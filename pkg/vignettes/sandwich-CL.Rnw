@@ -1,14 +1,7 @@
 \documentclass[nojss]{jss}
-\usepackage{thumbpdf,lmodern}
-\usepackage{amsmath,amssymb,bm}
-\usepackage{multicol}
-\usepackage{mathtools}
-%% need no \usepackage{Sweave}
 
-\newcommand{\newoperator}[3]{\newcommand*{#1}{\mathop{#2}#3}}
-\newcommand{\renewoperator}[3]{\renewcommand*{#1}{\mathop{#2}#3}}
-\newcommand{\vI}{\bm I}
-\newcommand{\vH}{\bm H}
+\usepackage{amsmath,amssymb,bm,thumbpdf,lmodern}
+%% need no \usepackage{Sweave}
 
 %% for internal use
 \newcommand{\fixme}[1]{\emph{\marginpar{FIXME} (#1)}}
@@ -47,7 +40,7 @@
   this shortcoming has been corrected in \pkg{sandwich} (starting from
   version~2.4.0): Based on methods for two generic functions (\code{estfun()} and
   \code{bread()}), clustered and panel covariances are now provided in
-  \code{vcovCL()} and \code{vcovPL()}, respectively. These are directly
+  \code{vcovCL()}, \code{vcovPL()}, and \code{vcovPC()}. These are directly
   applicable to models from many packages, e.g., including \pkg{MASS}, \pkg{pscl}, \pkg{countreg},
   \pkg{betareg}, among others. Some empirical illustrations are provided
   as well as an assessment of the methods' performance in a simulation study.
@@ -537,7 +530,7 @@ For balanced data these can be arranged in a $T \times G$ matrix,
  \end{equation}
 and the meat of the panel-corrected covariance matrix can be computed using the Kronecker product as
 \begin{equation} \label{eq:pcse}
- \hat M_\mathrm{PC} \quad = \quad \frac{1}{n} X^\top \bigg[ \frac{(R^\top R)}{T} \otimes \vI_T \bigg] X.
+ \hat M_\mathrm{PC} \quad = \quad \frac{1}{n} X^\top \bigg[ \frac{(R^\top R)}{T} \otimes {\bm I}_T \bigg] X.
 \end{equation}
 The details for the unbalanced case are omitted here for brevity but are discussed in detail in
 \cite{hac:Bailey+Katz:2011}.
@@ -1161,32 +1154,38 @@ The horizontal reference line indicates the nominal coverage of $0.95$.}
 \end{figure}
 
 Figure~\ref{fig:sim-02} illustrates the results from Experiment~II. The settings
-are mostly analogous to Experiment~I with two important differences: (1)~A GLM
-framework with Gaussian/binomial/Poisson response distribution is used.
+are mostly analogous to Experiment~I with two important differences: (1)~GLMs
+with Gaussian/binomial/Poisson response distribution are used.
 (2)~There is only one regressor (\code{x1}, correlated with $\rho_{x} = 0.25$).
 
 Overall, the results for binomial and Poisson response are very similar to
 the Gaussian case in Experiment~I. Thus, this confirms that clustered covariances
 also work well with GLMs.
 
-\fixme{Marginal vs.\ conditional models.} \\
-The only major difference between the Gaussian and binomial/Poisson cases is
-the performance of the mixed-effects models with random intercept.
-These are also called ``conditional models'', and handle correlation by inserting random effects.
-``Marginal models'' offer a distinct way to deal with correlation by not introducing random effects, but adjust the covariance matrix instead.  
-The distinction between marginal and conditional models is not so important for the Gaussian case with an identity link. However, for non-linear link functions marginal (or ``population-averaged'') means do not have a closed-form expression, because they require expectation of a non-linear function of the random effects. Thus, for the mixed effects model with random intercept, greater caution needs to be exercised. Further details can be found in \cite{hac:Molenberghs+Kenward+Verbeke+Iddi+Efendi:2013} and \cite{hac:Fitzmaurice:2014}.
+The only major difference between the Gaussian and binomial/Poisson cases is the
+performance of the mixed-effects models with random intercept. While in linear
+models the marginal (or ``population-averaged'') approach employed with
+clustered covariances leads to analogous models compared to mixed-effects
+models, this is not the case in nonlinear models. With nonlinear links,
+mixed-effects models correspond to ``conditional'' rather than ``marginal'' models
+and for obtaining marginal expectations the random effects have to be integrated out
+\citep[see]{hac:Molenberghs+Kenward+Verbeke+Iddi+Efendi:2013,hac:Fitzmaurice:2014}.
+Consequently, fixed effects have to be interpreted differently and their
+confidence intervals do not contain the population-averaged effects as assessed
+in Experiment~II.
+
 
 \subsubsection{Experiment III}
 
 \begin{figure}[t!] 
 <<sim-03-figure,echo=FALSE,fig=TRUE,height=5,width=10>>=
-s03 <- na.omit(s03)
+s33 <- na.omit(s33)
 my.settings <- canonical.theme(color = TRUE)
 my.settings[["strip.background"]]$col <- "gray"
 my.settings[["strip.border"]]$col <- "black"
 my.settings[["superpose.line"]]$lwd <- 1
-#FIXME# levels(s03$vcov)[c(2,3,1)]  <- c("CL-0", "standard", "basic")
-#FIXME# s03$vcov <- factor(s03$vcov, levels(s03$vcov)[c(2,3,1)])
+#FIXME# levels(s33$vcov)[c(2,3,1)]  <- c("CL-0", "standard", "basic")
+#FIXME# s33$vcov <- factor(s33$vcov, levels(s33$vcov)[c(2,3,1)])
 my.settings[["superpose.line"]]$col <- c("#377eb8", "#ff7f00", "#f781bf")
 my.settings[["superpose.symbol"]]$col <- c("#377eb8", "#ff7f00", "#f781bf")
 my.settings[["superpose.symbol"]]$pch <- c(1, rep(2,2))
@@ -1239,8 +1238,8 @@ xyplot(coverage ~ nid | dist, groups = ~ factor(vcov),
 \caption{Experiment IV. Exponential family response distributions with cluster correlation $\rho = 0.25$ (from a Gaussian copula).
 The only regressor \code{x1} is correlated ($\rho_x = 0.25$). The coverage (from 10,000 replications) on the
 $y$-axis for different types of bias adjustment (HC0--HC3) is plotted against the number of
-clusters $G$ on the $x$-axis. The number of clusters increases with $G = 10, 50, /dots, 250$ while
-the number of observations per cluster is fixed at $5$.
+clusters $G$ on the $x$-axis. The number of clusters increases with $G = 10, 50, \dots, 250$ while
+the number of observations per cluster is fixed at~$5$.
 The horizontal reference line indicates the nominal coverage of $0.95$.}
 \label{fig:sim-04}
 \end{figure}
@@ -1270,11 +1269,15 @@ small samples with less than 250 observations.
 
 \section{Summary}
 
-\fixme{Brief summary.} \\
-While covariances for cross-section and time series data have already been covered in the \pkg{sandwich} package, corresponding functions for clustered or panel data have now been added in an object-oriented manner.
-The novelty lies in the direct applicability of \code{vcovCL()}, \code{vcovPL()}, and \code{vcovPC} to models from many packages, as these functions allow plugging in different model objects from in principle any class.
-Previously, such an implementation of clustered and panel covariances did not exist in \proglang{R}.
-Exploiting the object orientation, a Monte Carlo simulation shows that clustered covariances can be applied not only to linear models, but also to generalized linear models, and even to more general models, as for example to beta regression, zero-truncated Poisson or zero-inflated Poisson models.
+While previous versions of the \pkg{sandwich} package already provided a flexible object-oriented implementation
+of covariances for cross-section and time series data, the corresponding functions for clustered and panel data
+have only been added recently (in version 2.4-0 of the package). Compared to previous implementations in \proglang{R}
+that were somewhat scattered over several packages, the implementation in \pkg{sandwich} offers a wide range of
+``flavors'' of clustered covariances and, most importantly, is applicable to any model object that provides methods
+to extract the \code{estfun()} (estimating functions; observed score matrix) and \code{bread()} (inverse Hessian).
+Therefore, it is possible to apply the new functions \code{vcovCL()}, \code{vcovPL()}, and \code{vcovPC()} to models
+beyond linear regression. A Monte Carlo study shows that clustered covariances work reasonably well in the models
+investigated but some care is needed when applying panel estimators in panel data with ``short'' panels.
 
 \section*{Computational details}
 
@@ -1311,7 +1314,7 @@ CRAN at \url{https://CRAN.R-project.org/}.
 \fixme{Explanations for panel simulations.}  \\
 Figure~\ref{fig:sim-0607} illustrates the behaviour of  panel-corrected, Driscoll and Kraay, and clustered standard errors.
 The number of observation per clusters $n_{g}$ is plotted on the $x$-axis, ranging from $5$ (as in Experiments I--III) to $50$.
-When modelling the dependency of a Gaussian response via a copula with an AR(1) correlation structure, the empirical coverage converges towards the desired value of $0.95$ for all regressors the higher the number of observations per cluster. For the uncorrelated regressor \code{x3}, panel-corrected standard errors perform well even for $5$ observations per cluster, but underestimation of standard errors is getting even more pronounced the higher the cluster correlation of a regressor.
+When modeling the dependency of a Gaussian response via a copula with an AR(1) correlation structure, the empirical coverage converges towards the desired value of $0.95$ for all regressors the higher the number of observations per cluster. For the uncorrelated regressor \code{x3}, panel-corrected standard errors perform well even for $5$ observations per cluster, but underestimation of standard errors is getting even more pronounced the higher the cluster correlation of a regressor.
 
 Using an exchangeable instead of an AR(1) correlation structure, the coverage decreases for Driscoll and Kraay as well as for panel-corrected standard errors with an increasing number of observations per cluster. The aforementioned standard errors assume that correlation is dying out, which is the case for an AR(1) structure, but not for an exchangeable correlation structure, and can explain part of this behaviour. Nevertheless, clustered standard errors perform well for both correlation structures. 
 
