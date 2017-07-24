@@ -381,7 +381,7 @@ $I_{n_{g}}$ is an identity matrix of size $n_{g}$, $H_{gg}$ is the block from th
 matrix $H$ that pertains to cluster~$g$.
 
 Thus, it is completely straightforward to add the factors for HC0 and HC1
-to $\hat M_\mathrm{CL}$ (Equation~\ref{eq:meatCL}). However, but is more demanding
+to $\hat M_\mathrm{CL}$ (Equation~\ref{eq:meatCL}). However, it is more demanding
 to apply the cluster generalizations of HC2 and HC3
 \citep[due to][]{hac:Kauermann+Carroll:2001,hac:Bell+McCaffrey:2002} for which
 the correction factors from Equations~\ref{eq:biasadj3} and~\ref{eq:biasadj4} have
@@ -636,7 +636,7 @@ based on
 computes sandwich covariances for panel data, specificially including
 panel \cite{hac:Newey+West:1987} and \cite{hac:Driscoll+Kraay:1998}.
 The essential idea is to aggregate the empirical estimating functions within
-each time period and and then compute a HAC covariance analogous to \code{vcovHAC()}.
+each time period and then compute a HAC covariance analogous to \code{vcovHAC()}.
 
 Again, \code{vcovPL()} returns the full sandwich if the argument
 \code{sandwich = TRUE}, and \code{fix = TRUE} forces a positive semi-definite
@@ -1206,7 +1206,7 @@ The horizontal reference line indicates the nominal coverage of $0.95$.}
 
 Figure~\ref{fig:sim-03} shows the outcome of Experiment~III whose settings are similar
 to the previous Experiment~I. But now more general response distributions beyond the
-classic GLM framework are amployed, revealing that the clustered covariances 
+classic GLM framework are employed, revealing that the clustered covariances 
 from \code{vcovCL()} indeed also work well in this setup. Again, the performance of the non-clustered 
 covariances deteriorates with increasing cluster correlation.
 For the zero-truncated and zero-inflated Poisson distribution the empirical
@@ -1365,7 +1365,7 @@ instead of an exchangeable correlation structure.
 
 Figure~\ref{fig:sim-0607} shows the results from a supplementary simulation
 experiment that is analogous to Experiment~I. The two differences are:
-(1)~The cluster correlation $rho = 0.25$ is fixed and the number of observations
+(1)~The cluster correlation $\rho = 0.25$ is fixed and the number of observations
 per cluster is increased from $5$ up to $50$. (2)~Additionally, an AR(1)
 correlation structure is considered. Somewhat surprisingly, the standard
 clustered HC0 covariance performs satisfactorily in all scenarios and better
