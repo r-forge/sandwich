@@ -435,7 +435,7 @@ s08 <- sim(nrep = 10000, nround = c(5, 10, 20, 50), nid = 100,
 	   type = "copula-ar1", cores = 16)
 
 set.seed(33)
-s33 <- sim(nrep = 1000, nid = 100, nround = 5,
+s33 <- sim(nrep = 10000, nid = 100, nround = 5,
            dist = c("zerotrunc", "zeroinfl", "betareg"),
 	   rho = seq(0, 0.9, by = 0.1), xrho = 0.25,
            coef = c(0, 0.85, 0, 0), formula = response ~ x1,

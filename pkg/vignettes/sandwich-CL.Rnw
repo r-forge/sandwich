@@ -7,9 +7,9 @@
 \newcommand{\fixme}[1]{\emph{\marginpar{FIXME} (#1)}}
 \newcommand{\readme}[1]{\emph{\marginpar{README} (#1)}}
 
-\author{Susanne Berger\\University of Innsbruck \And 
+\author{Susanne Berger\\Universit\"at Innsbruck \And 
         Nathaniel Graham\\Trinity University Texas \And
-        Achim Zeileis\\University of Innsbruck}
+        Achim Zeileis\\Universit\"at Innsbruck}
 \title{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in \proglang{R}}
 
 \Plainauthor{Susanne Berger, Nathaniel Graham, Achim Zeileis}
@@ -1198,7 +1198,7 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
 \caption{Experiment III. Response distributions beyond the GLM (beta regression,
 zero-truncated Poisson, and zero-inflated Poisson) with $G = 100$ (balanced) clusters of $5$ observations each.
 The only regressor \code{x1} is correlated ($\rho_x = 0.25$). The coverage
-(from 10,000 replications for basic/standard/CL-0 and 1,000 replications for BS) is plotted on the
+(from 10,000 replications) is plotted on the
 $y$-axis against the cluster correlation $\rho$ (from a Gaussian copula) on the $x$-axis.
 The horizontal reference line indicates the nominal coverage of $0.95$.}
 \label{fig:sim-03}
@@ -1272,8 +1272,6 @@ e.g., \cite{hac:Long+Ervin:2000} suggest to use HC3 in the linear model for
 small samples with less than 250 observations.
 
 
-\vspace*{-0.3cm}	
-
 \section{Summary}
 
 While previous versions of the \pkg{sandwich} package already provided a flexible object-oriented implementation
@@ -1312,7 +1310,7 @@ have been used.
 
 \proglang{R} itself and all packages (except \pkg{countreg}) used are available from
 CRAN at \url{https://CRAN.R-project.org/}. 
-\pkg{countreg} is available from \url{https://R-Forge.R-project.org/projects/countreg/}.
+\pkg{countreg} is available from \proglang{R}-Forge at \url{https://R-Forge.R-project.org/projects/countreg/}.
 
 
 \section*{Acknowledgments}
