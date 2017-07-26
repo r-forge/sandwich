@@ -88,21 +88,11 @@ m <- lm(y ~ x, data = PetersenCL)
 ## balanced panel
 sqrt(diag(vcovPC(m, cluster = PetersenCL$firm, order.by = PetersenCL$year)))
 
-## calculation of the meat via the Kronecker-product 
-system.time(sqrt(diag(
-  vcovPC(m, cluster = PetersenCL$firm, order.by = PetersenCL$year, kronecker = TRUE)
-)))
-system.time(sqrt(diag(
-  vcovPC(m, cluster = PetersenCL$firm, order.by = PetersenCL$year, kronecker = FALSE)
-)))
-
 ## unbalanced panel
-if(requireNamespace("pcse", quietly = TRUE)) {
-data("aglUn", package = "pcse")
-agllm <- lm(growth ~ lagg1 + opengdp + openex + openimp + central +
-leftc + inter, data = aglUn)
-sqrt(diag(vcovPC(agllm, aglUn$country, aglUn$year)))
-}
+PU <- subset(PetersenCL, !(firm == 1 & year == 10))
+pu_lm <- lm(y ~ x, data = PU)
+sqrt(diag(vcovPC(pu_lm, cluster = PU$firm, order.by = PU$year, pairwise = TRUE)))
+sqrt(diag(vcovPC(pu_lm, cluster = PU$firm, order.by = PU$year, pairwise = FALSE)))
 }
 
 \keyword{regression}
