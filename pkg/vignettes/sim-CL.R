@@ -382,6 +382,8 @@ library("geepack")
 library("countreg")
 library("betareg")
 
+RNGkind(kind = "L'Ecuyer-CMRG")
+
 set.seed(1)
 s01 <- sim(nrep = 10000, nid = 100, nround = 5,
            dist = "gaussian", rho = seq(0, 0.9, by = 0.1), xrho = 0.25,

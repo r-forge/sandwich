@@ -1298,7 +1298,7 @@ is provided along with the corresponding results \code{sim-CL.rda}.
 \proglang{R} version \Sexpr{paste(R.Version()[6:7], collapse = ".")} has been used for computations.
 Package versions that have been employed are \pkg{sandwich}
 \Sexpr{gsub("-", "--", packageDescription("sandwich")$Version)},
-\pkg{countreg} \Sexpr{gsub("-", "--", packageDescription("countreg")$Version)},
+\pkg{countreg} 0.2--0,
 \pkg{geepack} \Sexpr{gsub("-", "--", packageDescription("geepack")$Version)},
 \pkg{lattice} \Sexpr{gsub("-", "--", packageDescription("lattice")$Version)},
 \pkg{lme4} \Sexpr{gsub("-", "--", packageDescription("lme4")$Version)},
