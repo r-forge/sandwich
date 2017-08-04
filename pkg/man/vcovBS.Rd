@@ -6,9 +6,8 @@
 \title{(Clustered) Bootstrap Covariance Matrix Estimation}
 
 \description{
-  Estimation of basic bootstrap covariances, using a simple
-  (clustered) case-based resampling.
-  covariance matrices using an object-oriented approach.
+  Object-oriented estimation of basic bootstrap covariances, using
+  simple (clustered) case-based resampling.
 }
 
 \usage{
@@ -32,7 +31,7 @@ vcovBS(x, \dots)
 \details{
   Basic (clustered) bootstrap covariance matrix estimation is provided by
   \code{vcovBS}. The default method samples clusters (where each observation
-  is its own cluster by default), i.e. case-based resampling. For obtaining
+  is its own cluster by default), i.e., case-based resampling. For obtaining
   a covariance matrix estimate it is assumed that an \code{\link[stats]{update}}
   of the model with the resampled subset can be obtained, the \code{\link[stats]{coef}}
   extracted, and finally the covariance computed with \code{\link[stats]{cov}}.

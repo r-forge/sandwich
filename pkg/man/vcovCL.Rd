@@ -70,7 +70,7 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \dots)
   With the \code{type} argument, HC0 to HC3 types of
   bias adjustment can be employed.
   HC2 and HC3 types of bias adjustment are geared towards the linear
-  model, but they are also applicable for GLMs (see Mc Caffrey and Bell
+  model, but they are also applicable for GLMs (see Bell and McCaffrey
   (2002) and Kauermann and Carroll (2001) for details).
   A precondition for HC2 and HC3 types of bias adjustment is the existence
   of a hat matrix or a weighted version of the hat matrix for GLMs,
@@ -96,19 +96,19 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \dots)
 }
 
 \references{
-Cameron AC & Gelbach JB & Miller DL (2008).
+Cameron AC, Gelbach JB, Miller DL (2008).
   \dQuote{Bootstrap-Based Improvements for Inference with Clustered Errors},
   \emph{The Review of Economics and Statistics}, \bold{90}(3),
   414--427.
   \doi{10.3386/t0344}
   
-Cameron AC & Gelbach JB & Miller DL (2011).
+Cameron AC, Gelbach JB, Miller DL (2011).
   \dQuote{Robust Inference With Multiway Clustering},
   \emph{Journal of Business & Ecomomic Statistics}, \bold{29}(2),
   238--249.
   \doi{10.1198/jbes.2010.07136}
   
-Kauermann G & Carroll RJ (2001).
+Kauermann G, Carroll RJ (2001).
   \dQuote{A Note on the Efficiency of Sandwich Covariance Matrix
     Estimation},
   \emph{Journal of the American Statistical Association},
@@ -121,9 +121,8 @@ Ma MS (2014).
   \emph{Mimeo, Availlable at SSRN:}
    URL \url{http://ssrn.com/abstract=2420421}.
 
-McCaffrey DF & Bell RM (2002).
-  \dQuote{Bias Reduction in Standard Errors for Linear Regression with
-    Multi-Stage Samples},
+Bell RM, McCaffrey DF (2002).
+  \dQuote{Bias Reduction in Standard Errors for Linear Regression with Multi-Stage Samples},
   \emph{Survey Methodology}, \bold{28}(2), 169--181.
   
 Petersen MA (2009).
