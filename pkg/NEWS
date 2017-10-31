@@ -1,3 +1,12 @@
+Changes in Version 2.4-1
+
+  o Fix of a bug in vcovHC.mlm (reported by James Pustejovsky). The off-diagonal
+    values of the vcovHC were computed without preserving the sign of the
+    underlying residuals. This issue did not affect the diagonal because
+    the underlying cross product amounts to squaring all values - but it does
+    matter for the off-diagonal.
+
+
 Changes in Version 2.4-0
 
   o Various flavors of clustered sandwich estimators in vcovCL(), panel

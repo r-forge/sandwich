@@ -136,7 +136,7 @@ vcovHC.mlm <- function(x,
   omega <- apply(res, 2, function(r) omega(r, diaghat, df))
 
   ## compute crossproduct X' Omega X
-  rval <- lapply(1:ncol(omega), function(i) as.vector(sqrt(omega[,i])) * X)
+  rval <- lapply(1:ncol(omega), function(i) as.vector(sign(res[,i]) * sqrt(omega[,i])) * X)
   rval <- do.call("cbind", rval)
   rval <- crossprod(rval)/n
   colnames(rval) <- rownames(rval) <- colnames(vcov(x))
