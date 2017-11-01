@@ -104,7 +104,10 @@ vcovHC.mlm <- function(x,
     type <- match.arg(type)
     if(type == "HC") type <- "HC0"
     switch(type,
-      "const" = { omega <- function(residuals, diaghat, df) rep(1, length(residuals)) * sum(residuals^2)/df },
+      "const" = {
+        warning("not implemented for 'mlm' objects, using vcov() instead")
+	return(vcov(x))
+       },
       "HC0"   = { omega <- function(residuals, diaghat, df) residuals^2 },
       "HC1"   = { omega <- function(residuals, diaghat, df) residuals^2 * length(residuals)/df },
       "HC2"   = { omega <- function(residuals, diaghat, df) residuals^2 / (1 - diaghat) },

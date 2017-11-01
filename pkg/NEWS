@@ -4,7 +4,8 @@ Changes in Version 2.4-1
     values of the vcovHC were computed without preserving the sign of the
     underlying residuals. This issue did not affect the diagonal because
     the underlying cross product amounts to squaring all values - but it does
-    matter for the off-diagonal.
+    matter for the off-diagonal. Also, type="const" was disabled in this
+    scenario and vcov(...) is simply used instead of vcovHC(..., type = "const").
 
 
 Changes in Version 2.4-0
