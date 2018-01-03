@@ -46,8 +46,9 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
     cl <- lapply(1L:p, function(i) combn(1L:p, i, simplify = FALSE))
     cl <- unlist(cl, recursive = FALSE)
     sign <- sapply(cl, function(i) (-1L)^(length(i) + 1L))    
+    paste_ <- function(...) paste(..., sep = "_")
     for (i in (p + 1L):length(cl)) {
-      cluster <- cbind(cluster, Reduce(paste0, cluster[, cl[[i]] ])) ## faster than: interaction()
+      cluster <- cbind(cluster, Reduce(paste_, unclass(cluster[, cl[[i]] ]))) ## faster than: interaction()
     }
     if(multi0) cluster[[length(cl)]] <- 1L:n
   } else {
