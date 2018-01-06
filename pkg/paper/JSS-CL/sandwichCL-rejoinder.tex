@@ -1,0 +1,218 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[flushleft]{threeparttable}
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide,graphicx,color,thumbpdf}
+\usepackage{hyperref}
+
+\setlength{\parskip}{0.7ex plus0.1ex minus0.1ex}
+\setlength{\parindent}{0em}
+
+\begin{document}
+
+\title{Point-to-point reply}
+\author{Various Versatile Variances:\\ An Object-Oriented Implementation of Clustered Covariances in R}
+\date{}
+\maketitle
+
+\section*{Associate Editor}
+
+\textbf{\textit{With respect to the reviewers' comments, Reviewer A states near the end of
+the review that, ``I think the authors should make readers aware of
+bootstrap-type alternatives to the analytical cluster-robust covariance
+estimators (the 'wild bootstrap' etc.).'' In fact, in the simulations
+reported in the paper, there is a comparison to the bootstrap (though
+limited to the simple cluster-resampling bootstrap).}}
+
+\medskip
+
+\textbf{\textit{As well, I didn't find the material raised in Reviewer B's points 1, 6, 11,
+and 14 to be unclear, although it wouldn't hurt to provide a bit more
+explanation in these places.}}
+
+\medskip
+
+\textbf{\textit{My own reading of the paper is largely consistent with the reviewers', and
+I'd add that the paper and the improvements and extensions to the sandwich
+package that it describes are an important contribution, both elegant in its
+implementation and of substantial practical use.}}
+
+\medskip
+
+\textbf{\textit{I found the simulations reported in section 6 slightly inappropriate to the
+main purpose of the paper, which is to describe the implementation in the
+sandwich package of coefficient-covariance estimators for clustered data.}}
+
+\medskip
+
+\textbf{\textit{I also found a few typos in the manuscript: At several points in the paper,
+e.g., on p.~7, ``subtract'' and ``subtracted'' are spelled ``substract'' and
+``substracted.'' On p.~9, ``and and'' appears (the second ``and'' in italics). 
+On p.~14, ``sandwich covariance are able'' should read ``sandwich covariances
+are able.''}}
+
+\medskip
+
+Fixed.
+
+\section*{Referee 1}
+
+\textbf{\textit{Comparison with Stata (as requested by the editor):
+\\
+The comparison with Stata naturally separates into two parts: ``Official Stata'', i.e., the code provided by StataCorp when purchasing the software, and ``the Stata Community'', i.e., code provided by the user community at large and (mostly) residing at SSC Archives.}}
+
+\medskip
+
+\textbf{\textit{Suggestions relating to the writeup:
+\\
+The writeup is fine as it is, but I think readers and users would benefit a lot from expanding the discussion to cover the limitations of, alternatives to, and history of the cluster-robust covariance estimation.}}
+
+\medskip
+
+\textbf{\textit{Lastly, I think the authors should make readers aware of bootstrap-type alternatives to the analytical cluster-robust covariance estimators (the ``wild bootstrap'' etc.).}}
+
+\medskip
+
+\textbf{\textit{Suggestions relating to the code:
+\\
+The authors may want to consider incorporating the  covariance estimator of Kloek (1981, Econometrica; see the AAIW paper for a description and discussion) and/or Kiefer (1980).}}
+
+\section*{Referee 2}
+
+\textbf{\textit{1. In equation (2), the definition of the term ``$\psi'(y, x, \theta)$'' unclear.
+I guess that this term should indicate $\partial \psi(y, x, \theta)/\partial\theta = \partial^2\Psi(y, x, \theta)/\partial\theta^2$ and I recommend to replace ``$\psi'(y, x, \theta)$''
+by an expression that readers can easily understand
+(e.g., ``$\partial \psi(y, x, \theta)/\partial\theta$'' or ``$\partial^2\Psi(y, x, \theta)/\partial\theta^2$").}}
+
+\medskip
+
+Term $\psi(y, x, \theta)$ is meant to be the first derivative of an objective function $\Psi(y, x, \theta)$ (typically the log-likelihood), with respect to a parameter vector $\theta$. As mentioned correctly by the referee, $\psi'(y, x, \theta)$ is the second derivative of the objective function $\Psi(y, x, \theta)$ with respect to $\theta$.
+
+I replaced term $\psi'(y, x, \theta)$ by $\frac{\partial \psi(y, x, \theta)}{\partial\theta}$ in Equation (2) as well as in Equation (6).
+
+\medskip
+
+\textbf{\textit{2. The matrix defined in equation (5) is slightly unclear. I guess that the terms ``$\psi(y_i, x_i, \hat\theta)$'' ($i \in \{1, n\}$) in equation (5) indicate row-vectors. As vectors are usually assumed to be column-vectors (unless stated otherwise) and $\psi(y_i, x_i, \hat\theta)$ seem to be column-vectors in
+equation (7), I recommend to add transformation signs to the two vectors in equation (5)
+so that they become ``$\psi(y_i, x_i, \hat\theta)^\top$''.}}
+
+\medskip
+
+Fixed in Equation (5) as well as in Equation (11).
+
+\medskip
+
+\textbf{\textit{3. It seems to me that equation (12) is incorrect, because this equation is basically identical
+to equation (7) and, thus, does not take into account clustering (as it simply takes the
+sum over all observations). I guess that the correct equation is something like:
+\begin{equation}
+  \hat M_\mathrm{CL} \quad = \quad \frac{1}{n} \sum_{g = 1}^G\bigg(\sum_{i = 1}^{n_{g}}\psi(y_{ig}, x_{ig}, \hat \theta) \bigg) \bigg(\sum_{i = 1}^{n_{g}} \psi(y_{ig}, x_{ig}, \hat \theta) \bigg)^\top.
+\end{equation}}}
+
+\medskip
+
+?
+
+\medskip
+
+\textbf{\textit{4. The ``hat matrix H'' that is mentioned on page 6 is not defined in the manuscript. I
+recommend that the authors define this matrix in the manuscript.}}
+
+\medskip
+
+The definition for the hat matrix $H$ has been included in the manuscript for the linear model.
+
+\medskip
+
+\textbf{\textit{5. On page 7, several parts in the paragraph that starts with ``Petersen (2009)'' are unclear
+to me. I recommend that the authors reformulate and perhaps extend this paragraph in
+order to make it easier understandable.}}
+
+\medskip
+
+The paragraph has been fully reformulated, additionally augmented by an example and is now hopefully easier to understand:
+
+Petersen (2009), Thompson (2011) and Ma (2014)
+suggest to substract the standard sandwich estimator instead of $\hat M_{\mathrm{CL}(id \cap time)}$ in Equation (20) in case there is only a single
+observation in each intersection of $id$ and $time$.
+For example, when clustering by dimensions \emph{id} and \emph{year} in a sample
+of \emph{id-month} observations, each cluster is composed of 12 observations (Ma, 2014). In such a setting, the last substracted matrix of Equation (20) should be the clustered covariance matrix  $\hat M_{\mathrm{CL}(id \cap year)}$
+with clusters formed by the intersection of \emph{id} and \emph{year}.
+As Ma (2014) argues, the standard sandwich estimator does not take into
+account any type of bias adjustment (with an adjustment of $1$), in contrast to clustered covariance estimators (with an adjustment of $\frac{G}{G-1}$), hence the cluster bias correction  $\frac{G}{G-1} > 1$. If there is is only a singe observation in each intersection of $id$ and $time$, $\hat M_{\mathrm{CL}(id \cap time)}$ collapses to a standard sandwich estimator. Then, clustered covariances $\hat M_{\mathrm{CL}(id,time)}$ are underestimated when using $\hat M_{\mathrm{CL}(id \cap time)}$ instead of standard sandwich covariances as the last substracted matrix, because of the larger bias correction $\frac{G}{G-1} > 1$.
+
+\medskip
+
+\textbf{\textit{6. It is not clear to me which of the approaches that are described in sections 3.3 and 3.4
+of the manuscript (and that are implemented in the sandwich package) can deal with clustering of individuals in panel data sets, e.g., if the panel data set includes data from T time periods for n individuals that are ``clustered'' in G groups of individuals. Please clarify this in the manuscript.}}
+
+\medskip
+
+\textbf{\textit{7. In equation (21), it is unclear to me how this approach takes into account the time
+dimension of the panel data set (as none of the terms in this equation has a subscript t).
+Furthermore, as subscripts i and j seem to indicate individuals (or observations?), it
+seems to be weird that the ordering of the individuals (or of the observations) affects the
+weights that account for ``correlation'' between each pair of individuals (or observations).
+Please clarify this in the manuscript.}}
+
+\medskip
+
+\textbf{\textit{8. In equation (22), similarly to equation (21), it seems to be weird that the ordering of
+the individuals affects the weights that account for ``correlation'' between each pair of
+individuals. Please clarify this in the manuscript.}}
+
+\medskip
+
+\textbf{\textit{9. In section 3.4, the use of subscripts for individuals, groups, and time periods is confusing
+and perhaps inconsistent. I recommend that the authors considerably revise and extend
+this section so that it is less confusing and easier to understand.}}
+
+\medskip
+
+\textbf{\textit{10. On page 11, the closing parenthesis behind ``"NW1994"'' needs to be removed.}}
+
+\medskip
+
+Fixed.
+
+\medskip
+
+\textbf{\textit{11. Equation (25) seems to be inconsistent with equations (29) and (30), because $\beta_1$ and
+$\beta_2$ seem to be scalars in equation (25), while they seem to be vectors in equations (29)
+and (30). This needs either to be corrected or -- if it is correct -- more clearly explained.}}
+
+\medskip
+
+Fixed.
+
+\medskip
+
+\textbf{\textit{12. In Figures 1 and 2, the symbols for ``standard'' and ``basic'' (red and pink triangles)
+as well as the symbols for ``random'' and ``gee'' (violet and red plus signs) look very
+similar and cannot be easily distinguished from each other. I recommend to use clearly
+different symbols (e.g., dark red triangle, orange up-side-down triangle, black plus sign,
+grey asterisk).}}
+
+\medskip
+
+Changed the colors as well as symbols in Figures (1), (2), and (3) according to the recommendation.
+
+\medskip
+
+\textbf{\textit{13. In the captions of Figures 1, 2, and 3, the meaning of the symbol ``$\rho$'' is unclear. Are
+there typos and the ``$\rho$''s should be in fact ``$\rho_x$''s or do the ``$\rho$''s indicate something else?
+This needs to be correct or explained.}}
+
+\medskip
+
+The cluster correlation for the regressors is controlled by parameter $\rho_x$. Note that the previously introduced cluster correlation for the response distributions is determined by yet another parameter $\rho$.
+
+\medskip
+
+\textbf{\textit{14. Several parts of the manuscript are not easily comprehensible for people who have limited
+prior knowledge about ``sandwich'' methods and clustering in general. I highly recommend
+that the authors revise and extend their explanations so that the manuscript can be more
+easily understood by practitioners who want to apply the methods that are described in
+the manuscript and are implemented in the sandwich package.}}
+
+\end{document}

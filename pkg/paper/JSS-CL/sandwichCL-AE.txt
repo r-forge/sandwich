@@ -1,0 +1,39 @@
+
+Both reviewers find the paper acceptable for publication in the JSS, but
+have suggestions for revisions.  
+
+In particular, Reviewer A points to some additional references that appear
+to be relevant to the paper, while reviewer B points to some unclear (and
+possibly incorrect) equations and passages in the paper.
+
+With respect to the reviewers' comments, Reviewer A states near the end of
+the review that, "I think the authors should make readers aware of
+bootstrap-type alternatives to the analytical cluster-robust covariance
+estimators (the 'wild bootstrap' etc.)." In fact, in the simulations
+reported in the paper, there is a comparison to the bootstrap (though
+limited to the simple cluster-resampling bootstrap).
+
+As well, I didn't find the material raised in Reviewer B's points 1, 6, 11,
+and 14 to be unclear, although it wouldn't hurt to provide a bit more
+explanation in these places.  That is, it's hard to quarrel with an
+intelligent reader who finds a passage in a paper in need to further
+explanation.
+
+My own reading of the paper is largely consistent with the reviewers', and
+I'd add that the paper and the improvements and extensions to the sandwich
+package that it describes are an important contribution, both elegant in its
+implementation and of substantial practical use.
+
+I found the simulations reported in section 6 slightly inappropriate to the
+main purpose of the paper, which is to describe the implementation in the
+sandwich package of coefficient-covariance estimators for clustered data. 
+The simulations are a contribution to the more general statistical
+literature on sandwich estimators and are probably more naturally published
+independently.  That said, I don't strongly object to the inclusion of this
+section in the paper.
+
+I also found a few typos in the manuscript: At several points in the paper,
+e.g., on p.  7, "subtract" and "subtracted" are spelled "substract" and
+"substracted." On p.  9, "and and" appears (the second "and" in italics). 
+On p.  14, "sandwich covariance are able" should read "sandwich covariances
+are able."

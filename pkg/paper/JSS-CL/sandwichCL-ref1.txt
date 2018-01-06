@@ -1,0 +1,33 @@
+Reviewer A
+
+Comparison with Stata (as requested by the editor):
+
+The comparison with Stata naturally separates into two parts: "Official Stata", i.e., the code provided by StataCorp when purchasing the software, and "the Stata Community", i.e., code provided by the user community at large and (mostly) residing at SSC Archives.
+
+Official Stata has supported basic "cluster-robust" covariance estimation for many of its estimators for many years (since the 90s, I think).  It also supports "panel corrected SE" (Beck and Katz 1995) for some panel data estimators.  Cluster-robust support in Official Stata is extensive in terms of estimators, but basic in terms of various options available.  Only one-way clustering is supported, and the range of alternative finite-sample adjustments that is available in Stata for standard robust covariance estimation is not also available for cluster-robust covariance estimation.  Driscoll-Kraay and panel Newey-West time covariance estimation is not supported in Official Stata.
+
+Official Stata also supports a cluster-robust-type solution to covariance estimation for multiple-equation estimation via its "suest" command.
+
+Probably the Stata Community package closest to what is documented in this paper is avar ("Asymptotic covariance estimation for iid and non-iid data robust to heteroskedasticity, autocorrelation, 1- and 2-way clustering, common cross-panel autocorrelated disturbances, etc.") by Baum and Schaffer (2013).  The main differences between avar and the package documented in the paper: (1) avar provides only the "filling" ("meat") matrix; it is up to the user/programmer to assemble the sandwich; (2) VVV supports various options and estimators not provided by avar: Beck & Katz panel-corrected SEs; a range of finite-sample adjustments to the cluster-robust covariance estimator; 3-way and higher clustering; (3) avar supports multiple-equation estimation as well as Kiefer's (1980) covariance estimator for panel data (Journal of Econometrics, 14:2).
+
+Suggestions for the authors:
+
+My suggestions come in two parts: (1) suggestions relating to the writeup; (2) suggestions relating to the software.
+
+Suggestions relating to the writeup:
+
+The writeup is fine as it is, but I think readers and users would benefit a lot from expanding the discussion to cover the limitations of, alternatives to, and history of the cluster-robust covariance estimation.
+
+A very recent paper by Abadie-Athey-Imbens-Wooldridge (October 2017), "When Should You Adjust Standard Errors for Clustering?", https://arxiv.org/abs/1710.02926, is very helpful in this respect.  The paper results are too lengthy to summarize here; I will say only that the main point that is relevant for the VVV paper is that the assumption of parameter homogeneity (identical treatment effects across units) is central for many of the standard results for the cluster-robust covariance estimator.  I think the VVV authors should have a look and briefly summarize what they think are the main lessons for the potential users of their package.
+
+Also worth noting is the history of the cluster-robust estimator: AAIH refer to it as the Liang-Zeger (1986 Biometrika) covariance estimator.  This is probably worth doing in the VVV paper as well, unless the authors have an earlier source for this estimator.
+
+On page 6 the authors state that "the number of clusters G must approach infinity", but strictly speaking this is not the case: there are papers that have explored the behavior of the cluster-robust covariance estimator as the number of observations goes to infinity but holding constant the number of clusters ("infilling asymptotics").  A good paper here is Bester-Conley-Hansen (2011), "Inference with Dependent Data Using Cluster Covariance Estimators", 165:2.
+
+Lastly, I think the authors should make readers aware of bootstrap-type alternatives to the analytical cluster-robust covariance estimators (the "wild bootstrap" etc.).
+
+Suggestions relating to the code:
+
+The authors may want to consider incorporating the  covariance estimator of Kloek (1981, Econometrica; see the AAIW paper for a description and discussion) and/or Kiefer (1980).
+
+
