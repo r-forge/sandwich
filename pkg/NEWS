@@ -12,6 +12,12 @@ Changes in Version 2.4-1
     clustering variable, their interactions were sometimes not computed
     correctly.
 
+  o Default handling of missing parameter estimates in vcovBS() changed
+    from "everything" to "pairwise.complete.obs" and allow modification
+    of cov(..., use = ...). This is relevant if not all parameters can be
+    re-estimated on the bootstrap samples, e.g., for dummy variables of
+    relatively rare events.
+
 
 Changes in Version 2.4-0
 

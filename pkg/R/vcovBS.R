@@ -4,7 +4,7 @@ vcovBS <- function(x, ...) {
   UseMethod("vcovBS")
 }
 
-vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, ...)
+vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, ..., use = "pairwise.complete.obs")
 {
   ## cluster variable (default 1:n)
   if(is.null(cluster)) {
@@ -15,7 +15,7 @@ vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, ...)
   
   ## set up coefficient matrix
   cf <- coef(x)
-  cf <- matrix(rep.int(0, length(cf) * R), ncol = length(cf),
+  cf <- matrix(rep.int(NA_real_, length(cf) * R), ncol = length(cf),
     dimnames = list(NULL, names(cf)))
 
   ## use starting values?
@@ -34,11 +34,16 @@ vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, ...)
       if(inherits(env, "try-error")) env <- NULL
       up <- eval(up, envir = env, enclos = parent.frame())
       remove(".vcovBSsubset", envir = .vcovBSenv)
-      cf[i, ] <- coef(up)
+      cfi <- coef(up)
+      if(is.null(names(cfi))) {
+        cf[i, ] <- cfi
+      } else {
+        cf[i, names(cfi)] <- cfi
+      }
   }
   remove(".vcovBSstart", envir = .vcovBSenv)
-  
+
   # covariance of bootstrap coefficients
-  cov(cf)
+  cov(cf, use = use)
 }
 

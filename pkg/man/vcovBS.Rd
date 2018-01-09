@@ -13,7 +13,8 @@
 \usage{
 vcovBS(x, \dots)
 
-\method{vcovBS}{default}(x, cluster = NULL, R = 250, start = FALSE, \dots)
+\method{vcovBS}{default}(x, cluster = NULL, R = 250, start = FALSE,
+  \dots, use = "pairwise.complete.obs")
 }
 
 \arguments{
@@ -26,6 +27,8 @@ vcovBS(x, \dots)
     is computed by some numeric iteration, this may speed up the bootstrapping.}
   \item{\dots}{arguments passed to methods (to \code{update}
     in case of the default method).}
+  \item{use}{character. Specification passed to \code{\link[stats]{cov}} for
+    handling missing coefficients/parameters.}
 }
 
 \details{
