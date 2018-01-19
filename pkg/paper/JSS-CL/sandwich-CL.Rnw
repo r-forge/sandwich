@@ -1,6 +1,7 @@
 \documentclass[nojss]{jss}
 
-\usepackage{amsmath,amssymb,bm,thumbpdf,lmodern}
+\usepackage{amsmath,amssymb,bm,thumbpdf,lmodern,ulem}
+
 %% need no \usepackage{Sweave}
 
 %% for internal use
@@ -249,6 +250,13 @@ object-oriented implementation was established and integrated in \pkg{sandwich},
 allowing application to more general models, including zero-inflated, censored,
 or limited responses. 
 
+\subsection{Clustered covariances in Stata}
+
+\new{
+``Official Stata'' as well as the ``Stata Community'' provide implementations for several types of clustered covariances.
+One-way clustered covariances are available in ``Official Stata'' for a wide range of estimators (``ivreg2'', ``xtreg'', ``reg'', among others) by adding the ``cluster'' option. Additionally, ``Official Stata'' supports cluster correction via the ``suest'' command for a system of equations. In the presence of nested multi-level clustering, the ``syv'' suite of commands can be employed \citep{hac:Nichols+Schaffer:2007}. Panel-corrected standard errors are supported by ``xtpcse''. 
+The ``Stata Community'' package ``avar'' from \cite{hac:Nichols+Schaffer:2014} allows to construct the meat matrix of various flavors of sandwich covariance estimators, including among others HAC, one- and two-way clustering, Driscoll and Kraay covariances as well as Kiefer covariances \citep{hac:Kiefer:1980}.}
+
 \section{Methods} \label{sec:methods}
 
 To establish the theoretical background of sandwich covariances for
@@ -342,9 +350,11 @@ proceeding ``as usual'' in the computation of meat estimators afterwards:
            \end{array} \right).
 \end{eqnarray}  
 The basic meat estimator based on the outer product then becomes:
+\new{
 \begin{equation} \label{eq:meatCL}
-  \hat M_\mathrm{CL} \quad = \quad \frac{1}{n} \sum_{g = 1}^G\sum_{i = 1}^{n_{g}}\psi(y_{ig}, x_{ig}, \hat \theta) \psi(y_{ig}, x_{ig}, \hat \theta)^\top.
+  \hat M_\mathrm{CL} \quad = \quad \frac{1}{n} \sum_{g = 1}^G \bigg( \sum_{i = 1}^{n_{g}}\psi(y_{ig}, x_{ig}, \hat \theta) \bigg)\bigg( \sum_{i = 1}^{n_{g}} \psi(y_{ig}, x_{ig}, \hat \theta \bigg)^\top.
 \end{equation}
+}
 In the case where observation is its own cluster, the clustered $\hat M_\mathrm{CL}$
 corresponds to the basic~$\hat M$.
 
@@ -453,11 +463,14 @@ For panel data, the source of dependence in the data is crucial to find out what
 In the following, panel Newey-West standard errors as well as Driscoll and Kraay standard errors are examined
 \citep[see also][for a unifying view]{hac:Millo:2014}.
 
-To reflect that the data are now panel data with time ordering within each cluster/group/id we change our notation
-to an index $(i, t)$ for $i = 1, \dots, n_t$ observations at time $t = 1, \dots, T$ (with $n = n_1 + \dots + n_T$).
-Note that compared to the notation from the clustered case above,
-the variable $i$ now denotes the group/id (e.g., firm) which was previously denoted by $g$, \new{whereas time $t$ denotes the cluster variable}.
-\new{However, expressions like ``id'' and ``time'' are convenience term and are used for concreteness to make the concepts more easily comprehensible. Clustered covariances for paned data account for the average within-cluster covariance, where a cluster is any set of observations with can be identified by a variable to ``cluster on''.  }
+\sout{To reflect that the data are now panel data with time ordering within each cluster/group/id we change our notation
+to an index $(i, t)$ for $i = 1, \dots, n_t$ observations at time $t = 1, \dots, T$ (with $n = n_1 + \dots + n_T$).}
+
+\new{To reflect that the data are now panel data with a natural time ordering within each entity $g$ (without having a natural ordering, as for example individuals, countries, firms, \ldots) labelled \textit{groups} according to \cite{hac:Millo:2014}, we change our notation
+to an index $(g, t)$ for $g = 1, \dots, G$ observations sampled at $t = 1, \ldots, n_g$ points in \textit{time} (with $n = n_1 + \dots + n_G$).}
+\sout{Note that compared to the notation from the clustered case above,
+the variable $i$ now denotes the group/id (e.g., firm) which was previously denoted by $g$, whereas time $t$ denotes the cluster variable.}
+\new{However, expressions like \textit{groups} and \textit{time} are convenience term and are used for concreteness to make the concepts more easily comprehensible. Clustered covariances for paned data account for the average within-cluster covariance, where a cluster is any set of observations with can be identified by a variable to ``cluster on''.  }
 
 \subsubsection{Panel Newey-West}
 \cite{hac:Newey+West:1987} proposed a heteroscedasticity and autocorrelation consistent standard error estimator that is traditionally used for time-series data, but can be modified for use in panel data \citep[see for example][]{hac:Petersen:2009}.
@@ -465,10 +478,16 @@ A panel Newey-West estimator can be obtained by setting the cross-sectional as w
 \begin{equation} \label{eq:newey}
   \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{i, j = 1}^n w_{|i-j|} \, \psi(y_{i}, x_{i}, \hat \theta) \psi(y_{j}, x_{j}, \hat \theta)^\top.
 \end{equation}
+
+\new{
+\begin{equation} \label{eq:newey2}
+  \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{\ell = 0}^{L}\sum_{g,t = 1}^{n} w_{\ell} \, \psi(y_{gt}, x_{gt}, \hat \theta) \psi(y_{gt-\ell}, x_{gt-\ell}, \hat \theta)^\top.
+\end{equation}  
+}
 \cite{hac:Newey+West:1987} employ a Bartlett kernel for obtaining the weights as  
-$w_{|i-j|} = 1 - \frac{|i-j|}{L + 1}$ at lag $\ell = |i-j|$ up to lag $L$.
-As \cite{hac:Petersen:2009} noticed, the maximal lag length $L$ in a panel data set is $n_t - 1$,
-i.e., the maximum number of \emph{time} periods per \emph{id} minus one.
+\sout{$w_{|i-j|} = 1 - \frac{|i-j|}{L + 1}$ at lag $\ell = |i-j|$ up to lag $L$} \new{$w_{\ell} = 1 - \frac{\ell}{L + 1}$ at lag $\ell$ up to lag $L$}.
+As \cite{hac:Petersen:2009} noticed, the maximal lag length $L$ in a panel data set is \sout{$n_t - 1$} \new{$n_g - 1$,
+i.e., the maximum number of \textit{time} periods per \textit{group}} minus one.
 
 \subsubsection{Driscoll and Kraay}
 
@@ -480,13 +499,20 @@ that a long enough time dimension must be available.
 Thus, the idea is again
 to replace Equation~\ref{eq:estfun} by Equation~\ref{eq:estfun-cl} before computing
 $\hat M_\mathrm{HAC}$ from Equation~\ref{eq:meat-hac}. Note, however, that the aggregation
-is now done across cluster/id within each time period $t$. This yields a panel
+is now done across \new{\textit{groups} $g$} within each time period $t$. This yields a panel
 sandwich estimator where the meat is computed as
 \begin{equation} \label{eq:driscoll}
   \hat M_\mathrm{PL} \quad = \quad \frac{1}{n} \sum_{t = 1}^T \sum_{i, j = 1}^{n_t} w_{|i-j|} \,
     \psi(y_{it}, x_{it}, \hat \theta) \psi(y_{jt}, x_{jt}, \hat \theta)^\top,
 \end{equation}
-The weights $w_{|i-j|}$ are usually again the Bartlett weights up to lag $L$.
+\new{
+\begin{equation} \label{eq:driscoll}
+  \hat M_\mathrm{PL} \quad = \quad \frac{1}{n} \sum_{\ell = 0}^L w_\ell \, \bigg[ \sum_{t = 1}^{n_g} \bigg(
+    \sum_{g = 1}^{G} \psi(y_{gt}, x_{gt}, \hat \theta) \bigg) \bigg(
+    \sum_{g = 1}^{G} \psi(y_{gt-\ell}, x_{gt-\ell}, \hat \theta) \bigg)^\top \bigg],
+\end{equation}  
+ } 
+The weights \new{$w_{\ell}$} are usually again the Bartlett weights up to lag $L$.
 Note that for $L = 0$, $\hat M_\mathrm{PL}$ reduced to $\hat M_{\mathrm{CL}(\mathit{time})}$,
 i.e., the one-way covariance clustered by time. Also, for the special case that there is just
 one observation at each time point $t$, this panel covariance by \cite{hac:Driscoll+Kraay:1998}
@@ -515,7 +541,7 @@ independently of the cross-sectional dimension.
 
 To emphasize that now both cross section \emph{and} and time ordering are considered,
 index $(t,g)$ is employed for the observation from cluster/group $g = 1, \dots, G$ at time
-$t = 1, \dots, n_g$. In the balanced case (that we focus on below) $n_g = T$ for all groups~$g$
+$t = 1, \dots, n_g$. \new{Here, $n_g$ denotes the last time period observed in cluster $g$, thus allowing for unbalanced data.} In the balanced case (that we focus on below) $n_g = T$ for all groups~$g$
 so that there are $n = G \cdot T$ observations overall.
 
 The basic idea for PCSE is to employ the outer product of (working) residuals within each cluster~$g$.
@@ -1317,7 +1343,7 @@ CRAN at \url{https://CRAN.R-project.org/}.
 The authors are grateful to Keith Goldfeld (NYU School of Medicine) for providing insights
 and references regarding the differences of conditional and marginal models for clustered
 data.
-
+\new{A anonimous referee \ldots}
 
 \bibliography{hac}
 
