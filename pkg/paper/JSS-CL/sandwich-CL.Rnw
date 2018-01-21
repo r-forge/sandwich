@@ -1,6 +1,6 @@
 \documentclass[nojss]{jss}
 
-\usepackage{amsmath,amssymb,bm,thumbpdf,lmodern,ulem}
+\usepackage{amsmath,amssymb,bm,thumbpdf,lmodern,soul}
 
 %% need no \usepackage{Sweave}
 
@@ -114,7 +114,7 @@ observations' information will typically be overestimated and hence lead to
 overstated precision of the parameter estimates and inflated type~I errors
 in the corresponding tests \citep{hac:Moulton:1986, hac:Moulton:1990}.
 Therefore, clustered covariances are widely used to account for clustered
-correlations in the data.
+correlations in the data \new{citep{hac:Abadie+Athey+Imbens+Wooldridge:2017}}.
 
 Such clustering effects can emerge both in cross-section and in panel (or
 longitudinal) data. Typical examples for clustered cross-section data include
@@ -164,9 +164,10 @@ random intercepts) are often introduced to capture unobserved cluster
 correlations (e.g., using the \pkg{lme4} package in \proglang{R},
 \citealp{hac:Bates+Machler+Bolker:2015}). Alternatively, generalized estimating
 equations (GEE) can account for such correlations by adjusting the model's
-scores in the estimation, also leading naturally to a clustered covariance
+scores in the estimation \new{\citep{hac:Liang+Zeger:1986}}, also leading naturally to a clustered covariance
 (e.g., available in the \pkg{geepack} package for \proglang{R},
-\citealp{hac:Halekoh+Hojsgaard+Yan:2002}). Another approach, widely used
+\citealp{hac:Halekoh+Hojsgaard+Yan:2002}).
+Another approach, widely used
 in econometrics and the social sciences, is to assume that the model's score
 function was correctly specified but that only the remaining likelihood was
 potentially misspecified, e.g., due to a lack of independence as in the case
@@ -331,6 +332,13 @@ method is needed in \code{meatHC()} for the decomposition of the scores into
 empirical working residuals and regressor matrix.
 
 \subsection{Clustered covariances}
+\new{
+In the statistics literature, the basic sandwich estimator \citep{hac:Eicker:1963,hac:Huber:1967,hac:White:1980} has been extended for clustered units by \cite{hac:Kloek:1981} and \cite{hac:Moulton:1990}, using a correlation structure equivalent to exchangeable correlation in the GEE framework introduced by \cite{hac:Liang+Zeger:1986}.
+A relaxation of the assumption imposed by an exchangeable correlation structure of equal correlation whithin clusters has first been incorporated within the GEE framework \citep{hac:Liang+Zeger:1986}, using an independence correlation structure. In econometrics, \cite{hac:Arellano:1987} were the first who proposed clustered covariances to panel data.
+}
+\\
+\cite{hac:Kiefer:1980} robust to within-panel autocorrelation
+
 
 For clustered observations, similar ideas as above can be employed but the data
 has more structure that needs to be incorporated into the meat estimators.
@@ -463,14 +471,14 @@ For panel data, the source of dependence in the data is crucial to find out what
 In the following, panel Newey-West standard errors as well as Driscoll and Kraay standard errors are examined
 \citep[see also][for a unifying view]{hac:Millo:2014}.
 
-\sout{To reflect that the data are now panel data with time ordering within each cluster/group/id we change our notation
+\st{To reflect that the data are now panel data with time ordering within each cluster/group/id we change our notation
 to an index $(i, t)$ for $i = 1, \dots, n_t$ observations at time $t = 1, \dots, T$ (with $n = n_1 + \dots + n_T$).}
 
-\new{To reflect that the data are now panel data with a natural time ordering within each entity $g$ (without having a natural ordering, as for example individuals, countries, firms, \ldots) labelled \textit{groups} according to \cite{hac:Millo:2014}, we change our notation
-to an index $(g, t)$ for $g = 1, \dots, G$ observations sampled at $t = 1, \ldots, n_g$ points in \textit{time} (with $n = n_1 + \dots + n_G$).}
-\sout{Note that compared to the notation from the clustered case above,
+\new{To reflect that the data are now panel data with a natural time ordering within each entity $g$ (without having a natural ordering, as for example individuals, countries, firms, \ldots) labelled \emph{groups} according to \cite{hac:Millo:2014}, we change our notation
+to an index $(g, t)$ for $g = 1, \dots, G$ observations sampled at $t = 1, \ldots, n_g$ points in \emph{time} (with $n = n_1 + \dots + n_G$).}
+\st{Note that compared to the notation from the clustered case above,
 the variable $i$ now denotes the group/id (e.g., firm) which was previously denoted by $g$, whereas time $t$ denotes the cluster variable.}
-\new{However, expressions like \textit{groups} and \textit{time} are convenience term and are used for concreteness to make the concepts more easily comprehensible. Clustered covariances for paned data account for the average within-cluster covariance, where a cluster is any set of observations with can be identified by a variable to ``cluster on''.  }
+\new{However, expressions like \emph{groups} and \emph{time} are convenience term and are used for concreteness to make the concepts more easily comprehensible. Clustered covariances for paned data account for the average within-cluster covariance, where a cluster is any set of observations with can be identified by a variable to ``cluster on''.  }
 
 \subsubsection{Panel Newey-West}
 \cite{hac:Newey+West:1987} proposed a heteroscedasticity and autocorrelation consistent standard error estimator that is traditionally used for time-series data, but can be modified for use in panel data \citep[see for example][]{hac:Petersen:2009}.
@@ -481,13 +489,13 @@ A panel Newey-West estimator can be obtained by setting the cross-sectional as w
 
 \new{
 \begin{equation} \label{eq:newey2}
-  \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{\ell = 0}^{L}\sum_{g,t = 1}^{n} w_{\ell} \, \psi(y_{gt}, x_{gt}, \hat \theta) \psi(y_{gt-\ell}, x_{gt-\ell}, \hat \theta)^\top.
+  \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{\ell = 0}^{L} w_{\ell} \, \bigg[\sum_{g,t = 1}^{n} \psi(y_{gt}, x_{gt}, \hat \theta) \psi(y_{gt-\ell}, x_{gt-\ell}, \hat \theta)^\top\bigg].
 \end{equation}  
 }
 \cite{hac:Newey+West:1987} employ a Bartlett kernel for obtaining the weights as  
-\sout{$w_{|i-j|} = 1 - \frac{|i-j|}{L + 1}$ at lag $\ell = |i-j|$ up to lag $L$} \new{$w_{\ell} = 1 - \frac{\ell}{L + 1}$ at lag $\ell$ up to lag $L$}.
-As \cite{hac:Petersen:2009} noticed, the maximal lag length $L$ in a panel data set is \sout{$n_t - 1$} \new{$n_g - 1$,
-i.e., the maximum number of \textit{time} periods per \textit{group}} minus one.
+\st{$w_{|i-j|} = 1 - \frac{|i-j|}{L + 1}$ at lag $\ell = |i-j|$ up to lag $L$} \new{$w_{\ell} = 1 - \frac{\ell}{L + 1}$ at lag $\ell$ up to lag $L$}.
+As \cite{hac:Petersen:2009} noticed, the maximal lag length $L$ in a panel data set is \st{$n_t - 1$} \new{$n_g - 1$,
+i.e., the maximum number of \emph{time} periods per \emph{group}} minus one.
 
 \subsubsection{Driscoll and Kraay}
 
@@ -499,7 +507,7 @@ that a long enough time dimension must be available.
 Thus, the idea is again
 to replace Equation~\ref{eq:estfun} by Equation~\ref{eq:estfun-cl} before computing
 $\hat M_\mathrm{HAC}$ from Equation~\ref{eq:meat-hac}. Note, however, that the aggregation
-is now done across \new{\textit{groups} $g$} within each time period $t$. This yields a panel
+is now done across \new{\emph{groups} $g$} within each time period $t$. This yields a panel
 sandwich estimator where the meat is computed as
 \begin{equation} \label{eq:driscoll}
   \hat M_\mathrm{PL} \quad = \quad \frac{1}{n} \sum_{t = 1}^T \sum_{i, j = 1}^{n_t} w_{|i-j|} \,
@@ -540,7 +548,7 @@ is robust to quite general forms of cross-sectional and temporal dependence and 
 independently of the cross-sectional dimension.
 
 To emphasize that now both cross section \emph{and} and time ordering are considered,
-index $(t,g)$ is employed for the observation from cluster/group $g = 1, \dots, G$ at time
+index \new{$(g,t)$} is employed for the observation from \new{group} $g = 1, \dots, G$ at time
 $t = 1, \dots, n_g$. \new{Here, $n_g$ denotes the last time period observed in cluster $g$, thus allowing for unbalanced data.} In the balanced case (that we focus on below) $n_g = T$ for all groups~$g$
 so that there are $n = G \cdot T$ observations overall.
 
@@ -972,6 +980,10 @@ correlation \new{$\rho$} for the different response distributions. The methods c
 clustered covariances implemented in \pkg{sandwich} as well as competing methods such as basic
 sandwich covariances (without clustering), mixed-effects models with a random intercept, or
 generalized estimating equations with an exchangeable correlation structure.
+
+\new{It should be mentioned that the simulation setup constructs a typical case where clustering matters. However, this does not exclude that other situations can occur where clustering is of importance. For example, \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} show that clustering can matter even in cases with no within cluster correlation of residuals and regressors.
+In case of parameter homogeneity clustered covariances are rarely valueable, contrary to situations of parameter heterogeneity. Clustered covariances should be used when heterogeneity in the treatment effect appears. 
+In case of a fixed effects regression (with cluster level fixed effects) clustered covariances are necessary only when treatment heterogeneity is present.}
 
 \subsubsection{Linear predictor}
 
