@@ -1,6 +1,13 @@
-vcovBS.lm.default <- function(x, cluster = NULL, parallel = FALSE, multi0 = NULL, 
-                         fix = FALSE, R = 250, boot_type = "xy", wild_type = "rademacher",
-                         debug = FALSE, ..., use = "pairwise.complete.obs") {
+vcovBS.lm <- function(x, cluster = NULL, R = 250, multi0 = TRUE, 
+                      fix = FALSE, boot_type = "xy", wild_type = "rademacher",
+                      ..., use = "pairwise.complete.obs", 
+                      cl = NULL, parallel = "no") {
+  
+  debug <- FALSE
+  arglist <- list(...)
+  if("debug" %in% names(arglist)) {
+    debug <- arglist$debug
+  }
   
   if(inherits(cluster, "formula")) {
     cluster_tmp <- expand.model.frame(x, cluster, na.expand = FALSE)
@@ -28,7 +35,7 @@ vcovBS.lm.default <- function(x, cluster = NULL, parallel = FALSE, multi0 = NULL
   acc <- acc[-1:-cluster_dims]
   if(debug) print(acc)
   
-  n <- NROW(model.frame(x))
+  n <- nobs(x)
   
   # Handle omitted or excluded observations
   if(n != NROW(cluster) && !is.null(x$na.action)) {
@@ -61,15 +68,7 @@ vcovBS.lm.default <- function(x, cluster = NULL, parallel = FALSE, multi0 = NULL
     df[i, "K"] <- x$rank
   }
   
-  if(is.null(multi0)) {
-    if(cluster_dims > 1 && df[tcc, "M"] == prod(df[-tcc, "M"])) {
-      multi0 <- TRUE
-    } else {
-      multi0 <- FALSE
-    }
-  }
-  
-  if(multi0) {
+  if(multi0 && tcc > 1) {
     df <- df[-tcc,]
     tcc <- tcc - 1
   }
@@ -82,84 +81,67 @@ vcovBS.lm.default <- function(x, cluster = NULL, parallel = FALSE, multi0 = NULL
   }
   
   
-  if("model" %in% names(x)) {
-    full_data <- x$model
-  } else {
-    full_data <- model.frame(x)
-  }
-  
   boot.outs <- list()
-  
-  par_type <- "no"
-  if(length(parallel) > 1) {
-    par_cluster <- parallel
-    clusterExport(par_cluster, varlist = c("cluster", "x"), envir = environment())
-    par_type <- "snow"
-  } else if(parallel == TRUE || parallel == "snow") {
-    par_type <- "snow"
-    par_cluster <- NULL
-  } else if(parallel == "multicore") {
-    par_type <- "multicore"
-    par_cluster <- NULL
-  }
-  
-  dat_loc <- which(names(x$call) == "data") 
-  args <- x$call[c(-1, -dat_loc)]
-  wild_func <- function() NULL
-  
+
   boot_type <- match.arg(boot_type, c("xy", "residual", "wild"))
+  
+  boot_args <- new.env()
+  boot_args$x <- x
+  boot_args$wild_func <- function() NULL
   
   # Setup the bootstrap functions, depending upon the type of bootstrap requested
   if(boot_type == "xy") {
-    est.func <- cmpfun(function(grp, i, data2, clustvar, reg_arglist, boot_args) {
+    boot_args$mx <- model.matrix(x)
+    boot_args$y <- model.response(boot_args$x$model)
+    est.func <- cmpfun(function(grp, i, clustvar, boot_args) {
       j <- unlist(lapply(i, function(n) which(n == clustvar)))
-      coef(boot_args$estimator(reg_arglist, data = data2[j,]))
+      coef(lm.fit(x = boot_args$mx[j, ], y = boot_args$y[j]))
     })
   } else if(boot_type == "residual") {
-    args$formula <- update.formula(formula(x), y_boot ~ .)
-    full_data$y_boot <- 0
-    
-    est.func <- cmpfun(function(grp, i, data2, clustvar, reg_arglist, boot_args) {
+    est.func <- cmpfun(function(grp, i, clustvar, boot_args) {
       j <- unlist(lapply(i, function(n) which(n == clustvar)))
-      data2$y_boot <- fitted(boot_args$x) + residuals(boot_args$x)[j]
-      coef(boot_args$estimator(reg_arglist, data = data2))
+      y_boot <- fitted(boot_args$x) + residuals(boot_args$x)[j]
+      qr.coef(boot_args$x$qr, y_boot)
     })
   } else if(boot_type == "wild") {
-    args$formula <- update.formula(formula(x), y_boot ~ .)
-    full_data$y_boot <- 0
     
     if(is.function(wild_type)) {
-      wild_func <- wild_type
+      boot_args$wild_func <- wild_type
     } else {
       wild_type <- match.arg(wild_type, c("rademacher", "mammen", "norm"))
       if(wild_type == "rademacher") {
-        wild_func <- cmpfun(function() sample(c(-1, 1), 1))
+        boot_args$wild_func <- cmpfun(function(n) sample(c(-1, 1), n, replace = TRUE))
       } else if(wild_type == "mammen") {
-        wild_func <- cmpfun(function() sample(c(-(sqrt(5) - 1) / 2, (sqrt(5) + 1) / 2), 1,
-                                              prob = c((sqrt(5) + 1) / (2 * sqrt(5)), 
-                                                       (sqrt(5) - 1) / (2 * sqrt(5)))))
+        boot_args$wild_func <- cmpfun(function(n) sample(c(-(sqrt(5) - 1) / 2, 
+                                                           (sqrt(5) + 1) / 2), 
+                                                         n,
+                                                         replace = TRUE,
+                                                         prob = c((sqrt(5) + 1) / (2 * sqrt(5)), 
+                                                                  (sqrt(5) - 1) / (2 * sqrt(5)))))
       } else if(wild_type == "norm") {
-        wild_func <- cmpfun(function() rnorm(1))
+        boot_args$wild_func <- function(n) rnorm(n)
+      } else if(wild_type == "norm_comp") {
+        boot_args$wild_func <- cmpfun(function(n) rnorm(n))
       }
     }
     
+    clust <- split(seq_along(PetersenCL$year), PetersenCL$year)
+    boot_args$grp_indices <- unlist(clust)
+    boot_args$grp_sizes <- lapply(clust, length)
     
-    est.func <- cmpfun(function(grp, i, data2, clustvar, reg_arglist, boot_args) {
-      j <- unlist(lapply(grp, function(n) rep_len(boot_args$wild_func(), sum(n == clustvar))))
-      data2$y_boot <- fitted(x) + residuals(x) * j
-      coef(boot_args$estimator(reg_arglist, data = data2))
+    est.func <- cmpfun(function(grp, i, clustvar, boot_args) {
+      draws <- boot_args$wild_func(length(grp))
+      expanded_draws <- unlist(mapply(rep, draws, boot_args$grp_sizes, SIMPLIFY = FALSE))
+      y_boot <- fitted(boot_args$x) + residuals(boot_args$x) * expanded_draws[boot_args$grp_indices]
+      qr.coef(boot_args$x$qr, y_boot)
     })
   }
-  boot_args <- new.env()
-  boot_args$estimator <- eval(x$call[[1]])
-  boot_args$x <- x
-  boot_args$wild_func <- wild_func
   
   for(i in 1:tcc) {
     boot.outs[[i]] <- boot(unique(cluster[,i]), est.func, R = R,
-                           parallel = par_type, cl = par_cluster,
-                           data2 = full_data, clustvar = cluster[,i],
-                           reg_arglist = args, boot_args = boot_args)
+                           parallel = parallel, cl = cl,
+                           clustvar = cluster[,i],
+                           boot_args = boot_args)
   }
   
   if(debug) {
@@ -172,9 +154,9 @@ vcovBS.lm.default <- function(x, cluster = NULL, parallel = FALSE, multi0 = NULL
     vcov_matrices[[i]] <- vcov_sign[i] * cov(boot.outs[[i]]$t, use = use)
   }
   
-  if(multi0) {
+  if(multi0 && tcc > 1) {
     i <- i + 1
-    vcov_matrices[[i]] <- vcov_sign[i] * vcovHC(x, type = "HC0")
+    vcov_matrices[[i]] <- vcov_sign[i] * sandwich(fm)
   }
   
   if(debug) {
@@ -183,11 +165,10 @@ vcovBS.lm.default <- function(x, cluster = NULL, parallel = FALSE, multi0 = NULL
   
   vcov_matrix <- Reduce('+', vcov_matrices)
   
-  if(fix) {
-    decomp <- eigen(vcov_matrix, symmetric = TRUE)
-    if(debug) print(decomp$values)
-    pos_eigens <- pmax(decomp$values, rep.int(0, length(decomp$values)))
-    vcov_matrix <- decomp$vectors %*% diag(pos_eigens) %*% t(decomp$vectors)
+  if(fix && any((eig <- eigen(vcov_matrix, symmetric = TRUE))$values < 0)) {
+    eig$values <- pmax(eig$values, 0)
+    if(debug) print(eig$values)
+    vcov_matrix <- crossprod(sqrt(eig$values) * t(eig$vectors))
   }
   
   return(vcov_matrix)
