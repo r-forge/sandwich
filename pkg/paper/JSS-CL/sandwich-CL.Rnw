@@ -114,7 +114,8 @@ observations' information will typically be overestimated and hence lead to
 overstated precision of the parameter estimates and inflated type~I errors
 in the corresponding tests \citep{hac:Moulton:1986, hac:Moulton:1990}.
 Therefore, clustered covariances are widely used to account for clustered
-correlations in the data \new{citep{hac:Abadie+Athey+Imbens+Wooldridge:2017}}.
+correlations in the data.
+\new{According to \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017}, clustered covariances are conservative in case of heterogeneity in treatment effects and if the number of clusters (as well as the number of observations within each cluster) observed is large enough.}
 
 Such clustering effects can emerge both in cross-section and in panel (or
 longitudinal) data. Typical examples for clustered cross-section data include
@@ -122,6 +123,7 @@ firms within the same industry or students within the same school or class.
 In panel data, a common source of clustering is that observations for the
 same individual at different time points are correlated while the individuals
 may be independent \citep{hac:Cameron+Miller:2015}.
+\new{In case of a fixed effects regression (with cluster level fixed effects) clustered covariances are necessary only when treatment heterogeneity is present \citep{hac:Abadie+Athey+Imbens+Wooldridge:2017}.}
 
 This paper contributes to the literature particularly in two respects:
 %
@@ -162,7 +164,8 @@ There is a range of popular strategies for dealing with clustered dependencies
 in regression models. In the statistics literature, random effects (especially
 random intercepts) are often introduced to capture unobserved cluster
 correlations (e.g., using the \pkg{lme4} package in \proglang{R},
-\citealp{hac:Bates+Machler+Bolker:2015}). Alternatively, generalized estimating
+\citealp{hac:Bates+Machler+Bolker:2015}).
+Alternatively, generalized estimating
 equations (GEE) can account for such correlations by adjusting the model's
 scores in the estimation \new{\citep{hac:Liang+Zeger:1986}}, also leading naturally to a clustered covariance
 (e.g., available in the \pkg{geepack} package for \proglang{R},
@@ -254,9 +257,10 @@ or limited responses.
 \subsection{Clustered covariances in Stata}
 
 \new{
-``Official Stata'' as well as the ``Stata Community'' provide implementations for several types of clustered covariances.
-One-way clustered covariances are available in ``Official Stata'' for a wide range of estimators (``ivreg2'', ``xtreg'', ``reg'', among others) by adding the ``cluster'' option. Additionally, ``Official Stata'' supports cluster correction via the ``suest'' command for a system of equations. In the presence of nested multi-level clustering, the ``syv'' suite of commands can be employed \citep{hac:Nichols+Schaffer:2007}. Panel-corrected standard errors are supported by ``xtpcse''. 
-The ``Stata Community'' package ``avar'' from \cite{hac:Nichols+Schaffer:2014} allows to construct the meat matrix of various flavors of sandwich covariance estimators, including among others HAC, one- and two-way clustering, Driscoll and Kraay covariances as well as Kiefer covariances \citep{hac:Kiefer:1980}.}
+Official Stata as well as the Stata community provide implementations for several types of clustered covariances.
+One-way clustered covariances are available in Official Stata for a wide range of estimators (``ivreg2'', ``xtreg'', ``reg'', among others) by adding the ``cluster'' option, and additionally supports cluster correction via the ``suest'' command for a system of equations. In the presence of nested multi-level clustering, the ``syv'' suite of commands can be employed \citep{hac:Nichols+Schaffer:2007}. Panel-corrected standard errors are supported by ``xtpcse''. 
+The Stata Community package ``avar'' \citep{hac:Nichols+Schaffer:2014} allows to construct the meat matrix of various flavors of sandwich covariance estimators, including among others HAC, one- and two-way clustering, Driscoll and Kraay covariances as well as Kiefer covariances \citep{hac:Kiefer:1980}.
+The Stata add-on ``xtscc'' provides a further implementation of Driscoll and Kraay covariances \citep{hac:Hoechle:2007}.}
 
 \section{Methods} \label{sec:methods}
 
@@ -332,13 +336,11 @@ method is needed in \code{meatHC()} for the decomposition of the scores into
 empirical working residuals and regressor matrix.
 
 \subsection{Clustered covariances}
-\new{
-In the statistics literature, the basic sandwich estimator \citep{hac:Eicker:1963,hac:Huber:1967,hac:White:1980} has been extended for clustered units by \cite{hac:Kloek:1981} and \cite{hac:Moulton:1990}, using a correlation structure equivalent to exchangeable correlation in the GEE framework introduced by \cite{hac:Liang+Zeger:1986}.
-A relaxation of the assumption imposed by an exchangeable correlation structure of equal correlation whithin clusters has first been incorporated within the GEE framework \citep{hac:Liang+Zeger:1986}, using an independence correlation structure. In econometrics, \cite{hac:Arellano:1987} were the first who proposed clustered covariances to panel data.
-}
-\\
-\cite{hac:Kiefer:1980} robust to within-panel autocorrelation
 
+\new{In the statistics literature, the basic sandwich estimator \citep{hac:Eicker:1963,hac:Huber:1967,hac:White:1980} has been extended for clustered units by \cite{hac:Kloek:1981} and \cite{hac:Moulton:1990}, using a correlation structure equivalent to the exchangeable correlation in the GEE framework as introduced by \cite{hac:Liang+Zeger:1986}.
+\cite{hac:Kiefer:1980} has implemented yet another clustered covariance estimator, which is robust to clustering but assumes homoscedasticity \citep[see also][]{hac:Baum+Nichols+Schaffer:2011}.
+The structure of equal correlation whithin clusters imposed by exchangeable correlation has been generalized further within the GEE framework, employing an independence working model \citep{hac:Liang+Zeger:1986}.
+In econometrics, \cite{hac:Arellano:1987} was the first who proposed clustered covariances to fixed effects estimator in panel models \citep{hac:Cameron+Miller:2015}.}
 
 For clustered observations, similar ideas as above can be employed but the data
 has more structure that needs to be incorporated into the meat estimators.
@@ -370,12 +372,11 @@ The new function \code{meatCL()} in the \pkg{sandwich} package implements this
 basic trick along with several types of bias correction and the possibility for
 multi-way instead of one-way clustering.
 
-
 \subsubsection{Types of bias correction}
 
 The clustered covariance estimator controls for both heteroscedasticity across
 as well as within clusters, but this comes at the cost that the number of
-clusters $G$ must approach infinity, not just the number of observations $n$
+clusters $G$ must \new{be large enough} \st{approach infinity}, not just the number of observations $n$
 \citep{hac:Cameron+Gelbach+Miller:2008,hac:Cameron+Miller:2015}. Although many
 publications just refer to ``the'' clustered standard errors, there is a
 surprisingly wide variation in clustered covariances, particularly due to
@@ -425,7 +426,6 @@ are required as well. Currently, no such extractor method is available in base \
 (as \code{hatvalues()} just extracts $\mathrm{diag} H$) and hence HC2 and HC3 in \code{meatCL()}
 are just available for \code{lm} and \code{glm} objects.
 
-
 \subsubsection{Two-way and multi-way clustered covariances}
 Certainly, there can be more than one cluster dimension, as for example observations that are characterized by housholds within states or companies within industries. It can therefore sometimes be helpful that one-way clustered covariances can be extended to so-called multi-way clustering as shown by \cite{hac:Miglioretti+Heagerty:2007}, \cite{hac:Thompson:2011} and \cite{hac:Cameron+Gelbach+Miller:2011}.
 
@@ -446,7 +446,7 @@ For example, when clustering by dimensions \emph{id} and \emph{year} in a sample
 of \emph{id-month} observations, each cluster is composed of 12 observations \citep{hac:Ma:2014}. In such a setting, the last subtracted matrix of Equation (\ref{eq:twoway}) should be the clustered covariance matrix  $\hat M_{\mathrm{CL}(id \cap year)}$
 with clusters formed by the intersection of \emph{id} and \emph{year}.
 As \cite{hac:Ma:2014} argues, the standard sandwich estimator does not take into
-account any type of bias adjustment (with an adjustment of $1$), in contrast to clustered covariance estimators (with an adjustment of $\frac{G}{G-1}$), hence the cluster bias correction  $\frac{G}{G-1} > 1$. If there is is only a singe observation in each intersection of $id$ and $time$, $\hat M_{\mathrm{CL}(id \cap time)}$ collapses to a standard sandwich estimator. Then, clustered covariances $\hat M_{\mathrm{CL}(id,time)}$ are underestimated when using $\hat M_{\mathrm{CL}(id \cap time)}$ instead of standard sandwich covariances as the last subtracted matrix, because of the larger bias correction $\frac{G}{G-1} > 1$.}
+account any type of bias adjustment, in contrast to clustered covariance estimators (with an adjustment of $\frac{G}{G-1}$), hence the cluster bias correction  $\frac{G}{G-1} > 1$. If there is is only a singe observation in each intersection of $id$ and $time$, $\hat M_{\mathrm{CL}(id \cap time)}$ collapses to a standard sandwich estimator. Then, clustered covariances $\hat M_{\mathrm{CL}(id,time)}$ are underestimated when using $\hat M_{\mathrm{CL}(id \cap time)}$ instead of standard sandwich covariances as the last subtracted matrix, because of the larger bias correction $\frac{G}{G-1} > 1$.}
 
 
 % Various flavours of clustered covariances have been newly implemented in the
@@ -474,7 +474,7 @@ In the following, panel Newey-West standard errors as well as Driscoll and Kraay
 \st{To reflect that the data are now panel data with time ordering within each cluster/group/id we change our notation
 to an index $(i, t)$ for $i = 1, \dots, n_t$ observations at time $t = 1, \dots, T$ (with $n = n_1 + \dots + n_T$).}
 
-\new{To reflect that the data are now panel data with a natural time ordering within each entity $g$ (without having a natural ordering, as for example individuals, countries, firms, \ldots) labelled \emph{groups} according to \cite{hac:Millo:2014}, we change our notation
+\new{To reflect that the data are now panel data with a natural time ordering within each entity $g$ labelled \emph{groups} (without a natural ordering, as for example individuals, countries, firms, \ldots) according to \cite{hac:Millo:2014}, we change our notation
 to an index $(g, t)$ for $g = 1, \dots, G$ observations sampled at $t = 1, \ldots, n_g$ points in \emph{time} (with $n = n_1 + \dots + n_G$).}
 \st{Note that compared to the notation from the clustered case above,
 the variable $i$ now denotes the group/id (e.g., firm) which was previously denoted by $g$, whereas time $t$ denotes the cluster variable.}
@@ -489,7 +489,7 @@ A panel Newey-West estimator can be obtained by setting the cross-sectional as w
 
 \new{
 \begin{equation} \label{eq:newey2}
-  \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{\ell = 0}^{L} w_{\ell} \, \bigg[\sum_{g,t = 1}^{n} \psi(y_{gt}, x_{gt}, \hat \theta) \psi(y_{gt-\ell}, x_{gt-\ell}, \hat \theta)^\top\bigg].
+  \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{\ell = 0}^{L} w_{\ell} \, \bigg[\sum_{t = 1}^{n_{g}}\sum_{g = 1}^{G} \psi(y_{gt}, x_{gt}, \hat \theta) \psi(y_{gt-\ell}, x_{gt-\ell}, \hat \theta)^\top\bigg].
 \end{equation}  
 }
 \cite{hac:Newey+West:1987} employ a Bartlett kernel for obtaining the weights as  
@@ -868,7 +868,7 @@ hence the necessary code is included below.)
 <<petersen-comparison2>>=
 library("plm")
 p_plm <- plm(y ~ x, data = PetersenCL, model = "pooling",
- indexes = c("firmid", "year"))
+ indexes = c("firm", "year"))
 
 library("geepack")
 vcov.geeglm <- function(object) {
@@ -981,9 +981,7 @@ clustered covariances implemented in \pkg{sandwich} as well as competing methods
 sandwich covariances (without clustering), mixed-effects models with a random intercept, or
 generalized estimating equations with an exchangeable correlation structure.
 
-\new{It should be mentioned that the simulation setup constructs a typical case where clustering matters. However, this does not exclude that other situations can occur where clustering is of importance. For example, \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} show that clustering can matter even in cases with no within cluster correlation of residuals and regressors.
-In case of parameter homogeneity clustered covariances are rarely valueable, contrary to situations of parameter heterogeneity. Clustered covariances should be used when heterogeneity in the treatment effect appears. 
-In case of a fixed effects regression (with cluster level fixed effects) clustered covariances are necessary only when treatment heterogeneity is present.}
+\new{It should be mentioned that the simulation setup constructs a typical case where clustering matters. However, this is not to say that other situations can occur where clustering matters. For example, \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} show that clustering can be of importance even in cases where no within cluster correlation of residuals and regressors occurs.}
 
 \subsubsection{Linear predictor}
 
