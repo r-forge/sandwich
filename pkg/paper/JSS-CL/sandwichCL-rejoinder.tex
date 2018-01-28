@@ -63,13 +63,41 @@ The comparison with Stata naturally separates into two parts: ``Official Stata''
 
 \medskip
 
-Added a new subsection with a discussion of clustered covariances in Stata.
+ The manuscript now contains a new subsection (2.3) with a discussion of clustered covariances in Stata.
 
 \medskip
 
 \textbf{\textit{Suggestions relating to the writeup:
 \\
-The writeup is fine as it is, but I think readers and users would benefit a lot from expanding the discussion to cover the limitations of, alternatives to, and history of the cluster-robust covariance estimation.}}
+The writeup is fine as it is, but I think readers and users would benefit a lot from expanding the discussion to cover the limitations of, alternatives to, and history of the cluster-robust covariance estimation.
+}}
+
+\medskip
+
+In subsection (3.2), a paragraph containing a short review of the history of clustered covariances is added.
+
+\medskip
+
+\textbf{\textit{
+Also worth noting is the history of the cluster-robust estimator: AAIH refer to it as the Liang-Zeger (1986 Biometrika) covariance estimator.  This is probably worth doing in the VVV paper as well, unless the authors have an earlier source for this estimator.
+}}
+
+\medskip
+
+We decided to keep the naming ``clustered covariance estimator'' for two reasons:
+First, the name is more common in the statistics literature.
+Second, Liang and Zeger (1986) do consider GEE-models with different correlation structures, including independence, exchangeable and AR1 correlation matrices.
+Thus, we think that the proposed naming ``Liang-Zeger covariance estimator'' is somewhat missleading, as it does not point cleary to the independence correlation structure.
+
+\medskip
+
+\textbf{\textit{
+On page 6 the authors state that "the number of clusters G must approach infinity", but strictly speaking this is not the case: there are papers that have explored the behavior of the cluster-robust covariance estimator as the number of observations goes to infinity but holding constant the number of clusters ("infilling asymptotics").  A good paper here is Bester-Conley-Hansen (2011), "Inference with Dependent Data Using Cluster Covariance Estimators", 165:2.
+}}
+
+\medskip
+
+Changed to ``the number of clusters G must be large enough''.
 
 \medskip
 
@@ -80,6 +108,11 @@ The writeup is fine as it is, but I think readers and users would benefit a lot 
 \textbf{\textit{Suggestions relating to the code:
 \\
 The authors may want to consider incorporating the  covariance estimator of Kloek (1981, Econometrica; see the AAIW paper for a description and discussion) and/or Kiefer (1980).}}
+
+\medskip
+
+The covariance estimator proposed by Kloek (1981) assumes a correlation structure that is equivalent to an exchangeable working model within the GEE framework (Liang and Zeger, 1986).
+For the linear or generalized linear case, we therefore suggest to use the geeglm function from package geepack (Hojsgaard, Halekoh and Yan, 2016).
 
 \section*{Referee 2}
 
@@ -170,6 +203,15 @@ individuals. Please clarify this in the manuscript.}}
 \textbf{\textit{9. In section 3.4, the use of subscripts for individuals, groups, and time periods is confusing
 and perhaps inconsistent. I recommend that the authors considerably revise and extend
 this section so that it is less confusing and easier to understand.}}
+
+\medskip
+
+ Points 6. to 9.: To reflect that the data are now panel data with a natural time ordering within each entity $g$ labelled \emph{groups} (without a natural ordering, as for example individuals, countries, firms, \ldots) according to Millo (2014), we change our notation
+to an index $(g, t)$ for $g = 1, \dots, G$ observations sampled at $t = 1, \ldots, n_g$ points in \emph{time} (with $n = n_1 + \dots + n_G$).
+
+However, expressions like \emph{groups} and \emph{time} are convenience term and are used for concreteness to make the concepts more easily comprehensible. Clustered covariances for paned data account for the average within-cluster covariance, where a cluster is any set of observations with can be identified by a variable to ``cluster on''. 
+
+Regarding the notation, an index $t$ is introduced to visibly take the time dimension into account.
 
 \medskip
 
