@@ -119,8 +119,6 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, multi0 = TRUE,
                                                          prob = c((sqrt(5) + 1) / (2 * sqrt(5)), 
                                                                   (sqrt(5) - 1) / (2 * sqrt(5)))))
       } else if(wild_type == "norm") {
-        boot_args$wild_func <- function(n) rnorm(n)
-      } else if(wild_type == "norm_comp") {
         boot_args$wild_func <- cmpfun(function(n) rnorm(n))
       }
     }
