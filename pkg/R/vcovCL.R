@@ -37,7 +37,21 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
   ## cluster <- lapply(as.data.frame(cluster), as.factor)
 
   ## collect 'cluster' variables in a data frame
-  cluster <- as.data.frame(cluster)
+  if(inherits(cluster, "formula")) {
+    cluster_tmp <- expand.model.frame(x, cluster, na.expand = FALSE)
+    cluster <- model.frame(cluster, cluster_tmp, na.action = na.pass)
+  } else {
+    cluster <- as.data.frame(cluster)
+  }
+  
+  # Handle omitted or excluded observations
+  if(n != NROW(cluster) && !is.null(x$na.action)) {
+    if(class(x$na.action) %in% c("exclude", "omit")) {
+      cluster <- cluster[-x$na.action,]
+    }
+    cluster <- as.data.frame(cluster)  # FIXME: silly error somewhere
+  }
+  
   if(NROW(cluster) != n) stop("number of observations in 'cluster' and 'estfun()' do not match")
 
   ## for multi-way clustering: set up interaction patterns
