@@ -726,7 +726,7 @@ The former is typically computationally faster in moderately large data sets
 while the latter is less memory-intensive so that it can be applied to larger
 numbers of observations.
 
-
+\subsection{Further functionality: Bootstrap covariances}
 
 \section{Illustrations} \label{sec:illu}
 
