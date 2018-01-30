@@ -26,9 +26,17 @@ limited to the simple cluster-resampling bootstrap).}}
 
 \medskip
 
+Additionally, a discussion of bootstrap based alternatives are now covered in subsection (4.4) in the manuscript and are included in the new function vcovBS() in the sandwich package.
+
+\medskip
+
 \textbf{\textit{As well, I didn't find the material raised in Reviewer B's points 1, 6, 11,
 and 14 to be unclear, although it wouldn't hurt to provide a bit more
 explanation in these places.}}
+
+\medskip
+
+We have adopted the proposals regarding Reviewer B's points 1, 6, and 11.
 
 \medskip
 
@@ -42,6 +50,10 @@ implementation and of substantial practical use.}}
 \textbf{\textit{I found the simulations reported in section 6 slightly inappropriate to the
 main purpose of the paper, which is to describe the implementation in the
 sandwich package of coefficient-covariance estimators for clustered data.}}
+
+\medskip
+
+We decided to keep the simulations in the manuscript to give an intuition for situations where clustered covariances make a difference.
 
 \medskip
 
@@ -102,6 +114,10 @@ Changed to ``the number of clusters G must be large enough''.
 \medskip
 
 \textbf{\textit{Lastly, I think the authors should make readers aware of bootstrap-type alternatives to the analytical cluster-robust covariance estimators (the ``wild bootstrap'' etc.).}}
+
+\medskip
+
+Cluster bootstrap covariances as an alternative to clustered covariances are now implemented in the sanwich package. Details are covered in subsection (4.4) in the manuscript.
 
 \medskip
 
