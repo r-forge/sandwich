@@ -70,7 +70,7 @@ Fixed.
 \section*{Referee 1}
 
 \textbf{\textit{Comparison with Stata (as requested by the editor):
-\\
+\\ \\ 
 The comparison with Stata naturally separates into two parts: ``Official Stata'', i.e., the code provided by StataCorp when purchasing the software, and ``the Stata Community'', i.e., code provided by the user community at large and (mostly) residing at SSC Archives.}}
 
 \medskip
@@ -80,13 +80,17 @@ The comparison with Stata naturally separates into two parts: ``Official Stata''
 \medskip
 
 \textbf{\textit{Suggestions relating to the writeup:
-\\
+\\ \\
 The writeup is fine as it is, but I think readers and users would benefit a lot from expanding the discussion to cover the limitations of, alternatives to, and history of the cluster-robust covariance estimation.
+\\ \\
+A very recent paper by Abadie-Athey-Imbens-Wooldridge (October 2017), ``When Should You Adjust Standard Errors for Clustering?'', https://arxiv.org/abs/1710.02926, is very helpful in this respect.  The paper results are too lengthy to summarize here; I will say only that the main point that is relevant for the VVV paper is that the assumption of parameter homogeneity (identical treatment effects across units) is central for many of the standard results for the cluster-robust covariance estimator.  I think the VVV authors should have a look and briefly summarize what they think are the main lessons for the potential users of their package.
 }}
 
 \medskip
 
 In subsection (3.2), a paragraph containing a short review of the history of clustered covariances is added.
+
+The Abadie et al. (2017) paper is now mentioned in the manuscript in the introduction and the simulation section.
 
 \medskip
 
