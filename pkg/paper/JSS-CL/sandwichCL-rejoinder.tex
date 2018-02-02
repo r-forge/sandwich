@@ -26,7 +26,18 @@ limited to the simple cluster-resampling bootstrap).}}
 
 \medskip
 
-A discussion of bootstrap based alternatives are now covered in subsection (4.4) in the manuscript and a new function vcovBS() is included in the sandwich package.
+Thank you for pointing this out. Yes, this is indeed an important comparison and
+in the previous version we just included a simple clustered bootstrap covariance
+as a reference in the simulation. Now the manuscript provides some more background
+for bootstrap covariances as well as a brief introduction to the \texttt{vcovBS()}
+generic function included in the package (see Section~4.4).
+
+In addition to the default \texttt{vcovBS()} method that computes simple (clustered)
+pair (or ``xy'') bootstrap covariances, there is now a dedicated method for \texttt{"lm"}
+objects. The latter includes also residual-based bootstrap and wild bootstrap variants
+which are -- to the best of our knowledge -- confined to the linear regression case.
+Therefore, we do not go into more detail about this function/method because the manuscript's
+focus is the object-oriented toolbox for clustered covariances.
 
 \medskip
 
@@ -36,7 +47,9 @@ explanation in these places.}}
 
 \medskip
 
-We have adopted the proposals regarding Reviewer B's points 1, 6, and 11.
+We agree that making the manuscript more accessible for readers with different backgrounds is
+clearly desirable and we have tried to embellish the text following Reviewer B's advice.
+For details see below.
 
 \medskip
 
@@ -47,13 +60,22 @@ implementation and of substantial practical use.}}
 
 \medskip
 
+Thank you very much, your feedback and that from the reviewers is much appreciated
+and has further improved manuscript and software.
+
+\medskip
+
 \textbf{\textit{I found the simulations reported in section 6 slightly inappropriate to the
 main purpose of the paper, which is to describe the implementation in the
 sandwich package of coefficient-covariance estimators for clustered data.}}
 
 \medskip
 
-We decided to keep the simulations in the manuscript to give an intuition for situations where clustered covariances make a difference.
+We agree that the simulations do not fall within the narrower scope of the manuscript/software.
+However, the object-oriented software enabled us to explore the questions covered in the
+simulation. And as we were not aware of such empirical comparisons for models beyond
+linear regression we felt that some guidance about the covariances' properties was useful
+for the readers and ourselves. Hence, we decided to keep the simulations in the manuscript.
 
 \medskip
 
@@ -65,7 +87,10 @@ are able.''}}
 
 \medskip
 
-Fixed.
+Thank you for spotting these: fixed now.
+
+
+\bigskip
 
 \section*{Referee 1}
 
@@ -75,22 +100,39 @@ The comparison with Stata naturally separates into two parts: ``Official Stata''
 
 \medskip
 
- The manuscript now contains a new subsection (2.3) with a discussion of clustered covariances in Stata.
+\emph{include (almost?) full comment from reviewer}
+
+\emph{somewhat more verbose reply}
+
+The manuscript now contains a new Section~2.3 with a discussion of clustered covariances in Stata.
 
 \medskip
 
 \textbf{\textit{Suggestions relating to the writeup:
 \\ \\
 The writeup is fine as it is, but I think readers and users would benefit a lot from expanding the discussion to cover the limitations of, alternatives to, and history of the cluster-robust covariance estimation.
-\\ \\
+}}
+
+\medskip
+
+Section~3.2 now starts with a short review of the literature including the suggested references.
+As already pointed out in the response to the Associate Editor, Section~4.4 has been added to
+briefly discuss bootstrap covariances as an alternative to the sandwich estimators. Finally,
+the discussion now gives more emphasis to the limitations of the methods.
+
+\emph{limitations: still todo}
+
+\medskip
+
+\textbf{\textit{
 A very recent paper by Abadie-Athey-Imbens-Wooldridge (October 2017), ``When Should You Adjust Standard Errors for Clustering?'', https://arxiv.org/abs/1710.02926, is very helpful in this respect.  The paper results are too lengthy to summarize here; I will say only that the main point that is relevant for the VVV paper is that the assumption of parameter homogeneity (identical treatment effects across units) is central for many of the standard results for the cluster-robust covariance estimator.  I think the VVV authors should have a look and briefly summarize what they think are the main lessons for the potential users of their package.
 }}
 
 \medskip
 
-In subsection (3.2), a paragraph containing a short review of the history of clustered covariances is added.
-
 The Abadie et al. (2017) paper is now mentioned in the manuscript in the introduction and the simulation section.
+
+\emph{be somewhat more explicit about the details}
 
 \medskip
 
@@ -101,9 +143,13 @@ Also worth noting is the history of the cluster-robust estimator: AAIH refer to 
 \medskip
 
 We decided to keep the naming ``clustered covariance estimator'' for two reasons:
-First, the name is more common in the statistics literature.
-Second, Liang and Zeger (1986) do consider GEE-models with different correlation structures, including independence, exchangeable and AR1 correlation matrices.
-Thus, we think that the proposed naming ``Liang-Zeger covariance estimator'' is somewhat missleading, as it does not point cleary to the independence correlation structure.
+First, the name is widely used in the literature.
+Second, the GEE framework of Liang and Zeger (1986) indeed encompasses the independence
+working model along the corresponding clustered covariances. However, it naturally extends
+to other correlation structures (most importantly, exchangeable and AR1) for which not
+only the covariances are adjusted but also the coefficient estimates themselves. Therefore,
+we feel that some readers may be confused by referring to ``Liang-Zeger'' as they might
+expect that the parameters are estimated by GEEs.
 
 \medskip
 
@@ -122,6 +168,8 @@ Changed to ``the number of clusters G must be large enough''.
 \medskip
 
 Cluster bootstrap covariances as an alternative to clustered covariances are now implemented in a new function vcovBS() in the sandwich package. Details are covered in subsection (4.4) in the manuscript.
+
+\emph{``yes thanks'' and refer to reply to AE}
 
 \medskip
 
