@@ -553,7 +553,7 @@ $t = 1, \dots, n_g$. \new{Here, $n_g$ denotes the last time period observed in c
 so that there are $n = G \cdot T$ observations overall.
 
 The basic idea for PCSE is to employ the outer product of (working) residuals within each cluster~$g$.
-Thus, the working residuals are split into vectors for each cluster $g$:
+Thus, the working residuals are split into \new{$T \times 1$} vectors for each cluster $g$:
 $r(y_1, x_1^\top \hat \theta), \dots,$\linebreak $r(y_G, x_G^\top \hat \theta)$.
 For balanced data these can be arranged in a $T \times G$ matrix,
  \begin{equation} \label{eq:workres}
@@ -981,7 +981,7 @@ clustered covariances implemented in \pkg{sandwich} as well as competing methods
 sandwich covariances (without clustering), mixed-effects models with a random intercept, or
 generalized estimating equations with an exchangeable correlation structure.
 
-\new{It should be mentioned that the simulation setup constructs a typical case where clustering matters. However, this is not to say that other situations can occur where clustering matters. For example, \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} show that clustering can be of importance even in cases where no within cluster correlation of residuals and regressors occurs.}
+\new{It should be mentioned that the simulation setup constructs a typical case where clustering matters. However, this is not to say that there are other situations not covered here where clustering is important. For example, \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} show that clustering can be of importance even in cases where no within cluster correlation of residuals and regressors occurs.}
 
 \subsubsection{Linear predictor}
 
@@ -1353,7 +1353,7 @@ CRAN at \url{https://CRAN.R-project.org/}.
 The authors are grateful to Keith Goldfeld (NYU School of Medicine) for providing insights
 and references regarding the differences of conditional and marginal models for clustered
 data.
-\new{A anonimous referee \ldots}
+\new{A anonymous referee \ldots}
 
 \bibliography{hac}
 
