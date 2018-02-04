@@ -17,6 +17,27 @@
 
 \section*{Associate Editor}
 
+\textbf{\textit{Both reviewers find the paper acceptable for publication in the JSS, but
+have suggestions for revisions.}}
+
+\medskip
+
+We thank both reviewers for their positive comments about the manuscript. Both made important contributions to further improve the manuscript.
+ 
+\medskip  
+
+\textbf{\textit{In particular, Reviewer A points to some additional references that appear
+to be relevant to the paper, while reviewer B points to some unclear (and
+possibly incorrect) equations and passages in the paper.}}
+
+\medskip
+
+Indeed, the mentioned additional references are relevant to the paper. The seminal paper by Liang and Zeger (1986) now attracts more attention in the historical overview. 
+A discussion of the very recent paper by Abadie et al. (2017), which we were not aware of, is now also included. 
+Proposals regarding unclear and incorrect equation and passages, especially in Sections~3.3 and 4.4, have been undertaken a thorough revision. 
+
+\medskip 
+
 \textbf{\textit{With respect to the reviewers' comments, Reviewer A states near the end of
 the review that, ``I think the authors should make readers aware of
 bootstrap-type alternatives to the analytical cluster-robust covariance
@@ -67,7 +88,11 @@ and has further improved manuscript and software.
 
 \textbf{\textit{I found the simulations reported in section 6 slightly inappropriate to the
 main purpose of the paper, which is to describe the implementation in the
-sandwich package of coefficient-covariance estimators for clustered data.}}
+sandwich package of coefficient-covariance estimators for clustered data. 
+The simulations are a contribution to the more general statistical
+literature on sandwich estimators and are probably more naturally published
+independently.  That said, I don't strongly object to the inclusion of this
+section in the paper.}}
 
 \medskip
 
@@ -95,20 +120,30 @@ Thank you for spotting these: fixed now.
 \section*{Referee 1}
 
 \textbf{\textit{Comparison with Stata (as requested by the editor):
-\\ \\ 
-The comparison with Stata naturally separates into two parts: ``Official Stata'', i.e., the code provided by StataCorp when purchasing the software, and ``the Stata Community'', i.e., code provided by the user community at large and (mostly) residing at SSC Archives.}}
+\\ \\
+The comparison with Stata naturally separates into two parts: ``Official Stata'', i.e., the code provided by StataCorp when purchasing the software, and ``the Stata Community'', i.e., code provided by the user community at large and (mostly) residing at SSC Archives.
+\\ \\
+Official Stata has supported basic ``cluster-robust'' covariance estimation for many of its estimators for many years (since the 90s, I think).  It also supports ``panel corrected SE'' (Beck and Katz 1995) for some panel data estimators.  Cluster-robust support in Official Stata is extensive in terms of estimators, but basic in terms of various options available.  Only one-way clustering is supported, and the range of alternative finite-sample adjustments that is available in Stata for standard robust covariance estimation is not also available for cluster-robust covariance estimation.  Driscoll-Kraay and panel Newey-West time covariance estimation is not supported in Official Stata.
+\\ \\
+Official Stata also supports a cluster-robust-type solution to covariance estimation for multiple-equation estimation via its ``suest'' command.
+\\ \\
+Probably the Stata Community package closest to what is documented in this paper is avar (``Asymptotic covariance estimation for iid and non-iid data robust to heteroskedasticity, autocorrelation, 1- and 2-way clustering, common cross-panel autocorrelated disturbances, etc.'') by Baum and Schaffer (2013).  The main differences between avar and the package documented in the paper: (1) avar provides only the ``filling'' (``meat'') matrix; it is up to the user/programmer to assemble the sandwich; (2) VVV supports various options and estimators not provided by avar: Beck \& Katz panel-corrected SEs; a range of finite-sample adjustments to the cluster-robust covariance estimator; 3-way and higher clustering; (3) avar supports multiple-equation estimation as well as Kiefer's (1980) covariance estimator for panel data (Journal of Econometrics, 14:2).}}
 
 \medskip
-
-\emph{include (almost?) full comment from reviewer}
 
 \emph{somewhat more verbose reply}
 
-The manuscript now contains a new Section~2.3 with a discussion of clustered covariances in Stata.
+Thank you for the detailed explanation of the different types of clustered covariances in official as well as in user-written Stata.
+With regard to the reproduceability of results in different software packages, the comparison with Stata is very valueable and definitely deserves some attention.
+Hence, the manuscript now contains a new Section~2.3 with a discussion of various types of clustered covariances in Stata, strongly aligned to the thorough discussion of the reviewer.
 
 \medskip
 
-\textbf{\textit{Suggestions relating to the writeup:
+\textbf{\textit{Suggestions for the authors:
+\\ \\
+My suggestions come in two parts: (1) suggestions relating to the writeup; (2) suggestions relating to the software.
+\\ \\
+Suggestions relating to the writeup:
 \\ \\
 The writeup is fine as it is, but I think readers and users would benefit a lot from expanding the discussion to cover the limitations of, alternatives to, and history of the cluster-robust covariance estimation.
 }}
@@ -124,8 +159,7 @@ the discussion now gives more emphasis to the limitations of the methods.
 
 \medskip
 
-\textbf{\textit{
-A very recent paper by Abadie-Athey-Imbens-Wooldridge (October 2017), ``When Should You Adjust Standard Errors for Clustering?'', https://arxiv.org/abs/1710.02926, is very helpful in this respect.  The paper results are too lengthy to summarize here; I will say only that the main point that is relevant for the VVV paper is that the assumption of parameter homogeneity (identical treatment effects across units) is central for many of the standard results for the cluster-robust covariance estimator.  I think the VVV authors should have a look and briefly summarize what they think are the main lessons for the potential users of their package.
+\textbf{\textit{A very recent paper by Abadie-Athey-Imbens-Wooldridge (October 2017), ``When Should You Adjust Standard Errors for Clustering?'', https://arxiv.org/abs/1710.02926, is very helpful in this respect.  The paper results are too lengthy to summarize here; I will say only that the main point that is relevant for the VVV paper is that the assumption of parameter homogeneity (identical treatment effects across units) is central for many of the standard results for the cluster-robust covariance estimator.  I think the VVV authors should have a look and briefly summarize what they think are the main lessons for the potential users of their package.
 }}
 
 \medskip
@@ -136,8 +170,7 @@ The Abadie et al. (2017) paper is now mentioned in the manuscript in the introdu
 
 \medskip
 
-\textbf{\textit{
-Also worth noting is the history of the cluster-robust estimator: AAIH refer to it as the Liang-Zeger (1986 Biometrika) covariance estimator.  This is probably worth doing in the VVV paper as well, unless the authors have an earlier source for this estimator.
+\textbf{\textit{Also worth noting is the history of the cluster-robust estimator: AAIH refer to it as the Liang-Zeger (1986 Biometrika) covariance estimator.  This is probably worth doing in the VVV paper as well, unless the authors have an earlier source for this estimator.
 }}
 
 \medskip
@@ -153,8 +186,7 @@ expect that the parameters are estimated by GEEs.
 
 \medskip
 
-\textbf{\textit{
-On page 6 the authors state that "the number of clusters G must approach infinity", but strictly speaking this is not the case: there are papers that have explored the behavior of the cluster-robust covariance estimator as the number of observations goes to infinity but holding constant the number of clusters ("infilling asymptotics").  A good paper here is Bester-Conley-Hansen (2011), "Inference with Dependent Data Using Cluster Covariance Estimators", 165:2.
+\textbf{\textit{On page 6 the authors state that ``the number of clusters G must approach infinity'', but strictly speaking this is not the case: there are papers that have explored the behavior of the cluster-robust covariance estimator as the number of observations goes to infinity but holding constant the number of clusters (``infilling asymptotics'').  A good paper here is Bester-Conley-Hansen (2011), ``Inference with Dependent Data Using Cluster Covariance Estimators'', 165:2.
 }}
 
 \medskip
@@ -167,9 +199,7 @@ Changed to ``the number of clusters G must be large enough''.
 
 \medskip
 
-Cluster bootstrap covariances as an alternative to clustered covariances are now implemented in a new function vcovBS() in the sandwich package. Details are covered in subsection (4.4) in the manuscript.
-
-\emph{``yes thanks'' and refer to reply to AE}
+Thank you for making this point. For a detailed answer we kindly refer to the reply for the Associate Editor. 
 
 \medskip
 
@@ -193,7 +223,7 @@ by an expression that readers can easily understand
 
 Term $\psi(y, x, \theta)$ is meant to be the first derivative of an objective function $\Psi(y, x, \theta)$ (typically the log-likelihood), with respect to a parameter vector $\theta$. As mentioned correctly by the referee, $\psi'(y, x, \theta)$ is the second derivative of the objective function $\Psi(y, x, \theta)$ with respect to $\theta$.
 
-I replaced term $\psi'(y, x, \theta)$ by $\frac{\partial \psi(y, x, \theta)}{\partial\theta}$ in Equation (2) as well as in Equation (6).
+The term $\psi'(y, x, \theta)$ has been replaced by $\frac{\partial \psi(y, x, \theta)}{\partial\theta}$ in Equation~2 as well as in Equation~6.
 
 \medskip
 
@@ -203,7 +233,7 @@ so that they become ``$\psi(y_i, x_i, \hat\theta)^\top$''.}}
 
 \medskip
 
-Fixed in Equation (5) as well as in Equation (11).
+According to the proposal, transformation signs have been added in Equation~5 as well as in Equation~11. 
 
 \medskip
 
@@ -216,7 +246,7 @@ sum over all observations). I guess that the correct equation is something like:
 
 \medskip
 
-Fixed.
+Of course you are right, the equation has been corrected. 
 
 \medskip
 
@@ -225,7 +255,8 @@ recommend that the authors define this matrix in the manuscript.}}
 
 \medskip
 
-The definition for the hat matrix $H$ has been included in the manuscript for the linear model.
+Thank you for pointing this out. The definition of the hat matrix $H$ has been included in the manuscript for the linear model.
+A generalization of the hat matrix is also available for generalized linear models, though we refrained to propose a thorough definition.
 
 \medskip
 
@@ -274,7 +305,7 @@ this section so that it is less confusing and easier to understand.}}
 
 \medskip
 
- Points 6. to 9.: To reflect that the data are now panel data with a natural time ordering within each entity $g$ labelled \emph{groups} (without a natural ordering, as for example individuals, countries, firms, \ldots) according to Millo (2014), we change our notation
+ Points 6.~to 9.: To reflect that the data are now panel data with a natural time ordering within each entity $g$ labelled \emph{groups} (without a natural ordering, as for example individuals, countries, firms, \ldots) according to Millo (2014), we change our notation
 to an index $(g, t)$ for $g = 1, \dots, G$ observations sampled at $t = 1, \ldots, n_g$ points in \emph{time} (with $n = n_1 + \dots + n_G$).
 
 However, expressions like \emph{groups} and \emph{time} are convenience term and are used for concreteness to make the concepts more easily comprehensible. Clustered covariances for paned data account for the average within-cluster covariance, where a cluster is any set of observations with can be identified by a variable to ``cluster on''. 
@@ -287,7 +318,7 @@ Regarding the notation, an index $t$ is introduced to make the time dimension mo
 
 \medskip
 
-Fixed.
+The paranthesis has been removed.
 
 \medskip
 
@@ -297,7 +328,7 @@ and (30). This needs either to be corrected or -- if it is correct -- more clear
 
 \medskip
 
-Fixed.
+Thank you for pointing that out. The error has been corrected.
 
 \medskip
 
@@ -309,7 +340,7 @@ grey asterisk).}}
 
 \medskip
 
-Changed the colors as well as symbols in Figures (1), (2), and (3) according to the recommendation.
+We have changed the colors as well as symbols in Figures~1 to 3 according to the reviewers recommendation and hope to provide a better differentiability of the curves.
 
 \medskip
 
@@ -319,7 +350,7 @@ This needs to be correct or explained.}}
 
 \medskip
 
-The cluster correlation for the regressors is controlled by parameter $\rho_x$. Note that the previously introduced cluster correlation for the response distributions is determined by yet another parameter $\rho$.
+The cluster correlation of the regressors is controlled by parameter $\rho_x$. Note that the previously introduced cluster correlation of the response distribution is determined by yet another parameter $\rho$. Both $\rho$ and $\rho_x$ can affect the coverage of the methods investigated. In the simulations, $\rho_x$ is fixed to 0.25, such that the corresponding regressor $x1$ is correlated, and in between the effects of the clustered regressor $x2$ with $\rho_x = 1$, and the uncorrelated regressor $x3$, where $\rho_x = 0$.
 
 \medskip
 
