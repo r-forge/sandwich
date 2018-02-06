@@ -167,7 +167,7 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
     }
 
     ## aggregate within cluster levels      
-    efi <- if(g[i] < n) apply(efi, 2L, tapply, cluster[[i]], sum) else efi
+    efi <- if(g[i] < n) apply(efi, 2L, rowsum, cluster[[i]]) else efi
 
     ## aggregate across cluster variables
     rval <- rval + sign[i] * adj * crossprod(efi)/n
