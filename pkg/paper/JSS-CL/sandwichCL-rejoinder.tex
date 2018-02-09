@@ -135,7 +135,7 @@ Probably the Stata Community package closest to what is documented in this paper
 
 Thank you for the detailed explanation of the different types of clustered covariances in official as well as in user-written Stata.
 With regard to the reproduceability of results in different software packages, the comparison with Stata is very valueable and definitely deserves some attention.
-Hence, the manuscript now contains a new Section~2.3 with a discussion of various types of clustered covariances in Stata, strongly aligned to the thorough discussion of the reviewer.
+Hence, the manuscript now contains a new Section~2.5 with a discussion of various types of clustered covariances in Stata, strongly aligned to the thorough discussion of the reviewer.
 
 \medskip
 
@@ -150,10 +150,11 @@ The writeup is fine as it is, but I think readers and users would benefit a lot 
 
 \medskip
 
-Section~3.2 now starts with a short review of the literature including the suggested references.
+We agree that the properties of clustered covariances with respect to its limitations should be discussed in the manuscript, as well as the development of clustered covariances in history.
+A new Section~2.2 covers the history and properties of clustered covariances, giving emphasis to the limitations of the methods.
+
 As already pointed out in the response to the Associate Editor, Section~4.4 has been added to
-briefly discuss bootstrap covariances as an alternative to the sandwich estimators. Finally,
-the discussion now gives more emphasis to the limitations of the methods.
+briefly discuss bootstrap covariances as an alternative to sandwich estimators. 
 
 \emph{limitations: still todo}
 
@@ -164,7 +165,14 @@ the discussion now gives more emphasis to the limitations of the methods.
 
 \medskip
 
-The Abadie et al. (2017) paper is now mentioned in the manuscript in the introduction and the simulation section.
+Thank you for pointing out to the Abadie et al. (2017) paper, we were not aware of it.
+A brief summary of some most important points of Abadie et al. (2017) is incorporated in the manuscript in Section~2.2, pointing to the question when one should adjust standard errors for clustering.
+Potential users should be aware that clustered covariances are conservative unless there is parameter homogeneity, only few clusters are observed from a large population of clusters, or a fading fraction of observations per cluster is sampled.
+Additionally, users should be aware that cluster adjustments should not simply be
+undertakten in each case it makes a difference to the basic sandwich estimator, but should instead be based on how units in the sample were selected or if the assignment to various treatments is clustered. Abadie et al.
+(2017) state that if the sampling process or the assignment mechanisn exhibits a systematic
+variation with clusters in the sample, ``clustering will in general be justified''.
+
 
 \emph{be somewhat more explicit about the details}
 
@@ -308,7 +316,7 @@ this section so that it is less confusing and easier to understand.}}
  Points 6.~to 9.: To reflect that the data are now panel data with a natural time ordering within each entity $g$ labelled \emph{groups} (without a natural ordering, as for example individuals, countries, firms, \ldots) according to Millo (2014), we change our notation
 to an index $(g, t)$ for $g = 1, \dots, G$ observations sampled at $t = 1, \ldots, n_g$ points in \emph{time} (with $n = n_1 + \dots + n_G$).
 
-However, expressions like \emph{groups} and \emph{time} are convenience term and are used for concreteness to make the concepts more easily comprehensible. Clustered covariances for paned data account for the average within-cluster covariance, where a cluster is any set of observations with can be identified by a variable to ``cluster on''. 
+However, expressions like \emph{groups} and \emph{time} are convenience terms and are used for concreteness to make the concepts more easily comprehensible. Clustered covariances for paned data account for the average within-cluster covariance, where a cluster is any set of observations with can be identified by a variable to ``cluster on''. 
 
 Regarding the notation, an index $t$ is introduced to make the time dimension more visible.
 
@@ -359,5 +367,11 @@ prior knowledge about ``sandwich'' methods and clustering in general. I highly r
 that the authors revise and extend their explanations so that the manuscript can be more
 easily understood by practitioners who want to apply the methods that are described in
 the manuscript and are implemented in the sandwich package.}}
+
+\medskip
+
+We hope that the revision of the manuscript makes it more understandable to the reader.
+With respect to the notation, a time index $t$ is introduced in Section~3.2, pointing closer to the time dimension of clustered covariances for panel data.  
+As already mentioned, we also tried to highlight that expressions like \emph{groups} and \emph{time} are convenience terms that are used to make the concepts more easily comprehensible, and that a group in the panel data context is any set of observations with can be identified by a variable to ``cluster on''. 
 
 \end{document}
