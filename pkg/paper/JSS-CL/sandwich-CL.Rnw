@@ -115,7 +115,6 @@ overstated precision of the parameter estimates and inflated type~I errors
 in the corresponding tests \citep{hac:Moulton:1986, hac:Moulton:1990}.
 Therefore, clustered covariances are widely used to account for clustered
 correlations in the data.
-\new{According to \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017}, clustered covariances are conservative in case of heterogeneity in treatment effects and if the number of clusters (as well as the number of observations within each cluster) observed is large enough.}
 
 Such clustering effects can emerge both in cross-section and in panel (or
 longitudinal) data. Typical examples for clustered cross-section data include
@@ -123,7 +122,6 @@ firms within the same industry or students within the same school or class.
 In panel data, a common source of clustering is that observations for the
 same individual at different time points are correlated while the individuals
 may be independent \citep{hac:Cameron+Miller:2015}.
-\new{In case of a fixed effects regression (with cluster level fixed effects) clustered covariances are necessary only when treatment heterogeneity is present \citep{hac:Abadie+Athey+Imbens+Wooldridge:2017}.}
 
 This paper contributes to the literature particularly in two respects:
 %
@@ -159,9 +157,15 @@ from \cite{hac:Petersen:2009} and \cite{hac:Aghion+VanReenen+Zingales:2013}.
 The simulation setup and results are discussed in Section~\ref{sec:simulation}.
 
 \section{Overview} \label{sec:overview}
-
-There is a range of popular strategies for dealing with clustered dependencies
-in regression models. In the statistics literature, random effects (especially
+\new{
+In the statistics as well as in the econometrics literature is a range of popular strategies available for dealing with clustered dependencies in regression models.
+In the following, clustered covariances methods, their historical background as well as a review of existing \proglang{R} and \proglang{Stata} software is discussed.
+}
+\new{
+\subsection{Clustered covariances methods}
+}
+\new{
+In the statistics literature, random effects (especially
 random intercepts) are often introduced to capture unobserved cluster
 correlations (e.g., using the \pkg{lme4} package in \proglang{R},
 \citealp{hac:Bates+Machler+Bolker:2015}).
@@ -180,7 +184,9 @@ the parameter estimator unchanged -- then also known as quasi-maximum likelihood
 (QML) estimator or, in GEE jargon, as independence working model -- but adjusts
 the covariance matrix by using a sandwich estimator, especially in Wald tests
 and corresponding confidence intervals.
+}
 
+\new{
 Important special cases of this QML approach combined with sandwich covariances
 include: (1) independent but heteroscedastic observations necessitating
 heteroscedasticity-consistent (HC) covariances
@@ -189,11 +195,31 @@ observations requiring heteroscedasticity- and autocorrelation-consistent
 (HAC) covariances \citep[such as][]{hac:Newey+West:1987,hac:Andrews:1991},
 (3) and clustered sandwich covariances for clustered or panel data
 \citep[see e.g.,][]{hac:Cameron+Miller:2015}.
+}
+\new{
+\subsection{History and properties of clustered covariances}
+}
+
+\new{
+In the statistics literature, the basic sandwich estimator has been introduced first for cross-section data with independent but heteroscedastic observations by \cite{hac:Eicker:1963}, \cite{hac:Huber:1967}, and \cite{hac:White:1980}.
+Early references for sandwich estimators accounting for correlated but homoscedastic observations are \cite{hac:Kloek:1981} and \cite{hac:Moulton:1990}, assuming a correlation structure equivalent to exchangeable working correlation introduced by \cite{hac:Liang+Zeger:1986} in the more general framework of generalized estimating equations.
+\cite{hac:Kiefer:1980} has implemented yet another clustered covariance estimator for panel data, which is robust to clustering but assumes homoscedasticity \citep[see also][]{hac:Baum+Nichols+Schaffer:2011}.
+}
+
+\new{
+A further generalization allowing for cluster correlations and heteroscedasticity is provided by the independence working model \citep{hac:Liang+Zeger:1986}, naturally leading to clustered covariances.
+In econometrics, \cite{hac:Arellano:1987} was the first who proposed clustered covariances to fixed effects estimator in panel models \citep{hac:Cameron+Miller:2015}.
+}
+
+\new{
+A very recent paper by \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} points to the question when one should adjust standard errors for clustering. The authors state that cluster adjustments are conservative unless there is no disperson of sample estimates across units (parameter homogeneity), only few clusters are observed from a large population of clusters, or a fading fraction of observations per cluster is sampled. 
+For a cluster fixed effects regression, parameter heterogeneity is required for the cluster adjustments to be indispensable \citep{hac:Abadie+Athey+Imbens+Wooldridge:2017}.
+Furthermore, it is recommended that cluster adjustments should not simply be undertakten in each case it makes a difference, but should instead be based on how units in the sample were selected or if the assignment to various treatments is clustered. \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} state that if the sampling process or the assignment mechanisn exhibits a systematic variation with clusters in the sample, ``clustering will in general be justified''.
+}
 
 Various kinds of sandwich covariances have already been implemented in several
 \proglang{R} packages, with the linear regression case receiving most attention.
 But some packages also cover more general models.
-
 
 \subsection[R packages for sandwich covariances]{\proglang{R} packages for sandwich covariances}
 
@@ -254,13 +280,13 @@ object-oriented implementation was established and integrated in \pkg{sandwich},
 allowing application to more general models, including zero-inflated, censored,
 or limited responses. 
 
-\subsection{Clustered covariances in Stata}
+\subsection[Stata software for clustered covariances]{\proglang{Stata} software for clustered covariances}
 
 \new{
-Official Stata as well as the Stata community provide implementations for several types of clustered covariances.
-One-way clustered covariances are available in Official Stata for a wide range of estimators (``ivreg2'', ``xtreg'', ``reg'', among others) by adding the ``cluster'' option, and additionally supports cluster correction via the ``suest'' command for a system of equations. In the presence of nested multi-level clustering, the ``syv'' suite of commands can be employed \citep{hac:Nichols+Schaffer:2007}. Panel-corrected standard errors are supported by ``xtpcse''. 
-The Stata Community package ``avar'' \citep{hac:Nichols+Schaffer:2014} allows to construct the meat matrix of various flavors of sandwich covariance estimators, including among others HAC, one- and two-way clustering, Driscoll and Kraay covariances as well as Kiefer covariances \citep{hac:Kiefer:1980}.
-The Stata add-on ``xtscc'' provides a further implementation of Driscoll and Kraay covariances \citep{hac:Hoechle:2007}.}
+Official \proglang{Stata} as well as the \proglang{Stata} community provide implementations for several types of clustered covariances.
+One-way clustered covariances are available in Official \proglang{Stata} for a wide range of estimators (\code{ivreg2}, \code{xtreg}, \code{reg}, among others) by adding the \code{cluster} option, and additionally supports cluster correction via the \code{suest} command for a system of equations. In the presence of nested multi-level clustering, the \code{syv} suite of commands can be employed \citep{hac:Nichols+Schaffer:2007}. Panel-corrected standard errors are supported by \code{xtpcse}. 
+The \proglang{Stata} Community package \pkg{avar} \citep{hac:Nichols+Schaffer:2014} allows to construct the meat matrix of various flavors of sandwich covariance estimators, including among others HAC, one- and two-way clustering, Driscoll and Kraay covariances as well as Kiefer covariances \citep{hac:Kiefer:1980}.
+The \proglang{Stata} add-on \pkg{xtscc} provides a further implementation of Driscoll and Kraay covariances \citep{hac:Hoechle:2007}.}
 
 \section{Methods} \label{sec:methods}
 
@@ -336,11 +362,6 @@ method is needed in \code{meatHC()} for the decomposition of the scores into
 empirical working residuals and regressor matrix.
 
 \subsection{Clustered covariances}
-
-\new{In the statistics literature, the basic sandwich estimator \citep{hac:Eicker:1963,hac:Huber:1967,hac:White:1980} has been extended for clustered units by \cite{hac:Kloek:1981} and \cite{hac:Moulton:1990}, using a correlation structure equivalent to the exchangeable correlation in the GEE framework as introduced by \cite{hac:Liang+Zeger:1986}.
-\cite{hac:Kiefer:1980} has implemented yet another clustered covariance estimator, which is robust to clustering but assumes homoscedasticity \citep[see also][]{hac:Baum+Nichols+Schaffer:2011}.
-The structure of equal correlation whithin clusters imposed by exchangeable correlation has been generalized further within the GEE framework, employing an independence working model \citep{hac:Liang+Zeger:1986}.
-In econometrics, \cite{hac:Arellano:1987} was the first who proposed clustered covariances to fixed effects estimator in panel models \citep{hac:Cameron+Miller:2015}.}
 
 For clustered observations, similar ideas as above can be employed but the data
 has more structure that needs to be incorporated into the meat estimators.
