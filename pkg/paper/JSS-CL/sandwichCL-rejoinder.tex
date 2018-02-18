@@ -131,8 +131,6 @@ Probably the Stata Community package closest to what is documented in this paper
 
 \medskip
 
-\emph{somewhat more verbose reply}
-
 Thank you for the detailed explanation of the different types of clustered covariances in official as well as in user-written Stata.
 With regard to the reproduceability of results in different software packages, the comparison with Stata is very valueable and definitely deserves some attention.
 Hence, the manuscript now contains a new Section~2.5 with a discussion of various types of clustered covariances in Stata, strongly aligned to the thorough discussion of the reviewer.
@@ -156,8 +154,6 @@ A new Section~2.2 covers the history and properties of clustered covariances, gi
 As already pointed out in the response to the Associate Editor, Section~4.4 has been added to
 briefly discuss bootstrap covariances as an alternative to sandwich estimators. 
 
-\emph{limitations: still todo}
-
 \medskip
 
 \textbf{\textit{A very recent paper by Abadie-Athey-Imbens-Wooldridge (October 2017), ``When Should You Adjust Standard Errors for Clustering?'', https://arxiv.org/abs/1710.02926, is very helpful in this respect.  The paper results are too lengthy to summarize here; I will say only that the main point that is relevant for the VVV paper is that the assumption of parameter homogeneity (identical treatment effects across units) is central for many of the standard results for the cluster-robust covariance estimator.  I think the VVV authors should have a look and briefly summarize what they think are the main lessons for the potential users of their package.
@@ -172,9 +168,6 @@ Additionally, users should be aware that cluster adjustments should not simply b
 undertakten in each case it makes a difference to the basic sandwich estimator, but should instead be based on how units in the sample were selected or if the assignment to various treatments is clustered. Abadie et al.
 (2017) state that if the sampling process or the assignment mechanisn exhibits a systematic
 variation with clusters in the sample, ``clustering will in general be justified''.
-
-
-\emph{be somewhat more explicit about the details}
 
 \medskip
 
@@ -199,7 +192,8 @@ expect that the parameters are estimated by GEEs.
 
 \medskip
 
-Changed to ``the number of clusters G must be large enough''.
+Thanks for the note, we agree that the formulation requires some additional details.
+Hence we have added a footnote pointing to the Bester et al. (2011) paper, pointing out that asymptotic results can also be achieved with a fixed number of clusters, while the number of observations within cluster goes to infinity.
 
 \medskip
 
