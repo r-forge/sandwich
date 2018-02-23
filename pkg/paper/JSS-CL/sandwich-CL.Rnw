@@ -400,15 +400,20 @@ computing meat estimators. Thus, the core idea of many clustered covariances is
 to replace Equation~\ref{eq:estfun} with the following equation and then
 proceeding ``as usual'' in the computation of meat estimators afterwards:
 \begin{eqnarray} \label{eq:estfun-cl}
-\left( \begin{array}{c} \new{\psi(y_{11}, x_{11}, \hat \theta)^\top + \dots + \psi(y_{n_1 1}, x_{n_1 1}, \hat \theta)^\top}\\
+\left( \begin{array}{c} \new{\displaystyle \sum_{i = 1}^{n_{1}}\psi(y_{i,1}, x_{i,1}, \hat \theta)^\top}\\
            \vdots \\
-	  \new{\psi(y_{1G}, x_{1G}, \hat \theta)^\top + \dots + \psi(y_{n_G G}, x_{n_G G}, \hat \theta)^\top}
+	  \new{\displaystyle \sum_{i = 1}^{n_{G}}\psi(y_{i,G}, x_{i,G}, \hat \theta)^\top}
+           \end{array} \right)
+=
+\left( \begin{array}{c} \new{\displaystyle \vphantom{\sum_{i = 1}^{n_{1}}} \psi(y_{1,1}, x_{1,1}, \hat \theta)^\top + \dots + \psi(y_{n_1, 1}, x_{n_1, 1}, \hat \theta)^\top}\\
+           \vdots \\
+	  \new{\displaystyle \vphantom{\sum_{i = 1}^{n_{G}}} \psi(y_{1,G}, x_{1,G}, \hat \theta)^\top + \dots + \psi(y_{n_G, G}, x_{n_G, G}, \hat \theta)^\top}
            \end{array} \right).
 \end{eqnarray}  
-The basic meat estimator based on the outer product then becomes:
+The basic meat estimator based on the outer product from Equation~\ref{eq:meat-op} then becomes:
 \new{
 \begin{equation} \label{eq:meatCL}
-  \hat M_\mathrm{CL} \quad = \quad \frac{1}{n} \sum_{g = 1}^G \bigg( \sum_{i = 1}^{n_{g}}\psi(y_{ig}, x_{ig}, \hat \theta) \bigg)\bigg( \sum_{i = 1}^{n_{g}} \psi(y_{ig}, x_{ig}, \hat \theta) \bigg)^\top.
+  \hat M_\mathrm{CL} ~=~ \frac{1}{n} \sum_{g = 1}^G \bigg( \sum_{i = 1}^{n_{g}}\psi(y_{i,g}, x_{i,g}, \hat \theta) \bigg)\bigg( \sum_{i = 1}^{n_{g}} \psi(y_{i,g}, x_{i,g}, \hat \theta) \bigg)^\top.
 \end{equation}
 }
 In the case where observation is its own cluster, the clustered $\hat M_\mathrm{CL}$
