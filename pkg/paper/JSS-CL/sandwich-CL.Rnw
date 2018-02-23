@@ -398,7 +398,7 @@ multi-way instead of one-way clustering.
 
 The clustered covariance estimator controls for both heteroscedasticity across
 as well as within clusters, but this comes at the cost that the number of
-clusters $G$ must approach infinity\new{\footnote{\new{Asymptotic results can also be achieved in situations when the number of clusters is fixed, while the number of observations within a cluster approaches infinity \citep{hac:Bester+Conley+Hansen:2011}. In such situations, valid inference can be conducted by adapting the t statistic by $\sqrt{G/(G-1)}$.}}}, not just the number of observations $n$
+clusters $G$ must approach infinity\footnote{\new{Asymptotic results can also be achieved with a ``fixed G'' framework -- where the number of clusters is fixed -- as an alternative to the ``large G'' asymptotic, culminating in a non-normal inference theory \citep{hac:Bester+Conley+Hansen:2011,hac:Hansen+Lee:2017}.}}, not just the number of observations $n$
 \citep{hac:Cameron+Gelbach+Miller:2008,hac:Cameron+Miller:2015}. Although many
 publications just refer to ``the'' clustered standard errors, there is a
 surprisingly wide variation in clustered covariances, particularly due to
