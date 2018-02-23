@@ -345,7 +345,7 @@ such that an $n \times k$ matrix is obtained \citep{hac:Zeileis:2006}:
 \left( \begin{array}{c} \new{\psi(y_1, x_1, \hat \theta)^\top} \\ \vdots \\ \new{\psi(y_n, x_n, \hat \theta)^\top}
            \end{array} \right).
 \end{eqnarray}
-The estimate for $\hat B$ is based on second derivatives, i.e., the empirical version of the inverse Hessian
+The estimate $\hat B$ for the bread is based on second derivatives, i.e., the empirical version of the inverse Hessian
 \begin{equation} \label{eq:Bhat}
   \hat B \quad = \quad \left( \frac{1}{n} \sum_{i = 1}^n - \new{\frac{\partial \psi(y, x, \hat \theta)}{\partial \theta}}   \right)^{-1},
 \end{equation}
@@ -408,7 +408,7 @@ proceeding ``as usual'' in the computation of meat estimators afterwards:
 The basic meat estimator based on the outer product then becomes:
 \new{
 \begin{equation} \label{eq:meatCL}
-  \hat M_\mathrm{CL} \quad = \quad \frac{1}{n} \sum_{g = 1}^G \bigg( \sum_{i = 1}^{n_{g}}\psi(y_{ig}, x_{ig}, \hat \theta) \bigg)\bigg( \sum_{i = 1}^{n_{g}} \psi(y_{ig}, x_{ig}, \hat \theta \bigg)^\top.
+  \hat M_\mathrm{CL} \quad = \quad \frac{1}{n} \sum_{g = 1}^G \bigg( \sum_{i = 1}^{n_{g}}\psi(y_{ig}, x_{ig}, \hat \theta) \bigg)\bigg( \sum_{i = 1}^{n_{g}} \psi(y_{ig}, x_{ig}, \hat \theta) \bigg)^\top.
 \end{equation}
 }
 In the case where observation is its own cluster, the clustered $\hat M_\mathrm{CL}$
