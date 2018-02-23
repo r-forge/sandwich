@@ -287,7 +287,8 @@ Official \proglang{Stata} as well as the \proglang{Stata} community provide impl
 One-way clustered covariances are available in Official \proglang{Stata} for a wide range of estimators (\code{ivreg2}, \code{xtreg}, \code{reg}, among others) by adding the \code{cluster} option.
 Clustered covariances are supported in \proglang{Stata} with the \code{suest} command for seemingly unrelated regression models. In the presence of nested multi-level clustering, the \code{svy} suite of commands can be employed \citep{hac:Nichols+Schaffer:2007}.
 The \proglang{Stata} Community package \pkg{avar} \citep{hac:Nichols+Schaffer:2014} allows to construct the meat matrix of various flavors of sandwich covariance estimators, including among others HAC, one- and two-way clustering, Driscoll and Kraay covariances as well as Kiefer covariances \citep{hac:Kiefer:1980}.
-The \proglang{Stata} add-on \pkg{xtscc} does also provide an implementation of Driscoll and Kraay covariances \citep{hac:Hoechle:2007}, and \pkg{xtpcse} supports linear regression with panel corrected standard errors.}
+The \proglang{Stata} add-on \pkg{xtscc} does also provide an implementation of Driscoll and Kraay covariances \citep{hac:Hoechle:2007}, and \pkg{xtpcse} supports linear regression with panel corrected standard errors.
+As pointed out by a referee, although there is wide variety of clustered covariances available in \proglang{Stata}, the selectable options are rather limited. Most notably, it is not possible to choose among different types of finite sample adjustments.}
 
 \section{Methods} \label{sec:methods}
 
