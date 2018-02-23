@@ -158,11 +158,14 @@ The simulation setup and results are discussed in Section~\ref{sec:simulation}.
 
 \section{Overview} \label{sec:overview}
 \new{
-In the statistics as well as in the econometrics literature is a range of popular strategies available for dealing with clustered dependencies in regression models.
-In the following, clustered covariances methods, their historical background as well as a review of existing \proglang{R} and \proglang{Stata} software is discussed.
+In the statistics as well as in the econometrics literature a variety of
+strategies is popular for dealing with clustered dependencies in regression models.
+Here we give a a brief overview of clustered covariances methods, some background
+information, as well as a discussion of corresponding software implementations
+in \proglang{R} and \proglang{Stata}.
 }
 \new{
-\subsection{Clustered covariances methods}
+\subsection{Clustered dependencies in regression models}
 }
 \new{
 In the statistics literature, random effects (especially
@@ -181,7 +184,7 @@ potentially misspecified, e.g., due to a lack of independence as in the case
 of clustered correlations (see \citealp{hac:White:1994}, for a classic textbook,
 and \citealp{hac:Freedman:2006}, for a criticial review). This approach leaves
 the parameter estimator unchanged -- then also known as quasi-maximum likelihood
-(QML) estimator or, in GEE jargon, as independence working model -- but adjusts
+(QML) estimator or, in GEE jargon, as the independence working model -- but adjusts
 the covariance matrix by using a sandwich estimator, especially in Wald tests
 and corresponding confidence intervals.
 }
@@ -193,22 +196,24 @@ heteroscedasticity-consistent (HC) covariances
 \citep[see e.g.,][]{hac:Long+Ervin:2000}, (2) autocorrelated time series of
 observations requiring heteroscedasticity- and autocorrelation-consistent
 (HAC) covariances \citep[such as][]{hac:Newey+West:1987,hac:Andrews:1991},
-(3) and clustered sandwich covariances for clustered or panel data
+and (3) clustered sandwich covariances for clustered or panel data
 \citep[see e.g.,][]{hac:Cameron+Miller:2015}.
 }
 \new{
-\subsection{History and properties of clustered covariances}
+\subsection{Clustered covariances methods}
 }
 
 \new{
 In the statistics literature, the basic sandwich estimator has been introduced first for cross-section data with independent but heteroscedastic observations by \cite{hac:Eicker:1963}, \cite{hac:Huber:1967}, and \cite{hac:White:1980}.
 Early references for sandwich estimators accounting for correlated but homoscedastic observations are \cite{hac:Kloek:1981} and \cite{hac:Moulton:1990}, assuming a correlation structure equivalent to exchangeable working correlation introduced by \cite{hac:Liang+Zeger:1986} in the more general framework of generalized estimating equations.
 \cite{hac:Kiefer:1980} has implemented yet another clustered covariance estimator for panel data, which is robust to clustering but assumes homoscedasticity \citep[see also][]{hac:Baum+Nichols+Schaffer:2011}.
+A further generalization allowing for cluster correlations and heteroscedasticity is provided by the independence working model in GEE \citep{hac:Liang+Zeger:1986}, naturally leading to clustered covariances.
+In econometrics, \cite{hac:Arellano:1987} was the first who proposed clustered covariances to fixed effects estimator in panel models.
 }
 
 \new{
-A further generalization allowing for cluster correlations and heteroscedasticity is provided by the independence working model \citep{hac:Liang+Zeger:1986}, naturally leading to clustered covariances.
-In econometrics, \cite{hac:Arellano:1987} was the first who proposed clustered covariances to fixed effects estimator in panel models \citep{hac:Cameron+Miller:2015}.
+\fixme{comprehensive literature review, state-of-the-art methods, Cameron and co-authors \citep{hac:Cameron+Miller:2015}
+practitioner's guide}
 }
 
 \new{
@@ -232,7 +237,7 @@ computes a plain sandwich estimate \citep{hac:Eicker:1963,hac:Huber:1967,hac:Whi
 from a fitted model object, defaulting to what is known as HC0 or HC1 in linear
 regresion models. \code{vcovHC()} is a wrapper to \code{sandwich()} combined
 with \code{meatHC()} and \code{bread()} to compute general HC covariances
-ranging from HC0 to HC5. \code{vcovHAC()}, based on \code{sandwich()} with
+ranging from HC0 to HC5 \citep[see][and the references therein]{hac:Zeileis:2004a}. \code{vcovHAC()}, based on \code{sandwich()} with
 \code{meatHAC()} and \code{bread()}, computes HAC covariance matrix estimates.
 Further convenience interfaces \code{kernHAC()} for Andrews' kernel HAC
 \citep{hac:Andrews:1991} and \code{NeweyWest()} for Newey-West-style HAC
@@ -283,12 +288,30 @@ or limited responses.
 \subsection[Stata software for clustered covariances]{\proglang{Stata} software for clustered covariances}
 
 \new{
-Official \proglang{Stata} as well as the \proglang{Stata} community provide implementations for several types of clustered covariances.
-One-way clustered covariances are available in Official \proglang{Stata} for a wide range of estimators (\code{ivreg2}, \code{xtreg}, \code{reg}, among others) by adding the \code{cluster} option.
-Clustered covariances are supported in \proglang{Stata} with the \code{suest} command for seemingly unrelated regression models. In the presence of nested multi-level clustering, the \code{svy} suite of commands can be employed \citep{hac:Nichols+Schaffer:2007}.
-The \proglang{Stata} Community package \pkg{avar} \citep{hac:Nichols+Schaffer:2014} allows to construct the meat matrix of various flavors of sandwich covariance estimators, including among others HAC, one- and two-way clustering, Driscoll and Kraay covariances as well as Kiefer covariances \citep{hac:Kiefer:1980}.
-The \proglang{Stata} add-on \pkg{xtscc} does also provide an implementation of Driscoll and Kraay covariances \citep{hac:Hoechle:2007}, and \pkg{xtpcse} supports linear regression with panel corrected standard errors.
-As pointed out by a referee, although there is wide variety of clustered covariances available in \proglang{Stata}, the selectable options are rather limited. Most notably, it is not possible to choose among different types of finite sample adjustments.}
+Base \proglang{Stata} as well as contributed extension modules provide
+implementations for several types of clustered covariances. One-way clustered
+covariances are available in base \proglang{Stata} for a wide range of
+estimators (e.g., \code{reg}, \code{ivreg2}, \code{xtreg}, among others) by
+adding the \code{cluster} option. Furthermore, \code{suest} provides
+clustered covariances for seemingly unrelated regression models,
+\code{xtpcse} supports linear regression with panel-corrected standard errors,
+and the \code{svy} suite of commands can be employed in the presence of nested
+multi-level clustering \citep{hac:Nichols+Schaffer:2007}.
+}
+
+\new{
+The contributed \proglang{Stata} module \pkg{avar}
+\citep{hac:Nichols+Schaffer:2014} allows to construct the ``meat'' matrix of various
+sandwich covariance estimators, including HAC, one- and two-way
+clustered, and panel covariances ({\`a} la \citealp{hac:Kiefer:1980} or
+\citealp{hac:Driscoll+Kraay:1998}). An alternative implementation for the
+latter is available in the contributed \proglang{Stata} module \pkg{xtscc}
+\citep{hac:Hoechle:2007}. While there is wide variety of clustered covariances
+for many regression models in \proglang{Stata}, it is not always possible
+to fine-tune the flavor of covariance, e.g., with respect to the finite
+sample adjustment \citep[a common source of confusion and differences across
+implementations, see e.g.,][]{hac:StackOverflow:2014}.
+}
 
 \section{Methods} \label{sec:methods}
 
@@ -398,10 +421,16 @@ multi-way instead of one-way clustering.
 \subsubsection{Types of bias correction}
 
 The clustered covariance estimator controls for both heteroscedasticity across
-as well as within clusters, but this comes at the cost that the number of
-clusters $G$ must approach infinity\footnote{\new{Asymptotic results can also be achieved with a ``fixed G'' framework -- where the number of clusters is fixed -- as an alternative to the ``large G'' asymptotic, culminating in a non-normal inference theory \citep{hac:Bester+Conley+Hansen:2011,hac:Hansen+Lee:2017}.}}, not just the number of observations $n$
-\citep{hac:Cameron+Gelbach+Miller:2008,hac:Cameron+Miller:2015}. Although many
-publications just refer to ``the'' clustered standard errors, there is a
+as well as within clusters, \new{assuming that in addition to the number of
+observations $n$ the number of clusters $G$ also approaches infinity}\footnote{
+\new{An alternative and less frequently-used asymptotic framework to this popular
+``large $G$'' approach is a ``fixed $G$'' setup, where the number of clusters is
+assumed to be fixed \citep[see][]{hac:Bester+Conley+Hansen:2011,hac:Hansen+Lee:2017}.
+However, this also requires non-normal inference and hence cannot be combined with
+standard tests in the same modular way as implemented in \pkg{sandwich}. Thus, it
+is not pursued further here.}}
+\citep{hac:Cameron+Gelbach+Miller:2008,hac:Cameron+Miller:2015}.
+Although many publications just refer to ``the'' clustered standard errors, there is a
 surprisingly wide variation in clustered covariances, particularly due to
 different flavors of bias corrections. The bias correction factor can be split
 in two parts, a ``cluster bias correction'' and an ``HC bias correction''. The
