@@ -132,7 +132,7 @@ Probably the Stata Community package closest to what is documented in this paper
 \medskip
 
 Thank you for the detailed explanation of the different types of clustered covariances in official as well as in user-written Stata.
-With regard to the reproduceability of results in different software packages, the comparison with Stata is very valueable and definitely deserves some attention.
+With regard to the reproducibility of results in different software packages, the comparison with Stata is very valueable and definitely deserves some attention.
 Hence, the manuscript now contains a new Section~2.5 with a discussion of various types of clustered covariances in Stata, strongly aligned to the thorough discussion of the reviewer.
 
 \medskip
@@ -161,8 +161,8 @@ briefly discuss bootstrap covariances as an alternative to sandwich estimators.
 
 \medskip
 
-Thank you for pointing out to the Abadie et al. (2017) paper, we were not aware of it.
-A brief summary of some most important points of Abadie et al. (2017) is incorporated in the manuscript in Section~2.2, pointing to the question when one should adjust standard errors for clustering.
+Thank you for pointing out to the Abadie et al. (2017) paper. It does include several results that are important for users of clustered covariances. 
+A discussion of some aspects of Abadie et al. (2017) compared to Cameron and Miller (2015) is incorporated in the manuscript in Section~2.2, pointing to the question when one should adjust standard errors for clustering.
 Potential users should be aware that clustered covariances are conservative unless there is parameter homogeneity, only few clusters are observed from a large population of clusters, or a fading fraction of observations per cluster is sampled.
 Additionally, users should be aware that cluster adjustments should not simply be
 undertakten in each case it makes a difference to the basic sandwich estimator, but should instead be based on how units in the sample were selected or if the assignment to various treatments is clustered. Abadie et al.
@@ -192,9 +192,7 @@ expect that the parameters are estimated by GEEs.
 
 \medskip
 
-Thanks for the note, we agree that the formulation requires some additional details.
-Hence we have added a footnote pointing to Bester et al. (2011) and Hansen and Lee (2017), pointing out that asymptotic results can also be achieved with a ``fixed G'' framework -- where the number of clusters is
-fixed -- as an alternative to the ``large G'' asymptotic, culminating in a non-normal inference theory.
+Thanks for the note, we agree that the formulation requires some reformulation and additional comments. Clustered covariance estimators in sandwich are based on the frequently used ``large $G$'' approach. As pointed out by the referee, other approaches are available. The ``fixed-G'' setup can alternatively be employed, but requires non-normal inference and can thus not be combined with standard tests in the same modular way as implemented in sandwich which is the reason why it is not pursued further in the manuscript.
 
 \medskip
 
@@ -269,16 +267,7 @@ order to make it easier understandable.}}
 
 \medskip
 
-The paragraph has been fully reformulated, additionally augmented by an example and is now hopefully easier to understand:
-
-Petersen (2009), Thompson (2011) and Ma (2014)
-suggest to substract the standard sandwich estimator instead of $\hat M_{\mathrm{CL}(id \cap time)}$ in Equation (20) in case there is only a single
-observation in each intersection of $id$ and $time$.
-For example, when clustering by dimensions \emph{id} and \emph{year} in a sample
-of \emph{id-month} observations, each cluster is composed of 12 observations (Ma, 2014). In such a setting, the last substracted matrix of Equation (20) should be the clustered covariance matrix  $\hat M_{\mathrm{CL}(id \cap year)}$
-with clusters formed by the intersection of \emph{id} and \emph{year}.
-As Ma (2014) argues, the standard sandwich estimator does not take into
-account any type of bias adjustment (with an adjustment of $1$), in contrast to clustered covariance estimators (with an adjustment of $\frac{G}{G-1}$), hence the cluster bias correction  $\frac{G}{G-1} > 1$. If there is is only a singe observation in each intersection of $id$ and $time$, $\hat M_{\mathrm{CL}(id \cap time)}$ collapses to a standard sandwich estimator. Then, clustered covariances $\hat M_{\mathrm{CL}(id,time)}$ are underestimated when using $\hat M_{\mathrm{CL}(id \cap time)}$ instead of standard sandwich covariances as the last substracted matrix, because of the larger bias correction $\frac{G}{G-1} > 1$.
+The paragraph has been reformulated and is now hopefully easier to understand. In fact, Equation (20) lacked the needed cluster bias corrections for the meat matrices, which are now added. Perhaps this caused the confusion in this paragraph.
 
 \medskip
 
