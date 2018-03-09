@@ -174,9 +174,13 @@ correlations (e.g., using the \pkg{lme4} package in \proglang{R},
 \citealp{hac:Bates+Machler+Bolker:2015}).
 Alternatively, generalized estimating
 equations (GEE) can account for such correlations by adjusting the model's
-scores in the estimation \new{\citep{hac:Liang+Zeger:1986}}, also leading naturally to a clustered covariance
+scores in the estimation \citep{hac:Liang+Zeger:1986}, also leading naturally to a clustered covariance
 (e.g., available in the \pkg{geepack} package for \proglang{R},
 \citealp{hac:Halekoh+Hojsgaard+Yan:2002}).
+Similar to GEE, generalized least squares (e.g., available in the \pkg{nlme} package, \citealp{hac:Pinheiro+Bates+DebRoy+Sarkar:2017}) and feasible generalized least squares (e.g., available in the \pkg{plm} package, \citealp{hac:Croissant+Millo:2008}) are able to account for cluster correlations, but do affect the parameter estimator. 
+A different approach in the economics panel data literature is the ``pooling model'', where the parameter estimator is not altered.
+}
+
 Another approach, widely used
 in econometrics and the social sciences, is to assume that the model's score
 function was correctly specified but that only the remaining likelihood was
@@ -187,7 +191,6 @@ the parameter estimator unchanged -- then also known as quasi-maximum likelihood
 (QML) estimator or, in GEE jargon, as the independence working model -- but adjusts
 the covariance matrix by using a sandwich estimator, especially in Wald tests
 and corresponding confidence intervals.
-}
 
 \new{
 Important special cases of this QML approach combined with sandwich covariances
@@ -212,17 +215,30 @@ In econometrics, \cite{hac:Arellano:1987} was the first who proposed clustered c
 }
 
 \new{
-A comprehensive literature review can be found for instance in \cite{hac:Cameron+Gelbach+Miller:2011} and \cite{hac:Cameron+Miller:2015}. \cite{hac:Cameron+Miller:2015} established a ``model-based perspective'' on clustering with the key assumption that errors are uncorrelated across, but may be correlated for individuals within the same cluster.
-In a recent paper, \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} provide for a condensed summary of state-of-the-art methods for clustered covariances, and see clustering as either a sampling or an experimental design issue. The authors stress that the model-based view of \cite{hac:Cameron+Miller:2015} makes reasoning in favor of one cluster dimension against another difficult. Additionally, it does not explain why there is typically no cluster adjustment in randomized experiments, and why clustering can even be useful in the presence of fixed effect (for a cluster fixed effects regression, parameter heterogeneity is required for the cluster adjustments to be indispensable) \citep{hac:Abadie+Athey+Imbens+Wooldridge:2017}.
-Furthermore, while \cite{hac:Cameron+Miller:2015} observe a consensus ``to be conservative and avoid bias and to use bigger and more aggregate clusters when possible, up to and including the point at which there is concern about having too few clusters'' \citep[][p.~333]{hac:Cameron+Miller:2015}, \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} take the view that ``there is harm in clustering at too aggregate levels `` \citep[][p.~1]{hac:Abadie+Athey+Imbens+Wooldridge:2017}. According to \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017}, cluster adjustments are conservative unless there is no disperson of sample estimates across units (parameter homogeneity), only few clusters are observed from a large population of clusters, or a fading fraction of observations per cluster is sampled. 
-Furthermore, it is recommended that cluster adjustments should not simply be undertakten in each case it makes a difference, but should instead be based on how units in the sample were selected or if the assignment to various treatments is clustered. \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} state that if the sampling process or the assignment mechanisn exhibits a systematic variation with clusters in the sample, ``clustering will in general be justified''.
+Inference with clustered covariances but also two-way and multi-way clustered covariances for more than one cluster dimension is examined in \cite{hac:Cameron+Gelbach+Miller:2011}. In a wider context, \cite{hac:Cameron+Miller:2015} discuss methods where the method of estimation is altered, instead of just adapting the inference.
+\cite{hac:Cameron+Miller:2015} established a perspective on clustering where observations are correlated within clusters, but are uncorrelated across clusters, assuming that in addition to the number of
+observations $n$ the number of clusters $G$ also approaches infinity.
+An alternative and less frequently-used asymptotic framework to this popular
+``large $G$'' approach is a ``fixed $G$'' setup, where the number of clusters is
+assumed to be fixed \citep[see][]{hac:Bester+Conley+Hansen:2011,hac:Hansen+Lee:2017}.
+However, this also requires non-normal inference and hence cannot be combined with
+standard tests in the same modular way as implemented in \pkg{sandwich}. Thus, it
+is not pursued further here.
 }
+
+\new{
+In a recent paper, \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} provide for a condensed summary of state-of-the-art methods for clustered covariances, focussing on situations in economic experiments where  potentially several cluster dimensions exist. In particular the sampling process as well as the assignment mechanism exhibiting a systematic variation with clusters in the sample serve as justification for using clustered covariances. However, in random experiments, clustered samples are -- with respect to clustered covariances -- less crucial than clustered assignments to various treatments. In case of a fixed effects regression with fixed effects at the cluster level, heterogeneity of the treatment effect is in fact a requirement for clustered covariances to be necessary.
+}
+
+\new{
+Following \cite{hac:Cameron+Gelbach+Miller:2011}, the focus is on situations where the parameter estimator is not adapted. In accordance with the modular implementation of clustered covariances in \pkg{sandwich}, our attention is limited to adjusting inference only.  
+}
+
+\subsection[R packages for sandwich covariances]{\proglang{R} packages for sandwich covariances}
 
 Various kinds of sandwich covariances have already been implemented in several
 \proglang{R} packages, with the linear regression case receiving most attention.
 But some packages also cover more general models.
-
-\subsection[R packages for sandwich covariances]{\proglang{R} packages for sandwich covariances}
 
 The standard \proglang{R} package for sandwich covariance estimators is the
 \pkg{sandwich} package \citep{hac:Zeileis:2004a,hac:Zeileis:2006}, which
@@ -248,7 +264,7 @@ is the \pkg{car} package \citep{hac:Fox+Weisberg:2011} in function
 to the cross-section case without clustering, though.
 
 \new{
-Covariance estimators in \pkg{car} as well as in \pkg{sandwich} are constructed to insert the resulting covariance matrix estimate in different Wald-type inference functions, as \code{confint()} from \pkg{stats} package \citep{hac:R:2017}, \code{coeftest()} and \code{waldtest()} from \pkg{lmtest} package \citep{hac:Zeileis+Hothorn:2002}, \code{linerHypothesis()} and \code{deltaMethod()} from \pkg{car} package \citep{hac:Fox+Weisberg:2011}.
+Covariance estimators in \pkg{car} as well as in \pkg{sandwich} are constructed to insert the resulting covariance matrix estimate in different Wald-type inference functions, as \code{confint()} from \pkg{stats} package \citep{hac:R:2017}, \code{coeftest()} and \code{waldtest()} from \pkg{lmtest} package \citep{hac:Zeileis+Hothorn:2002}, \code{linearHypothesis()} and \code{deltaMethod()} from \pkg{car} package \citep{hac:Fox+Weisberg:2011}.
 }
 
 \subsection[R packages for clustered covariances]{\proglang{R} packages for clustered covariances}
@@ -427,13 +443,7 @@ multi-way instead of one-way clustering.
 
 The clustered covariance estimator controls for both heteroscedasticity across
 as well as within clusters, \new{assuming that in addition to the number of
-observations $n$ the number of clusters $G$ also approaches infinity}\footnote{
-\new{An alternative and less frequently-used asymptotic framework to this popular
-``large $G$'' approach is a ``fixed $G$'' setup, where the number of clusters is
-assumed to be fixed \citep[see][]{hac:Bester+Conley+Hansen:2011,hac:Hansen+Lee:2017}.
-However, this also requires non-normal inference and hence cannot be combined with
-standard tests in the same modular way as implemented in \pkg{sandwich}. Thus, it
-is not pursued further here.}}
+observations $n$ the number of clusters $G$ also approaches infinity}
 \citep{hac:Cameron+Gelbach+Miller:2008,hac:Cameron+Miller:2015}.
 Although many publications just refer to ``the'' clustered standard errors, there is a
 surprisingly wide variation in clustered covariances, particularly due to
@@ -497,7 +507,7 @@ For two-way clustered covariances with cluster dimensions $id$ and $time$, the o
 The same idea is used for obtaining clustered covariances with more than two clustering dimensions:
 Meat parts with an odd number of cluster dimensions are added up, whereas those with an even number
 are subtracted. 
-\new{Particularty when each observation is its own cluster, \cite{hac:Petersen:2009}, \cite{hac:Thompson:2011} and \cite{hac:Ma:2014}
+\new{Particularly when there is only one observation in each intersection of $id$ and $time$, \cite{hac:Petersen:2009}, \cite{hac:Thompson:2011} and \cite{hac:Ma:2014}
 suggest to subtract the standard sandwich estimator $\hat M$ from Equation (\ref{eq:meat-op}) instead of $\frac{\mathrm{G}(id \cap time)}{\mathrm{G}(id \cap time) - 1}\hat M_{(id \cap time)}$ in Equation (\ref{eq:twoway}).}
 
 % Various flavours of clustered covariances have been newly implemented in the
