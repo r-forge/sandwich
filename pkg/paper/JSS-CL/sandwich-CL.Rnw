@@ -10,7 +10,7 @@
 \newcommand{\new}[1]{\textcolor{blue}{#1}} 
 
 \author{Susanne Berger\\University of Innsbruck \And 
-        Nathaniel Graham\\Trinity University Texas \And
+        Nathaniel Graham\\Texas A\&M International University \And
         Achim Zeileis\\University of Innsbruck}
 \title{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in \proglang{R}}
 
@@ -60,10 +60,11 @@
   \phantom{URL: }\url{https://eeecon.uibk.ac.at/~zeileis/}\\
   
   Nathaniel Graham\\
-  Department of Finance and Decision Sciences\\
-  Trinity University Texas\\
-  One Trinity Place\\
-  San Antonio, Texas 78212, United States of America\\
+  Division of International Banking and Finance Studies\\
+  A.R. Sanchez, Jr. School of Business \\
+  Texas A\&M International University\\
+  5201 University Boulevard\\
+  Laredo, Texas 78041, United States of America\\
   E-mail: \email{npgraham1@npgraham1.com}\\
   URL: \url{https://sites.google.com/site/npgraham1/}
 }
@@ -159,7 +160,7 @@ The simulation setup and results are discussed in Section~\ref{sec:simulation}.
 \section{Overview} \label{sec:overview}
 \new{
 In the statistics as well as in the econometrics literature a variety of
-strategies is popular for dealing with clustered dependencies in regression models.
+strategies are popular for dealing with clustered dependencies in regression models.
 Here we give a a brief overview of clustered covariances methods, some background
 information, as well as a discussion of corresponding software implementations
 in \proglang{R} and \proglang{Stata}.
@@ -280,7 +281,7 @@ includes: \pkg{multiwayvcov} \citep{hac:Graham+Arai+Hagstroemer:2016},
 \pkg{clubSandwich} \citep{hac:Pustejovsky:2016}, and \pkg{clusterSEs}
 \citep{hac:Esarey:2017}, among others.
 
-In \pkg{multiwayvcov}, the implementation was object-oriented in many aspects
+In \pkg{multiwayvcov}, the implementation was object-oriented, in many aspects
 building on \pkg{sandwich} infrastructure. However, certain details assumed
 \code{lm} or \code{glm}-like objects. In \pkg{plm} and \pkg{lfe} several
 types of sandwich covariances are available for the packages' \code{plm}
@@ -296,7 +297,7 @@ linear regression objects albeit potentially necessitating reestimating a
 certain model using a different model-fitting function/packages. However, there
 was no object-oriented implementation for clustered covariances in \proglang{R},
 that enabled plugging in different model objects from in principle any class.
-Therefore, starting from the implementation in \pkg{multiwayvcov} a new and
+Therefore, starting from the implementation in \pkg{multiwayvcov}, a new and
 object-oriented implementation was established and integrated in \pkg{sandwich},
 allowing application to more general models, including zero-inflated, censored,
 or limited responses. 
@@ -322,7 +323,7 @@ sandwich covariance estimators, including HAC, one- and two-way
 clustered, and panel covariances ({\`a} la \citealp{hac:Kiefer:1980} or
 \citealp{hac:Driscoll+Kraay:1998}). An alternative implementation for the
 latter is available in the contributed \proglang{Stata} module \pkg{xtscc}
-\citep{hac:Hoechle:2007}. While there is wide variety of clustered covariances
+\citep{hac:Hoechle:2007}. While there is a wide variety of clustered covariances
 for many regression models in \proglang{Stata}, it is not always possible
 to fine-tune the flavor of covariance, e.g., with respect to the finite
 sample adjustment \citep[a common source of confusion and differences across
@@ -454,7 +455,7 @@ clusters $G$ and it is defined as
 \begin{equation} \label{eq:biasadj0}
  \frac{G}{G - 1}.
 \end{equation} 
-The HC bias correction can be applied additionally similar to the corresponding
+The HC bias correction can be applied additionally in a manner similar to the corresponding
 cross-section data estimators. HC0 to HC3 bias corrections for cluster $g$ are
 defined as
 \begin{eqnarray} \label{eq:biasadj1}
@@ -598,8 +599,8 @@ the same function is employed that \code{meatHAC()} uses.
 referred to as panel-corrected standard errors (PCSE). They are intended for panel data
 (also called time-series-cross-section data in this literature) with moderate dimensions of
 time and cross-section \citep{hac:Millo:2014}. They are robust against panel heteroscedasticity
-and contemporaneously correlation, with the crucial assumption that contemporaneous correlation
-accross cluster follows a fixed pattern \citep{hac:Millo:2014, hac:Johnson:2004}. Autocorrelation
+and contemporaneous correlation, with the crucial assumption that contemporaneous correlation
+across clusters follows a fixed pattern \citep{hac:Millo:2014, hac:Johnson:2004}. Autocorrelation
 within a cluster is assumed to be absent.
 
 \cite{hac:Hoechle:2007} argues that for the PCSE estimator the finite sample properties are rather
@@ -734,7 +735,7 @@ Again, \code{vcovPL()} returns the full sandwich if the argument
 \code{sandwich = TRUE}, and \code{fix = TRUE} forces a positive semi-definite
 result if necessary.
 
-The \code{cluster} argument allows to specify a variable indicating the cluster/group/id variable
+The \code{cluster} argument allows the variable indicating the cluster/group/id variable to be specified,
 while \code{order.by} specifies the time variable. If only one of the two variables is
 provided, then it is assumed that observations are ordered within the other variable.
 And if neither is provided, only one cluster is used for all observations resulting
@@ -782,7 +783,7 @@ the meat for unbalanced panels \citep{hac:Bailey+Katz:2011}. For \code{pairwise
 \cite{hac:Bailey+Katz:2011}.
 
 The argument \code{kronecker} relates to estimation of the meat and determines
-whether calculations are executed with the Kronecker product or elementwise.
+whether calculations are executed with the Kronecker product or element-wise.
 The former is typically computationally faster in moderately large data sets
 while the latter is less memory-intensive so that it can be applied to larger
 numbers of observations.
@@ -797,7 +798,7 @@ Specifically when working on \cite{hac:Berger+Stocker+Zeileis:2017} -- an extend
 replication of \cite{hac:Aghion+VanReenen+Zingales:2013} -- clustered covariances
 for negative binomial hurdle models were needed to confirm reproducibility. After
 doing this ``by hand'' in \cite{hac:Berger+Stocker+Zeileis:2017}, we show in
-Section~\ref{ex-aghion} how the same results can now conveniently obtained with the
+Section~\ref{ex-aghion} how the same results can now be conveniently obtained with the
 new general \code{vcovCL()} framework.
 
 Furthermore, to show that the new \pkg{sandwich} package can also replicate the
@@ -960,7 +961,7 @@ se(list(
 ))
 @  
 However, note that the results should be regarded with caution as cluster dimension \code{year} has a total
-of only 10 cluster. It is required by theory that each cluster dimension has many clusters
+of only 10 clusters. Theory requires that each cluster dimension have many clusters
 \citep{hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,hac:Cameron+Miller:2015}.
 
 
@@ -978,7 +979,7 @@ se(list(
 
 \subsubsection{Panel-corrected standard errors}
 
-Panel-corrected covariance a la Beck and Katz are implemented in the package \pkg{pcse} -- providing the
+Panel-corrected covariances a la Beck and Katz are implemented in the package \pkg{pcse} -- providing the
 function that is also named \code{vcovPC()} -- which can handle both balanced and unbalanced panels.
 For the balanced Petersen data the two \code{vcovPC()} functions from \pkg{sandwich} and \pkg{pcse} agree.
 <<petersen-comparison4>>=
@@ -1013,7 +1014,7 @@ se(list(
 
 For a more systematic analysis, a Monte Carlo simulation is carried out to
 assess the performance of clustered covariances beyond linear and generalized
-linear models. For the linear model, there is a number of simulation studies in
+linear models. For the linear model, there are a number of simulation studies in
 the literature \citep[including][]{hac:Cameron+Gelbach+Miller:2008,
 hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,
 hac:Harden:2011,hac:Thompson:2011,hac:Cameron+Miller:2015,hac:Jin:2015},
@@ -1139,7 +1140,7 @@ covariance matrix estimate and the empirical coverage. The function \code{sim()}
 sets up all factorial combinations of the specified scenarios and loops over the fits
 for each scenario (using multiple cores for parallelization).
 
-Table~\ref{tab:vcov} shows exemplarily how the different types of covariances are
+Table~\ref{tab:vcov} shows how the different types of covariances are
 calculated for responses from the exponential family. A pooled or marginal model (\code{m}),
 a random effects model (\code{m_re}, using \pkg{lme4}, \citealp{hac:Bates+Machler+Bolker:2015}),
 and a GEE with an exchangeable correlation structure (\code{m_gee}, using \pkg{geepack},
@@ -1344,7 +1345,7 @@ to the other simulation experiments, the number of clusters $G$ is plotted on th
 $x$-axis, ranging from 10 to 250 clusters. Gaussian,
 binomial and Poisson responses are compared with each other, with the focus on
 clustered standard errors with HC0--HC3 types of bias correction. (Recall
-that HC2 and HC3 require blockwise components of the full hat matrix and hence
+that HC2 and HC3 require block-wise components of the full hat matrix and hence
 are at the moment only available for \code{lm()} and \code{glm()} fits, see
 Section~\ref{sec:vcovcl}.)
 
