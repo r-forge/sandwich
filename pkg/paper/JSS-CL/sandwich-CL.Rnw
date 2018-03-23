@@ -228,11 +228,11 @@ is not pursued further here.
 }
 
 \new{
-In a recent paper, \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} provide for a condensed summary of state-of-the-art methods for clustered covariances, focussing on situations in economic experiments where  potentially several cluster dimensions exist. In particular the sampling process as well as the assignment mechanism exhibiting a systematic variation with clusters in the sample serve as justification for using clustered covariances. However, in random experiments, clustered samples are -- with respect to clustered covariances -- less crucial than clustered assignments to various treatments. In case of a fixed effects regression with fixed effects at the cluster level, heterogeneity of the treatment effect is in fact a requirement for clustered covariances to be necessary.
+In a recent paper, \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} provide for a condensed summary of state-of-the-art methods for clustered covariances, and focus on situations in economic experiments where  possibly several cluster dimensions exist. In such cases, the sampling process as well as the assignment mechanism exhibiting a systematic variation with clusters in the sample serve as a justification for using clustered covariances. In random experiments, clustered samples are -- with respect to clustered covariances -- less crucial than clustered assignments to various treatments. However, in case of a fixed effects regression with fixed effects at the cluster level, heterogeneity of the treatment effect is in fact a requirement for clustered covariances to be necessary.
 }
 
 \new{
-Following \cite{hac:Cameron+Gelbach+Miller:2011}, the focus is on situations where the parameter estimator is not adapted. In accordance with the modular implementation of clustered covariances in \pkg{sandwich}, our attention is limited to adjusting inference only.  
+Following \cite{hac:Cameron+Gelbach+Miller:2011}, the focus in this manuscript is on situations where the parameter estimator is not adapted. In accordance with the modular implementation of clustered covariances in \pkg{sandwich}, our attention is limited to adjusting inference only.  
 }
 
 \subsection[R packages for sandwich covariances]{\proglang{R} packages for sandwich covariances}
