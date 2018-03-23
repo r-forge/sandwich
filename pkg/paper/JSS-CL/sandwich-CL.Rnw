@@ -177,9 +177,9 @@ Alternatively, generalized estimating
 equations (GEE) can account for such correlations by adjusting the model's
 scores in the estimation \citep{hac:Liang+Zeger:1986}, also leading naturally to a clustered covariance
 (e.g., available in the \pkg{geepack} package for \proglang{R},
-\citealp{hac:Halekoh+Hojsgaard+Yan:2002}).
-Similar to GEE, generalized least squares (e.g., available in the \pkg{nlme} package, \citealp{hac:Pinheiro+Bates+DebRoy+Sarkar:2017}) and feasible generalized least squares (e.g., available in the \pkg{plm} package, \citealp{hac:Croissant+Millo:2008}) are able to account for cluster correlations, but do affect the parameter estimator. 
-A different approach in the economics panel data literature is the ``pooling model'', where the parameter estimator is not altered.
+\citealp{hac:Halekoh+Hojsgaard+Yan:2002}). Feasible generalized least squares
+can be applied in a similar way and is frequently used in panel data econometrics
+(e.g., available in the \pkg{plm} package, \citealp{hac:Croissant+Millo:2008}).
 }
 
 Another approach, widely used
@@ -187,11 +187,14 @@ in econometrics and the social sciences, is to assume that the model's score
 function was correctly specified but that only the remaining likelihood was
 potentially misspecified, e.g., due to a lack of independence as in the case
 of clustered correlations (see \citealp{hac:White:1994}, for a classic textbook,
-and \citealp{hac:Freedman:2006}, for a criticial review). This approach leaves
-the parameter estimator unchanged -- then also known as quasi-maximum likelihood
-(QML) estimator or, in GEE jargon, as the independence working model -- but adjusts
-the covariance matrix by using a sandwich estimator, especially in Wald tests
-and corresponding confidence intervals.
+and \citealp{hac:Freedman:2006}, for a criticial review). \new{This approach leaves
+the parameter estimator unchanged and is known by different labels in different
+parts of the literature, e.g., quasi-maximum likelihood (QML), independence working
+model, or pooling model in ML, GEE, or panel econometrics jargon, respectively.
+In all of these approaches, only the covariance matrix is adjusted in the subsequent
+inference by using a sandwich estimator, especially in Wald tests and corresponding
+confidence intervals.}
+
 
 \new{
 Important special cases of this QML approach combined with sandwich covariances
@@ -208,32 +211,51 @@ and (3) clustered sandwich covariances for clustered or panel data
 }
 
 \new{
-In the statistics literature, the basic sandwich estimator has been introduced first for cross-section data with independent but heteroscedastic observations by \cite{hac:Eicker:1963}, \cite{hac:Huber:1967}, and \cite{hac:White:1980}.
-Early references for sandwich estimators accounting for correlated but homoscedastic observations are \cite{hac:Kloek:1981} and \cite{hac:Moulton:1990}, assuming a correlation structure equivalent to exchangeable working correlation introduced by \cite{hac:Liang+Zeger:1986} in the more general framework of generalized estimating equations.
-\cite{hac:Kiefer:1980} has implemented yet another clustered covariance estimator for panel data, which is robust to clustering but assumes homoscedasticity \citep[see also][]{hac:Baum+Nichols+Schaffer:2011}.
-A further generalization allowing for cluster correlations and heteroscedasticity is provided by the independence working model in GEE \citep{hac:Liang+Zeger:1986}, naturally leading to clustered covariances.
-In econometrics, \cite{hac:Arellano:1987} was the first who proposed clustered covariances to fixed effects estimator in panel models.
+In the statistics literature, the basic sandwich estimator has been introduced
+first for cross-section data with independent but heteroscedastic observations
+by \cite{hac:Eicker:1963} and \cite{hac:Huber:1967} and was later popularized in
+the econometrics literature by \cite{hac:White:1980}.
+Early references for sandwich estimators accounting for correlated but
+homoscedastic observations are \cite{hac:Kloek:1981} and
+\cite{hac:Moulton:1990}, assuming a correlation structure equivalent to
+exchangeable working correlation introduced by \cite{hac:Liang+Zeger:1986} in
+the more general framework of generalized estimating equations.
+\cite{hac:Kiefer:1980} has implemented yet another clustered covariance
+estimator for panel data, which is robust to clustering but assumes
+homoscedasticity \citep[see also][]{hac:Baum+Nichols+Schaffer:2011}. A further
+generalization allowing for cluster correlations and heteroscedasticity is
+provided by the independence working model in GEE \citep{hac:Liang+Zeger:1986},
+naturally leading to clustered covariances. In econometrics,
+\cite{hac:Arellano:1987} was the first who proposed clustered covariances for
+the fixed effects estimator in panel models.
 }
 
 \new{
-Inference with clustered covariances but also two-way and multi-way clustered covariances for more than one cluster dimension is examined in \cite{hac:Cameron+Gelbach+Miller:2011}. In a wider context, \cite{hac:Cameron+Miller:2015} discuss methods where the method of estimation is altered, instead of just adapting the inference.
-\cite{hac:Cameron+Miller:2015} established a perspective on clustering where observations are correlated within clusters, but are uncorrelated across clusters, assuming that in addition to the number of
-observations $n$ the number of clusters $G$ also approaches infinity.
-An alternative and less frequently-used asymptotic framework to this popular
-``large $G$'' approach is a ``fixed $G$'' setup, where the number of clusters is
-assumed to be fixed \citep[see][]{hac:Bester+Conley+Hansen:2011,hac:Hansen+Lee:2017}.
-However, this also requires non-normal inference and hence cannot be combined with
-standard tests in the same modular way as implemented in \pkg{sandwich}. Thus, it
-is not pursued further here.
+Inference with clustered covariances with one or more cluster dimension(s) is
+examined in \cite{hac:Cameron+Gelbach+Miller:2011}. In a wider context,
+\cite{hac:Cameron+Miller:2015} include methods in the discussion where not only
+inference is adjusted but also estimation altered. This discussion focuses
+on the ``large $G$'' framework where not only the number of observations $n$
+but also the number of clusters $G$ is assumed to approach infinity.
+An alternative but less frequently-used asymptotic framework is the ``fixed $G$''
+setup, where the number of clusters is assumed to be fixed
+\citep[see][]{hac:Bester+Conley+Hansen:2011,hac:Hansen+Lee:2017}.
+However, as this also requires non-standard (non-normal) inference it cannot be combined with
+standard tests in the same modular way as implemented in \pkg{sandwich} and is
+not pursued further here.
 }
 
 \new{
-In a recent paper, \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} provide for a condensed summary of state-of-the-art methods for clustered covariances, and focus on situations in economic experiments where  possibly several cluster dimensions exist. In such cases, the sampling process as well as the assignment mechanism exhibiting a systematic variation with clusters in the sample serve as a justification for using clustered covariances. In random experiments, clustered samples are -- with respect to clustered covariances -- less crucial than clustered assignments to various treatments. However, in case of a fixed effects regression with fixed effects at the cluster level, heterogeneity of the treatment effect is in fact a requirement for clustered covariances to be necessary.
+In a recent paper, \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} survey
+state-of-the-art methods for clustered covariances with special focus on
+treatment effects in economic experiments with possibly multiple cluster
+dimensions. They emphasize that, in terms of effect on the covariance
+estimation, clustering in the treatment assignment is more important than
+merely clustering in the sampling. However, if a fixed cluster effect is
+included in the model, treatment heterogeneity across clusters is 
+a requirement for clustered covariances to be necessary.
 }
 
-\new{
-Following \cite{hac:Cameron+Gelbach+Miller:2011}, the focus in this manuscript is on situations where the parameter estimator is not adapted. In accordance with the modular implementation of clustered covariances in \pkg{sandwich}, our attention is limited to adjusting inference only.  
-}
 
 \subsection[R packages for sandwich covariances]{\proglang{R} packages for sandwich covariances}
 
@@ -1043,16 +1065,22 @@ clustered covariances implemented in \pkg{sandwich} as well as competing methods
 sandwich covariances (without clustering), mixed-effects models with a random intercept, or
 generalized estimating equations with an exchangeable correlation structure.
 
-\new{It should be mentioned that the simulation setup constructs a typical case where clustering matters. However, this is not to say that there are other situations not covered here where clustering is important. For example, \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} show that clustering can be of importance even in cases where no within cluster correlation of residuals and regressors occurs.}
 
 \subsubsection{Linear predictor}
 
 Following \cite{hac:Harden:2011} the linear predictor considered for the simulation is composed
 of three regressors that are either \emph{correlated} with the clustering, \emph{clustered},
-or \emph{uncorrelated}. \new{The cluster correlation for the regressors is controlled by parameter $\rho_x$. Note that the previously introduced cluster correlation $\rho$ of the response distributions is determined by yet another parameter $\rho$.} The model equation is given by
+or \emph{uncorrelated}. The correlation of the first type of regressor is controlled by
+separate parameter $\rho_x$. \new{Thus, in the terminology of  \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017},
+the parameter $\rho$ above controls the correlation in the sampling process while the parameter
+$\rho_x$ controls the extent of the clustering in the ``treatment'' assignment.}
+
+\new{More formally,} the model equation is given by
+%
 \begin{eqnarray} \label{eq:predictor}
 h(\mu_{ig}) = \beta_{0} + \beta_{1} \cdot x_{1,ig} + \beta_{2} \cdot x_{2,g} + \beta_{3} \cdot x_{3,ig},
 \end{eqnarray}
+%
 where $\mu_{ig}$ is the expectation of the response for observation $i$ within cluster $g$ and the
 link function $h(\cdot)$ depends on the model type. The regressor variables are all drawn from standard
 normal distributions but at different levels (cluster vs.\ individual observation).
