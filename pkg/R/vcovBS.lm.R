@@ -92,16 +92,16 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, multi0 = TRUE,
   boot_args$x <- x
   boot_args$wild_func <- function() NULL
   
-  boot_type <- match.arg(boot_type, c("xy", "residual", "wild", 
+  boot_type <- match.arg(boot_type, c("xy", "residual", "wild", "webb",
                                       "rademacher", "mammen", "norm",
                                       "wild-rademacher", "wild-mammen", 
-                                      "wild-norm"))
+                                      "wild-norm", "wild-webb"))
   
   if(boot_type == "wild") wild_type <- "rademacher"
 
   
-  if(boot_type %in% c("rademacher", "mammen", "norm", 
-                      "wild-rademacher", "wild-mammen", "wild-norm")) {
+  if(boot_type %in% c("rademacher", "mammen", "norm", "webb",
+                      "wild-rademacher", "wild-mammen", "wild-norm", "wild-webb")) {
     wild_type <- sub("wild-", "", boot_type, fixed = TRUE)
     boot_type <- "wild"
   }
@@ -138,6 +138,10 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, multi0 = TRUE,
                                                                   (sqrt(5) - 1) / (2 * sqrt(5)))))
       } else if(wild_type == "norm") {
         boot_args$wild_func <- cmpfun(function(n) rnorm(n))
+      } else if(wild_type == "webb") {
+        boot_args$wild_func <- cmpfun(function(n) sample(c(-sqrt(1.5), -1.0, -sqrt(0.5), 
+                                                           sqrt(0.5), 1.0, sqrt(1.5)), 
+                                                         n, replace = TRUE))
       }
     
     est.func <- cmpfun(function(grp, i, clustvar, boot_args) {
@@ -174,7 +178,7 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, multi0 = TRUE,
   
   if(multi0 && tcc > 1) {
     i <- i + 1
-    vcov_matrices[[i]] <- vcov_sign[i] * sandwich(fm)
+    vcov_matrices[[i]] <- vcov_sign[i] * sandwich(x)
   }
   
   if(debug) {

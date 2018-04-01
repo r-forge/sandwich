@@ -9,9 +9,8 @@
 }
 
 \usage{
-\method{vcovBS}{default}(x, cluster = NULL, R = 250, multi0 = TRUE, fix = FALSE,
-boot_type = "xy", ..., cl = NULL, parallel = "no",
-\dots, use = "pairwise.complete.obs")
+\method{vcovBS}{lm}(x, cluster = NULL, R = 250, multi0 = TRUE, fix = FALSE, boot_type = "xy", \dots, 
+                    use = "pairwise.complete.obs", cl = NULL, parallel = "no")
 }
 
 \arguments{
@@ -24,8 +23,8 @@ boot_type = "xy", ..., cl = NULL, parallel = "no",
   \item{fix}{logical. Should the covariance matrix be fixed to be
     positive semi-definite in case it is not?}
   \item{boot_type}{a character string specifying the type of bootstrap to use. One of
-    "xy", "residual", "wild", "rademacher", "mammen", "norm", "wild-rademacher", 
-    "wild-mammen", or "wild-norm". See details for a description of each.}
+    "xy", "residual", "wild", "rademacher", "mammen", "norm", "webb", "wild-rademacher", 
+    "wild-mammen", "wild-webb", or "wild-norm". See details for a description of each.}
   \item{multi0}{logical. Should the HC0 estimate be used for
     the final adjustment in multi-way clustered covariances?}
   \item{use}{character. Specification passed to \code{\link[stats]{cov}} for
@@ -51,8 +50,8 @@ boot_type = "xy", ..., cl = NULL, parallel = "no",
   
   Specifying \code{boot_type = "residual"} implements a residual cluster bootstrap. The residual
   cluster bootstrap resamples the residuals (as above, by cluster) rather than the observations.
-  The resampled residuals are then used to re-form the response variable \code{y* = \hat{y} + e*}
-  where \hat{y} is the original fitted values and e* is the resampled residuals. Coefficients are
+  The resampled residuals are then used to re-form the response variable \eqn{y^{*} = \hat{y} + e^{*}}{y* = yhat + e*}
+  where \eqn{\hat{y}}{yhat} is the original fitted values and e* is the resampled residuals. Coefficients are
   reestimated using \code{qr.coef()}. As Cameron et al. (2008) point out, the residual cluster 
   bootstrap is not well-defined when the clusters are unbalanced--different numbers of observations 
   (cluster sizes) among the clusters make it unclear how to correctly apply the residuals of one 
@@ -65,6 +64,8 @@ boot_type = "xy", ..., cl = NULL, parallel = "no",
   the Rademacher (\code{boot_type = "rademacher"}, the default), which draws from [-1, 1],
   each with p = 0.5, Mammen's suggested distribution (\code{boot_type = "mammen"}, see 
   Mammen, 1993), and the standard normal/Gaussian distribution (\code{boot_type = "norm"}).
+  Specifying \code{boot_type = "webb"} or \code{boot_type = "wild-webb"} implements the six-point
+  distribution suggested by Webb (2014), which may improve inference when the number of clusters is small.
   The default is the Rademacher distribution, following Cameron et al. (2008).  Alternatively, you can
   set the function to draw multipliers from by assigning
   \code{boot_type} to a function that takes one argument \code{n}--the number of random values to produce--and
@@ -105,6 +106,10 @@ Mammen, E. (1993).
   \emph{The Annals of Statistics}, \bold{21}(1),
   255--285.
   \doi{10.1214/aos/1176349025}
+  
+Webb, MD (2014).
+  \dQuote{Reworking Wild Bootstrap Based Inference for Clustered Errors},
+  \emph{Working Paper}
 }
 
 \seealso{\code{\link{vcovHC}}}
