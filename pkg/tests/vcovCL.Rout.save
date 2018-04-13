@@ -1,0 +1,90 @@
+
+R version 3.4.4 (2018-03-15) -- "Someone to Lean On"
+Copyright (C) 2018 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library("sandwich")
+> data("PetersenCL", package = "sandwich")
+> m <- lm(y ~ x, data = PetersenCL)
+> 
+> vcovCL(m, cluster = ~ firm, type = "HC0", cadjust = TRUE)
+              (Intercept)             x
+(Intercept)  4.489804e-03 -6.472222e-05
+x           -6.472222e-05  2.559415e-03
+> vcovCL(m, cluster = ~ firm, type = "HC0", cadjust = FALSE)
+              (Intercept)             x
+(Intercept)  4.480825e-03 -6.459277e-05
+x           -6.459277e-05  2.554297e-03
+> vcovCL(m, cluster = ~ firm, type = "HC1", cadjust = TRUE)
+              (Intercept)             x
+(Intercept)  4.490702e-03 -6.473517e-05
+x           -6.473517e-05  2.559927e-03
+> vcovCL(m, cluster = ~ firm, type = "HC1", cadjust = FALSE)
+              (Intercept)             x
+(Intercept)  0.0044817211 -0.0000646057
+x           -0.0000646057  0.0025548076
+> vcovCL(m, cluster = ~ firm, type = "HC2", cadjust = TRUE)
+              (Intercept)             x
+(Intercept)  4.494487e-03 -6.592912e-05
+x           -6.592912e-05  2.568236e-03
+> vcovCL(m, cluster = ~ firm, type = "HC2", cadjust = FALSE)
+              (Intercept)             x
+(Intercept)  4.485498e-03 -6.579726e-05
+x           -6.579726e-05  2.563100e-03
+> vcovCL(m, cluster = ~ firm, type = "HC3", cadjust = TRUE)
+              (Intercept)             x
+(Intercept)  4.508202e-03 -6.728084e-05
+x           -6.728084e-05  2.582262e-03
+> vcovCL(m, cluster = ~ firm, type = "HC3", cadjust = FALSE)
+              (Intercept)             x
+(Intercept)  4.499186e-03 -6.714627e-05
+x           -6.714627e-05  2.577098e-03
+> 
+> vcovCL(m, cluster = ~ firm + year, type = "HC0", cadjust = TRUE)
+              (Intercept)             x
+(Intercept)  4.232467e-03 -2.844774e-05
+x           -2.844774e-05  2.867888e-03
+> vcovCL(m, cluster = ~ firm + year, type = "HC0", cadjust = FALSE)
+              (Intercept)             x
+(Intercept)  3.809220e-03 -2.560297e-05
+x           -2.560297e-05  2.581099e-03
+> vcovCL(m, cluster = ~ firm + year, type = "HC1", cadjust = TRUE)
+              (Intercept)             x
+(Intercept)  4.233313e-03 -2.845344e-05
+x           -2.845344e-05  2.868462e-03
+> vcovCL(m, cluster = ~ firm + year, type = "HC1", cadjust = FALSE)
+              (Intercept)             x
+(Intercept)  3.809982e-03 -2.560809e-05
+x           -2.560809e-05  2.581616e-03
+> vcovCL(m, cluster = ~ firm + year, type = "HC2", cadjust = TRUE)
+              (Intercept)            x
+(Intercept)  0.0042373852 -2.82126e-05
+x           -0.0000282126  2.87693e-03
+> vcovCL(m, cluster = ~ firm + year, type = "HC2", cadjust = FALSE)
+              (Intercept)             x
+(Intercept)  3.813647e-03 -2.539134e-05
+x           -2.539134e-05  2.589237e-03
+> vcovCL(m, cluster = ~ firm + year, type = "HC3", cadjust = TRUE)
+              (Intercept)             x
+(Intercept)  4.312049e-03 -2.504345e-05
+x           -2.504345e-05  3.015055e-03
+> vcovCL(m, cluster = ~ firm + year, type = "HC3", cadjust = FALSE)
+              (Intercept)            x
+(Intercept)  0.0038808438 -2.25391e-05
+x           -0.0000225391  2.71355e-03
+> 
+> proc.time()
+   user  system elapsed 
+  4.866   0.064   4.922 
