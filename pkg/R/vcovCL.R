@@ -92,9 +92,9 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
   ## building blocks for HC2/HC3
   if(type %in% c("HC2", "HC3"))
   {
-    if(all(g == n)) {
-      h <- hatvalues(x)
-    } else {
+    if(any(g == n)) h <- hatvalues(x)
+
+    if(!all(g == n)) {
       if(!(class(x)[1L] %in% c("lm", "glm"))) warning("clustered HC2/HC3 are only applicable to (generalized) linear regression models")
 
       ## regressor matrix
