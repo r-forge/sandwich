@@ -206,10 +206,9 @@ The authors may want to consider incorporating the  covariance estimator of Kloe
 
 \medskip
 
-Kiefer (1980) investigates fixed effects panel models extended to cases of intertemporal correlations, where coefficients and standard errors are estimated by GLS. As the \texttt{sandwich} package has its focus on a modular adjustment of inference without modifying estimators, we kindly refer to the \texttt{plm} package and its function \texttt{pggls()} that estimates linear panel models by generalized FGLS with (or without) fixed effects. We also  discussed the issue with a maintainer of the \texttt{plm} package, Giovanni Millo, who kindly declared his willingness to incorporate the Kiefer-type covariance estimator to the \texttt{plm} package.
-Unfortunately, our attempts to replicate the more general implementation of Kiefer covariances in the contributed Stata module \texttt{avar} did not succeed, but are on the to-do list of Giovanni.
-Similarly, Kloek-type convariances are applied to a specific model in the linear context, and hence fit better into the \texttt{plm} framework.
-Because of these aforementioned reasons, we decided not to implement the named covariances.
+Kiefer (1980) investigates fixed effects panel models extended to cases of intertemporal correlations, where coefficients and standard errors are estimated by GLS. As the \texttt{sandwich} package has been designed as an object-oriented toolbox that does not modify the parameter estimators, this covariance estimator does not fit well into the package. Instead, it would be more natural to include it in the \texttt{plm} package for panel linear models that also provides  a function \texttt{pggls()} for generalized FGLS with (or without) fixed effects. We raised the issue with Giovanni Millo, author of the variance-covariance estimators in \texttt{plm}, and he agreed that this would be a useful addition to \texttt{plm} and included Kiefer-type covariances in the to-do list for the package. It is worth noting that the Stata module \texttt{avar} provides some generalized implementation of the classic Kiefer (1980) estimator that is also applicable beyond FGLS. However, so far, neither Giovanni nor us succeeded in exactly replicating this generalization.
+
+Similar arguments hold for the Kloek-type convariances: As they have been developed for specific linear models they would better match the scope of \texttt{plm} rather than \texttt{sandwich}. Hence, we decided not to implement these covariances.
 
 \bigskip
 
