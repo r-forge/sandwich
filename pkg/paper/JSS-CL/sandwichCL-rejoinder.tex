@@ -206,7 +206,10 @@ The authors may want to consider incorporating the  covariance estimator of Kloe
 
 \medskip
 
-Kiefer (1980) investigates fixed effects panel models extended to cases of intertemporal correlations, where coefficients and standard errors are estimated by GLS in a transformed model. As the \texttt{sandwich} package has its focus on a modular adjustment of inference without modifying estimators, we kindly refer to the \texttt{plm} package and its function \texttt{pggls()} that estimates linear panel models by generalized FGLS with (or without) fixed effects.
+Kiefer (1980) investigates fixed effects panel models extended to cases of intertemporal correlations, where coefficients and standard errors are estimated by GLS. As the \texttt{sandwich} package has its focus on a modular adjustment of inference without modifying estimators, we kindly refer to the \texttt{plm} package and its function \texttt{pggls()} that estimates linear panel models by generalized FGLS with (or without) fixed effects. We also  discussed the issue with a maintainer of the \texttt{plm} package, Giovanni Millo, who kindly declared his willingness to incorporate the Kiefer-type covariance estimator to the \texttt{plm} package.
+Unfortunately, our attempts to replicate the more general implementation of Kiefer covariances in the contributed Stata module \texttt{avar} did not succeed, but are on the to-do list of Giovanni.
+Similarly, Kloek-type convariances are applied to a specific model in the linear context, and hence fit better into the \texttt{plm} framework.
+Because of these aforementioned reasons, we decided not to implement the named covariances.
 
 \bigskip
 
