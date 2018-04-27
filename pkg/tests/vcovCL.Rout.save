@@ -122,67 +122,35 @@ institutions -0.002191881  3.594155e-05
 (Intercept)   0.159192564 -2.189151e-03
 institutions -0.002189151  3.589679e-05
 > 
-> vcovCL(n, cluster = ~ company + year, type = "HC0", cadjust = TRUE, multi0 = TRUE)
-              (Intercept)  institutions
-(Intercept)   0.139424757 -0.0017318686
-institutions -0.001731869  0.0000375264
-> vcovCL(n, cluster = ~ company + year, type = "HC0", cadjust = TRUE, multi0 = FALSE)
+> vcovCL(n, cluster = ~ company + year, type = "HC0", cadjust = TRUE)
               (Intercept)  institutions
 (Intercept)   0.139420228 -1.731803e-03
 institutions -0.001731803  3.752529e-05
-> vcovCL(n, cluster = ~ company + year, type = "HC0", cadjust = FALSE, multi0 = TRUE)
-              (Intercept)  institutions
-(Intercept)   0.123933117 -0.0015394388
-institutions -0.001539439  0.0000333568
-> vcovCL(n, cluster = ~ company + year, type = "HC0", cadjust = FALSE, multi0 = FALSE)
+> vcovCL(n, cluster = ~ company + year, type = "HC0", cadjust = FALSE)
               (Intercept)  institutions
 (Intercept)   0.123929092 -1.539381e-03
 institutions -0.001539381  3.335582e-05
-> vcovCL(n, cluster = ~ company + year, type = "HC1", cadjust = TRUE, multi0 = TRUE)
-              (Intercept)  institutions
-(Intercept)   0.139451753 -1.732213e-03
-institutions -0.001732213  3.753356e-05
-> vcovCL(n, cluster = ~ company + year, type = "HC1", cadjust = TRUE, multi0 = FALSE)
+> vcovCL(n, cluster = ~ company + year, type = "HC1", cadjust = TRUE)
               (Intercept)  institutions
 (Intercept)   0.139442693 -1.732082e-03
 institutions -0.001732082  3.753134e-05
-> vcovCL(n, cluster = ~ company + year, type = "HC1", cadjust = FALSE, multi0 = TRUE)
-              (Intercept)  institutions
-(Intercept)   0.123957114 -1.539745e-03
-institutions -0.001539745  3.336316e-05
-> vcovCL(n, cluster = ~ company + year, type = "HC1", cadjust = FALSE, multi0 = FALSE)
+> vcovCL(n, cluster = ~ company + year, type = "HC1", cadjust = FALSE)
               (Intercept)  institutions
 (Intercept)   0.123949061 -1.539629e-03
 institutions -0.001539629  3.336119e-05
-> vcovCL(n, cluster = ~ company + year, type = "HC2", cadjust = TRUE, multi0 = TRUE)
+> vcovCL(n, cluster = ~ company + year, type = "HC2", cadjust = TRUE)
               (Intercept)  institutions
 (Intercept)   0.139564717 -1.744788e-03
 institutions -0.001744788  3.794807e-05
-> vcovCL(n, cluster = ~ company + year, type = "HC2", cadjust = TRUE, multi0 = FALSE)
-              (Intercept)  institutions
-(Intercept)   0.139564717 -1.744788e-03
-institutions -0.001744788  3.794807e-05
-> vcovCL(n, cluster = ~ company + year, type = "HC2", cadjust = FALSE, multi0 = TRUE)
+> vcovCL(n, cluster = ~ company + year, type = "HC2", cadjust = FALSE)
               (Intercept)  institutions
 (Intercept)   0.124057526 -1.550923e-03
 institutions -0.001550923  3.373162e-05
-> vcovCL(n, cluster = ~ company + year, type = "HC2", cadjust = FALSE, multi0 = FALSE)
-              (Intercept)  institutions
-(Intercept)   0.124057526 -1.550923e-03
-institutions -0.001550923  3.373162e-05
-> vcovCL(n, cluster = ~ company + year, type = "HC3", cadjust = TRUE, multi0 = TRUE)
+> vcovCL(n, cluster = ~ company + year, type = "HC3", cadjust = TRUE)
              (Intercept)  institutions
 (Intercept)   0.14163927 -1.782220e-03
 institutions -0.00178222  4.028813e-05
-> vcovCL(n, cluster = ~ company + year, type = "HC3", cadjust = TRUE, multi0 = FALSE)
-             (Intercept)  institutions
-(Intercept)   0.14163927 -1.782220e-03
-institutions -0.00178222  4.028813e-05
-> vcovCL(n, cluster = ~ company + year, type = "HC3", cadjust = FALSE, multi0 = TRUE)
-              (Intercept)  institutions
-(Intercept)   0.125901572 -1.584196e-03
-institutions -0.001584196  3.581167e-05
-> vcovCL(n, cluster = ~ company + year, type = "HC3", cadjust = FALSE, multi0 = FALSE)
+> vcovCL(n, cluster = ~ company + year, type = "HC3", cadjust = FALSE)
               (Intercept)  institutions
 (Intercept)   0.125901572 -1.584196e-03
 institutions -0.001584196  3.581167e-05
