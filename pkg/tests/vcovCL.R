@@ -19,3 +19,48 @@ vcovCL(m, cluster = ~ firm + year, type = "HC2", cadjust = TRUE)
 vcovCL(m, cluster = ~ firm + year, type = "HC2", cadjust = FALSE)
 vcovCL(m, cluster = ~ firm + year, type = "HC3", cadjust = TRUE)
 vcovCL(m, cluster = ~ firm + year, type = "HC3", cadjust = FALSE)
+
+
+data("InstInnovation", package = "sandwich")
+n <- glm(cites ~ institutions, family = "poisson", data = InstInnovation)
+
+vcovCL(n, cluster = ~ company, type = "HC0", cadjust = TRUE)
+vcovCL(n, cluster = ~ company, type = "HC0", cadjust = FALSE)
+vcovCL(n, cluster = ~ company, type = "HC1", cadjust = TRUE)
+vcovCL(n, cluster = ~ company, type = "HC1", cadjust = FALSE)
+vcovCL(n, cluster = ~ company, type = "HC2", cadjust = TRUE)
+vcovCL(n, cluster = ~ company, type = "HC2", cadjust = FALSE)
+vcovCL(n, cluster = ~ company, type = "HC3", cadjust = TRUE)
+vcovCL(n, cluster = ~ company, type = "HC3", cadjust = FALSE)
+
+vcovCL(n, cluster = ~ company + year, type = "HC0", cadjust = TRUE)
+vcovCL(n, cluster = ~ company + year, type = "HC0", cadjust = FALSE)
+vcovCL(n, cluster = ~ company + year, type = "HC1", cadjust = TRUE)
+vcovCL(n, cluster = ~ company + year, type = "HC1", cadjust = FALSE)
+vcovCL(n, cluster = ~ company + year, type = "HC2", cadjust = TRUE)
+vcovCL(n, cluster = ~ company + year, type = "HC2", cadjust = FALSE)
+vcovCL(n, cluster = ~ company + year, type = "HC3", cadjust = TRUE)
+vcovCL(n, cluster = ~ company + year, type = "HC3", cadjust = FALSE)
+
+
+o <- lm(log(cites) ~ institutions, data = InstInnovation, subset = cites > 0)
+
+vcovCL(o, cluster = ~ company + year, type = "HC0", cadjust = TRUE, multi0 = TRUE)
+vcovCL(o, cluster = ~ company + year, type = "HC0", cadjust = TRUE, multi0 = FALSE)
+vcovCL(o, cluster = ~ company + year, type = "HC0", cadjust = FALSE, multi0 = TRUE)
+vcovCL(o, cluster = ~ company + year, type = "HC0", cadjust = FALSE, multi0 = FALSE)
+vcovCL(o, cluster = ~ company + year, type = "HC1", cadjust = TRUE, multi0 = TRUE)
+vcovCL(o, cluster = ~ company + year, type = "HC1", cadjust = TRUE, multi0 = FALSE)
+vcovCL(o, cluster = ~ company + year, type = "HC1", cadjust = FALSE, multi0 = TRUE)
+vcovCL(o, cluster = ~ company + year, type = "HC1", cadjust = FALSE, multi0 = FALSE)
+vcovCL(o, cluster = ~ company + year, type = "HC2", cadjust = TRUE, multi0 = TRUE)
+vcovCL(o, cluster = ~ company + year, type = "HC2", cadjust = TRUE, multi0 = FALSE)
+vcovCL(o, cluster = ~ company + year, type = "HC2", cadjust = FALSE, multi0 = TRUE)
+vcovCL(o, cluster = ~ company + year, type = "HC2", cadjust = FALSE, multi0 = FALSE)
+vcovCL(o, cluster = ~ company + year, type = "HC3", cadjust = TRUE, multi0 = TRUE)
+vcovCL(o, cluster = ~ company + year, type = "HC3", cadjust = TRUE, multi0 = FALSE)
+vcovCL(o, cluster = ~ company + year, type = "HC3", cadjust = FALSE, multi0 = TRUE)
+vcovCL(o, cluster = ~ company + year, type = "HC3", cadjust = FALSE, multi0 = FALSE)
+
+
+
