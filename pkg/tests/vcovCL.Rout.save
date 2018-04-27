@@ -167,11 +167,11 @@ institutions -0.0002843852  0.0000152373
 (Intercept)   0.0230458264 -2.843651e-04
 institutions -0.0002843651  1.523686e-05
 > vcovCL(o, cluster = ~ company + year, type = "HC0", cadjust = FALSE, multi0 = TRUE)
-               (Intercept)  institutions
+             (Intercept)  institutions
 (Intercept)   0.0204861905 -2.527869e-04
 institutions -0.0002527869  1.354427e-05
 > vcovCL(o, cluster = ~ company + year, type = "HC0", cadjust = FALSE, multi0 = FALSE)
-              (Intercept)  institutions
+             (Intercept)  institutions
 (Intercept)   0.020485179 -2.527690e-04
 institutions -0.000252769  1.354387e-05
 > vcovCL(o, cluster = ~ company + year, type = "HC1", cadjust = TRUE, multi0 = TRUE)
