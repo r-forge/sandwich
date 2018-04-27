@@ -130,17 +130,8 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
     ## estimating functions for aggregation by i-th clustering variable
     efi <- ef
 
-    ## adjustments for bias correction (sigh...)
-    #adj <- if(type %in% c("HC0", "HC1")) {
-    #   if(multi0 & (i == length(cl))) {
-    #     if(type == "HC1") (n - k)/(n - 1L) else 1
-    #   } else {
-    #     g[i]/(g[i] - 1L) else 1
-    #   }
-    #} else {
-    #  1
-    #}
-
+    ## add cluster adjustment g/(g - 1) or not?
+    ## only exception: HC0 adjustment for multiway clustering at "last interaction"
     adj <- if(multi0 & (i == length(cl))) {
                if(type == "HC1") (n - k)/(n - 1L) else 1
            } else {
@@ -180,8 +171,8 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
     rval <- rval + sign[i] * adj * crossprod(efi)/n
   }
 
+  ## HC1 adjustment with residual degrees of freedom: (n - 1)/(n - k)
   if(type == "HC1") rval <- (n - 1L)/(n - k) * rval
-  #if(!cadjust) rval <- (gmin - 1L)/gmin * rval
 
   return(rval)
 }
