@@ -78,9 +78,10 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
       length(unique(cluster[[i]]))
     }
   })
-  gmin <- min(g[1L:p])
-  ## FIXME: additional argument for optionally using only smallest number of clusters?
-  if(FALSE) g[] <- gmin
+  #gmin <- min(g[1L:p])
+    ## FIXME: additional argument for optionally using only smallest number of clusters?
+    ## See also Cameron, Gelbach and Miller (2011, page 241)
+  #if(FALSE) g[] <- gmin
 
   ## type of bias correction
   if(is.null(type)) {
@@ -130,16 +131,22 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
     efi <- ef
 
     ## adjustments for bias correction (sigh...)
-    adj <- if(type %in% c("HC0", "HC1")) {
-       if(multi0 & (i == length(cl))) {
-         if(type == "HC1") (n - k)/(n - 1L) else 1
-       } else {
-         g[i]/(g[i] - 1L)
-       }
-    } else {
-      1
-    }
-    
+    #adj <- if(type %in% c("HC0", "HC1")) {
+    #   if(multi0 & (i == length(cl))) {
+    #     if(type == "HC1") (n - k)/(n - 1L) else 1
+    #   } else {
+    #     g[i]/(g[i] - 1L) else 1
+    #   }
+    #} else {
+    #  1
+    #}
+
+    adj <- if(multi0 & (i == length(cl))) {
+               if(type == "HC1") (n - k)/(n - 1L) else 1
+           } else {
+               if(cadjust) g[i]/(g[i] - 1L) else 1
+           }  
+      
     ## HC2/HC3
     if(type %in% c("HC2", "HC3")) {
       if(g[i] == n) {
@@ -174,7 +181,7 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
   }
 
   if(type == "HC1") rval <- (n - 1L)/(n - k) * rval
-  if(!cadjust) rval <- (gmin - 1L)/gmin * rval
+  #if(!cadjust) rval <- (gmin - 1L)/gmin * rval
 
   return(rval)
 }
