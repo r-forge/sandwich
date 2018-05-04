@@ -17,3 +17,5 @@ pc1 <- c(0.0222006 , 0.025276)
 names(pc1) <- c("(Intercept)", "x")
 pc1
 (pc2 <- sqrt(diag(vcovPC(m, cluster = PetersenCL$firm, order.by = PetersenCL$year))))
+
+all.equal(pc1, pc2, tolerance = 1e-5)
