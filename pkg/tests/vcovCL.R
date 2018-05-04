@@ -21,6 +21,37 @@ vcovCL(m, cluster = ~ firm + year, type = "HC3", cadjust = TRUE)
 vcovCL(m, cluster = ~ firm + year, type = "HC3", cadjust = FALSE)
 
 
+# vcovCL compared with cluster.vcov from multiwayvcov package
+
+(cl1 <- vcovCL(m, cluster = ~ firm, type = "HC1", cadjust = TRUE))
+(cl2 <- multiwayvcov::cluster.vcov(m, ~ firm))
+
+(cl3 <- vcovCL(m, cluster = ~ firm + year, multi0 = TRUE))
+(cl4 <- multiwayvcov::cluster.vcov(m, cbind(PetersenCL$firm, PetersenCL$year)))
+
+(cl5 <- vcovCL(m, cluster = ~ firm, type = "HC0", cadjust = FALSE))
+(cl6 <- multiwayvcov::cluster.vcov(m, ~ firm, df_correction = FALSE))
+
+(cl7 <- vcovCL(m, cluster = ~ firm + year, type = "HC0", cadjust = FALSE))
+(cl8 <- multiwayvcov::cluster.vcov(m, cbind(PetersenCL$firm, PetersenCL$year), df_correction = FALSE))
+
+all.equal(cl1, cl2, tolerance = 1e-5)
+all.equal(cl3, cl4, tolerance = 1e-5)
+all.equal(cl5, cl6, tolerance = 1e-5)
+all.equal(cl7, cl8, tolerance = 1e-5)
+
+
+# vcovCL compared with BMlmSE (Bell-McCaffrey standard errors as described in Imbens and Kolesár (2016))
+# BMlmSE(m, clustervar = factor(PetersenCL$firm), IK = FALSE)
+
+bellmc1 <- matrix(c(4.494487e-03, -6.592912e-05, -6.592912e-05, 2.568236e-03), nrow = 2)
+rownames(bellmc1) <- colnames(bellmc1) <- c("(Intercept)", "x")
+bellmc1
+(bellmc2 <- vcovCL(m, cluster = ~ firm, type = "HC2", cadjust = FALSE))
+
+all.equal(bellmc1, bellmc2, tolerance = 1e-5)
+
+
 data("InstInnovation", package = "sandwich")
 n <- glm(cites ~ institutions, family = "poisson", data = InstInnovation)
 
