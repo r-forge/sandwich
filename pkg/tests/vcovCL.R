@@ -48,8 +48,7 @@ all.equal(cl7, cl8)
 bellmc1 <- matrix(c(4.494487e-03, -6.592912e-05, -6.592912e-05, 2.568236e-03), nrow = 2)
 rownames(bellmc1) <- colnames(bellmc1) <- c("(Intercept)", "x")
 bellmc1
-(bellmc2 <- vcovCL(m, cluster = ~ firm, type = "HC2", cadjust = TRUE))
-
+(bellmc2 <- vcovCL(m, cluster = ~ firm, type = "HC2", cadjust = FALSE))
 all.equal(bellmc1, bellmc2, tolerance = 1e-7)
 
 
