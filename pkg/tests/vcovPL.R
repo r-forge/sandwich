@@ -19,7 +19,7 @@ pm <- plm::plm(y ~ x, data = PetersenCL, model = "pooling", indexes = c("firm", 
 (pl2 <- plm::vcovSCC(pm))
 attr(pl2, "cluster") <- NULL
 
-all.equal(pl1, pl2, tolerance = 1e-5)
+all.equal(pl1, pl2)
 
 
 # vcovPL compared with Stata's xtscc (xtscc y x, lag(1) ase) standard errors
@@ -28,4 +28,4 @@ names(pl4) <- c("(Intercept)", "x")
 pl4
 (pl3 <- sqrt(diag(pl1)))
 
-all.equal(pl3, pl4, tolerance = 1e-5)
+all.equal(pl3, pl4, tolerance = 1e-6)
