@@ -14,7 +14,7 @@ vcovHC.default <- function(x,
 
 meatHC <- function(x, 
   type = c("HC3", "const", "HC", "HC0", "HC1", "HC2", "HC4", "HC4m", "HC5"),
-  omega = NULL)
+  omega = NULL, ...)
 {
   ## ensure that NAs are omitted
   if(is.list(x) && !is.null(x$na.action)) class(x$na.action) <- "omit"
@@ -32,7 +32,7 @@ meatHC <- function(x,
   ## the following might work, but "intercept" is also claimed for "coxph"
   ## res <- if(attr(terms(x), "intercept") > 0) estfun(x)[,1] else rowMeans(estfun(x)/X, na.rm = TRUE)
   ## hence better rely on
-  ef <- estfun(x)
+  ef <- estfun(x, ...)
   res <- rowMeans(ef/X, na.rm = TRUE)
   ## handle rows with just zeros
   res[apply(abs(ef) < .Machine$double.eps, 1L, all)] <- 0

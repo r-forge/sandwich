@@ -18,6 +18,9 @@ Changes in Version 2.4-1
     re-estimated on the bootstrap samples, e.g., for dummy variables of
     relatively rare events.
 
+  o meatHC() and meatHAC() now pass their "..." argument to estfun(), just
+    as meatCL(), meatPL(), and meatPC() do as well.
+
 
 Changes in Version 2.4-0
 
