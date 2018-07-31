@@ -1,13 +1,16 @@
 \name{vcovOPG}
 \alias{vcovOPG}
-\title{Outer Product of Gradients Covariance Matrix Estimation}
+\title{Outer-Product-of-Gradients Covariance Matrix Estimation}
+
 \description{
  Outer product of gradients estimation for the covariance matrix of the coefficient estimates
  in regression models.
 }
+
 \usage{
 vcovOPG(x, adjust = FALSE, \dots)
 }
+
 \arguments{
  \item{x}{a fitted model object.}
  \item{adjust}{logical. Should a finite sample adjustment be made?

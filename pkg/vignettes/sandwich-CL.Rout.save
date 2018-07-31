@@ -8,9 +8,9 @@
 > library("lmtest")
 Loading required package: zoo
 
-Attaching package: 'zoo'
+Attaching package: ‘zoo’
 
-The following objects are masked from 'package:base':
+The following objects are masked from ‘package:base’:
 
     as.Date, as.Date.numeric
 
@@ -19,9 +19,9 @@ The following objects are masked from 'package:base':
 
 > library("pcse")
 
-Attaching package: 'pcse'
+Attaching package: ‘pcse’
 
-The following object is masked from 'package:sandwich':
+The following object is masked from ‘package:sandwich’:
 
     vcovPC
 
@@ -30,19 +30,12 @@ The following object is masked from 'package:sandwich':
 Loading required package: Formula
 
 > library("pscl")
-Loading required package: MASS
 Classes and Methods for R developed in the
-
 Political Science Computational Laboratory
-
 Department of Political Science
-
 Stanford University
-
 Simon Jackman
-
 hurdle and zeroinfl functions by Achim Zeileis
-
 
 > panel.xyref <- function(x, y, ...) {
 +     panel.abline(h = 0.95, col = "slategray")
@@ -84,7 +77,7 @@ zero_institutions              0.00658    0.00209    3.15   0.0016 **
 zero_log(capital/employment)  -0.17431    0.06481   -2.69   0.0072 ** 
 zero_log(sales)                0.17601    0.02776    6.34  2.5e-10 ***
 ---
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 > se(vc_innov)
@@ -312,4 +305,4 @@ x            0.025338 0.025338  0.025241 0.025241
  *** Run successfully completed ***
 > proc.time()
    user  system elapsed 
-  7.492   0.748   8.240 
+  4.344   0.320   4.666 

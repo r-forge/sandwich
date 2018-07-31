@@ -9,16 +9,17 @@
 }
 
 \usage{
-\method{vcovBS}{lm}(x, cluster = NULL, R = 250, multi0 = TRUE, fix = FALSE, boot_type = "xy", \dots, 
-                    use = "pairwise.complete.obs", cl = NULL, parallel = "no")
+\method{vcovBS}{lm}(x, cluster = NULL, R = 250, multi0 = TRUE, fix = FALSE,
+  boot_type = "xy", \dots, use = "pairwise.complete.obs", cl = NULL, parallel = "no")
 }
 
 \arguments{
   \item{x}{a fitted model object.}
   \item{cluster}{a variable indicating the clustering of observations
-    a \code{list} (or \code{data.frame}) thereof, or a formula specifying which variables from
-    the fitted model should be used (see Examples). By default,
-    \code{attr(x, "cluster")} is used.}
+    a \code{list} (or \code{data.frame}) thereof, or a formula specifying
+    which variables from the fitted model should be used (see examples).
+    By default (\code{cluster = NULL}), either \code{attr(x, "cluster")} is used
+    (if any) or otherwise every observation is assumed to be its own cluster.}
   \item{R}{integer. Number of bootstrap replications.}
   \item{fix}{logical. Should the covariance matrix be fixed to be
     positive semi-definite in case it is not?}
@@ -27,11 +28,11 @@
     "wild-mammen", "wild-webb", or "wild-norm". See details for a description of each.}
   \item{multi0}{logical. Should the HC0 estimate be used for
     the final adjustment in multi-way clustered covariances?}
+  \item{\dots}{arguments passed to \code{meatCL}.}
   \item{use}{character. Specification passed to \code{\link[stats]{cov}} for
     handling missing coefficients/parameters.}
   \item{cl}{parallel cluster to be passed to \code{\link{boot}}. See that function for details.}
   \item{parallel}{parallel commands to be passed to \code{\link{boot}}. See that function for details.}
-  \item{\dots}{arguments passed to \code{meatCL}.}
 }
 
 \details{
@@ -79,9 +80,7 @@
   not positive-semidefinite. To force the covariance matrix to be
   positive-semidefinite, set
   \code{fix = TRUE}. Following Cameron et al. (2011), the eigendecomposition of the estimated
-  covariance matrix is used and any negative eigenvalue(s) are converted to zero.
-
-  
+  covariance matrix is used and any negative eigenvalue(s) are converted to zero. 
 }
 
 \value{
@@ -89,6 +88,12 @@
 }
 
 \references{
+Berger S, Graham N, Zeileis A (2017).
+  \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
+  Technical Report 2017-12,
+  \emph{Working Papers in Economics and Statistics, Research Platform Empirical and Experimental Economics, Universitaet Innsbruck.}
+  \url{http://EconPapers.RePEc.org/RePEc:inn:wpaper:2017-12}.
+
 Cameron AC, Gelbach JB, Miller DL (2008).
   \dQuote{Bootstrap-Based Improvements for Inference with Clustered Errors},
   \emph{The Review of Economics and Statistics}, \bold{90}(3),
@@ -96,13 +101,13 @@ Cameron AC, Gelbach JB, Miller DL (2008).
   \doi{10.3386/t0344}
   
 Cameron AC, Gelbach JB, Miller DL (2011).
-  \dQuote{Robust Inference With Multiway Clustering},
+  \dQuote{Robust Inference with Multiway Clustering},
   \emph{Journal of Business & Ecomomic Statistics}, \bold{29}(2),
   238--249.
   \doi{10.1198/jbes.2010.07136}
   
-Mammen, E. (1993). 
-  \dQuote{Bootstrap and wild bootstrap for high dimensional linear models.}, 
+Mammen, E (1993). 
+  \dQuote{Bootstrap and Wild Bootstrap for High Dimensional Linear Models.}, 
   \emph{The Annals of Statistics}, \bold{21}(1),
   255--285.
   \doi{10.1214/aos/1176349025}

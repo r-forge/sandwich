@@ -40,13 +40,24 @@ vcovBS(x, \dots)
   extracted, and finally the covariance computed with \code{\link[stats]{cov}}.
   
   Note: The \code{update} model is evaluated in the \code{environment(terms(x))}.
+  
+  A dedicated method for \code{\link[stats]{lm}} objects with more bootstrapping
+  options is available in \code{\link{vcovBS.lm}}.
 }
 
 \value{
   A matrix containing the covariance matrix estimate.
 }
 
-\seealso{\code{\link{vcovCL}}}
+\references{
+Berger S, Graham N, Zeileis A (2017).
+  \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
+  Technical Report 2017-12,
+  \emph{Working Papers in Economics and Statistics, Research Platform Empirical and Experimental Economics, Universitaet Innsbruck.}
+  \url{http://EconPapers.RePEc.org/RePEc:inn:wpaper:2017-12}.
+}
+
+\seealso{\code{\link{vcovBS.lm}}, \code{\link{vcovCL}}}
 
 \examples{
 ## Petersen's data

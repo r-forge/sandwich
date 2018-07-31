@@ -3,7 +3,7 @@
 \alias{meatPL}
 
 
-\title{Clustered Covariance Matrix Estimation for panel data}
+\title{Clustered Covariance Matrix Estimation for Panel Data}
 
 \description{
   Estimation of sandwich covariances a la Newey-West (1987)
@@ -78,26 +78,30 @@ meatPL(x, cluster = NULL, order.by = NULL,
 
 \references{
 Andrews DWK (1991).
-\dQuote{Heteroscedasticity and Autocorrelation Consistent Covariance
-  Matrix Estimation},
-\emph{Econometrica}, 817--858.
+  \dQuote{Heteroscedasticity and Autocorrelation Consistent Covariance Matrix Estimation},
+  \emph{Econometrica}, 817--858.
+
+Berger S, Graham N, Zeileis A (2017).
+  \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
+  Technical Report 2017-12,
+  \emph{Working Papers in Economics and Statistics, Research Platform Empirical and Experimental Economics, Universitaet Innsbruck.}
+  \url{http://EconPapers.RePEc.org/RePEc:inn:wpaper:2017-12}.
 
 Driscoll JC &  Kraay AC (1998).
-\dQuote{Consistent Covariance Matrix Estimation with Spatially Dependent
-Panel Data},
-\emph{The Review of Economics and Statistics}, \bold{80}(4), 549--560.
+  \dQuote{Consistent Covariance Matrix Estimation with Spatially Dependent Panel Data},
+  \emph{The Review of Economics and Statistics}, \bold{80}(4), 549--560.
 
 Hoechle D (2007).
-\dQuote{Robust Standard Errors for Panel Regressions with Cross-Sectional Dependence},
-\emph{Stata Journal}, \bold{7}(3), 281--312.
+  \dQuote{Robust Standard Errors for Panel Regressions with Cross-Sectional Dependence},
+  \emph{Stata Journal}, \bold{7}(3), 281--312.
 
 Newey WK & West KD (1987).
-\dQuote{Hypothesis Testing with Efficient Method of Moments Estimation},
-\emph{International Economic Review}, 777-787.
+  \dQuote{Hypothesis Testing with Efficient Method of Moments Estimation},
+  \emph{International Economic Review}, 777-787.
 
 Newey WK & West KD (1994).
-\dQuote{Automatic Lag Selection in Covariance Matrix Estimation},
-\emph{The Review of Economic Studies}, \bold{61}(4), 631--653.
+  \dQuote{Automatic Lag Selection in Covariance Matrix Estimation},
+  \emph{The Review of Economic Studies}, \bold{61}(4), 631--653.
   
 White H (1980).
   \dQuote{A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity},
@@ -115,7 +119,7 @@ Zeileis A (2006).
   \doi{10.18637/jss.v016.i09}
 }
 
-\seealso{\code{\link{vcovCL}}}
+\seealso{\code{\link{vcovCL}}, \code{\link{vcovPC}}}
 
 \examples{
 ## Petersen's data

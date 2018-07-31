@@ -17,11 +17,12 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \dots)
 \arguments{
   \item{x}{a fitted model object.}
   \item{cluster}{a variable indicating the clustering of observations
-    or a \code{list} (or \code{data.frame}) thereof. By default,
-    either \code{attr(x, "cluster")} is used. If that is also \code{NULL}
-    each observation is its own cluster.}
+    a \code{list} (or \code{data.frame}) thereof, or a formula specifying
+    which variables from the fitted model should be used (see examples).
+    By default (\code{cluster = NULL}), either \code{attr(x, "cluster")} is used
+    (if any) or otherwise every observation is assumed to be its own cluster.}
   \item{type}{a character string specifying the estimation type (HC0--HC3). 
-    The default is to use \code{"HC1"} for \code{"lm"} objects and
+    The default is to use \code{"HC1"} for \code{lm} objects and
     \code{"HC0"} otherwise.}
   \item{sandwich}{logical. Should the sandwich estimator be computed?
     If set to \code{FALSE} only the meat matrix is returned.}
@@ -43,8 +44,8 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \dots)
   
   The function \code{meatCL} is the work horse for estimating
   the meat of clustered sandwich estimators. \code{vcovCL} is a wrapper calling
-  \code{\link{sandwich}} and \code{\link{bread}} (Zeileis 2006). \code{vcovCL} is applicable beyond \code{lm} or \code{glm} class objects.
-  
+  \code{\link{sandwich}} and \code{\link{bread}} (Zeileis 2006).
+  \code{vcovCL} is applicable beyond \code{lm} or \code{glm} class objects.
 
   \code{\link{bread}} and \code{\link{meat}} matrices are multiplied to
   construct clustered sandwich estimators.
@@ -71,10 +72,11 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \dots)
   bias adjustment can be employed.
   HC2 and HC3 types of bias adjustment are geared towards the linear
   model, but they are also applicable for GLMs (see Bell and McCaffrey
-  (2002) and Kauermann and Carroll (2001) for details).
-  A precondition for HC2 and HC3 types of bias adjustment is the existence
-  of a hat matrix or a weighted version of the hat matrix for GLMs,
-  respectively.
+  2002, and Kauermann and Carroll 2001, for details).
+  A precondition for HC2 and HC3 types of bias adjustment is the availability
+  of a hat matrix (or a weighted version therof for GLMs) and hence
+  these two types are currently only implemented for \code{\link{lm}}
+  and \code{\link{glm}} objects.
   
   The \code{cadjust} argument allows to
   switch the cluster bias adjustment factor \eqn{G/(G-1)} on and
@@ -83,12 +85,9 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \dots)
   small-sample modifications.
 
   Cameron et al. (2011) observe that sometimes the covariance matrix is
-  not positive-semidefinite. To force the covariance matrix to be
-  positive-semidefinite, set
-  \code{fix = TRUE}. Following Cameron et al. (2011), the eigendecomposition of the estimated
-  covariance matrix is used and any negative eigenvalue(s) are converted to zero.
-
-  
+  not positive-semidefinite and recommend to employ the eigendecomposition of the estimated
+  covariance matrix, setting any negative eigenvalue(s) to zero. This fix
+  is applied, if necessary, when \code{fix = TRUE} is specified.
 }
 
 \value{
@@ -96,6 +95,12 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \dots)
 }
 
 \references{
+Berger S, Graham N, Zeileis A (2017).
+  \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
+  Technical Report 2017-12,
+  \emph{Working Papers in Economics and Statistics, Research Platform Empirical and Experimental Economics, Universitaet Innsbruck.}
+  \url{http://EconPapers.RePEc.org/RePEc:inn:wpaper:2017-12}.
+
 Cameron AC, Gelbach JB, Miller DL (2008).
   \dQuote{Bootstrap-Based Improvements for Inference with Clustered Errors},
   \emph{The Review of Economics and Statistics}, \bold{90}(3),
@@ -103,7 +108,7 @@ Cameron AC, Gelbach JB, Miller DL (2008).
   \doi{10.3386/t0344}
   
 Cameron AC, Gelbach JB, Miller DL (2011).
-  \dQuote{Robust Inference With Multiway Clustering},
+  \dQuote{Robust Inference with Multiway Clustering},
   \emph{Journal of Business & Ecomomic Statistics}, \bold{29}(2),
   238--249.
   \doi{10.1198/jbes.2010.07136}
@@ -156,11 +161,13 @@ m <- lm(y ~ x, data = PetersenCL)
 
 ## clustered covariances
 ## one-way
-vcovCL(m, cluster = PetersenCL$firm)
+vcovCL(m, cluster = ~ firm)
+vcovCL(m, cluster = PetersenCL$firm) ## same
 ## one-way with HC2
-vcovCL(m, cluster = PetersenCL$firm, type = "HC2")
+vcovCL(m, cluster = ~ firm, type = "HC2")
 ## two-way
-vcovCL(m, cluster = PetersenCL[, c("firm", "year")])
+vcovCL(m, cluster = ~ firm + year)
+vcovCL(m, cluster = PetersenCL[, c("firm", "year")]) ## same
 
 ## comparison with cross-section sandwiches
 ## HC0
