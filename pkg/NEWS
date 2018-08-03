@@ -12,6 +12,14 @@ Changes in Version 2.4-1
     clustering variable, their interactions were sometimes not computed
     correctly.
 
+  o In vcovCL() for multi-way clustering without cluster adjustment, all
+    cluster adjustment factors are omitted entirely. In previous versions they
+    were scaled with (Gmin - 1)/Gmin, where Gmin is the minimal number of
+    clusters across clustering dimensions.
+  
+  the cluster adjustment factors in multi-way clustering are
+    now computed in the same way as in 
+
   o Default handling of missing parameter estimates in vcovBS() changed
     from "everything" to "pairwise.complete.obs" and allow modification
     of cov(..., use = ...). This is relevant if not all parameters can be

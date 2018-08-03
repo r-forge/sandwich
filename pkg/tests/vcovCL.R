@@ -43,13 +43,13 @@ all.equal(cl7, cl8)
 
 # vcovCL compared with BMlmSE (Bell-McCaffrey standard errors as described in Imbens and Kolesar 2016,
 # https://github.com/kolesarm/Robust-Small-Sample-Standard-Errors)
-# BMlmSE(m, clustervar = factor(PetersenCL$firm), IK = FALSE)
+# BMlmSE(m, clustervar = factor(PetersenCL$firm))$vcov
 
-bellmc1 <- matrix(c(4.494487e-03, -6.592912e-05, -6.592912e-05, 2.568236e-03), nrow = 2)
+bellmc1 <- matrix(c(0.0044944872570532, -6.59291186924326e-05, -6.59291186924326e-05, 0.00256823604178553), nrow = 2)
 rownames(bellmc1) <- colnames(bellmc1) <- c("(Intercept)", "x")
 bellmc1
-(bellmc2 <- vcovCL(m, cluster = ~ firm, type = "HC2", cadjust = FALSE))
-all.equal(bellmc1, bellmc2, tolerance = 1e-7)
+(bellmc2 <- vcovCL(m, cluster = ~ firm, type = "HC2"))
+all.equal(bellmc1, bellmc2)
 
 
 data("InstInnovation", package = "sandwich")

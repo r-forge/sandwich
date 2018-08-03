@@ -364,44 +364,52 @@ different flavors of bias corrections. The bias correction factor can be split
 in two parts, a ``cluster bias correction'' and an ``HC bias correction''. The
 cluster bias correction captures the effect of having just a finite number of
 clusters $G$ and it is defined as 
-\begin{equation} \label{eq:biasadj0}
+\begin{equation} \label{eq:biasadjc}
  \frac{G}{G - 1}.
 \end{equation} 
 The HC bias correction can be applied additionally similar to the corresponding
 cross-section data estimators. HC0 to HC3 bias corrections for cluster $g$ are
 defined as
-\begin{eqnarray} \label{eq:biasadj1}
-  \mathrm{HC0:} &  & 1 \\  \label{eq:biasadj2}
-  \mathrm{HC1:} &  & \frac{n}{n - k} \\  \label{eq:biasadj3}
-  \mathrm{HC2:} &  & (I_{n_{g}} - H_{gg})^{-0.5} \\  \label{eq:biasadj4}
-  \mathrm{HC3:} &  & (I_{n_{g}} - H_{gg})^{-1}, 
+\begin{eqnarray} \label{eq:biasadj0}
+  \mathrm{HC0:} &  & 1 \\  \label{eq:biasadj1}
+  \mathrm{HC1:} &  & \frac{n}{n - k} \\  \label{eq:biasadj2}
+  \mathrm{HC2:} &  & \frac{G - 1}{G} \cdot (I_{n_{g}} - H_{gg})^{-1} \\  \label{eq:biasadj3}
+  \mathrm{HC3:} &  & \frac{G - 1}{G} \cdot (I_{n_{g}} - H_{gg})^{-2}, 
 \end{eqnarray}  
 where $n$ is the number of observations and $k$ is the number of estimated parameters,
 $I_{n_{g}}$ is an identity matrix of size $n_{g}$, $H_{gg}$ is the block from the hat
-matrix $H$ that pertains to cluster~$g$.
+matrix $H$ that pertains to cluster~$g$. To apply these factors to
+$\hat M_\mathrm{CL}$ (Equation~\ref{eq:meatCL}), their square root has to be applied
+to each of the $\psi$ factors in the outer product
+\citep[see][Section~VI.B for the linear regression case]{hac:Cameron+Miller:2015}.
 
-Thus, it is completely straightforward to add the factors for HC0 and HC1
-to $\hat M_\mathrm{CL}$ (Equation~\ref{eq:meatCL}). However, it is more demanding
-to apply the cluster generalizations of HC2 and HC3
-\citep[due to][]{hac:Kauermann+Carroll:2001,hac:Bell+McCaffrey:2002} for which
-the correction factors from Equations~\ref{eq:biasadj3} and~\ref{eq:biasadj4} have
-to be applied to the (working) residuals prior to computing the clustered meat matrix.
-More precisely, the empirical working residuals $r(y_{g}, x_{g}^\top \hat \theta)$
-in group $g$ are adjusted via
+Thus, it is completely straightforward to incorporate the scalar factors for HC0 and HC1.
+However, the cluster generalizations of HC2 and HC3
+\citep[due to][]{hac:Kauermann+Carroll:2001,hac:Bell+McCaffrey:2002}
+require some more work. More precisely, the square root of the correction factors from
+Equations~\ref{eq:biasadj2} and~\ref{eq:biasadj3} has to be applied to the (working)
+residuals prior to computing the clustered meat matrix. Thus, the empirical working
+residuals $r(y_{g}, x_{g}^\top \hat \theta)$ in group $g$ are adjusted via
 \begin{equation} \label{eq:fact-adj}
-  \tilde r(y_{g}, x_{g}^\top \hat \theta) = (I_{n_{g}} - H_{gg})^\alpha \cdot r(y_{g}, x_{g}^\top \hat \theta)
+  \tilde r(y_{g}, x_{g}^\top \hat \theta) = \sqrt{\frac{G - 1}{G}} \cdot (I_{n_{g}} - H_{gg})^{-\alpha/2} \cdot r(y_{g}, x_{g}^\top \hat \theta)
 \end{equation}  
-with $\alpha = -0.5$ for HC2 and $\alpha = -1$ for HC3, before obtaining the adjusted
+with $\alpha = 1$ for HC2 and $\alpha = 2$ for HC3, before obtaining the adjusted
 empirical estimating functions based on Equation~\ref{eq:fact} as
 \begin{equation} \label{eq:fact-reg}
 \tilde \psi(y_i, x_i, \hat\theta) = \tilde r(y_{i}, x_{i}^\top \hat \theta) \cdot x_i.
 \end{equation}  
 Then these adjusted estimating functions can be employed ``as usual'' to obtain the
-$\hat M_\mathrm{CL}$.
+$\hat M_\mathrm{CL}$. Note that, by default, adding the cluster adjustment factor
+$G/(G-1)$ from Equation~\ref{eq:biasadjc} simply cancels out the factor $(G-1)/G$
+from the HC2/HC3 adjustment factor. Originally, \cite{hac:Bell+McCaffrey:2002} recommended
+to use the factor $(G-1)/G$ for HC3 (i.e., without cluster adjustment) but not for
+HC2 (i.e., with cluster adjustment). Here, we handle both cases in the same way so
+that both collapse to the traditional HC2/HC3 estimators when $G = n$ (i.e., where
+every observation is its own cluster).
 
-Note that in terms of methods in \proglang{R}, it is not sufficient to have just \code{estfun()}
-and\linebreak
-\code{model.matrix()} extractors but an extractor for (blocks of) the full hat matrix
+Note that in terms of methods in \proglang{R}, it is not sufficient for the cluster HC2/HC3
+estimators to have just \code{estfun()}
+and \code{model.matrix()} extractors but an extractor for (blocks of) the full hat matrix
 are required as well. Currently, no such extractor method is available in base \proglang{R}
 (as \code{hatvalues()} just extracts $\mathrm{diag} H$) and hence HC2 and HC3 in \code{meatCL()}
 are just available for \code{lm} and \code{glm} objects.
@@ -591,9 +599,9 @@ default. Thus, by default, the clustered covariance estimator collapses to
 the basic sandwich estimator.
 
 The bias correction is composed of two parts that can be switched on and off
-separately: First, the cluster bias correction from Equation~\ref{eq:biasadj0}
+separately: First, the cluster bias correction from Equation~\ref{eq:biasadjc}
 is controlled by \code{cadjust}. Second, the HC bias correction from
-Equations~\ref{eq:biasadj1}--\ref{eq:biasadj4} is specified via \code{type}
+Equations~\ref{eq:biasadj0}--\ref{eq:biasadj3} is specified via \code{type}
 with the default to use \code{"HC1"} for \code{lm} objects and
 \code{"HC0"} otherwise. Moreover, \code{type = "HC2"} and \code{"HC3"}
 are only available for \code{lm} and \code{glm} objects as they require

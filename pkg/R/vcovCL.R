@@ -162,6 +162,11 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
           efi[ij, ] <- drop(Hij %*% res[ij]) * X[ij, , drop = FALSE]
         }
       }
+
+      ## "inverse" cluster adjustment that Bell & McCaffrey (2002) and hence also
+      ## Cameron & Miller (2005, Eq. 25) recommend for HC3 (but not HC2)
+      ## -> canceled out again if cadjust = TRUE
+      efi <- sqrt((g[i] - 1L)/g[i]) * efi
     }
 
     ## aggregate within cluster levels      
