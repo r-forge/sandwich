@@ -101,5 +101,3 @@ vcovCL(o, cluster = ~ company + year, type = "HC3", cadjust = TRUE, multi0 = FAL
 vcovCL(o, cluster = ~ company + year, type = "HC3", cadjust = FALSE, multi0 = TRUE)
 vcovCL(o, cluster = ~ company + year, type = "HC3", cadjust = FALSE, multi0 = FALSE)
 
-
-

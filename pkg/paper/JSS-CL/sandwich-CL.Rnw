@@ -7,7 +7,8 @@
 %% for internal use
 \newcommand{\fixme}[1]{\emph{\marginpar{FIXME} (#1)}}
 \newcommand{\readme}[1]{\emph{\marginpar{README} (#1)}}
-\newcommand{\new}[1]{\textcolor{blue}{#1}} 
+\definecolor{Green}{rgb}{0,0.5,0}
+\newcommand{\new}[1]{\textcolor{Green}{#1}} 
 
 \author{Susanne Berger\\University of Innsbruck \And 
         Nathaniel Graham\\Texas A\&M International University \And
@@ -474,47 +475,58 @@ different flavors of bias corrections. The bias correction factor can be split
 in two parts, a ``cluster bias correction'' and an ``HC bias correction''. The
 cluster bias correction captures the effect of having just a finite number of
 clusters $G$ and it is defined as 
-\begin{equation} \label{eq:biasadj0}
+\begin{equation} \label{eq:biasadjc}
  \frac{G}{G - 1}.
 \end{equation} 
 The HC bias correction can be applied additionally in a manner similar to the corresponding
 cross-section data estimators. HC0 to HC3 bias corrections for cluster $g$ are
 defined as
-\begin{eqnarray} \label{eq:biasadj1}
-  \mathrm{HC0:} &  & 1 \\  \label{eq:biasadj2}
-  \mathrm{HC1:} &  & \frac{n}{n - k} \\  \label{eq:biasadj3}
-  \mathrm{HC2:} &  & (I_{n_{g}} - H_{gg})^{-0.5} \\  \label{eq:biasadj4}
-  \mathrm{HC3:} &  & (I_{n_{g}} - H_{gg})^{-1}, 
+\begin{eqnarray} \label{eq:biasadj0}
+  \mathrm{HC0:} &  & 1 \\  \label{eq:biasadj1}
+  \mathrm{HC1:} &  & \frac{n}{n - k} \\  \label{eq:biasadj2}
+  \mathrm{HC2:} &  & \new{\frac{G - 1}{G} \cdot (I_{n_{g}} - H_{gg})^{-1}} \\  \label{eq:biasadj3}
+  \mathrm{HC3:} &  & \new{\frac{G - 1}{G} \cdot (I_{n_{g}} - H_{gg})^{-2}}, 
 \end{eqnarray}  
 where $n$ is the number of observations and $k$ is the number of estimated parameters,
 $I_{n_{g}}$ is an identity matrix of size $n_{g}$, $H_{gg}$ is the block from the hat
-matrix $H$ that pertains to cluster~$g$. \new{In case of a linear model, the hat (or projection) matrix is defined as $H = X (X^\top X)^{-1} X^\top$, with model matrix $X$. A generalized hat matrix is available for generalized linear models.}
+matrix $H$ that pertains to cluster~$g$. \new{In case of a linear model, the hat
+(or projection) matrix is defined as $H = X (X^\top X)^{-1} X^\top$, with model matrix $X$.
+A generalized hat matrix is available for generalized linear models.
+To apply these factors to $\hat M_\mathrm{CL}$ (Equation~\ref{eq:meatCL}), their square
+root has to be applied to each of the $\psi$ factors in the outer product
+\citep[see][Section~VI.B for the linear regression case]{hac:Cameron+Miller:2015}.}
 
-Thus, it is completely straightforward to add the factors for HC0 and HC1
-to $\hat M_\mathrm{CL}$ (Equation~\ref{eq:meatCL}). However, it is more demanding
-to apply the cluster generalizations of HC2 and HC3
-\citep[due to][]{hac:Kauermann+Carroll:2001,hac:Bell+McCaffrey:2002} for which
-the correction factors from Equations~\ref{eq:biasadj3} and~\ref{eq:biasadj4} have
-to be applied to the (working) residuals prior to computing the clustered meat matrix.
-More precisely, the empirical working residuals $r(y_{g}, x_{g}^\top \hat \theta)$
-in group $g$ are adjusted via
+Thus, it is completely straightforward to incorporate the scalar factors for HC0 and HC1.
+However, the cluster generalizations of HC2 and HC3
+\citep[due to][]{hac:Kauermann+Carroll:2001,hac:Bell+McCaffrey:2002}
+require some more work. More precisely, the square root of the correction factors from
+Equations~\ref{eq:biasadj2} and~\ref{eq:biasadj3} has to be applied to the (working)
+residuals prior to computing the clustered meat matrix. Thus, the empirical working
+residuals $r(y_{g}, x_{g}^\top \hat \theta)$ in group $g$ are adjusted via
 \begin{equation} \label{eq:fact-adj}
-  \tilde r(y_{g}, x_{g}^\top \hat \theta) = (I_{n_{g}} - H_{gg})^\alpha \cdot r(y_{g}, x_{g}^\top \hat \theta)
+  \tilde r(y_{g}, x_{g}^\top \hat \theta) = \new{\sqrt{\frac{G - 1}{G}} \cdot (I_{n_{g}} - H_{gg})^{-\alpha/2} \cdot r(y_{g}, x_{g}^\top \hat \theta)}
 \end{equation}  
-with $\alpha = -0.5$ for HC2 and $\alpha = -1$ for HC3, before obtaining the adjusted
+\new{with $\alpha = 1$ for HC2 and $\alpha = 2$ for HC3}, before obtaining the adjusted
 empirical estimating functions based on Equation~\ref{eq:fact} as
 \begin{equation} \label{eq:fact-reg}
 \tilde \psi(y_i, x_i, \hat\theta) = \tilde r(y_{i}, x_{i}^\top \hat \theta) \cdot x_i.
 \end{equation}  
 Then these adjusted estimating functions can be employed ``as usual'' to obtain the
-$\hat M_\mathrm{CL}$.
+$\hat M_\mathrm{CL}$. Note that, by default, adding the cluster adjustment factor
+$G/(G-1)$ from Equation~\ref{eq:biasadjc} simply cancels out the factor $(G-1)/G$
+from the HC2/HC3 adjustment factor. Originally, \cite{hac:Bell+McCaffrey:2002} recommended
+to use the factor $(G-1)/G$ for HC3 (i.e., without cluster adjustment) but not for
+HC2 (i.e., with cluster adjustment). Here, we handle both cases in the same way so
+that both collapse to the traditional HC2/HC3 estimators when $G = n$ (i.e., where
+every observation is its own cluster).
 
-Note that in terms of methods in \proglang{R}, it is not sufficient to have just \code{estfun()}
-and\linebreak
-\code{model.matrix()} extractors but an extractor for (blocks of) the full hat matrix
+Note that in terms of methods in \proglang{R}, it is not sufficient for the cluster HC2/HC3
+estimators to have just \code{estfun()}
+and \code{model.matrix()} extractors but an extractor for (blocks of) the full hat matrix
 are required as well. Currently, no such extractor method is available in base \proglang{R}
 (as \code{hatvalues()} just extracts $\mathrm{diag} H$) and hence HC2 and HC3 in \code{meatCL()}
 are just available for \code{lm} and \code{glm} objects.
+
 
 \subsubsection{Two-way and multi-way clustered covariances}
 Certainly, there can be more than one cluster dimension, as for example observations that are characterized by housholds within states or companies within industries. It can therefore sometimes be helpful that one-way clustered covariances can be extended to so-called multi-way clustering as shown by \cite{hac:Miglioretti+Heagerty:2007}, \cite{hac:Thompson:2011} and \cite{hac:Cameron+Gelbach+Miller:2011}.
@@ -703,12 +715,14 @@ The \code{cluster} argument allows to supply either one cluster vector or
 a list (or data frame) of several cluster variables. If
 no cluster variable is supplied, each observation is its own cluster per
 default. Thus, by default, the clustered covariance estimator collapses to
-the basic sandwich estimator.
+the basic sandwich estimator. \new{The \code{cluster} specification may also be
+a \code{formula} if \code{expand.model.frame(x, cluster)} works for the model
+object \code{x}.}
 
 The bias correction is composed of two parts that can be switched on and off
-separately: First, the cluster bias correction from Equation~\ref{eq:biasadj0}
+separately: First, the cluster bias correction from Equation~\ref{eq:biasadjc}
 is controlled by \code{cadjust}. Second, the HC bias correction from
-Equations~\ref{eq:biasadj1}--\ref{eq:biasadj4} is specified via \code{type}
+Equations~\ref{eq:biasadj0}--\ref{eq:biasadj3} is specified via \code{type}
 with the default to use \code{"HC1"} for \code{lm} objects and
 \code{"HC0"} otherwise. Moreover, \code{type = "HC2"} and \code{"HC3"}
 are only available for \code{lm} and \code{glm} objects as they require
@@ -762,8 +776,9 @@ while \code{order.by} specifies the time variable. If only one of the two variab
 provided, then it is assumed that observations are ordered within the other variable.
 And if neither is provided, only one cluster is used for all observations resulting
 in the standard \citep{hac:Newey+West:1987} estimator. Finally, \code{cluster} can
-also be a list with both variables: the cluster/group/id and the time/ordering variable,
-respectively.
+also be a list \new{or formula} with both variables: the cluster/group/id and the time/ordering variable,
+respectively. \new{(The formula specification requires again that \code{expand.model.frame(x, cluster)}
+works for the model object \code{x}.)}
 
 The weights in the panel sandwich covariance are set up by means of a \code{kernel} function
 along with a bandwidth \code{bw} or the corresponding \code{lag}. All kernels described
@@ -811,6 +826,51 @@ while the latter is less memory-intensive so that it can be applied to larger
 numbers of observations.
 
 \subsection{Further functionality: Bootstrap covariances}
+
+\new{
+As an alternative to the asymptotic approaches to clustered covariances in \code{vcovCL()},
+\code{vcovBS()} provides a bootstrap solution. Currently, a default method is available as
+well as a dedicated method for \code{lm} objects with more bootstrapping options.
+}
+
+\new{
+The default method samples clusters (where each observation is its own cluster by default),
+i.e., case-based ``xy'' resampling. For obtaining a covariance matrix estimate it is assumed that an
+\code{update()} of the model with the resampled subset can be obtained, the \code{coef()}
+extracted, and finally the covariance computed with \code{cov()}.
+}
+
+\new{
+The method \code{lm} method provides additional bootstrapping variants and computes the
+bootstrapped coefficient estimates somewhat more efficiently using \code{lm.fit()} or
+\code{qr.coef()} rather than \code{update()}. The default variant, however, is also
+case-based resampling (\code{boot\_type = "xy"}). Alternative \code{boot\_type} specifications are
+}
+\begin{itemize}
+  \item \new{\code{"residual"}. The residual cluster bootstrap resamples the residuals (as above,
+    by cluster) which are subsequently added to the fitted values to obtain the bootstrapped
+    response variable. Coefficients can then be estimated using \code{qr.coef()}, reusing the
+    QR decomposition from the original fit. As \cite{hac:Cameron+Gelbach+Miller:2008} point out,
+    the residual cluster bootstrap is not well-defined when the clusters are unbalanced as 
+    residuals from one cluster cannot be easily assigned to another cluster with different size.
+    Hence a warning is issued in that case.}
+  \item \new{\code{"wild"} (or equivalently \code{"wild-rademacher"} or \code{"rademacher"}).
+    The wild cluster bootstrap does not actually resample the residuals but instead reforms the
+    dependent variable by multiplying the residual by a randomly drawn value and adding the
+    result to the fitted value \citep[see][]{hac:Cameron+Gelbach+Miller:2008}. By default, the
+    factors are drawn from Rademacher distribution, i.e., selecting either $-1$ or $1$ with
+    probability $0.5$.}
+  \item \new{\code{"mammen"} (or \code{"wild-mammen"}). This draws the wild bootstrap factors as
+    suggested by \cite{hac:Mammen:1993}).}
+  \item \new{\code{"webb"} (or \code{"wild-webb"}). This implements the six-point distribution
+    suggested by \cite{hac:Webb:2014}, which may improve inference when the number of clusters is small.}
+  \item \new{\code{"norm"} (or \code{"wild-norm"}). The standard normal/Gaussian distribution
+    is used for drawing the wild bootstrap factors.}
+  \item \new{User-defined function. This should take a single argument \code{n}, the number of
+    random values to produce, and return a vector of random factors of corresponding length.}
+\end{itemize}  
+
+
 
 \section{Illustrations} \label{sec:illu}
 
@@ -870,11 +930,11 @@ h_innov <- hurdle(
 The partial Wald tests for all coefficients based on clustered standard errors
 can be obtained by using \code{coeftest()} from \pkg{lmtest} \citep{hac:Zeileis+Hothorn:2002} and setting
 \code{vcov = vcovCL} and providing the company-level clustering (with a total of 803 clusters)
-via \code{cluster = InstInnovation$company}.
+via \code{cluster = ~ company}.
 <<innovation-coeftest>>=
 library("sandwich")
 library("lmtest")
-coeftest(h_innov, vcov = vcovCL, cluster = InstInnovation$company)
+coeftest(h_innov, vcov = vcovCL, cluster = ~ company)
 @
 This shows that institutional owners are have a small but positive impact in both
 submodels but that only the coefficient in the zero hurdle is significant.
@@ -888,8 +948,8 @@ set.seed(0)
 vc <- list(
   "standard" = vcov(h_innov),
   "basic" = sandwich(h_innov),
-  "CL-1" = vcovCL(h_innov, cluster = InstInnovation$company),
-  "boot" = vcovBS(h_innov, cluster = InstInnovation$company)
+  "CL-1" = vcovCL(h_innov, cluster = ~ company),
+  "boot" = vcovBS(h_innov, cluster = ~ company)
 )
 se <- function(vcov) sapply(vcov, function(x) sqrt(diag(x)))
 se(vc)
@@ -942,8 +1002,8 @@ The \pkg{multiwayvcov} results can be replicated as follows.
 <<petersen-comparison1>>=
 library("multiwayvcov")
 se(list(
-  "sandwich" = vcovCL(p_lm, cluster = PetersenCL$firm),
-  "multiwayvcov" = cluster.vcov(p_lm, cluster = PetersenCL$firm)
+  "sandwich" = vcovCL(p_lm, cluster = ~ firm),
+  "multiwayvcov" = cluster.vcov(p_lm, cluster = ~ firm)
 ))
 @ 
 And the \pkg{plm} and \pkg{geepack} results can be replicated with the following code.
@@ -963,7 +1023,7 @@ vcov.geeglm <- function(object) {
 p_gee <- geeglm(y ~ x, data = PetersenCL, id = PetersenCL$firm,
  corstr = "independence", family = gaussian)
 se(list(
-  "sandwich" = vcovCL(p_lm, cluster = PetersenCL$firm,
+  "sandwich" = vcovCL(p_lm, cluster = ~ firm,
     cadjust = FALSE, type = "HC0"),
   "plm" = vcovHC(p_plm, cluster = "group"),
   "geepack" = vcov(p_gee)
@@ -978,8 +1038,8 @@ results of \code{cluster.vcov()} from \pkg{multiwayvcov}. Only the default for t
 \cite{hac:Ma:2014} is different.
 <<petersen-twocl>>=
 se(list(
-  "sandwich" = vcovCL(p_lm, cluster = PetersenCL[, 1:2], multi0 = TRUE),
-  "multiwayvcov" = cluster.vcov(p_lm, cluster = PetersenCL[, 1:2])
+  "sandwich" = vcovCL(p_lm, cluster = ~ firm + year, multi0 = TRUE),
+  "multiwayvcov" = cluster.vcov(p_lm, cluster = ~ firm + year)
 ))
 @  
 However, note that the results should be regarded with caution as cluster dimension \code{year} has a total
@@ -994,7 +1054,7 @@ defaulting to a HC0-type adjustment. In \pkg{sandwich} the \code{vcovPL()} funct
 replication, setting \code{adjust = FALSE} to match the HC0 (rather than HC1) adjustment.
 <<petersen-comparison3>>=
 se(list(
-  "sandwich" = vcovPL(p_lm, cluster = PetersenCL$firm, adjust = FALSE),
+  "sandwich" = vcovPL(p_lm, cluster = ~ firm + year, adjust = FALSE),
   "plm" = vcovSCC(p_plm)
 ))
 @
@@ -1007,8 +1067,7 @@ For the balanced Petersen data the two \code{vcovPC()} functions from \pkg{sandw
 <<petersen-comparison4>>=
 library("pcse")
 se(list(
-  "sandwich" = sandwich::vcovPC(p_lm, cluster = PetersenCL$firm,
-    order.by = PetersenCL$year),
+  "sandwich" = sandwich::vcovPC(p_lm, cluster = ~ firm + year),
   "pcse" = pcse::vcovPC(p_lm, groupN = PetersenCL$firm,
     groupT = PetersenCL$year)
 ))
@@ -1023,11 +1082,11 @@ pu_lm <- lm(y ~ x, data = PU)
 and again, panel-corrected standard errors from \pkg{sandwich} are equivalent to those from \pkg{pcse}.
 <<petersen-unbalanced2>>=
 se(list(
-  "sandwichT" = sandwich::vcovPC(pu_lm, cluster = PU$firm,
-    order.by = PU$year, pairwise = TRUE),
+  "sandwichT" = sandwich::vcovPC(pu_lm, cluster = ~ firm + year,
+    pairwise = TRUE),
   "pcseT" = pcse::vcovPC(pu_lm, PU$firm, PU$year, pairwise = TRUE),
-  "sandwichF" = sandwich::vcovPC(pu_lm, cluster = PU$firm,
-    order.by = PU$year, pairwise = FALSE),
+  "sandwichF" = sandwich::vcovPC(pu_lm, cluster = ~ firm + year,
+    pairwise = FALSE),
   "pcseF" = pcse::vcovPC(pu_lm, PU$firm, PU$year, pairwise = FALSE)
 ))
 @ 
@@ -1190,7 +1249,6 @@ covariances for the following settings.
    \item Experiment IV: GLMs with HC0--HC3 bias corrections.
 \end{itemize}
 
-\pagebreak
 
 \subsubsection{Experiment I}
 

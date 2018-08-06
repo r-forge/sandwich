@@ -6,11 +6,28 @@ vcovBS <- function(x, ...) {
 
 vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, ..., use = "pairwise.complete.obs")
 {
-  ## cluster variable (default 1:n)
+  ## cluster can either be supplied explicitly or
+  ## be an attribute of the model...FIXME: other specifications?
+  if (is.null(cluster)) cluster <- attr(x, "cluster")
+
+  ## resort to cross-section if no clusters are supplied
   if(is.null(cluster)) {
     cluster <- try(1L:NROW(estfun(x)), silent = TRUE)
     if(inherits(cluster, "try-error")) cluster <- 1L:NROW(model.frame(x))
   }
+
+  ## process formula 'cluster' specification
+  if(inherits(cluster, "formula")) {
+    cluster_tmp <- expand.model.frame(x, cluster, na.expand = FALSE)
+    cluster <- model.frame(cluster, cluster_tmp, na.action = na.pass)[[1L]]
+  }
+  
+  ## handle omitted or excluded observations
+  if((n != NROW(cluster)) && !is.null(x$na.action) && (class(x$na.action) %in% c("exclude", "omit"))) {
+    cluster <- cluster[-x$na.action]
+  }
+
+  ## split clusters
   cl <- split(seq_along(cluster), cluster)
   
   ## set up coefficient matrix

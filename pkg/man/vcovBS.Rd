@@ -19,8 +19,11 @@ vcovBS(x, \dots)
 
 \arguments{
   \item{x}{a fitted model object.}
-  \item{cluster}{a variable indicating the clustering of observations.
-    By default each observation is its own cluster.}
+  \item{cluster}{a variable indicating the clustering of observations,
+    or a formula specifying which variables from the fitted model should be used
+    (provided \code{\link[stats]{expand.model.frame}} works for \code{x}).
+    By default (\code{cluster = NULL}), either \code{attr(x, "cluster")} is used
+    (if any) or otherwise every observation is assumed to be its own cluster.}
   \item{R}{integer. Number of bootstrap replications.}
   \item{start}{logical. Should \code{coef(x)} be passed as \code{start}
     to the \code{update(x, subset = ...)} call? In case the model \code{x}
@@ -68,8 +71,8 @@ m <- lm(y ~ x, data = PetersenCL)
 set.seed(1)
 cbind(
   "classical" = sqrt(diag(vcov(m))),
-  "HC-cluster" = sqrt(diag(vcovCL(m, cluster = PetersenCL$firm))),
-  "BS-cluster" = sqrt(diag(vcovBS(m, cluster = PetersenCL$firm)))
+  "HC-cluster" = sqrt(diag(vcovCL(m, cluster = ~ firm))),
+  "BS-cluster" = sqrt(diag(vcovBS(m, cluster = ~ firm)))
 )
 }
 

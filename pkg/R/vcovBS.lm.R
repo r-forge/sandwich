@@ -34,15 +34,12 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, multi0 = TRUE,
   vcov_sign <- sapply(acc, function(i) (-1) ** (length(i) + 1))
   
   # Drop the original cluster vars from the combinations list
-  acc <- acc[-1:-cluster_dims]
+  acc <- acc[-(1L:cluster_dims)]
   if(debug) print(acc)
   
   # Handle omitted or excluded observations
-  if(n != NROW(cluster) && !is.null(x$na.action)) {
-    if(class(x$na.action) %in% c("exclude", "omit")) {
-      cluster <- cluster[-x$na.action,]
-    }
-    cluster <- as.data.frame(cluster)  # FIXME: silly error somewhere
+  if((n != NROW(cluster)) && !is.null(x$na.action) && (class(x$na.action) %in% c("exclude", "omit"))) {
+    cluster <- cluster[-x$na.action, , drop = FALSE]
   }
   
   if(NROW(cluster) != n) stop("number of observations in 'cluster' and model do not match")

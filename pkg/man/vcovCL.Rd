@@ -16,7 +16,7 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \dots)
 
 \arguments{
   \item{x}{a fitted model object.}
-  \item{cluster}{a variable indicating the clustering of observations
+  \item{cluster}{a variable indicating the clustering of observations,
     a \code{list} (or \code{data.frame}) thereof, or a formula specifying
     which variables from the fitted model should be used (see examples).
     By default (\code{cluster = NULL}), either \code{attr(x, "cluster")} is used
@@ -83,6 +83,17 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \dots)
   off (where \eqn{G} is the number of clusters in a cluster dimension \eqn{g})
   See Cameron et al. (2008) and Cameron et al. (2011) for more details about
   small-sample modifications.
+
+  The \code{cluster} specification can be made in a number of ways: The \code{cluster}
+  can be a single variable or a \code{list}/\code{data.frame} of multiple
+  clustering variables. If \code{\link[stats]{expand.model.frame}} works
+  for the model object \code{x}, the \code{cluster} can also be a \code{formula}.
+  By default (\code{cluster = NULL}), \code{attr(x, "cluster")} is checked and
+  used if available. If not, every observation is assumed to be its own cluster.
+  If the number of observations in the model \code{x} is smaller than in the
+  original \code{data} due to \code{NA} processing, then the same \code{NA} processing
+  can be applied to \code{cluster} if necessary (and \code{x$na.action} being
+  available).
 
   Cameron et al. (2011) observe that sometimes the covariance matrix is
   not positive-semidefinite and recommend to employ the eigendecomposition of the estimated

@@ -1,5 +1,18 @@
 Changes in Version 2.4-1
 
+  o In vcovCL(), vcovPL(), vcovPC(), and vcovBS(), the "cluster" argument (and
+    potentially also "order.by") can be specified by a formula - provided that
+    expand.model.frame(x, cluster) works for the model object x.
+    
+  o The "cluster" and/or "order.by" are processed accordingly if observations
+    were dropped in the NA processing of the model object x (provided x$na.action
+    is available).
+    
+  o New dedicated vcovBS() method for "lm" objects that (a) provides many more
+    bootstrapping techniques applicable to linear models (e.g., residual-based
+    or wild bootstrap), (b) computes the bootstrap coefficients more efficiently
+    with lm.fit() or qr.coef() rather than update().
+
   o Fix of a bug in vcovHC.mlm (reported by James Pustejovsky). The off-diagonal
     values of the vcovHC were computed without preserving the sign of the
     underlying residuals. This issue did not affect the diagonal because
@@ -17,9 +30,6 @@ Changes in Version 2.4-1
     were scaled with (Gmin - 1)/Gmin, where Gmin is the minimal number of
     clusters across clustering dimensions.
   
-  the cluster adjustment factors in multi-way clustering are
-    now computed in the same way as in 
-
   o Default handling of missing parameter estimates in vcovBS() changed
     from "everything" to "pairwise.complete.obs" and allow modification
     of cov(..., use = ...). This is relevant if not all parameters can be

@@ -15,7 +15,7 @@
 
 \arguments{
   \item{x}{a fitted model object.}
-  \item{cluster}{a variable indicating the clustering of observations
+  \item{cluster}{a variable indicating the clustering of observations,
     a \code{list} (or \code{data.frame}) thereof, or a formula specifying
     which variables from the fitted model should be used (see examples).
     By default (\code{cluster = NULL}), either \code{attr(x, "cluster")} is used
@@ -24,8 +24,10 @@
   \item{fix}{logical. Should the covariance matrix be fixed to be
     positive semi-definite in case it is not?}
   \item{boot_type}{a character string specifying the type of bootstrap to use. One of
-    "xy", "residual", "wild", "rademacher", "mammen", "norm", "webb", "wild-rademacher", 
-    "wild-mammen", "wild-webb", or "wild-norm". See details for a description of each.}
+    \code{"xy"}, \code{"residual"}, \code{"wild"} (or equivalently: \code{"wild-rademacher"}
+    or \code{"rademacher"}), \code{"mammen"} (or \code{"wild-mammen"}), \code{"norm"}
+    (or \code{"wild-norm"}), \code{"webb"} (or \code{"wild-webb"}).
+    See details for a description of each.}
   \item{multi0}{logical. Should the HC0 estimate be used for
     the final adjustment in multi-way clustered covariances?}
   \item{\dots}{arguments passed to \code{meatCL}.}
@@ -114,7 +116,8 @@ Mammen, E (1993).
   
 Webb, MD (2014).
   \dQuote{Reworking Wild Bootstrap Based Inference for Clustered Errors},
-  \emph{Working Paper}
+  Working Paper 1315, \emph{Queen's Economics Department.}
+  \url{http://qed.econ.queensu.ca/working_papers/papers/qed_wp_1315.pdf}.
 }
 
 \seealso{\code{\link{vcovHC}}}

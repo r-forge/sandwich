@@ -33,9 +33,6 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
   ## resort to cross-section if no clusters are supplied
   if (is.null(cluster)) cluster <- 1L:n
 
-  ## FIXME enforcement of factors needed?
-  ## cluster <- lapply(as.data.frame(cluster), as.factor)
-
   ## collect 'cluster' variables in a data frame
   if(inherits(cluster, "formula")) {
     cluster_tmp <- expand.model.frame(x, cluster, na.expand = FALSE)
@@ -44,12 +41,9 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
     cluster <- as.data.frame(cluster)
   }
   
-  # Handle omitted or excluded observations
-  if(n != NROW(cluster) && !is.null(x$na.action)) {
-    if(class(x$na.action) %in% c("exclude", "omit")) {
-      cluster <- cluster[-x$na.action,]
-    }
-    cluster <- as.data.frame(cluster)  # FIXME: silly error somewhere
+  ## handle omitted or excluded observations
+  if((n != NROW(cluster)) && !is.null(x$na.action) && (class(x$na.action) %in% c("exclude", "omit"))) {
+    cluster <- cluster[-x$na.action, , drop = FALSE]
   }
   
   if(NROW(cluster) != n) stop("number of observations in 'cluster' and 'estfun()' do not match")
