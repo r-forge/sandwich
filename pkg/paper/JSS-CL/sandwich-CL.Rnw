@@ -10,9 +10,9 @@
 \definecolor{Green}{rgb}{0,0.5,0}
 \newcommand{\new}[1]{\textcolor{Green}{#1}} 
 
-\author{Susanne Berger\\University of Innsbruck \And 
-        Nathaniel Graham\\Texas A\&M International University \And
-        Achim Zeileis\\University of Innsbruck}
+\author{Susanne Berger\\Universit\"at Innsbruck \And 
+        Nathaniel Graham\\Texas A\&M\\International University \And
+        Achim Zeileis\\Universit\"at Innsbruck}
 \title{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in \proglang{R}}
 
 \Plainauthor{Susanne Berger, Nathaniel Graham, Achim Zeileis}
@@ -43,7 +43,12 @@
   this shortcoming has been corrected in \pkg{sandwich} (starting from
   version~2.4.0): Based on methods for two generic functions (\code{estfun()} and
   \code{bread()}), clustered and panel covariances are now provided in
-  \code{vcovCL()}, \code{vcovPL()}, and \code{vcovPC()}. These are directly
+  \code{vcovCL()}, \code{vcovPL()}, and \code{vcovPC()}. 
+\new{
+  Moreover, clustered bootstrap covariances, based on \code{update()} for models on bootstrap samples
+  of the data, are provided in \code{vcovBS()}.
+}%
+  These are directly
   applicable to models from many packages, e.g., including \pkg{MASS}, \pkg{pscl}, \pkg{countreg},
   \pkg{betareg}, among others. Some empirical illustrations are provided
   as well as an assessment of the methods' performance in a simulation study.
@@ -62,7 +67,7 @@
   
   Nathaniel Graham\\
   Division of International Banking and Finance Studies\\
-  A.R. Sanchez, Jr. School of Business \\
+  A.R. Sanchez, Jr.\ School of Business \\
   Texas A\&M International University\\
   5201 University Boulevard\\
   Laredo, Texas 78041, United States of America\\
@@ -102,6 +107,8 @@ if(file.exists("../../vignettes/sim-CL.rda")) {
   source("../../vignettes/sim-CL.R")
 }
 @ 
+
+\vspace*{-0.4cm}
 
 \section{Introduction} \label{sec:intro}
 
@@ -165,10 +172,11 @@ strategies are popular for dealing with clustered dependencies in regression mod
 Here we give a a brief overview of clustered covariances methods, some background
 information, as well as a discussion of corresponding software implementations
 in \proglang{R} and \proglang{Stata}.
-}
+}%
 \new{
 \subsection{Clustered dependencies in regression models}
-}
+}%
+
 \new{
 In the statistics literature, random effects (especially
 random intercepts) are often introduced to capture unobserved cluster
@@ -181,20 +189,23 @@ scores in the estimation \citep{hac:Liang+Zeger:1986}, also leading naturally to
 \citealp{hac:Halekoh+Hojsgaard+Yan:2002}). Feasible generalized least squares
 can be applied in a similar way and is frequently used in panel data econometrics
 (e.g., available in the \pkg{plm} package, \citealp{hac:Croissant+Millo:2008}).
-}
+}%
 
 Another approach, widely used
 in econometrics and the social sciences, is to assume that the model's score
 function was correctly specified but that only the remaining likelihood was
 potentially misspecified, e.g., due to a lack of independence as in the case
 of clustered correlations (see \citealp{hac:White:1994}, for a classic textbook,
-and \citealp{hac:Freedman:2006}, for a criticial review). \new{This approach leaves
+and \citealp{hac:Freedman:2006}, for a criticial review).
+\new{
+This approach leaves
 the parameter estimator unchanged and is known by different labels in different
 parts of the literature, e.g., quasi-maximum likelihood (QML), independence working
 model, or pooling model in ML, GEE, or panel econometrics jargon, respectively.
 In all of these approaches, only the covariance matrix is adjusted in the subsequent
 inference by using a sandwich estimator, especially in Wald tests and corresponding
-confidence intervals.}
+confidence intervals.
+}%
 
 
 \new{
@@ -206,10 +217,11 @@ observations requiring heteroscedasticity- and autocorrelation-consistent
 (HAC) covariances \citep[such as][]{hac:Newey+West:1987,hac:Andrews:1991},
 and (3) clustered sandwich covariances for clustered or panel data
 \citep[see e.g.,][]{hac:Cameron+Miller:2015}.
-}
+}%
+%
 \new{
-\subsection{Clustered covariances methods}
-}
+\subsection{Clustered covariance methods}
+}%
 
 \new{
 In the statistics literature, the basic sandwich estimator has been introduced
@@ -227,16 +239,16 @@ homoscedasticity \citep[see also][]{hac:Baum+Nichols+Schaffer:2011}. A further
 generalization allowing for cluster correlations and heteroscedasticity is
 provided by the independence working model in GEE \citep{hac:Liang+Zeger:1986},
 naturally leading to clustered covariances. In econometrics,
-\cite{hac:Arellano:1987} was the first who proposed clustered covariances for
+\cite{hac:Arellano:1987} first proposed clustered covariances for
 the fixed effects estimator in panel models.
-}
+}%
 
 \new{
 Inference with clustered covariances with one or more cluster dimension(s) is
 examined in \cite{hac:Cameron+Gelbach+Miller:2011}. In a wider context,
 \cite{hac:Cameron+Miller:2015} include methods in the discussion where not only
 inference is adjusted but also estimation altered. This discussion focuses
-on the ``large $G$'' framework where not only the number of observations $n$
+on the ``large $G$'' framework where not only the number of observations~$n$
 but also the number of clusters $G$ is assumed to approach infinity.
 An alternative but less frequently-used asymptotic framework is the ``fixed $G$''
 setup, where the number of clusters is assumed to be fixed
@@ -244,7 +256,7 @@ setup, where the number of clusters is assumed to be fixed
 However, as this also requires non-standard (non-normal) inference it cannot be combined with
 standard tests in the same modular way as implemented in \pkg{sandwich} and is
 not pursued further here.
-}
+}%
 
 \new{
 In a recent paper, \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} survey
@@ -255,7 +267,7 @@ estimation, clustering in the treatment assignment is more important than
 merely clustering in the sampling. However, if a fixed cluster effect is
 included in the model, treatment heterogeneity across clusters is 
 a requirement for clustered covariances to be necessary.
-}
+}%
 
 
 \subsection[R packages for sandwich covariances]{\proglang{R} packages for sandwich covariances}
@@ -288,8 +300,12 @@ is the \pkg{car} package \citep{hac:Fox+Weisberg:2011} in function
 to the cross-section case without clustering, though.
 
 \new{
-Covariance estimators in \pkg{car} as well as in \pkg{sandwich} are constructed to insert the resulting covariance matrix estimate in different Wald-type inference functions, as \code{confint()} from \pkg{stats} package \citep{hac:R:2017}, \code{coeftest()} and \code{waldtest()} from \pkg{lmtest} package \citep{hac:Zeileis+Hothorn:2002}, \code{linearHypothesis()} and \code{deltaMethod()} from \pkg{car} package \citep{hac:Fox+Weisberg:2011}.
-}
+Covariance estimators in \pkg{car} as well as in \pkg{sandwich} are constructed
+to insert the resulting covariance matrix estimate in different Wald-type
+inference functions, as \code{confint()} from \pkg{stats} \citep{hac:R:2017},
+\code{coeftest()} and \code{waldtest()} from \pkg{lmtest} \citep{hac:Zeileis+Hothorn:2002},
+\code{linearHypothesis()} and \code{deltaMethod()} from \pkg{car} \citep{hac:Fox+Weisberg:2011}.
+}%
 
 \subsection[R packages for clustered covariances]{\proglang{R} packages for clustered covariances}
 
@@ -324,8 +340,10 @@ Therefore, starting from the implementation in \pkg{multiwayvcov}, a new and
 object-oriented implementation was established and integrated in \pkg{sandwich},
 allowing application to more general models, including zero-inflated, censored,
 or limited responses. 
-
+%
+\new{
 \subsection[Stata software for clustered covariances]{\proglang{Stata} software for clustered covariances}
+}%
 
 \new{
 Base \proglang{Stata} as well as contributed extension modules provide
@@ -337,7 +355,7 @@ clustered covariances for seemingly unrelated regression models,
 \code{xtpcse} supports linear regression with panel-corrected standard errors,
 and the \code{svy} suite of commands can be employed in the presence of nested
 multi-level clustering \citep{hac:Nichols+Schaffer:2007}.
-}
+}%
 
 \new{
 The contributed \proglang{Stata} module \pkg{avar}
@@ -351,7 +369,7 @@ for many regression models in \proglang{Stata}, it is not always possible
 to fine-tune the flavor of covariance, e.g., with respect to the finite
 sample adjustment \citep[a common source of confusion and differences across
 implementations, see e.g.,][]{hac:StackOverflow:2014}.
-}
+}%
 
 \section{Methods} \label{sec:methods}
 
@@ -402,11 +420,12 @@ whereas $\hat M, \hat M_\mathrm{HAC}, \hat M_\mathrm{HC}$ compute outer product,
 The outer product estimator in Equation~\ref{eq:meat-op} corresponds to the basic sandwich estimator \citep{hac:Eicker:1963,hac:Huber:1967,hac:White:1980}.
 $w_{|i-j|}$ in Equation~\ref{eq:meat-hac} is a vector of weights \citep{hac:Zeileis:2004a}.
 In Equation~\ref{eq:meat-hc}, functions $\omega(\cdot)$ derive estimates of the variance of the empirical working residuals $r(y_1, x_1^\top \hat \theta), \ldots, r(y_n, x_n^\top \hat \theta)$ and may also depend on hat values as well as degrees of freedom \citep{hac:Zeileis:2006}.
-The HC type of the model in Equation~\ref{eq:meat-hc} has to be of a form that allows factorization of the scores
+To obtain the HC type estimator in Equation~\ref{eq:meat-hc} it is necessary that the score
+can be factorized into empirical working residuals times the regressor vector. 
 \begin{equation} \label{eq:fact}
 \psi(y_i, x_i, \hat\theta)  =  r(y_i, x_i^\top \hat \theta) \cdot x_i
 \end{equation}  
-into empirical working residuals times the regressor vector. This is, however, only possible in situations where the parameter
+This is, however, only possible in situations where the parameter
 of the response distribution depends on a single linear predictor (possibly through a link function).
 
 The building blocks for the calculation of the sandwich are provided by the
@@ -455,7 +474,7 @@ The basic meat estimator based on the outer product from Equation~\ref{eq:meat-o
 \begin{equation} \label{eq:meatCL}
   \hat M_\mathrm{CL} ~=~ \frac{1}{n} \sum_{g = 1}^G \bigg( \sum_{i = 1}^{n_{g}}\psi(y_{i,g}, x_{i,g}, \hat \theta) \bigg)\bigg( \sum_{i = 1}^{n_{g}} \psi(y_{i,g}, x_{i,g}, \hat \theta) \bigg)^\top.
 \end{equation}
-}
+}%
 In the case where observation is its own cluster, the clustered $\hat M_\mathrm{CL}$
 corresponds to the basic~$\hat M$.
 
@@ -466,8 +485,11 @@ multi-way instead of one-way clustering.
 \subsubsection{Types of bias correction}
 
 The clustered covariance estimator controls for both heteroscedasticity across
-as well as within clusters, \new{assuming that in addition to the number of
-observations $n$ the number of clusters $G$ also approaches infinity}
+as well as within clusters,
+\new{
+assuming that in addition to the number of observations $n$ the number of
+clusters $G$ also approaches infinity
+}%
 \citep{hac:Cameron+Gelbach+Miller:2008,hac:Cameron+Miller:2015}.
 Although many publications just refer to ``the'' clustered standard errors, there is a
 surprisingly wide variation in clustered covariances, particularly due to
@@ -489,12 +511,15 @@ defined as
 \end{eqnarray}  
 where $n$ is the number of observations and $k$ is the number of estimated parameters,
 $I_{n_{g}}$ is an identity matrix of size $n_{g}$, $H_{gg}$ is the block from the hat
-matrix $H$ that pertains to cluster~$g$. \new{In case of a linear model, the hat
+matrix $H$ that pertains to cluster~$g$.
+\new{
+In case of a linear model, the hat
 (or projection) matrix is defined as $H = X (X^\top X)^{-1} X^\top$, with model matrix $X$.
 A generalized hat matrix is available for generalized linear models.
 To apply these factors to $\hat M_\mathrm{CL}$ (Equation~\ref{eq:meatCL}), their square
 root has to be applied to each of the $\psi$ factors in the outer product
-\citep[see][Section~VI.B for the linear regression case]{hac:Cameron+Miller:2015}.}
+\citep[see][Section~VI.B for the linear regression case]{hac:Cameron+Miller:2015}.
+}%
 
 Thus, it is completely straightforward to incorporate the scalar factors for HC0 and HC1.
 However, the cluster generalizations of HC2 and HC3
@@ -506,11 +531,15 @@ residuals $r(y_{g}, x_{g}^\top \hat \theta)$ in group $g$ are adjusted via
 \begin{equation} \label{eq:fact-adj}
   \tilde r(y_{g}, x_{g}^\top \hat \theta) = \new{\sqrt{\frac{G - 1}{G}} \cdot (I_{n_{g}} - H_{gg})^{-\alpha/2} \cdot r(y_{g}, x_{g}^\top \hat \theta)}
 \end{equation}  
-\new{with $\alpha = 1$ for HC2 and $\alpha = 2$ for HC3}, before obtaining the adjusted
+\new{
+with $\alpha = 1$ for HC2 and $\alpha = 2$ for HC3,
+}%
+before obtaining the adjusted
 empirical estimating functions based on Equation~\ref{eq:fact} as
 \begin{equation} \label{eq:fact-reg}
 \tilde \psi(y_i, x_i, \hat\theta) = \tilde r(y_{i}, x_{i}^\top \hat \theta) \cdot x_i.
 \end{equation}  
+\new{
 Then these adjusted estimating functions can be employed ``as usual'' to obtain the
 $\hat M_\mathrm{CL}$. Note that, by default, adding the cluster adjustment factor
 $G/(G-1)$ from Equation~\ref{eq:biasadjc} simply cancels out the factor $(G-1)/G$
@@ -519,6 +548,7 @@ to use the factor $(G-1)/G$ for HC3 (i.e., without cluster adjustment) but not f
 HC2 (i.e., with cluster adjustment). Here, we handle both cases in the same way so
 that both collapse to the traditional HC2/HC3 estimators when $G = n$ (i.e., where
 every observation is its own cluster).
+}%
 
 Note that in terms of methods in \proglang{R}, it is not sufficient for the cluster HC2/HC3
 estimators to have just \code{estfun()}
@@ -529,35 +559,28 @@ are just available for \code{lm} and \code{glm} objects.
 
 
 \subsubsection{Two-way and multi-way clustered covariances}
-Certainly, there can be more than one cluster dimension, as for example observations that are characterized by housholds within states or companies within industries. It can therefore sometimes be helpful that one-way clustered covariances can be extended to so-called multi-way clustering as shown by \cite{hac:Miglioretti+Heagerty:2007}, \cite{hac:Thompson:2011} and \cite{hac:Cameron+Gelbach+Miller:2011}.
+Certainly, there can be more than one cluster dimension, as for example observations that are characterized by housholds within states or companies within industries.
+Therefore, it can sometimes be helpful that one-way clustered covariances can be extended to so-called multi-way clustering as shown by \cite{hac:Miglioretti+Heagerty:2007}, \cite{hac:Thompson:2011} and \cite{hac:Cameron+Gelbach+Miller:2011}.
 
 Multi-way clustered covariances comprise clustering on $2^{D} - 1$ dimensional combinations.
-Clustering in two dimensions, for example in $id$ and $time$, gives $D = 2$, such that the clustered covariance matrix is composed of $2^2 - 1 = 3$ one-way clustered covariance matrices that have to be added up or subtracted off, respectively.
-For two-way clustered covariances with cluster dimensions $id$ and $time$, the one-way clustered covariance matrices on $id$ and on $time$ are added up, and the two-way clustered covariance matrix with clusters formed by the intersection of $id$ and $time$ is subtracted off. \new{Additionally, a cluster bias correction $\frac{\mathrm{G(\cdot)}}{\mathrm{G(\cdot)} - 1}$ is added, where $\mathrm{G}(id)$ is the number of clusters in cluster dimension $id$, $\mathrm{G}(time)$ is the number of clusters in cluster dimension $time$, and $\mathrm{G}(id \cap time)$ is the number of clusters formed by the intersection of $id$ and $time$.} 
+Clustering in two dimensions, for example in $id$ and $time$, gives $D = 2$, such that the clustered covariance matrix is composed of $2^2 - 1 = 3$ one-way clustered covariance matrices that have to be added or subtracted, respectively.
+For two-way clustered covariances with cluster dimensions $id$ and $time$, the one-way clustered covariance matrices on $id$ and on $time$ are added, and the two-way clustered covariance matrix with clusters formed by the intersection of $id$ and $time$ is subtracted.
+\new{
+Additionally, a cluster bias correction $\frac{\mathrm{G(\cdot)}}{\mathrm{G(\cdot)} - 1}$ is added, where $\mathrm{G}(id)$ is the number of clusters in cluster dimension $id$, $\mathrm{G}(time)$ is the number of clusters in cluster dimension $time$, and $\mathrm{G}(id \cap time)$ is the number of clusters formed by the intersection of $id$ and $time$.
+}%
 \new{
 \begin{equation} \label{eq:twoway}
-\hat M_{\mathrm{CL}} \quad = \quad \frac{\mathrm{G}(id)}{\mathrm{G}(id) - 1}\hat M_{id} + \frac{\mathrm{G}(time)}{\mathrm{G}(time) - 1}\hat M_{time} - \frac{\mathrm{G}(id \cap time)}{\mathrm{G}(id \cap time) - 1}\hat M_{(id \cap time)}.
+\hat M_{\mathrm{CL}} \quad = \quad \frac{\mathrm{G}(id)}{\mathrm{G}(id) - 1}\hat M_{id} + \frac{\mathrm{G}(time)}{\mathrm{G}(time) - 1}\hat M_{time} - \frac{\mathrm{G}(id \cap time)}{\mathrm{G}(id \cap time) - 1}\hat M_{id \cap time}.
 \end{equation}
-}
+}%
 The same idea is used for obtaining clustered covariances with more than two clustering dimensions:
-Meat parts with an odd number of cluster dimensions are added up, whereas those with an even number
+Meat parts with an odd number of cluster dimensions are added, whereas those with an even number
 are subtracted. 
-\new{Particularly when there is only one observation in each intersection of $id$ and $time$, \cite{hac:Petersen:2009}, \cite{hac:Thompson:2011} and \cite{hac:Ma:2014}
-suggest to subtract the standard sandwich estimator $\hat M$ from Equation (\ref{eq:meat-op}) instead of $\frac{\mathrm{G}(id \cap time)}{\mathrm{G}(id \cap time) - 1}\hat M_{(id \cap time)}$ in Equation (\ref{eq:twoway}).}
+\new{
+Particularly when there is only one observation in each intersection of $id$ and $time$, \cite{hac:Petersen:2009}, \cite{hac:Thompson:2011} and \cite{hac:Ma:2014}
+suggest to subtract the standard sandwich estimator $\hat M$ from Equation (\ref{eq:meat-op}) instead of $\frac{\mathrm{G}(id \cap time)}{\mathrm{G}(id \cap time) - 1}\hat M_{(id \cap time)}$ in Equation (\ref{eq:twoway}).
+}%
 
-% Various flavours of clustered covariances have been newly implemented in the
-% \pkg{sandwich} package, relying on the same building blocks as in previous
-% package versions. Again, clustered covariances rely on the same structure as
-% seen in Equations~\ref{eq:sandwich}--\ref{eq:meat}. But instead of calling one
-% out of the already implemented meat functions in
-% Equations~\ref{eq:meat-op}--\ref{eq:meat-hc}, \code{meatCL()} is an
-% implementation of the meat as in Equation~\ref{eq:meatCL} and is called via the
-% function \code{vcovCL()} to calculate clustered covariances. The meat in
-% Equation~\ref{eq:meatCL} is conceptually the same as in
-% Equation~\ref{eq:meat-op}, but with the difference that the score is aggregated
-% at the cluster level as in Equation~\ref{eq:estfun-cl} instead of the
-% unaggregated scores in Equation~\ref{eq:estfun}. More details about both
-% functions \code{meatCL()} and \code{vcovCL()} are given in the next section.
 
 \subsection{Clustered covariances for panel data}
 
@@ -565,33 +588,34 @@ The information of panel data sets is often overstated, as cross-sectional as we
 \citet[p.~702]{hac:Cameron+Trivedi:2005} noticed that ``$NT$ correlated observations have less information than $NT$ independent observations''. 
 For panel data, the source of dependence in the data is crucial to find out what kind of covariance is optimal \citep{hac:Petersen:2009}.
 In the following, panel Newey-West standard errors as well as Driscoll and Kraay standard errors are examined
-\citep[see also][for a unifying view]{hac:Millo:2014}.
+\citep[see also][for a unifying view]{hac:Millo:2017}.
 
-\st{To reflect that the data are now panel data with time ordering within each cluster/group/id we change our notation
-to an index $(i, t)$ for $i = 1, \dots, n_t$ observations at time $t = 1, \dots, T$ (with $n = n_1 + \dots + n_T$).}
-
-\new{To reflect that the data are now panel data with a natural time ordering within each entity $g$ labelled \emph{groups} (without a natural ordering, as for example individuals, countries, firms, \ldots) according to \cite{hac:Millo:2014}, we change our notation
-to an index $(g, t)$ for $g = 1, \dots, G$ observations sampled at $t = 1, \ldots, n_g$ points in \emph{time} (with $n = n_1 + \dots + n_G$).}
-\st{Note that compared to the notation from the clustered case above,
-the variable $i$ now denotes the group/id (e.g., firm) which was previously denoted by $g$, whereas time $t$ denotes the cluster variable.}
-\new{However, expressions like \emph{groups} and \emph{time} are convenience term and are used for concreteness to make the concepts more easily comprehensible. Clustered covariances for paned data account for the average within-cluster covariance, where a cluster is any set of observations with can be identified by a variable to ``cluster on''.  }
+\new{
+To reflect that the data are now panel data with a natural time ordering within each entity \emph{group}~$g$
+(without a natural ordering, as for example individuals, countries, or firms, \citealp{hac:Millo:2017}), we change our notation
+to an index $(g, t)$ for $g = 1, \dots, G$ \emph{groups} sampled at $t = 1, \ldots, n_g$ points in \emph{time} (with $n = n_1 + \dots + n_G$).
+}%
+\new{
+Clustered covariances for paned data account for the average within-cluster covariance, where a cluster or group is any set of
+observations with can be identified by a variable to ``cluster on''.
+}%
 
 \subsubsection{Panel Newey-West}
 \cite{hac:Newey+West:1987} proposed a heteroscedasticity and autocorrelation consistent standard error estimator that is traditionally used for time-series data, but can be modified for use in panel data \citep[see for example][]{hac:Petersen:2009}.
-A panel Newey-West estimator can be obtained by setting the cross-sectional as well as the cross-serial correlation to zero \citep{hac:Millo:2014}. The meat is composed of
-\begin{equation} \label{eq:newey}
-  \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{i, j = 1}^n w_{|i-j|} \, \psi(y_{i}, x_{i}, \hat \theta) \psi(y_{j}, x_{j}, \hat \theta)^\top.
-\end{equation}
-
+A panel Newey-West estimator can be obtained by setting the cross-sectional as well as the cross-serial correlation to zero \citep{hac:Millo:2017}. The meat is composed of
 \new{
 \begin{equation} \label{eq:newey2}
-  \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{\ell = 0}^{L} w_{\ell} \, \bigg[\sum_{t = 1}^{n_{g}}\sum_{g = 1}^{G} \psi(y_{gt}, x_{gt}, \hat \theta) \psi(y_{gt-\ell}, x_{gt-\ell}, \hat \theta)^\top\bigg].
+  \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{\ell = 0}^{L} w_{\ell} \, \bigg[\sum_{t = 1}^{n_{g}}\sum_{g = 1}^{G} \psi(y_{g,t}, x_{g,t}, \hat \theta) \psi(y_{g,t-\ell}, x_{g,t-\ell}, \hat \theta)^\top\bigg].
 \end{equation}  
-}
+}%
 \cite{hac:Newey+West:1987} employ a Bartlett kernel for obtaining the weights as  
-\st{$w_{|i-j|} = 1 - \frac{|i-j|}{L + 1}$ at lag $\ell = |i-j|$ up to lag $L$} \new{$w_{\ell} = 1 - \frac{\ell}{L + 1}$ at lag $\ell$ up to lag $L$}.
-As \cite{hac:Petersen:2009} noticed, the maximal lag length $L$ in a panel data set is \st{$n_t - 1$} \new{$n_g - 1$,
-i.e., the maximum number of \emph{time} periods per \emph{group}} minus one.
+\new{
+$w_{\ell} = 1 - \frac{\ell}{L + 1}$ at lag $\ell$ up to lag $L$.
+}%
+As \cite{hac:Petersen:2009} noticed, the maximal lag length $L$ in a panel data set is
+\new{
+$n_g - 1$, i.e., the maximum number of \emph{time} periods per \emph{group} minus one.
+}%
 
 \subsubsection{Driscoll and Kraay}
 
@@ -603,20 +627,17 @@ that a long enough time dimension must be available.
 Thus, the idea is again
 to replace Equation~\ref{eq:estfun} by Equation~\ref{eq:estfun-cl} before computing
 $\hat M_\mathrm{HAC}$ from Equation~\ref{eq:meat-hac}. Note, however, that the aggregation
-is now done across \new{\emph{groups} $g$} within each time period $t$. This yields a panel
+is now done across \emph{groups}~$g$
+within each time period $t$. This yields a panel
 sandwich estimator where the meat is computed as
-\begin{equation} \label{eq:driscoll}
-  \hat M_\mathrm{PL} \quad = \quad \frac{1}{n} \sum_{t = 1}^T \sum_{i, j = 1}^{n_t} w_{|i-j|} \,
-    \psi(y_{it}, x_{it}, \hat \theta) \psi(y_{jt}, x_{jt}, \hat \theta)^\top,
-\end{equation}
 \new{
 \begin{equation} \label{eq:driscoll}
   \hat M_\mathrm{PL} \quad = \quad \frac{1}{n} \sum_{\ell = 0}^L w_\ell \, \bigg[ \sum_{t = 1}^{n_g} \bigg(
-    \sum_{g = 1}^{G} \psi(y_{gt}, x_{gt}, \hat \theta) \bigg) \bigg(
-    \sum_{g = 1}^{G} \psi(y_{gt-\ell}, x_{gt-\ell}, \hat \theta) \bigg)^\top \bigg],
+    \sum_{g = 1}^{G} \psi(y_{g,t}, x_{g,t}, \hat \theta) \bigg) \bigg(
+    \sum_{g = 1}^{G} \psi(y_{g,t-\ell}, x_{g,t-\ell}, \hat \theta) \bigg)^\top \bigg],
 \end{equation}  
- } 
-The weights \new{$w_{\ell}$} are usually again the Bartlett weights up to lag $L$.
+}%
+The weights $w_{\ell}$ are usually again the Bartlett weights up to lag $L$.
 Note that for $L = 0$, $\hat M_\mathrm{PL}$ reduced to $\hat M_{\mathrm{CL}(\mathit{time})}$,
 i.e., the one-way covariance clustered by time. Also, for the special case that there is just
 one observation at each time point $t$, this panel covariance by \cite{hac:Driscoll+Kraay:1998}
@@ -632,9 +653,9 @@ the same function is employed that \code{meatHAC()} uses.
 \cite{hac:Beck+Katz:1995} proposed another form or panel-corrected covariances -- typically
 referred to as panel-corrected standard errors (PCSE). They are intended for panel data
 (also called time-series-cross-section data in this literature) with moderate dimensions of
-time and cross-section \citep{hac:Millo:2014}. They are robust against panel heteroscedasticity
+time and cross-section \citep{hac:Millo:2017}. They are robust against panel heteroscedasticity
 and contemporaneous correlation, with the crucial assumption that contemporaneous correlation
-across clusters follows a fixed pattern \citep{hac:Millo:2014, hac:Johnson:2004}. Autocorrelation
+across clusters follows a fixed pattern \citep{hac:Millo:2017, hac:Johnson:2004}. Autocorrelation
 within a cluster is assumed to be absent.
 
 \cite{hac:Hoechle:2007} argues that for the PCSE estimator the finite sample properties are rather
@@ -643,13 +664,20 @@ to the panel covariance by \cite{hac:Driscoll+Kraay:1998} which relies on large-
 is robust to quite general forms of cross-sectional and temporal dependence and is consistent
 independently of the cross-sectional dimension.
 
-To emphasize that now both cross section \emph{and} and time ordering are considered,
-index \new{$(g,t)$} is employed for the observation from \new{group} $g = 1, \dots, G$ at time
-$t = 1, \dots, n_g$. \new{Here, $n_g$ denotes the last time period observed in cluster $g$, thus allowing for unbalanced data.} In the balanced case (that we focus on below) $n_g = T$ for all groups~$g$
+To emphasize again that both cross section \emph{and} and time ordering are considered,
+index $(g,t)$ is employed for the observation from group $g = 1, \dots, G$ at time $t = 1, \dots, n_g$.
+\new{
+Here, $n_g$ denotes the last time period observed in cluster $g$, thus allowing for unbalanced data.
+}%
+In the balanced case (that we focus on below) $n_g = T$ for all groups~$g$
 so that there are $n = G \cdot T$ observations overall.
 
 The basic idea for PCSE is to employ the outer product of (working) residuals within each cluster~$g$.
-Thus, the working residuals are split into \new{$T \times 1$} vectors for each cluster $g$:
+Thus, the working residuals are split into
+\new{
+$T \times 1$
+}%
+vectors for each cluster $g$:
 $r(y_1, x_1^\top \hat \theta), \dots,$\linebreak $r(y_G, x_G^\top \hat \theta)$.
 For balanced data these can be arranged in a $T \times G$ matrix,
  \begin{equation} \label{eq:workres}
@@ -691,7 +719,7 @@ Model classes which provide the necessary building blocks include \code{betareg}
 \pkg{mlogit} \citep{hac:Croissant:2013}, 
 \pkg{ordinal} \citep{hac:Christensen:2015}, and
 \pkg{survival} \citep{hac:Therneau:2015}.
-For all of these an \code{estfun} method is available along with a \code{bread()} method
+For all of these an \code{estfun()} method is available along with a \code{bread()} method
 (or the default method works). In case the models are based on a single linear predictor only,
 they also provide \code{model.matrix()} extractors so that the factorization from Equation~\ref{eq:fact}
 into working residuals and regressor matrix can be easily computed.
@@ -704,7 +732,7 @@ are implemented in
 \begin{verbatim}
   vcovCL(x, cluster = NULL, type = NULL, sandwich = TRUE, fix = FALSE, ...)
 \end{verbatim}
-for a fitted-model-object \code{x} with the underlying meat estimator in
+for a fitted-model object \code{x} with the underlying meat estimator in
 \begin{verbatim}
   meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, ...)
 \end{verbatim}
@@ -715,9 +743,11 @@ The \code{cluster} argument allows to supply either one cluster vector or
 a list (or data frame) of several cluster variables. If
 no cluster variable is supplied, each observation is its own cluster per
 default. Thus, by default, the clustered covariance estimator collapses to
-the basic sandwich estimator. \new{The \code{cluster} specification may also be
-a \code{formula} if \code{expand.model.frame(x, cluster)} works for the model
-object \code{x}.}
+the basic sandwich estimator.
+\new{
+The \code{cluster} specification may also be a \code{formula} if
+\code{expand.model.frame(x, cluster)} works for the model object \code{x}.
+}%
 
 The bias correction is composed of two parts that can be switched on and off
 separately: First, the cluster bias correction from Equation~\ref{eq:biasadjc}
@@ -776,9 +806,16 @@ while \code{order.by} specifies the time variable. If only one of the two variab
 provided, then it is assumed that observations are ordered within the other variable.
 And if neither is provided, only one cluster is used for all observations resulting
 in the standard \citep{hac:Newey+West:1987} estimator. Finally, \code{cluster} can
-also be a list \new{or formula} with both variables: the cluster/group/id and the time/ordering variable,
-respectively. \new{(The formula specification requires again that \code{expand.model.frame(x, cluster)}
-works for the model object \code{x}.)}
+also be a list
+\new{
+or formula
+}%
+with both variables: the cluster/group/id and the time/ordering variable,
+respectively.
+\new{
+(The formula specification requires again that \code{expand.model.frame(x, cluster)}
+works for the model object \code{x}.)
+}%
 
 The weights in the panel sandwich covariance are set up by means of a \code{kernel} function
 along with a bandwidth \code{bw} or the corresponding \code{lag}. All kernels described
@@ -809,7 +846,7 @@ based on
   meatPC(x,  cluster = NULL, order.by = NULL, pairwise = FALSE,
    kronecker = FALSE, ...)
 \end{verbatim}
-They are usually used for panel data or time-series-cross-section (TSCS) data with a large enough time dimension. 
+They are usually used for panel data or time-series-cross-section (TSCS) data with a large-enough time dimension. 
 The arguments \code{sandwich}, \code{fix}, \code{cluster}, and \code{order.by}
 have the same meaning as in \code{vcovCL()} and \code{vcovPL()}.
 
@@ -825,51 +862,74 @@ The former is typically computationally faster in moderately large data sets
 while the latter is less memory-intensive so that it can be applied to larger
 numbers of observations.
 
+{\color{Green}
 \subsection{Further functionality: Bootstrap covariances}
 
-\new{
-As an alternative to the asymptotic approaches to clustered covariances in \code{vcovCL()},
+As an alternative to the asymptotic approaches to clustered covariances in
+\code{vcovCL()}, \code{vcovPL()}, and \code{vcovPC()}, the function
 \code{vcovBS()} provides a bootstrap solution. Currently, a default method is available as
-well as a dedicated method for \code{lm} objects with more bootstrapping options.
-}
+well as a dedicated method for \code{lm} objects with more bootstrapping options. Both
+methods take the arguments
+%
+\begin{verbatim}
+  vcovBS(x, cluster = NULL, R = 250, ..., use = "pairwise.complete.obs")
+\end{verbatim}
+%
+where \code{cluster} is again a cluster specification as in \code{vcovCL()},
+\code{R} is the number of bootstrap replications, and \code{use} is passed on
+to the base \code{cov()} function.
 
-\new{
 The default method samples clusters (where each observation is its own cluster by default),
-i.e., case-based ``xy'' resampling. For obtaining a covariance matrix estimate it is assumed that an
-\code{update()} of the model with the resampled subset can be obtained, the \code{coef()}
-extracted, and finally the covariance computed with \code{cov()}.
-}
+i.e., case-based ``xy'' resampling \citep[see e.g.,][]{hac:Davison+Hinkley:1997}.
+For obtaining a covariance matrix estimate it is assumed that an
+\code{update(x, subset = ...)} of the model with the resampled subset can be obtained, the \code{coef()}
+extracted, and finally the covariance computed with \code{cov()}. In addition to the arguments
+listed above, it sends \code{...} to the \code{update()}, and it provides an argument
+\code{start = FALSE}. If set to \code{TRUE}, the latter leads essentially to
+\code{update(x, start = coef(x), subset = ...)}, i.e., necessitates to support a \code{start}
+argument in the model's fitting function in addition to the \code{subset} argument.
+If available, this may reduce the computational burden of re-fitting the model.
 
-\new{
-The method \code{lm} method provides additional bootstrapping variants and computes the
+The method \code{lm} method provides additional bootstrapping \code{type}s and computes the
 bootstrapped coefficient estimates somewhat more efficiently using \code{lm.fit()} or
-\code{qr.coef()} rather than \code{update()}. The default variant, however, is also
-case-based resampling (\code{boot\_type = "xy"}). Alternative \code{boot\_type} specifications are
-}
+\code{qr.coef()} rather than \code{update()}. The default \code{type}, however, is also
+case-based resampling (\code{type = "xy"}). Alternative \code{type} specifications are
+%
 \begin{itemize}
-  \item \new{\code{"residual"}. The residual cluster bootstrap resamples the residuals (as above,
+  \item
+    \code{"residual"}. The residual cluster bootstrap resamples the residuals (as above,
     by cluster) which are subsequently added to the fitted values to obtain the bootstrapped
     response variable. Coefficients can then be estimated using \code{qr.coef()}, reusing the
     QR decomposition from the original fit. As \cite{hac:Cameron+Gelbach+Miller:2008} point out,
     the residual cluster bootstrap is not well-defined when the clusters are unbalanced as 
     residuals from one cluster cannot be easily assigned to another cluster with different size.
-    Hence a warning is issued in that case.}
-  \item \new{\code{"wild"} (or equivalently \code{"wild-rademacher"} or \code{"rademacher"}).
+    Hence a warning is issued in that case.
+  \item
+    \code{"wild"} (or equivalently \code{"wild-rademacher"} or \code{"rademacher"}).
     The wild cluster bootstrap does not actually resample the residuals but instead reforms the
     dependent variable by multiplying the residual by a randomly drawn value and adding the
     result to the fitted value \citep[see][]{hac:Cameron+Gelbach+Miller:2008}. By default, the
     factors are drawn from Rademacher distribution, i.e., selecting either $-1$ or $1$ with
-    probability $0.5$.}
-  \item \new{\code{"mammen"} (or \code{"wild-mammen"}). This draws the wild bootstrap factors as
-    suggested by \cite{hac:Mammen:1993}).}
-  \item \new{\code{"webb"} (or \code{"wild-webb"}). This implements the six-point distribution
-    suggested by \cite{hac:Webb:2014}, which may improve inference when the number of clusters is small.}
-  \item \new{\code{"norm"} (or \code{"wild-norm"}). The standard normal/Gaussian distribution
-    is used for drawing the wild bootstrap factors.}
-  \item \new{User-defined function. This should take a single argument \code{n}, the number of
-    random values to produce, and return a vector of random factors of corresponding length.}
+    probability $0.5$.
+  \item
+    \code{"mammen"} (or \code{"wild-mammen"}). This draws the wild bootstrap factors as
+    suggested by \cite{hac:Mammen:1993}).
+  \item
+    \code{"webb"} (or \code{"wild-webb"}). This implements the six-point distribution
+    suggested by \cite{hac:Webb:2014}, which may improve inference when the number of clusters is small.
+  \item
+    \code{"norm"} (or \code{"wild-norm"}). The standard normal/Gaussian distribution
+    is used for drawing the wild bootstrap factors.
+  \item
+    User-defined function. This should take a single argument \code{n}, the number of
+    random values to produce, and return a vector of random factors of corresponding length.
 \end{itemize}  
 
+Finally, the \code{lm} method has some further arguments, namely \code{multi0 = TRUE}
+and \code{fix = FALSE} as in \code{vcovCL()} as well as \code{cl = NULL} and \code{parallel = "no"}
+that are passed on to \code{boot()} \citep{hac:Canty+Ripley:2017} for parallized bootstrapping.
+
+}
 
 
 \section{Illustrations} \label{sec:illu}
@@ -1043,7 +1103,7 @@ se(list(
 ))
 @  
 However, note that the results should be regarded with caution as cluster dimension \code{year} has a total
-of only 10 clusters. Theory requires that each cluster dimension have many clusters
+of only 10 clusters. Theory requires that each cluster dimension has many clusters
 \citep{hac:Petersen:2009,hac:Cameron+Gelbach+Miller:2011,hac:Cameron+Miller:2015}.
 
 
@@ -1119,7 +1179,7 @@ $10$ to $50, 100, \dots, 250$.
 In a first step, only balanced clusters with a low number of observations per cluster ($5$) are
 considered. All models are specified through linear predictors (with up to three regressors)
 but with different response distributions. A Gaussian copula is employed to introduce the cluster
-correlation \new{$\rho$} for the different response distributions. The methods considered are the different
+correlation $\rho$ for the different response distributions. The methods considered are the different
 clustered covariances implemented in \pkg{sandwich} as well as competing methods such as basic
 sandwich covariances (without clustering), mixed-effects models with a random intercept, or
 generalized estimating equations with an exchangeable correlation structure.
@@ -1130,33 +1190,40 @@ generalized estimating equations with an exchangeable correlation structure.
 Following \cite{hac:Harden:2011} the linear predictor considered for the simulation is composed
 of three regressors that are either \emph{correlated} with the clustering, \emph{clustered},
 or \emph{uncorrelated}. The correlation of the first type of regressor is controlled by
-separate parameter $\rho_x$. \new{Thus, in the terminology of  \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017},
+separate parameter $\rho_x$.
+\new{
+Thus, in the terminology of  \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017},
 the parameter $\rho$ above controls the correlation in the sampling process while the parameter
-$\rho_x$ controls the extent of the clustering in the ``treatment'' assignment.}
+$\rho_x$ controls the extent of the clustering in the ``treatment'' assignment.
+}%
 
-\new{More formally,} the model equation is given by
+More formally, the model equation is given by
 %
 \begin{eqnarray} \label{eq:predictor}
-h(\mu_{ig}) = \beta_{0} + \beta_{1} \cdot x_{1,ig} + \beta_{2} \cdot x_{2,g} + \beta_{3} \cdot x_{3,ig},
+h(\mu_{i,g}) = \beta_{0} + \beta_{1} \cdot x_{1,i,g} + \beta_{2} \cdot x_{2,g} + \beta_{3} \cdot x_{3,i,g},
 \end{eqnarray}
 %
-where $\mu_{ig}$ is the expectation of the response for observation $i$ within cluster $g$ and the
+where $\mu_{i,g}$ is the expectation of the response for observation $i$ within cluster $g$ and the
 link function $h(\cdot)$ depends on the model type. The regressor variables are all drawn from standard
 normal distributions but at different levels (cluster vs.\ individual observation).
 \begin{eqnarray} \label{eq:regressors}
-x_{1,ig} & \sim & \rho_{x} \cdot \mathcal{N}_{g}(0, 1) + (1 - \rho_{x}) \cdot \mathcal{N}_{ig}(0, 1) \label{x1} \\ 
+x_{1,i,g} & \sim & \rho_{x} \cdot \mathcal{N}_{g}(0, 1) + (1 - \rho_{x}) \cdot \mathcal{N}_{i,g}(0, 1) \label{x1} \\ 
 x_{2,g} & \sim & \mathcal{N}_{g}(0, 1) \label{x2} \\
-x_{3,ig} & \sim & \mathcal{N}_{ig}(0, 1) \label{x3}
+x_{3,i,g} & \sim & \mathcal{N}_{i,g}(0, 1) \label{x3}
 \end{eqnarray}
-Regressor $x_{1,ig}$ is composed of a linear combination of a random draw at
-cluster level ($\mathcal{N}_{g}$) and a random draw at individual level ($\mathcal{N}_{ig}$) while
-regressors $x_{2,g}$ and $x_{3,ig}$ are drawn only at cluster and individual level, respectively.
-Emphasis is given to the investigation of regressor $x_{1,ig}$ with correlation (default: $\rho_{x} = 0.25$)
+Regressor $x_{1,i,g}$ is composed of a linear combination of a random draw at
+cluster level ($\mathcal{N}_{g}$) and a random draw at individual level ($\mathcal{N}_{i,g}$) while
+regressors $x_{2,g}$ and $x_{3,i,g}$ are drawn only at cluster and individual level, respectively.
+Emphasis is given to the investigation of regressor $x_{1,i,g}$ with correlation (default: $\rho_{x} = 0.25$)
 which is probably the most common in practice. Furthermore, by considering the extremes $\rho_{x} = 1$ and
-$\rho_{x} = 0$ the properties of $x_{1,ig}$ coincide with those of $x_{2,g}$ and $x_{3,ig}$,
+$\rho_{x} = 0$ the properties of $x_{1,i,g}$ coincide with those of $x_{2,g}$ and $x_{3,i,g}$,
 respectively.
 
-The vector of coefficients \new{$\beta = (\beta_{0}, \beta_{1}, \beta_{2}, \beta_{3})^\top$} is fixed to either one of
+The vector of coefficients
+\new{
+$\beta = (\beta_{0}, \beta_{1}, \beta_{2}, \beta_{3})^\top$
+}%
+is fixed to either one of
 \begin{eqnarray} \label{eq:coefs}
 \new{\beta} & = & (0, 0.85, 0.5, 0.7)\new{^\top} \label{beta1} \\ 
 \new{\beta} & = & (0, 0.85, 0, 0)\new{^\top} \label{beta2}
@@ -1175,14 +1242,14 @@ distributions.
 \subsubsection{Sandwich covariances}
 
 The types of covariances being compared include ``standard'' covariances
-(\code{standard}, without considering any heteroscedasticity or clustering/correlations),
-basic sandwich covariances (\code{basic}, without clustering),
-Driscoll and Kraay panel covariances ({PL}),
-Beck and Katz panel-corrected covariances ({PC}),
-and clustered covariances with HC0--HC3 adjustment ({CL-0}--{CL-3}).
-As further references, covariances from a clustered bootstrap ({BS}),
-a mixed-effects model with random intercept ({random}), and
-from a GEE with exchangeable correlation structure ({gee})
+(\emph{standard}, without considering any heteroscedasticity or clustering/correlations),
+basic sandwich covariances (\emph{basic}, without clustering),
+Driscoll and Kraay panel covariances (\emph{PL}),
+Beck and Katz panel-corrected covariances (\emph{PC}),
+and clustered covariances with HC0--HC3 adjustment (\emph{CL-0}--\emph{CL-3}).
+As further references, covariances from a clustered bootstrap (\emph{BS}),
+a mixed-effects model with random intercept (\emph{random}), and
+from a GEE with exchangeable correlation structure (\emph{gee})
 are assessed.
 
 \subsubsection{Outcome measure}
@@ -1273,7 +1340,8 @@ xyplot(coverage ~ rho | par, groups = ~ factor(vcov),
 @ 
 \caption{Experiment I. Gaussian response with $G = 100$ (balanced) clusters of $5$ observations each.
 Regressor \code{x1} is correlated ($\rho_x = 0.25$), \code{x2} clustered, and \code{x3} uncorrelated.
-The coverage (from 10,000 replications) is plotted on the $y$-axis against the cluster correlation \new{$\rho$ of the response distribution} (from a Gaussian copula) on the $x$-axis.
+The coverage (from 10,000 replications) is plotted on the $y$-axis against the cluster correlation
+$\rho$ of the response distribution (from a Gaussian copula) on the $x$-axis.
 The horizontal reference line indicates the nominal coverage of $0.95$.}
 \label{fig:sim-01}
 \end{figure}
@@ -1287,8 +1355,8 @@ $y$-axis.
 While for the uncorrelated regressor \code{x3} all methods -- except the 
 Driscoll and Kraay PL estimator -- perform well and yield satisfactory coverage rates,
 the picture is different for the correlated and clustered regressors \code{x1} and
-\code{x2}. With increasing cluster correlation $\rho$ the performance of those methods
-deteriorate that either do not account for the clustering at all (i.e.,
+\code{x2}. With increasing cluster correlation $\rho$ the performance deteriorates for
+those methods that either do not account for the clustering at all (i.e.,
 ``standard'' covariance and basic sandwich covariance) or that treat the data as
 panel data (i.e., PL and PC).
 
@@ -1329,7 +1397,7 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
 @
 \caption{Experiment II. Exponential family response distributions with $G = 100$ (balanced) clusters of $5$ observations each.
 The only regressor \code{x1} is correlated ($\rho_x = 0.25$). The coverage (from 10,000 replications) is plotted on the
-$y$-axis against the cluster correlation \new{$\rho$ of the response distribution} (from a Gaussian copula) on the $x$-axis.
+$y$-axis against the cluster correlation $\rho$ of the response distribution (from a Gaussian copula) on the $x$-axis.
 The horizontal reference line indicates the nominal coverage of $0.95$.}
 \label{fig:sim-02}  
 \end{figure}
@@ -1380,7 +1448,7 @@ xyplot(coverage ~ rho | dist, groups = ~ factor(vcov),
 zero-truncated Poisson, and zero-inflated Poisson) with $G = 100$ (balanced) clusters of $5$ observations each.
 The only regressor \code{x1} is correlated ($\rho_x = 0.25$). The coverage
 (from 10,000 replications for basic/standard/CL-0 and 1,000 replications for BS) is plotted on the
-$y$-axis against the cluster correlation \new{$\rho$ of the response distribution} (from a Gaussian copula) on the $x$-axis.
+$y$-axis against the cluster correlation $\rho$ of the response distribution (from a Gaussian copula) on the $x$-axis.
 The horizontal reference line indicates the nominal coverage of $0.95$.}
 \label{fig:sim-03}
 \end{figure}
@@ -1453,8 +1521,6 @@ e.g., \cite{hac:Long+Ervin:2000} suggest to use HC3 in the linear model for
 small samples with less than 250 observations.
 
 
-\vspace*{-0.3cm}	
-
 \section{Summary}
 
 While previous versions of the \pkg{sandwich} package already provided a flexible object-oriented implementation
@@ -1473,7 +1539,7 @@ in panel data with ``short'' panels and/or non-decaying autocorrelations.
 
 \section*{Computational details}
 
-The packages \pkg{sandwich}, \pkg{countreg}, \pkg{geepack}, \pkg{lattice}, \pkg{lme4}, \pkg{lmtest}, \pkg{multiwayvcov}, \pkg{plm} and \pkg{pscl} are
+The packages \pkg{sandwich}, \pkg{boot}, \pkg{countreg}, \pkg{geepack}, \pkg{lattice}, \pkg{lme4}, \pkg{lmtest}, \pkg{multiwayvcov}, \pkg{plm} and \pkg{pscl} are
 required for the applications in this paper.
 For replication of the simulation study, the supplementary \proglang{R} script \code{sim-CL.R}
 is provided along with the corresponding results \code{sim-CL.rda}.
@@ -1481,6 +1547,7 @@ is provided along with the corresponding results \code{sim-CL.rda}.
 \proglang{R} version \Sexpr{paste(R.Version()[6:7], collapse = ".")} has been used for computations.
 Package versions that have been employed are \pkg{sandwich}
 \Sexpr{gsub("-", "--", packageDescription("sandwich")$Version)},
+\pkg{boot} \Sexpr{gsub("-", "--", packageDescription("boot")$Version)},
 \pkg{countreg} \Sexpr{gsub("-", "--", packageDescription("countreg")$Version)},
 \pkg{geepack} \Sexpr{gsub("-", "--", packageDescription("geepack")$Version)},
 \pkg{lattice} \Sexpr{gsub("-", "--", packageDescription("lattice")$Version)},
@@ -1498,10 +1565,10 @@ CRAN at \url{https://CRAN.R-project.org/}.
 
 \section*{Acknowledgments}
 
-The authors are grateful to Keith Goldfeld (NYU School of Medicine) for providing insights
-and references regarding the differences of conditional and marginal models for clustered
-data.
-\new{A anonymous referee \ldots}
+The authors are grateful to the editor and reviewers that helped to substantially improve
+manuscript and software, as well as to Keith Goldfeld (NYU School of Medicine) for
+providing insights and references regarding the differences of conditional and marginal
+models for clustered data.
 
 \bibliography{hac}
 
