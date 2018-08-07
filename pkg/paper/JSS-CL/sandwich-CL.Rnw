@@ -7,8 +7,8 @@
 %% for internal use
 \newcommand{\fixme}[1]{\emph{\marginpar{FIXME} (#1)}}
 \newcommand{\readme}[1]{\emph{\marginpar{README} (#1)}}
-\definecolor{Green}{rgb}{0,0.5,0}
-\newcommand{\new}[1]{\textcolor{Green}{#1}} 
+\definecolor{New}{rgb}{0,0.5,0}
+\newcommand{\new}[1]{\textcolor{New}{#1}} 
 
 \author{Susanne Berger\\Universit\"at Innsbruck \And 
         Nathaniel Graham\\Texas A\&M\\International University \And
@@ -135,7 +135,7 @@ may be independent \citep{hac:Cameron+Miller:2015}.
 This paper contributes to the literature particularly in two respects:
 %
 (1)~Most importantly, we discuss a set of computational tools for the \proglang{R} system for
-statistical computing \citep{hac:R:2017}, providing an object-oriented
+statistical computing \citep{hac:R:2018}, providing an object-oriented
 implementation of clustered covariances/standard errors in the \proglang{R}
 package \pkg{sandwich} \citep{hac:Zeileis:2004a,hac:Zeileis:2006}. Using this
 infrastructure, sandwich covariances for cross-section or time series data have
@@ -166,18 +166,16 @@ from \cite{hac:Petersen:2009} and \cite{hac:Aghion+VanReenen+Zingales:2013}.
 The simulation setup and results are discussed in Section~\ref{sec:simulation}.
 
 \section{Overview} \label{sec:overview}
-\new{
+
+{\color{New}
 In the statistics as well as in the econometrics literature a variety of
 strategies are popular for dealing with clustered dependencies in regression models.
 Here we give a a brief overview of clustered covariances methods, some background
 information, as well as a discussion of corresponding software implementations
 in \proglang{R} and \proglang{Stata}.
-}%
-\new{
-\subsection{Clustered dependencies in regression models}
-}%
 
-\new{
+\subsection{Clustered dependencies in regression models}
+
 In the statistics literature, random effects (especially
 random intercepts) are often introduced to capture unobserved cluster
 correlations (e.g., using the \pkg{lme4} package in \proglang{R},
@@ -197,7 +195,7 @@ function was correctly specified but that only the remaining likelihood was
 potentially misspecified, e.g., due to a lack of independence as in the case
 of clustered correlations (see \citealp{hac:White:1994}, for a classic textbook,
 and \citealp{hac:Freedman:2006}, for a criticial review).
-\new{
+{\color{New}
 This approach leaves
 the parameter estimator unchanged and is known by different labels in different
 parts of the literature, e.g., quasi-maximum likelihood (QML), independence working
@@ -205,10 +203,7 @@ model, or pooling model in ML, GEE, or panel econometrics jargon, respectively.
 In all of these approaches, only the covariance matrix is adjusted in the subsequent
 inference by using a sandwich estimator, especially in Wald tests and corresponding
 confidence intervals.
-}%
 
-
-\new{
 Important special cases of this QML approach combined with sandwich covariances
 include: (1) independent but heteroscedastic observations necessitating
 heteroscedasticity-consistent (HC) covariances
@@ -217,13 +212,9 @@ observations requiring heteroscedasticity- and autocorrelation-consistent
 (HAC) covariances \citep[such as][]{hac:Newey+West:1987,hac:Andrews:1991},
 and (3) clustered sandwich covariances for clustered or panel data
 \citep[see e.g.,][]{hac:Cameron+Miller:2015}.
-}%
-%
-\new{
-\subsection{Clustered covariance methods}
-}%
 
-\new{
+\subsection{Clustered covariance methods}
+
 In the statistics literature, the basic sandwich estimator has been introduced
 first for cross-section data with independent but heteroscedastic observations
 by \cite{hac:Eicker:1963} and \cite{hac:Huber:1967} and was later popularized in
@@ -241,9 +232,7 @@ provided by the independence working model in GEE \citep{hac:Liang+Zeger:1986},
 naturally leading to clustered covariances. In econometrics,
 \cite{hac:Arellano:1987} first proposed clustered covariances for
 the fixed effects estimator in panel models.
-}%
 
-\new{
 Inference with clustered covariances with one or more cluster dimension(s) is
 examined in \cite{hac:Cameron+Gelbach+Miller:2011}. In a wider context,
 \cite{hac:Cameron+Miller:2015} include methods in the discussion where not only
@@ -256,9 +245,7 @@ setup, where the number of clusters is assumed to be fixed
 However, as this also requires non-standard (non-normal) inference it cannot be combined with
 standard tests in the same modular way as implemented in \pkg{sandwich} and is
 not pursued further here.
-}%
 
-\new{
 In a recent paper, \cite{hac:Abadie+Athey+Imbens+Wooldridge:2017} survey
 state-of-the-art methods for clustered covariances with special focus on
 treatment effects in economic experiments with possibly multiple cluster
@@ -302,7 +289,7 @@ to the cross-section case without clustering, though.
 \new{
 Covariance estimators in \pkg{car} as well as in \pkg{sandwich} are constructed
 to insert the resulting covariance matrix estimate in different Wald-type
-inference functions, as \code{confint()} from \pkg{stats} \citep{hac:R:2017},
+inference functions, as \code{confint()} from \pkg{stats} \citep{hac:R:2018},
 \code{coeftest()} and \code{waldtest()} from \pkg{lmtest} \citep{hac:Zeileis+Hothorn:2002},
 \code{linearHypothesis()} and \code{deltaMethod()} from \pkg{car} \citep{hac:Fox+Weisberg:2011}.
 }%
@@ -316,9 +303,9 @@ to either objects from \code{lm()} or dedicated model objects fitting certain
 (generalized) linear models for clustered or panel data. The list of packages
 includes: \pkg{multiwayvcov} \citep{hac:Graham+Arai+Hagstroemer:2016},
 \pkg{plm} \citep{hac:Croissant+Millo:2008}, \pkg{geepack}
-\citep{hac:Halekoh+Hojsgaard+Yan:2002}, \pkg{lfe} \citep{hac:Gaure:2016},
-\pkg{clubSandwich} \citep{hac:Pustejovsky:2016}, and \pkg{clusterSEs}
-\citep{hac:Esarey:2017}, among others.
+\citep{hac:Halekoh+Hojsgaard+Yan:2002}, \pkg{lfe} \citep{hac:Gaure:2018},
+\pkg{clubSandwich} \citep{hac:Pustejovsky:2018}, and \pkg{clusterSEs}
+\citep{hac:Esarey:2018}, among others.
 
 In \pkg{multiwayvcov}, the implementation was object-oriented, in many aspects
 building on \pkg{sandwich} infrastructure. However, certain details assumed
@@ -340,12 +327,10 @@ Therefore, starting from the implementation in \pkg{multiwayvcov}, a new and
 object-oriented implementation was established and integrated in \pkg{sandwich},
 allowing application to more general models, including zero-inflated, censored,
 or limited responses. 
-%
-\new{
-\subsection[Stata software for clustered covariances]{\proglang{Stata} software for clustered covariances}
-}%
 
-\new{
+{\color{New}
+\subsection[Stata software for clustered covariances]{\proglang{Stata} software for clustered covariances}
+
 Base \proglang{Stata} as well as contributed extension modules provide
 implementations for several types of clustered covariances. One-way clustered
 covariances are available in base \proglang{Stata} for a wide range of
@@ -355,9 +340,7 @@ clustered covariances for seemingly unrelated regression models,
 \code{xtpcse} supports linear regression with panel-corrected standard errors,
 and the \code{svy} suite of commands can be employed in the presence of nested
 multi-level clustering \citep{hac:Nichols+Schaffer:2007}.
-}%
 
-\new{
 The contributed \proglang{Stata} module \pkg{avar}
 \citep{hac:Baum+Schaffer:2013} allows to construct the ``meat'' matrix of various
 sandwich covariance estimators, including HAC, one- and two-way
@@ -565,10 +548,9 @@ Therefore, it can sometimes be helpful that one-way clustered covariances can be
 Multi-way clustered covariances comprise clustering on $2^{D} - 1$ dimensional combinations.
 Clustering in two dimensions, for example in $id$ and $time$, gives $D = 2$, such that the clustered covariance matrix is composed of $2^2 - 1 = 3$ one-way clustered covariance matrices that have to be added or subtracted, respectively.
 For two-way clustered covariances with cluster dimensions $id$ and $time$, the one-way clustered covariance matrices on $id$ and on $time$ are added, and the two-way clustered covariance matrix with clusters formed by the intersection of $id$ and $time$ is subtracted.
-\new{
+{\color{New}
 Additionally, a cluster bias correction $\frac{\mathrm{G(\cdot)}}{\mathrm{G(\cdot)} - 1}$ is added, where $\mathrm{G}(id)$ is the number of clusters in cluster dimension $id$, $\mathrm{G}(time)$ is the number of clusters in cluster dimension $time$, and $\mathrm{G}(id \cap time)$ is the number of clusters formed by the intersection of $id$ and $time$.
-}%
-\new{
+%
 \begin{equation} \label{eq:twoway}
 \hat M_{\mathrm{CL}} \quad = \quad \frac{\mathrm{G}(id)}{\mathrm{G}(id) - 1}\hat M_{id} + \frac{\mathrm{G}(time)}{\mathrm{G}(time) - 1}\hat M_{time} - \frac{\mathrm{G}(id \cap time)}{\mathrm{G}(id \cap time) - 1}\hat M_{id \cap time}.
 \end{equation}
@@ -590,12 +572,11 @@ For panel data, the source of dependence in the data is crucial to find out what
 In the following, panel Newey-West standard errors as well as Driscoll and Kraay standard errors are examined
 \citep[see also][for a unifying view]{hac:Millo:2017}.
 
-\new{
+{\color{New}
 To reflect that the data are now panel data with a natural time ordering within each entity \emph{group}~$g$
 (without a natural ordering, as for example individuals, countries, or firms, \citealp{hac:Millo:2017}), we change our notation
 to an index $(g, t)$ for $g = 1, \dots, G$ \emph{groups} sampled at $t = 1, \ldots, n_g$ points in \emph{time} (with $n = n_1 + \dots + n_G$).
-}%
-\new{
+
 Clustered covariances for paned data account for the average within-cluster covariance, where a cluster or group is any set of
 observations with can be identified by a variable to ``cluster on''.
 }%
@@ -712,13 +693,13 @@ introduced in more detail below.
 Model classes which provide the necessary building blocks include \code{betareg},
 \code{clm}, \code{coxph}, \code{crch}, \code{glm}, \code{hurdle}, \code{lm}, \code{mlm}, \code{mlogit},
 \code{nls}, \code{polr}, \code{rlm}, \code{survreg}, or \code{zeroinfl} from packages 
-\pkg{stats} \citep{hac:R:2017}, 
+\pkg{stats} \citep{hac:R:2018}, 
 \pkg{betareg} \citep{hac:Cribari-Neto+Zeileis:2010,hac:Gruen+Kosmidis+Zeileis:2012},
 \pkg{crch} \citep{hac:Messner+Mayr+Zeileis:2016},
 \pkg{MASS} \citep{hac:Venables+Ripley:2002},
-\pkg{mlogit} \citep{hac:Croissant:2013}, 
-\pkg{ordinal} \citep{hac:Christensen:2015}, and
-\pkg{survival} \citep{hac:Therneau:2015}.
+\pkg{mlogit} \citep{hac:Croissant:2018}, 
+\pkg{ordinal} \citep{hac:Christensen:2018}, and
+\pkg{survival} \citep{hac:Therneau:2018}.
 For all of these an \code{estfun()} method is available along with a \code{bread()} method
 (or the default method works). In case the models are based on a single linear predictor only,
 they also provide \code{model.matrix()} extractors so that the factorization from Equation~\ref{eq:fact}
@@ -862,38 +843,44 @@ The former is typically computationally faster in moderately large data sets
 while the latter is less memory-intensive so that it can be applied to larger
 numbers of observations.
 
-{\color{Green}
+{\color{New}
 \subsection{Further functionality: Bootstrap covariances}
 
 As an alternative to the asymptotic approaches to clustered covariances in
 \code{vcovCL()}, \code{vcovPL()}, and \code{vcovPC()}, the function
 \code{vcovBS()} provides a bootstrap solution. Currently, a default method is available as
-well as a dedicated method for \code{lm} objects with more bootstrapping options. Both
-methods take the arguments
+well as a dedicated method for \code{lm} objects with more refined bootstrapping
+options. Both methods take the arguments
 %
 \begin{verbatim}
-  vcovBS(x, cluster = NULL, R = 250, ..., use = "pairwise.complete.obs")
+  vcovBS(x, cluster = NULL, R = 250, ..., fix = FALSE,
+    use = "pairwise.complete.obs", applyfun = NULL, cores = NULL)
 \end{verbatim}
 %
-where \code{cluster} is again a cluster specification as in \code{vcovCL()},
-\code{R} is the number of bootstrap replications, and \code{use} is passed on
-to the base \code{cov()} function.
+where \code{cluster} and \code{fix} work the same as in \code{vcovCL()}.
+\code{R} is the number of bootstrap replications and \code{use} is passed on
+to the base \code{cov()} function. The \code{applyfun} is an
+optional \code{lapply()}-style function with arguments \code{function(X, FUN, ...)}.
+It is used for refitting the model to the bootstrap samples. The default is to
+use the basic \code{lapply()} function unless the \code{cores} argument is
+specified so that \code{mclapply()} from the basic \pkg{parallel} package
+with the desired number of \code{cores}.
 
 The default method samples clusters (where each observation is its own cluster by default),
 i.e., case-based ``xy'' resampling \citep[see e.g.,][]{hac:Davison+Hinkley:1997}.
 For obtaining a covariance matrix estimate it is assumed that an
 \code{update(x, subset = ...)} of the model with the resampled subset can be obtained, the \code{coef()}
 extracted, and finally the covariance computed with \code{cov()}. In addition to the arguments
-listed above, it sends \code{...} to the \code{update()}, and it provides an argument
+listed above, it sends \code{...} to \code{update()}, and it provides an argument
 \code{start = FALSE}. If set to \code{TRUE}, the latter leads essentially to
-\code{update(x, start = coef(x), subset = ...)}, i.e., necessitates to support a \code{start}
+\code{update(x, start = coef(x), subset = ...)}, i.e., necessitates support for a \code{start}
 argument in the model's fitting function in addition to the \code{subset} argument.
-If available, this may reduce the computational burden of re-fitting the model.
+If available, this may reduce the computational burden of refitting the model.
 
-The method \code{lm} method provides additional bootstrapping \code{type}s and computes the
+The \code{lm} method provides additional bootstrapping \code{type}s and computes the
 bootstrapped coefficient estimates somewhat more efficiently using \code{lm.fit()} or
 \code{qr.coef()} rather than \code{update()}. The default \code{type}, however, is also
-case-based resampling (\code{type = "xy"}). Alternative \code{type} specifications are
+case-based resampling (\code{type = "xy"}) as in the default method. Alternative \code{type} specifications are
 %
 \begin{itemize}
   \item
@@ -924,11 +911,9 @@ case-based resampling (\code{type = "xy"}). Alternative \code{type} specificatio
     User-defined function. This should take a single argument \code{n}, the number of
     random values to produce, and return a vector of random factors of corresponding length.
 \end{itemize}  
-
-Finally, the \code{lm} method has some further arguments, namely \code{multi0 = TRUE}
-and \code{fix = FALSE} as in \code{vcovCL()} as well as \code{cl = NULL} and \code{parallel = "no"}
-that are passed on to \code{boot()} \citep{hac:Canty+Ripley:2017} for parallized bootstrapping.
-
+%
+If the basic \pkg{compiler} package is available, \code{cmpfun()} is applied to the bootstrap
+refitting function which may slightly speed up computations.
 }
 
 
@@ -1301,7 +1286,7 @@ and a GEE with an exchangeable correlation structure (\code{m_gee}, using \pkg{g
 \citealp{hac:Halekoh+Hojsgaard+Yan:2002}) are fitted. For the other (non-GLM)
 responses, the functions
 \code{betareg()} (from \pkg{betareg}, \citealp{hac:Cribari-Neto+Zeileis:2010}),
-\code{zerotrunc()} (from \pkg{countreg}, \citealp{hac:Zeileis+Kleiber:2017}),
+\code{zerotrunc()} (from \pkg{countreg}, \citealp{hac:Zeileis+Kleiber:2018}),
 and \code{zeroinfl()} (from \pkg{pscl}/\pkg{countreg}, \citealp{hac:Zeileis+Kleiber+Jackman:2008}) are used.
 
 \subsection{Results}
