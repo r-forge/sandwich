@@ -9,7 +9,7 @@ Authors@R: c(person(given = "Achim", family = "Zeileis", role = c("aut", "cre"),
 	     person(given = "Nathaniel", family = "Graham", role = "ctb", email = "npgraham1@gmail.com"))
 Description: Model-robust standard error estimators for cross-sectional, time series, clustered, panel, and longitudinal data.
 Depends: R (>= 2.10.0)
-Imports: stats, utils, zoo, boot, compiler
-Suggests: AER, car, geepack, lattice, lmtest, MASS, multiwayvcov, pcse, plm, pscl, scatterplot3d, stats4, strucchange, survival
+Imports: stats, utils, zoo
+Suggests: AER, car, compiler, geepack, lattice, lmtest, MASS, multiwayvcov, parallel, pcse, plm, pscl, scatterplot3d, stats4, strucchange, survival
 License: GPL-2 | GPL-3
 

@@ -1,7 +1,5 @@
 import("stats", "zoo")
 importFrom("utils", "combn")
-importFrom("boot", "boot")
-importFrom("compiler", "cmpfun")
 
 export(
 ## core ingredients

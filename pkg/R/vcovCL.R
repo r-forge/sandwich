@@ -22,7 +22,7 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
   k <- NCOL(ef)
   n <- NROW(ef)
 
-  ## set up return value with correction dimension and names
+  ## set up return value with correct dimension and names
   rval <- matrix(0, nrow = k, ncol = k,
     dimnames = list(colnames(ef), colnames(ef)))
 
