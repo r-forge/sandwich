@@ -63,7 +63,7 @@ hurdle and zeroinfl functions by Achim Zeileis
 
 > library("lmtest")
 
-> coeftest(h_innov, vcov = vcovCL, cluster = InstInnovation$company)
+> coeftest(h_innov, vcov = vcovCL, cluster = ~company)
 
 t test of coefficients:
 
@@ -97,8 +97,8 @@ zero_log(sales)               0.0164233 0.0165897 0.0277648 0.0295080
 
 > library("multiwayvcov")
 
-> se(list(sandwich = vcovCL(p_lm, cluster = PetersenCL$firm), 
-+     multiwayvcov = cluster.vcov(p_lm, cluster = PetersenCL$firm)))
+> se(list(sandwich = vcovCL(p_lm, cluster = ~firm), 
++     multiwayvcov = cluster.vcov(p_lm, cluster = ~firm)))
             sandwich multiwayvcov
 (Intercept) 0.067013     0.067013
 x           0.050596     0.050596
@@ -106,7 +106,7 @@ x           0.050596     0.050596
 > library("plm")
 
 > p_plm <- plm(y ~ x, data = PetersenCL, model = "pooling", 
-+     indexes = c("firmid", "year"))
++     indexes = c("firm", "year"))
 
 > library("geepack")
 
@@ -119,30 +119,30 @@ x           0.050596     0.050596
 > p_gee <- geeglm(y ~ x, data = PetersenCL, id = PetersenCL$firm, 
 +     corstr = "independence", family = gaussian)
 
-> se(list(sandwich = vcovCL(p_lm, cluster = PetersenCL$firm, 
-+     cadjust = FALSE, type = "HC0"), plm = vcovHC(p_plm, cluster = "group"), 
-+     gee .... [TRUNCATED] 
+> se(list(sandwich = vcovCL(p_lm, cluster = ~firm, cadjust = FALSE, 
++     type = "HC0"), plm = vcovHC(p_plm, cluster = "group"), geepack = vcov(p_gee .... [TRUNCATED] 
             sandwich      plm  geepack
 (Intercept) 0.066939 0.066939 0.066939
 x           0.050540 0.050540 0.050540
 
-> se(list(sandwich = vcovCL(p_lm, cluster = PetersenCL[, 
-+     1:2], multi0 = TRUE), multiwayvcov = cluster.vcov(p_lm, cluster = PetersenCL[, 
-+      .... [TRUNCATED] 
+> se(list(sandwich = vcovCL(p_lm, cluster = ~firm + 
++     year, multi0 = TRUE), multiwayvcov = cluster.vcov(p_lm, cluster = ~firm + 
++     year)))
             sandwich multiwayvcov
 (Intercept) 0.065066     0.065066
 x           0.053561     0.053561
 
-> se(list(sandwich = vcovPL(p_lm, cluster = PetersenCL$firm, 
-+     adjust = FALSE), plm = vcovSCC(p_plm)))
+> se(list(sandwich = vcovPL(p_lm, cluster = ~firm + 
++     year, adjust = FALSE), plm = vcovSCC(p_plm)))
             sandwich      plm
 (Intercept) 0.024357 0.024357
 x           0.028163 0.028163
 
 > library("pcse")
 
-> se(list(sandwich = sandwich::vcovPC(p_lm, cluster = PetersenCL$firm, 
-+     order.by = PetersenCL$year), pcse = pcse::vcovPC(p_lm, groupN = Petersen .... [TRUNCATED] 
+> se(list(sandwich = sandwich::vcovPC(p_lm, cluster = ~firm + 
++     year), pcse = pcse::vcovPC(p_lm, groupN = PetersenCL$firm, 
++     groupT = Peters .... [TRUNCATED] 
             sandwich     pcse
 (Intercept) 0.022201 0.022201
 x           0.025276 0.025276
@@ -151,9 +151,9 @@ x           0.025276 0.025276
 
 > pu_lm <- lm(y ~ x, data = PU)
 
-> se(list(sandwichT = sandwich::vcovPC(pu_lm, cluster = PU$firm, 
-+     order.by = PU$year, pairwise = TRUE), pcseT = pcse::vcovPC(pu_lm, 
-+     PU$fi .... [TRUNCATED] 
+> se(list(sandwichT = sandwich::vcovPC(pu_lm, cluster = ~firm + 
++     year, pairwise = TRUE), pcseT = pcse::vcovPC(pu_lm, PU$firm, 
++     PU$year, pa .... [TRUNCATED] 
             sandwichT    pcseT sandwichF    pcseF
 (Intercept)  0.022070 0.022070  0.022603 0.022603
 x            0.025338 0.025338  0.025241 0.025241
@@ -170,15 +170,15 @@ x            0.025338 0.025338  0.025241 0.025241
 +     4, 3, 1, 8, 5, 7, 6)])
 
 > my.settings[["superpose.line"]]$col <- c("#377eb8", 
-+     "green", "#006400", "#000080", "#ff7f00", "#f781bf", "#984ea3", 
-+     "#e41a1c")
++     "green", "#006400", "#000080", "darkred", "orange", "black", 
++     "grey")
 
 > my.settings[["superpose.symbol"]]$col <- c("#377eb8", 
-+     "green", "#006400", "#000080", "#ff7f00", "#f781bf", "#984ea3", 
-+     "#e41a1c")
++     "green", "#006400", "#000080", "darkred", "orange", "black", 
++     "grey")
 
 > my.settings[["superpose.symbol"]]$pch <- c(rep(1, 
-+     4), rep(2, 2), rep(3, 2))
++     4), 2, 6, 3, 8)
 
 > xyplot(coverage ~ rho | par, groups = ~factor(vcov), 
 +     data = s01, subset = par != "(Intercept)", ylim = c(0.1, 
@@ -199,15 +199,15 @@ x            0.025338 0.025338  0.025241 0.025241
 +     4, 3, 1, 8, 5, 7, 6)])
 
 > my.settings[["superpose.line"]]$col <- c("#377eb8", 
-+     "green", "#006400", "#000080", "#ff7f00", "#f781bf", "#984ea3", 
-+     "#e41a1c")
++     "green", "#006400", "#000080", "darkred", "orange", "black", 
++     "grey")
 
 > my.settings[["superpose.symbol"]]$col <- c("#377eb8", 
-+     "green", "#006400", "#000080", "#ff7f00", "#f781bf", "#984ea3", 
-+     "#e41a1c")
++     "green", "#006400", "#000080", "darkred", "orange", "black", 
++     "grey")
 
 > my.settings[["superpose.symbol"]]$pch <- c(rep(1, 
-+     4), rep(2, 2), rep(3, 2))
++     4), 2, 6, 3, 8)
 
 > xyplot(coverage ~ rho | dist, groups = ~factor(vcov), 
 +     data = s02, subset = par != "(Intercept)", ylim = c(0.5, 
@@ -227,13 +227,13 @@ x            0.025338 0.025338  0.025241 0.025241
 +     1, 4, 3)])
 
 > my.settings[["superpose.line"]]$col <- c("#377eb8", 
-+     "#000080", "#ff7f00", "#f781bf")
++     "#000080", "darkred", "orange")
 
 > my.settings[["superpose.symbol"]]$col <- c("#377eb8", 
-+     "#000080", "#ff7f00", "#f781bf")
++     "#000080", "darkred", "orange")
 
 > my.settings[["superpose.symbol"]]$pch <- c(rep(1, 
-+     2), rep(2, 2))
++     2), 2, 6)
 
 > xyplot(coverage ~ rho | dist, groups = ~factor(vcov), 
 +     data = s33, subset = par == "x1", ylim = c(0.8, 1), type = "b", 
@@ -305,4 +305,4 @@ x            0.025338 0.025338  0.025241 0.025241
  *** Run successfully completed ***
 > proc.time()
    user  system elapsed 
-  4.344   0.320   4.666 
+  4.791   0.855   5.642 

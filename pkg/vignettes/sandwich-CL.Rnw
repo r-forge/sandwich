@@ -101,10 +101,10 @@ se <- function(vcov) sapply(vcov, function(x) sqrt(diag(x)))
 
 options(prompt = "R> ", continue = "+  ", digits = 5)
 
-if(file.exists("../../vignettes/sim-CL.rda")) {
-  load("../../vignettes/sim-CL.rda")
+if(file.exists("sim-CL.rda")) {
+  load("sim-CL.rda")
 } else {
-  source("../../vignettes/sim-CL.R")
+  source("sim-CL.R")
 }
 @ 
 
@@ -1533,7 +1533,7 @@ is provided along with the corresponding results \code{sim-CL.rda}.
 Package versions that have been employed are \pkg{sandwich}
 \Sexpr{gsub("-", "--", packageDescription("sandwich")$Version)},
 \pkg{boot} \Sexpr{gsub("-", "--", packageDescription("boot")$Version)},
-\pkg{countreg} \Sexpr{gsub("-", "--", packageDescription("countreg")$Version)},
+\pkg{countreg} 0.2-0,
 \pkg{geepack} \Sexpr{gsub("-", "--", packageDescription("geepack")$Version)},
 \pkg{lattice} \Sexpr{gsub("-", "--", packageDescription("lattice")$Version)},
 \pkg{lme4} \Sexpr{gsub("-", "--", packageDescription("lme4")$Version)},

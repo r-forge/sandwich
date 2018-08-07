@@ -1,4 +1,9 @@
-Changes in Version 2.4-1
+Changes in Version 2.5-0
+
+  o Enhanced vignette("sandwich-CL", package = "sandwich") by better describing
+    the background of clustered covariances and being more precise in the mathematical
+    notation. Documentation for the new features like the formula cluster specification
+    and the vcovBS() methods has been added.
 
   o In vcovCL(), vcovPL(), vcovPC(), and vcovBS(), the "cluster" argument (and
     potentially also "order.by") can be specified by a formula - provided that
@@ -12,6 +17,16 @@ Changes in Version 2.4-1
     bootstrapping techniques applicable to linear models (e.g., residual-based
     or wild bootstrap), (b) computes the bootstrap coefficients more efficiently
     with lm.fit() or qr.coef() rather than update().
+
+  o Both vcovBS() methods (default and lm) facilitate parallel bootstrapping
+    by changing the "applyfun" from the default lapply(). By setting "cores"
+    parallel::mclapply() is used.
+
+  o Default handling of missing parameter estimates in vcovBS() changed
+    from "everything" to "pairwise.complete.obs" and allow modification
+    of cov(..., use = ...). This is relevant if not all parameters can be
+    re-estimated on the bootstrap samples, e.g., for dummy variables of
+    relatively rare events.
 
   o Fix of a bug in vcovHC.mlm (reported by James Pustejovsky). The off-diagonal
     values of the vcovHC were computed without preserving the sign of the
@@ -30,12 +45,6 @@ Changes in Version 2.4-1
     were scaled with (Gmin - 1)/Gmin, where Gmin is the minimal number of
     clusters across clustering dimensions.
   
-  o Default handling of missing parameter estimates in vcovBS() changed
-    from "everything" to "pairwise.complete.obs" and allow modification
-    of cov(..., use = ...). This is relevant if not all parameters can be
-    re-estimated on the bootstrap samples, e.g., for dummy variables of
-    relatively rare events.
-
   o meatHC() and meatHAC() now pass their "..." argument to estfun(), just
     as meatCL(), meatPL(), and meatPC() do as well.
 
