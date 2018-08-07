@@ -24,22 +24,22 @@ vcovCL(m, cluster = ~ firm + year, type = "HC3", cadjust = FALSE)
 
 ## comparison with multiwayvcov::cluster.vcov
 
-(cl1 <- vcovCL(m, cluster = ~ firm, type = "HC1", cadjust = TRUE))
-(cl2 <- multiwayvcov::cluster.vcov(m, ~ firm))
-
-(cl3 <- vcovCL(m, cluster = ~ firm + year, multi0 = TRUE))
-(cl4 <- multiwayvcov::cluster.vcov(m, cbind(PetersenCL$firm, PetersenCL$year)))
-
-(cl5 <- vcovCL(m, cluster = ~ firm, type = "HC0", cadjust = FALSE))
-(cl6 <- multiwayvcov::cluster.vcov(m, ~ firm, df_correction = FALSE))
-
-(cl7 <- vcovCL(m, cluster = ~ firm + year, type = "HC0", cadjust = FALSE))
-(cl8 <- multiwayvcov::cluster.vcov(m, cbind(PetersenCL$firm, PetersenCL$year), df_correction = FALSE))
-
-all.equal(cl1, cl2)
-all.equal(cl3, cl4)
-all.equal(cl5, cl6)
-all.equal(cl7, cl8)
+all.equal(
+  vcovCL(m, cluster = ~ firm),
+  multiwayvcov::cluster.vcov(m, ~ firm)
+)
+all.equal(
+  vcovCL(m, cluster = ~ firm + year, multi0 = TRUE),
+  multiwayvcov::cluster.vcov(m, ~ firm + year)
+)
+all.equal(
+  vcovCL(m, cluster = ~ firm, type = "HC0", cadjust = FALSE),
+  multiwayvcov::cluster.vcov(m, ~ firm, df_correction = FALSE)
+)
+all.equal(
+  vcovCL(m, cluster = ~ firm + year, type = "HC0", cadjust = FALSE),
+  multiwayvcov::cluster.vcov(m, ~ firm + year, df_correction = FALSE)
+)
 
 
 ## comparison with BMlmSE snippet (https://github.com/kolesarm/Robust-Small-Sample-Standard-Errors,

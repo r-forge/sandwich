@@ -1,5 +1,5 @@
 
-R version 3.4.4 (2018-03-15) -- "Someone to Lean On"
+R version 3.5.1 (2018-07-02) -- "Feather Spray"
 Copyright (C) 2018 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -19,32 +19,33 @@ Type 'q()' to quit R.
 > data("PetersenCL", package = "sandwich")
 > m <- lm(y ~ x, data = PetersenCL)
 > 
-> vcovPL(m, cluster = PetersenCL$firm, adjust = TRUE)
+> vcovPL(m, cluster = ~ firm + year, adjust = TRUE)
              (Intercept)            x
 (Intercept) 5.935164e-04 2.222292e-05
 x           2.222292e-05 7.934905e-04
-> vcovPL(m, cluster = PetersenCL$firm, adjust = FALSE)
+> vcovPL(m, cluster = ~ firm + year, adjust = FALSE)
              (Intercept)            x
 (Intercept) 5.932790e-04 2.221403e-05
 x           2.221403e-05 7.931731e-04
 > 
-> data("InstInnovation", package = "sandwich")
-> n <- glm(cites ~ institutions, family = "poisson", data = InstInnovation)
 > 
-> vcovPL(n, cluster = InstInnovation$industry, adjust = TRUE)
+> data("InstInnovation", package = "sandwich")
+> n <- glm(cites ~ institutions, family = poisson, data = InstInnovation)
+> 
+> vcovPL(n, cluster = ~ industry, adjust = TRUE)
               (Intercept)  institutions
 (Intercept)   0.095136753 -1.242281e-03
 institutions -0.001242281  2.129094e-05
-> vcovPL(n, cluster = InstInnovation$industry, adjust = FALSE)
+> vcovPL(n, cluster = ~ industry, adjust = FALSE)
               (Intercept)  institutions
 (Intercept)   0.095106103 -1.241881e-03
 institutions -0.001241881  2.128408e-05
 > 
 > 
-> # vcovPL covariance matrix compared with vcovSCC from plm package
+> ## vcovPL covariance matrix compared with vcovSCC from plm package
 > pm <- plm::plm(y ~ x, data = PetersenCL, model = "pooling", indexes = c("firm", "year"))
 > 
-> (pl1 <- vcovPL(m, cluster = PetersenCL$firm, adjust = FALSE))
+> (pl1 <- vcovPL(m, cluster = ~ firm, adjust = FALSE))
              (Intercept)            x
 (Intercept) 5.932790e-04 2.221403e-05
 x           2.221403e-05 7.931731e-04
@@ -60,7 +61,7 @@ attr(,"cluster")
 [1] TRUE
 > 
 > 
-> # vcovPL compared with Stata's xtscc (xtscc y x, lag(1) ase) standard errors
+> ## vcovPL compared with Stata's xtscc (xtscc y x, lag(1) ase) standard errors
 > pl4 <- c(0.0243573, 0.0281633)
 > names(pl4) <- c("(Intercept)", "x")
 > pl4
@@ -75,4 +76,4 @@ attr(,"cluster")
 > 
 > proc.time()
    user  system elapsed 
-  1.180   0.052   1.229 
+  0.753   0.049   0.789 

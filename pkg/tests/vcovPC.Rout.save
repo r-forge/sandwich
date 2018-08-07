@@ -1,5 +1,5 @@
 
-R version 3.4.4 (2018-03-15) -- "Someone to Lean On"
+R version 3.5.1 (2018-07-02) -- "Feather Spray"
 Copyright (C) 2018 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -18,27 +18,24 @@ Type 'q()' to quit R.
 > library("sandwich")
 > data("PetersenCL", package = "sandwich")
 > m <- lm(y ~ x, data = PetersenCL)
-> 
-> sandwich::vcovPC(m, cluster = PetersenCL$firm, order.by = PetersenCL$year)
+> sandwich::vcovPC(m, cluster = ~ firm + year)
               (Intercept)             x
 (Intercept)  4.928685e-04 -4.396037e-05
 x           -4.396037e-05  6.388754e-04
 > 
 > PU <- subset(PetersenCL, !(firm == 1 & year == 10))
 > u_m <- lm(y ~ x, data = PU)
-> 
-> sandwich::vcovPC(u_m, cluster = PU$firm, order.by = PU$year, pairwise = TRUE)
+> sandwich::vcovPC(u_m, cluster = ~ firm + year, pairwise = TRUE)
               (Intercept)             x
 (Intercept)  4.870754e-04 -4.566605e-05
 x           -4.566605e-05  6.419998e-04
-> sandwich::vcovPC(u_m, cluster = PU$firm, order.by = PU$year, pairwise = FALSE)
+> sandwich::vcovPC(u_m, cluster = ~ firm + year, pairwise = FALSE)
               (Intercept)             x
 (Intercept)  5.108853e-04 -8.787789e-05
 x           -8.787789e-05  6.371175e-04
 > 
 > 
-> # vcovPC compared with Stata's xtpcse (xtscc y x) standard errors
-> 
+> ## vcovPC compared with Stata's xtpcse (xtscc y x) standard errors
 > pc1 <- c(0.0222006 , 0.025276)
 > names(pc1) <- c("(Intercept)", "x")
 > pc1
@@ -47,31 +44,27 @@ x           -8.787789e-05  6.371175e-04
 > (pc2 <- sqrt(diag(sandwich::vcovPC(m, cluster = PetersenCL$firm, order.by = PetersenCL$year))))
 (Intercept)           x 
  0.02220064  0.02527598 
-> 
 > all.equal(pc1, pc2, tolerance = 1e-5)
 [1] TRUE
 > 
 > 
-> # vcovPC compared with vcovPC from package pcse
-> 
+> ## sandwich::vcovPC compared to pcse::vcovPC
 > (pc3 <- pcse::vcovPC(u_m, PU$firm, PU$year, pairwise = FALSE))
               X.Intercept.             x
 X.Intercept.  5.108853e-04 -8.787789e-05
 x            -8.787789e-05  6.371175e-04
-> (pc4 <- sandwich::vcovPC(u_m, cluster = PU$firm, order.by = PU$year, pairwise = FALSE))
+> (pc4 <- sandwich::vcovPC(u_m, cluster = ~ firm + year, pairwise = FALSE))
               (Intercept)             x
 (Intercept)  5.108853e-04 -8.787789e-05
 x           -8.787789e-05  6.371175e-04
-> 
 > (pc5 <- pcse::vcovPC(u_m, PU$firm, PU$year, pairwise = TRUE))
               X.Intercept.             x
 X.Intercept.  4.870754e-04 -4.566605e-05
 x            -4.566605e-05  6.419998e-04
-> (pc6 <- sandwich::vcovPC(u_m, cluster = PU$firm, order.by = PU$year, pairwise = TRUE))
+> (pc6 <- sandwich::vcovPC(u_m, cluster = ~ firm + year, pairwise = TRUE))
               (Intercept)             x
 (Intercept)  4.870754e-04 -4.566605e-05
 x           -4.566605e-05  6.419998e-04
-> 
 > rownames(pc3) <- colnames(pc3) <- rownames(pc5) <- colnames(pc5) <- c("(Intercept)", "x")
 > all.equal(pc3, pc4)
 [1] TRUE
@@ -80,4 +73,4 @@ x           -4.566605e-05  6.419998e-04
 > 
 > proc.time()
    user  system elapsed 
-  3.828   0.792   4.619 
+  2.726   0.995   3.707 
