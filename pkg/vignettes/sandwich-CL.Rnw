@@ -566,7 +566,7 @@ suggest to subtract the standard sandwich estimator $\hat M$ from Equation (\ref
 
 \subsection{Clustered covariances for panel data}
 
-The information of panel data sets is often overstated, as cross-sectional as well as temporal dependencies may occur \citep{hac:Hoechle:2007}.
+The information in panel data sets is often overstated, as cross-sectional as well as temporal dependencies may occur \citep{hac:Hoechle:2007}.
 \citet[p.~702]{hac:Cameron+Trivedi:2005} noticed that ``$NT$ correlated observations have less information than $NT$ independent observations''. 
 For panel data, the source of dependence in the data is crucial to find out what kind of covariance is optimal \citep{hac:Petersen:2009}.
 In the following, panel Newey-West standard errors as well as Driscoll and Kraay standard errors are examined
@@ -574,16 +574,22 @@ In the following, panel Newey-West standard errors as well as Driscoll and Kraay
 
 {\color{New}
 To reflect that the data are now panel data with a natural time ordering within each \emph{group}~$g$
-(without a natural ordering, as for example individuals, countries, or firms, \citealp{hac:Millo:2017}), we change our notation
+(as opposed to variables without a natural ordering, such as individuals, countries, or firms, \citealp{hac:Millo:2017}), we change our notation
 to an index $(g, t)$ for $g = 1, \dots, G$ \emph{groups} sampled at $t = 1, \ldots, n_g$ points in \emph{time} (with $n = n_1 + \dots + n_G$).
 
-Clustered covariances for panel data account for the average within-cluster covariance, where a cluster or group is any set of
-observations with can be identified by a variable to ``cluster on''.
+Clustered covariances account for the average within-cluster covariance, where a cluster or group is any set of
+observations with can be identified by a variable to ``cluster on''. In the case of panel data, observations are frequently
+grouped by time and by one or more cross-sectional variables such as individuals or countries that have been observed repeatedly
+over time.
 }%
 
 \subsubsection{Panel Newey-West}
 \cite{hac:Newey+West:1987} proposed a heteroscedasticity and autocorrelation consistent standard error estimator that is traditionally used for time-series data, but can be modified for use in panel data \citep[see for example][]{hac:Petersen:2009}.
-A panel Newey-West estimator can be obtained by setting the cross-sectional as well as the cross-serial correlation to zero \citep{hac:Millo:2017}. The meat is composed of
+A panel Newey-West estimator can be obtained by setting the cross-sectional as well as the cross-serial correlation to zero \citep{hac:Millo:2017},
+\new{
+effectively assuming that each cross-sectional group is a separate, autocorrelated time-series
+}%
+. The meat is composed of
 \new{
 \begin{equation} \label{eq:newey2}
   \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{\ell = 0}^{L} w_{\ell} \, \bigg[\sum_{t = 1}^{n_{g}}\sum_{g = 1}^{G} \psi(y_{g,t}, x_{g,t}, \hat \theta) \psi(y_{g,t-\ell}, x_{g,t-\ell}, \hat \theta)^\top\bigg].
@@ -877,7 +883,12 @@ listed above, it sends \code{...} to \code{update()}, and it provides an argumen
 argument in the model's fitting function in addition to the \code{subset} argument.
 If available, this may reduce the computational burden of refitting the model.
 
-The \code{lm} method provides additional bootstrapping \code{type}s and computes the
+Because the ``xy'' method makes the same core assumptions as the asymptotic approach above, its results approach
+the asymptotic results as the number of bootstrap replications $R$ becomes large. This makes ``xy'' bootstraps
+unnecessary if the asymptotic estimator is available (this may not be the case if a software package has not implemented
+the \code{estfun()} function, for example). However, the literature has found a number of alternative bootstrapping
+approaches, which make somewhat different assumptions, to be useful in practice.
+The \code{lm} method provides several additional bootstrapping \code{type}s and computes the
 bootstrapped coefficient estimates somewhat more efficiently using \code{lm.fit()} or
 \code{qr.coef()} rather than \code{update()}. The default \code{type}, however, is also
 case-based resampling (\code{type = "xy"}) as in the default method. Alternative \code{type} specifications are
@@ -900,7 +911,7 @@ case-based resampling (\code{type = "xy"}) as in the default method. Alternative
     probability $0.5$.
   \item
     \code{"mammen"} (or \code{"wild-mammen"}). This draws the wild bootstrap factors as
-    suggested by \cite{hac:Mammen:1993}).
+    suggested by \cite{hac:Mammen:1993}.
   \item
     \code{"webb"} (or \code{"wild-webb"}). This implements the six-point distribution
     suggested by \cite{hac:Webb:2014}, which may improve inference when the number of clusters is small.
