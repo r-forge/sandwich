@@ -50,8 +50,10 @@ vcovBS(x, \dots)
     \code{function(X, FUN, \dots)}. It is used for refitting the model to the
     bootstrap samples. The default is to use the basic \code{lapply}
     function unless the \code{cores} argument is specified (see below).}
-  \item{cores}{numeric. If set to an integer the \code{applyfun} is set to
-    \code{\link[parallel]{mclapply}} with the desired number of \code{cores}.}
+  \item{cores}{numeric. If set to an integer the \code{applyfun} is set to    
+    \code{\link[parallel]{mclapply}} with the desired number of \code{cores},
+    except on Windows where \code{\link[parallel]{parLapply}} with
+    \code{makeCluster(cores)} is used.}
 }
 
 \details{

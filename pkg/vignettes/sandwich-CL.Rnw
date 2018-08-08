@@ -869,8 +869,8 @@ to the base \code{cov()} function. The \code{applyfun} is an
 optional \code{lapply()}-style function with arguments \code{function(X, FUN, ...)}.
 It is used for refitting the model to the bootstrap samples. The default is to
 use the basic \code{lapply()} function unless the \code{cores} argument is
-specified so that \code{mclapply()} from the basic \pkg{parallel} package
-with the desired number of \code{cores}.
+specified so that \code{parLapply()} (on Windows) or \code{mclapply()} (otherwise)
+from the basic \pkg{parallel} package are used with the desired number of \code{cores}.
 
 The default method samples clusters (where each observation is its own cluster by default),
 i.e., case-based ``xy'' resampling \citep[see e.g.,][]{hac:Davison+Hinkley:1997}.

@@ -20,7 +20,8 @@ Changes in Version 2.5-0
 
   o Both vcovBS() methods (default and lm) facilitate parallel bootstrapping
     by changing the "applyfun" from the default lapply(). By setting "cores"
-    parallel::mclapply() is used.
+    parallel::parLapply (on Windows) or parallel::mclapply() (otherwise)
+    are used.
 
   o Default handling of missing parameter estimates in vcovBS() changed
     from "everything" to "pairwise.complete.obs" and allow modification

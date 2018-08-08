@@ -59,7 +59,13 @@ vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, ..., fix =
     applyfun <- if(is.null(cores)) {
       lapply
     } else {
-      function(X, FUN, ...) parallel::mclapply(X, FUN, ..., mc.cores = cores)
+      if(.Platform$OS.type == "windows") {
+        cl_cores <- parallel::makeCluster(cores)
+        function(X, FUN, ...) parallel::parLapply(cl = cl_cores, X, FUN, ...)
+	on.exit(parallel::stopCluster(cl_cores))
+      } else {
+        function(X, FUN, ...) parallel::mclapply(X, FUN, ..., mc.cores = cores)
+      }
     }
   }
 
@@ -94,7 +100,6 @@ vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, ..., fix =
     rval <- rval + sign[i] * cov(cf, use = use)
   }
   ## clean up starting values again
-  remove(".vcovBSsubset", envir = .vcovBSenv)
   remove(".vcovBSstart", envir = .vcovBSenv)
 
   ## check (and fix) if sandwich is not positive semi-definite
