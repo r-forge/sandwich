@@ -1,360 +1,542 @@
-\documentclass[10pt,a4paper]{article}
+\documentclass[american,foldmarks=false]{uibklttr}
+\usepackage{sfmath,hyperref}
 
-\usepackage[flushleft]{threeparttable}
-\usepackage[latin1]{inputenc}
-\usepackage{a4wide,graphicx,color,thumbpdf}
-\usepackage{hyperref}
+\let\code=\texttt
+\let\pkg=\emph
+\let\proglang=\textsf
+\newenvironment{review}{\fontshape{\itdefault}\fontseries{\bfdefault} \selectfont \smallskip}{\par}
 
-\setlength{\parskip}{0.7ex plus0.1ex minus0.1ex}
-\setlength{\parindent}{0em}
+\makeatletter
+\@setplength{refvpos}{75mm}
+\makeatother
+\setlength{\textheight}{25cm}
 
 \begin{document}
+\begin{letter}{
+Editors of the\\
+Journal of Statistical Software}
 
-\title{Point-to-point reply}
-\author{Various Versatile Variances:\\ An Object-Oriented Implementation of Clustered Covariances in R}
-\date{}
-\maketitle
 
-\section*{Associate Editor}
+\setkomavar{subject}{Revision of JSS 3214: Various Versatile Variances}
 
-\textbf{\textit{Both reviewers find the paper acceptable for publication in the JSS, but
-have suggestions for revisions.}}
+\opening{Dear JSS editors,}
 
-\medskip
+please find attached the revised version of our manuscript ``Various Versatile
+Variances: An Object-Oriented Implementation of Clustered Covariances in R''
+(JSS 3214) along with the latest CRAN release of our \emph{sandwich} package
+(version~2.5-0). Thanks to the constructive and helpful feedback from the
+Associate Editor and two reviewers, both manuscript and software have been
+considerably improved. The most important changes are:
+\begin{itemize}
 
-We thank both reviewers for their positive comments about the manuscript. Both made important contributions to further improve the manuscript.
- 
-\medskip  
+\item The manuscript has been embellished to include a better overview of
+  the methods implemented (Section~2.1), more references to embed the methods
+  in the literature along with a discussion of their limitations (Section~2.2),
+  and their implementation in Stata (Section~2.5).
 
-\textbf{\textit{In particular, Reviewer A points to some additional references that appear
-to be relevant to the paper, while reviewer B points to some unclear (and
-possibly incorrect) equations and passages in the paper.}}
+\item The mathematical notation (especially in Section~3) is now more
+  precise and some errors pointed out by the reviewers have been corrected.
 
-\medskip
+\item Clustered bootstrap covariances are discussed in a new Section~4.4
+  as an alternative to the asymptotic methods. The corresponding \code{vcovBS()}
+  function has been improved and a dedicated method for \code{"lm"} objects
+  has been added in order to provide more bootstrapping flavors and more
+  efficient computations for the important special case of the linear regression
+  model.
+  
+\item Cluster specifications in all new functions (\code{vcovCL()},
+  \code{vcovPL()}, \code{vcovPC()}, \code{vcovBS()}) are now also possible
+  via a convenient formula interface. If the model took an \code{na.action},
+  this is now also applied to the cluster indexes (if necessary).
 
-Indeed, the mentioned additional references are relevant to the paper. The seminal paper by Liang and Zeger (1986) now attracts more attention in the historical overview. 
-A discussion of the very recent paper by Abadie et al. (2017), which we were not aware of, is now also included. 
-Proposals regarding unclear and incorrect equation and passages, especially in Sections~3.3 and 4.4, have been undertaken a thorough revision. 
+\end{itemize}
 
-\medskip 
+All changes and additons are explained in much more detail in the
+point-to-point reply on the next pages. The important changes in the manuscript
+are highlighted in green in the PDF while the changes in the \emph{sandwich}
+package are listed in its \code{NEWS} file.
 
-\textbf{\textit{With respect to the reviewers' comments, Reviewer A states near the end of
-the review that, ``I think the authors should make readers aware of
+\closing{Best regards,
+\vspace*{1cm}
+}
+
+\vspace*{-2.8cm}
+\hspace*{-0.3cm}\includegraphics{zeileis-signature}
+
+\end{letter}
+
+\newpage
+
+
+\textbf{\LARGE Associate Editor}
+
+\begin{review}
+Both reviewers find the paper acceptable for publication in the
+JSS, but have suggestions for revisions.
+\end{review}
+
+We thank you and both reviewers for the positive and constructive comments regarding
+the manuscript. These helped to substantially improve the manuscript and the
+software.
+
+
+
+\begin{review}
+In particular, Reviewer A points to some additional references
+that appear to be relevant to the paper, while reviewer B points to some unclear
+(and possibly incorrect) equations and passages in the paper.
+\end{review}
+
+Indeed, these shortcomings were remedied in the revision and both references and
+mathamatical details are much improved thanks to the reviewers' advice.
+Specifically, the overview in Section~2 provides more historical context
+(using the seminal paper by Liang and Zeger 1986, among others) as well as more
+references to the current literature. In particular, we added a brief discussion
+of Abadie et al. (2017), which we were not aware of but which ties in nicely with
+the findings from our simulation study.
+
+
+\begin{review}
+With respect to the reviewers' comments, Reviewer A states near
+the end of the review that, ``I think the authors should make readers aware of
 bootstrap-type alternatives to the analytical cluster-robust covariance
-estimators (the 'wild bootstrap' etc.).'' In fact, in the simulations
-reported in the paper, there is a comparison to the bootstrap (though
-limited to the simple cluster-resampling bootstrap).}}
-
-\medskip
+estimators (the 'wild bootstrap' etc.).'' In fact, in the simulations reported
+in the paper, there is a comparison to the bootstrap (though limited to the
+simple cluster-resampling bootstrap).
+\end{review}
 
 Thank you for pointing this out. Yes, this is indeed an important comparison and
 in the previous version we just included a simple clustered bootstrap covariance
-as a reference in the simulation. Now the manuscript provides some more background
-for bootstrap covariances as well as a brief introduction to the \texttt{vcovBS()}
-generic function included in the package (see Section~4.4).
+as a reference in the simulation. Also, the ``xy'' cluster-resampling variant is
+the only one for which a reasonably flexible object-oriented default
+\code{vcovBS()} could be provided. But other variants such as the wild bootstrap
+are clearly important and widely used in the linear regression case. Therefore,
+we have added a dedicated \code{vcovBS()} method for \code{"lm"} objects. It is
+inspired by \code{cluster.boot()} from \emph{multiwayvcov} but has been rewritten
+from scratch. While it provides the same additional bootstrap variants for residual-based
+and wild bootstrap (Rademacher, Mammen, Webb, normal, user-defined), it has
+been streamlined for speed using \code{lm.fit()} or \code{qr.coef()} rather than
+\code{lm()}. See Section~4.4 for more details.
 
-In addition to the default \texttt{vcovBS()} method that computes simple (clustered)
-pair (or ``xy'') bootstrap covariances, there is now a dedicated method for \texttt{"lm"}
-objects. The latter includes also residual-based bootstrap and wild bootstrap variants
-which are -- to the best of our knowledge -- confined to the linear regression case.
-Therefore, we do not go into more detail about this function/method because the manuscript's
-focus is the object-oriented toolbox for clustered covariances.
 
-\medskip
+\begin{review}
+As well, I didn't find the material raised in Reviewer B's points 1, 6, 11, and
+14 to be unclear, although it wouldn't hurt to provide a bit more explanation in
+these places.
+\end{review}
 
-\textbf{\textit{As well, I didn't find the material raised in Reviewer B's points 1, 6, 11,
-and 14 to be unclear, although it wouldn't hurt to provide a bit more
-explanation in these places.}}
+We agree that making the manuscript more accessible for readers with different
+backgrounds is clearly desirable and we have tried to embellish the text
+following Reviewer B's advice. For details see below.
 
-\medskip
 
-We agree that making the manuscript more accessible for readers with different backgrounds is
-clearly desirable and we have tried to embellish the text following Reviewer B's advice.
-For details see below.
+\begin{review}
+My own reading of the paper is largely consistent with the
+reviewers', and I'd add that the paper and the improvements and extensions to
+the sandwich package that it describes are an important contribution, both
+elegant in its implementation and of substantial practical use.
+\end{review}
 
-\medskip
+Thank you very much, your feedback and that from the reviewers is much
+appreciated!
 
-\textbf{\textit{My own reading of the paper is largely consistent with the reviewers', and
-I'd add that the paper and the improvements and extensions to the sandwich
-package that it describes are an important contribution, both elegant in its
-implementation and of substantial practical use.}}
 
-\medskip
+\begin{review}
+I found the simulations reported in section 6 slightly
+inappropriate to the main purpose of the paper, which is to describe the
+implementation in the sandwich package of coefficient-covariance estimators for
+clustered data.  The simulations are a contribution to the more general
+statistical literature on sandwich estimators and are probably~more naturally
+published independently.  That said, I don't strongly object to the inclusion of
+this section in~the~paper.
+\end{review}
 
-Thank you very much, your feedback and that from the reviewers is much appreciated
-and has further improved manuscript and software.
+We agree that the simulations do not fall within the narrower scope of the
+manuscript/software. However, the object-oriented software enabled us to explore
+the questions covered in the simulation. And as we were not aware of such
+empirical comparisons for models beyond linear regression we felt that some
+guidance about the covariances' properties was useful for the readers and
+ourselves. Hence, we decided to keep the simulations in the manuscript.
 
-\medskip
 
-\textbf{\textit{I found the simulations reported in section 6 slightly inappropriate to the
-main purpose of the paper, which is to describe the implementation in the
-sandwich package of coefficient-covariance estimators for clustered data. 
-The simulations are a contribution to the more general statistical
-literature on sandwich estimators and are probably more naturally published
-independently.  That said, I don't strongly object to the inclusion of this
-section in the paper.}}
-
-\medskip
-
-We agree that the simulations do not fall within the narrower scope of the manuscript/software.
-However, the object-oriented software enabled us to explore the questions covered in the
-simulation. And as we were not aware of such empirical comparisons for models beyond
-linear regression we felt that some guidance about the covariances' properties was useful
-for the readers and ourselves. Hence, we decided to keep the simulations in the manuscript.
-
-\medskip
-
-\textbf{\textit{I also found a few typos in the manuscript: At several points in the paper,
-e.g., on p.~7, ``subtract'' and ``subtracted'' are spelled ``substract'' and
-``substracted.'' On p.~9, ``and and'' appears (the second ``and'' in italics). 
-On p.~14, ``sandwich covariance are able'' should read ``sandwich covariances
-are able.''}}
-
-\medskip
+\begin{review}
+I also found a few typos in the manuscript: At several points in
+the paper, e.g., on p.~7, ``subtract'' and ``subtracted'' are spelled
+``substract'' and ``substracted.'' On p.~9, ``and and'' appears (the second
+``and'' in italics).  On p.~14, ``sandwich covariance are able'' should read
+``sandwich covariances are able.''
+\end{review}
 
 Thank you for spotting these: fixed now.
 
 
-\bigskip
+\newpage
 
-\section*{Referee 1}
 
-\textbf{\textit{Comparison with Stata (as requested by the editor):
-\\ \\
-The comparison with Stata naturally separates into two parts: ``Official Stata'', i.e., the code provided by StataCorp when purchasing the software, and ``the Stata Community'', i.e., code provided by the user community at large and (mostly) residing at SSC Archives.
-\\ \\
-Official Stata has supported basic ``cluster-robust'' covariance estimation for many of its estimators for many years (since the 90s, I think).  It also supports ``panel corrected SE'' (Beck and Katz 1995) for some panel data estimators.  Cluster-robust support in Official Stata is extensive in terms of estimators, but basic in terms of various options available.  Only one-way clustering is supported, and the range of alternative finite-sample adjustments that is available in Stata for standard robust covariance estimation is not also available for cluster-robust covariance estimation.  Driscoll-Kraay and panel Newey-West time covariance estimation is not supported in Official Stata.
-\\ \\
-Official Stata also supports a cluster-robust-type solution to covariance estimation for multiple-equation estimation via its ``suest'' command.
-\\ \\
-Probably the Stata Community package closest to what is documented in this paper is avar (``Asymptotic covariance estimation for iid and non-iid data robust to heteroskedasticity, autocorrelation, 1- and 2-way clustering, common cross-panel autocorrelated disturbances, etc.'') by Baum and Schaffer (2013).  The main differences between avar and the package documented in the paper: (1) avar provides only the ``filling'' (``meat'') matrix; it is up to the user/programmer to assemble the sandwich; (2) VVV supports various options and estimators not provided by avar: Beck \& Katz panel-corrected SEs; a range of finite-sample adjustments to the cluster-robust covariance estimator; 3-way and higher clustering; (3) avar supports multiple-equation estimation as well as Kiefer's (1980) covariance estimator for panel data (Journal of Econometrics, 14:2).}}
+\textbf{\LARGE Reviewer 1}
 
-\medskip
+\begin{review}
+Comparison with Stata (as requested by the editor):
+%
+The comparison with Stata naturally separates into two parts: ``Official
+Stata'', i.e., the code provided by StataCorp when purchasing the software, and
+``the Stata Community'', i.e., code provided by the user community at large and
+(mostly) residing at SSC Archives.
+\end{review}
 
-Thank you for the detailed explanation of the different types of clustered covariances in official as well as in user-written Stata.
-With regard to the reproducibility of results in different software packages, the comparison with Stata is very valueable and definitely deserves some attention.
-Hence, the manuscript now contains a new Section~2.5 with a discussion of various types of clustered covariances in Stata, strongly aligned to the thorough discussion of the reviewer.
+This is very helpful! We had tried to compare our results with Stata in the
+initial submission but did not find it easy to get a good overview of all
+aspects. Your feedback brought out many aspects much more clearly for us and
+we tried to convey this in the manuscript (specifically the new Section~2.5).
 
-\medskip
 
-\textbf{\textit{Suggestions for the authors:
-\\ \\
-My suggestions come in two parts: (1) suggestions relating to the writeup; (2) suggestions relating to the software.
-\\ \\
+\begin{review}
+Official Stata has supported basic ``cluster-robust'' covariance estimation for
+many of its estimators for many years (since the 90s, I think).  It also
+supports ``panel corrected SE'' (Beck and Katz 1995) for some panel data
+estimators.  Cluster-robust support in Official Stata is extensive in terms of
+estimators, but basic in terms of various options available.  Only one-way
+clustering is supported, and the range of alternative finite-sample adjustments
+that is available in Stata for standard robust covariance estimation is not also
+available for cluster-robust covariance estimation.
+\end{review}
+
+This conforms well with our experiences. Although the different finite-sample
+adjustments do not matter much in many practical applications, they are still
+a constant source of confusion, see e.g.,
+\url{https://stackoverflow.com/questions/27367974/different-robust-standard-errors-of-logit-regression-in-stata-and-r}.
+
+
+\begin{review}
+Driscoll-Kraay and panel Newey-West time covariance estimation is not supported
+in Official Stata.
+
+Official Stata also supports a cluster-robust-type solution to covariance
+estimation for multiple-equation estimation via its ``suest'' command.
+
+Probably the Stata Community package closest to what is documented in this paper
+is avar (``Asymptotic covariance estimation for iid and non-iid data robust to
+heteroskedasticity, autocorrelation, 1- and 2-way clustering, common cross-panel
+autocorrelated disturbances, etc.'') by Baum and Schaffer (2013).  The main
+differences between avar and the package documented in the paper: (1) avar
+provides only the ``filling'' (``meat'') matrix; it is up to the user/programmer
+to assemble the sandwich; (2) VVV supports various options and estimators not
+provided by avar: Beck \& Katz panel-corrected SEs; a range of finite-sample
+adjustments to the cluster-robust covariance estimator; 3-way and higher
+clustering; (3) avar supports multiple-equation estimation as well as Kiefer's
+(1980) covariance estimator for panel data (Journal of Econometrics, 14:2).
+\end{review}
+
+Thank you for the detailed overview. We tried to reflect this in our manuscript,
+especially by adding the new Section~2.5 (as already mentioned above).
+
+
+\begin{review}
+Suggestions for the authors:
+My suggestions come in two parts: (1) suggestions relating to the writeup; (2)
+suggestions relating to the software.
+
 Suggestions relating to the writeup:
-\\ \\
-The writeup is fine as it is, but I think readers and users would benefit a lot from expanding the discussion to cover the limitations of, alternatives to, and history of the cluster-robust covariance estimation.
-}}
+The writeup is fine as it is, but I think readers and users would benefit a lot
+from expanding the discussion to cover the limitations of, alternatives to, and
+history of the cluster-robust covariance estimation.
+\end{review}
 
-\medskip
+We agree that the properties of clustered covariances with respect to its
+limitations should be discussed in the manuscript, as well as the development of
+clustered covariances in history. A new Section~2.2 covers the history and
+properties of clustered covariances, also covering some limitations of the
+methods.
 
-We agree that the properties of clustered covariances with respect to its limitations should be discussed in the manuscript, as well as the development of clustered covariances in history.
-A new Section~2.2 covers the history and properties of clustered covariances, giving emphasis to the limitations of the methods.
-
-As already pointed out in the response to the Associate Editor, Section~4.4 has been added to
-briefly discuss bootstrap covariances as an alternative to sandwich estimators. 
-
-\medskip
-
-\textbf{\textit{A very recent paper by Abadie-Athey-Imbens-Wooldridge (October 2017), ``When Should You Adjust Standard Errors for Clustering?'', https://arxiv.org/abs/1710.02926, is very helpful in this respect.  The paper results are too lengthy to summarize here; I will say only that the main point that is relevant for the VVV paper is that the assumption of parameter homogeneity (identical treatment effects across units) is central for many of the standard results for the cluster-robust covariance estimator.  I think the VVV authors should have a look and briefly summarize what they think are the main lessons for the potential users of their package.
-}}
-
-\medskip
-
-Thank you for pointing out to the Abadie et al. (2017) paper. It does include several results that are important for users of clustered covariances. 
-A discussion of some aspects of Abadie et al. (2017) is now incorporated in the manuscript in Section~2.2, especially pointing to economic experiments where the sampling process or the assignment mechanism exhibits a systematic variation within clusters thereby justifies the use of clustered covariances.
+As already pointed out in the response to the Associate Editor, Section~4.4 has
+been added to briefly discuss bootstrap covariances as an alternative to
+sandwich estimators. 
 
 
-\medskip
+\begin{review}
+A very recent paper by Abadie-Athey-Imbens-Wooldridge (October 2017),
+``When Should You Adjust Standard Errors for Clustering?'',
+https://arxiv.org/abs/1710.02926, is very helpful in this respect.  The paper
+results are too lengthy to summarize here; I will say only that the main point
+that is relevant for the VVV paper is that the assumption of parameter
+homogeneity (identical treatment effects across units) is central for many of
+the standard results for the cluster-robust covariance estimator.  I think the
+VVV authors should have a look and briefly summarize what they think are the
+main lessons for the potential users of their package. 
+\end{review}
 
-\textbf{\textit{Also worth noting is the history of the cluster-robust estimator: AAIH refer to it as the Liang-Zeger (1986 Biometrika) covariance estimator.  This is probably worth doing in the VVV paper as well, unless the authors have an earlier source for this estimator.
-}}
+Thank you for pointing out this reference which we hadn't been aware of before.
+It does include several results that are important for users of clustered covariances,
+some of which are now summarized in Section~2.2. In particular, their emphasis on
+economic experiments is useful and also ties in well with our simulation
+experiments (now briefly pointed in Section~6.1).
 
-\medskip
 
-We decided to keep the naming ``clustered covariance estimator'' for two reasons:
-First, the name is widely used in the literature.
-Second, the GEE framework of Liang and Zeger (1986) indeed encompasses the independence
-working model along the corresponding clustered covariances. However, it naturally extends
-to other correlation structures (most importantly, exchangeable and AR1) for which not
-only the covariances are adjusted but also the coefficient estimates themselves. Therefore,
-we feel that some readers may be confused by referring to ``Liang-Zeger'' as they might
-expect that the parameters are estimated by GEEs.
+\begin{review}
+Also worth noting is the history of the cluster-robust
+estimator: AAIH refer to it as the Liang-Zeger (1986 Biometrika) covariance
+estimator.  This is probably worth doing in the VVV paper as well, unless the
+authors have an earlier source for this estimator. 
+\end{review}
 
-\medskip
+We decided to keep the naming ``clustered covariance estimator'' for two
+reasons: First, the name is widely used in the literature. Second, the GEE
+framework of Liang and Zeger (1986) indeed encompasses the independence working
+model in which coefficient estimates are \emph{not} adjusted but only the
+corresponding covariances. However, Liang and Zeger (1986) showed that their
+framework naturally extends to other correlation structures (most importantly,
+exchangeable and AR1) for which not only the covariances are adjusted but also
+the coefficient estimates themselves. Therefore, we feel that some readers,
+specifically those with a more statistical (as opposed to econometric) background,
+may be confused by referring to ``Liang-Zeger'' as they might expect that the
+parameters are estimated by GEEs.
 
-\textbf{\textit{On page 6 the authors state that ``the number of clusters G must approach infinity'', but strictly speaking this is not the case: there are papers that have explored the behavior of the cluster-robust covariance estimator as the number of observations goes to infinity but holding constant the number of clusters (``infilling asymptotics'').  A good paper here is Bester-Conley-Hansen (2011), ``Inference with Dependent Data Using Cluster Covariance Estimators'', 165:2.
-}}
 
-\medskip
+\begin{review}
+On page 6 the authors state that ``the number of clusters G must
+approach infinity'', but strictly speaking this is not the case: there are
+papers that have explored the behavior of the cluster-robust covariance
+estimator as the number of observations goes to infinity but holding constant
+the number of clusters (``infilling asymptotics'').  A good paper here is
+Bester-Conley-Hansen (2011), ``Inference with Dependent Data Using Cluster
+Covariance Estimators'', 165:2. 
+\end{review}
 
-Thanks for the note, we agree that the formulation requires some reformulation and additional comments. Clustered covariance estimators in sandwich are based on the frequently used ``large $G$'' approach. As pointed out by the referee, other approaches are available. The ``fixed-G'' setup can alternatively be employed, but requires non-normal inference and can thus not be combined with standard tests in the same modular way as implemented in sandwich which is the reason why it is not pursued further in the manuscript.
+Thanks for pointing this out, we agree that our original formulation was
+misleading. We now point out clearly that the clustered covariance estimators
+in \pkg{sandwich} are based on the frequently-used ``large $G$'' approach. As you
+correctly point out, other approaches are available. In particular, the
+``fixed-G'' setup can alternatively be employed, but this requires non-normal
+inference and can thus not be combined with standard tests in the same modular
+way as implemented in \pkg{sandwich}. Therefore, we have decided to include some
+pointers in Section~2.2 but do not pursue it further in the manuscript or
+software package.
 
-\medskip
 
-\textbf{\textit{Lastly, I think the authors should make readers aware of bootstrap-type alternatives to the analytical cluster-robust covariance estimators (the ``wild bootstrap'' etc.).}}
+\begin{review}
+Lastly, I think the authors should make readers aware of
+bootstrap-type alternatives to the analytical cluster-robust covariance
+estimators (the ``wild bootstrap'' etc.).
+\end{review}
 
-\medskip
+Yes, thank you. As pointed out in the reply to the Associated Editor we have
+done so now by adding Section~4.4 in the manuscript and a dedicated
+\code{vcovBS()} method for \code{"lm"} objects.
 
-Thank you for making this point. For a detailed answer we kindly refer to the reply for the Associate Editor. 
 
-\medskip
+\begin{review}
+Suggestions relating to the code:
+The authors may want to consider incorporating the covariance estimator of
+Kloek (1981, Econometrica; see the AAIW paper for a description and discussion)
+and/or Kiefer (1980).
+\end{review}
 
-\textbf{\textit{Suggestions relating to the code:
-\\
-The authors may want to consider incorporating the  covariance estimator of Kloek (1981, Econometrica; see the AAIW paper for a description and discussion) and/or Kiefer (1980).}}
+Kiefer (1980) investigates fixed effects panel models extended to cases of
+intertemporal correlations, where coefficients and standard errors are estimated
+by GLS. As the \pkg{sandwich} package has been designed as an object-oriented
+toolbox that does not modify the parameter estimators, this covariance estimator
+does not fit well into the package. Instead, it would be more natural to include
+it in the \pkg{plm} package for panel linear models that also provides a
+function \code{pggls()} for generalized FGLS with (or without) fixed effects. We
+raised the issue with Giovanni Millo, author of the variance-covariance
+estimators in \pkg{plm}, and he agreed that this would be a useful addition to
+\pkg{plm} and included Kiefer-type covariances in the to-do list for the
+package. It is worth noting that the Stata module \code{avar} provides some
+generalized implementation of the classic Kiefer (1980) estimator that is also
+applicable beyond FGLS. However, so far, neither Giovanni nor us succeeded in
+exactly replicating this generalization.
 
-\medskip
+Similar arguments hold for the Kloek-type convariances: As they have been
+developed for specific linear models they would better match the scope of
+\pkg{plm} rather than \pkg{sandwich}. Hence, we decided not to implement these
+covariances.
 
-Kiefer (1980) investigates fixed effects panel models extended to cases of intertemporal correlations, where coefficients and standard errors are estimated by GLS. As the \texttt{sandwich} package has been designed as an object-oriented toolbox that does not modify the parameter estimators, this covariance estimator does not fit well into the package. Instead, it would be more natural to include it in the \texttt{plm} package for panel linear models that also provides  a function \texttt{pggls()} for generalized FGLS with (or without) fixed effects. We raised the issue with Giovanni Millo, author of the variance-covariance estimators in \texttt{plm}, and he agreed that this would be a useful addition to \texttt{plm} and included Kiefer-type covariances in the to-do list for the package. It is worth noting that the Stata module \texttt{avar} provides some generalized implementation of the classic Kiefer (1980) estimator that is also applicable beyond FGLS. However, so far, neither Giovanni nor us succeeded in exactly replicating this generalization.
 
-Similar arguments hold for the Kloek-type convariances: As they have been developed for specific linear models they would better match the scope of \texttt{plm} rather than \texttt{sandwich}. Hence, we decided not to implement these covariances.
+\newpage
 
-\bigskip
 
-\section*{Referee 2}
+\textbf{\LARGE Reviewer 2}
 
-\textbf{\textit{1. In equation (2), the definition of the term ``$\psi'(y, x, \theta)$'' unclear.
-I guess that this term should indicate $\partial \psi(y, x, \theta)/\partial\theta = \partial^2\Psi(y, x, \theta)/\partial\theta^2$ and I recommend to replace ``$\psi'(y, x, \theta)$''
-by an expression that readers can easily understand
-(e.g., ``$\partial \psi(y, x, \theta)/\partial\theta$'' or ``$\partial^2\Psi(y, x, \theta)/\partial\theta^2$").}}
+\begin{review}
+1. In equation (2), the definition of the term ``$\psi'(y, x,
+\theta)$'' unclear. I guess that this term should indicate $\partial \psi(y, x,
+\theta)/\partial\theta = \partial^2\Psi(y, x, \theta)/\partial\theta^2$ and I
+recommend to replace ``$\psi'(y, x, \theta)$'' by an expression that readers can
+easily understand (e.g., ``$\partial \psi(y, x, \theta)/\partial\theta$'' or
+``$\partial^2\Psi(y, x, \theta)/\partial\theta^2$").
+\end{review}
 
-\medskip
+Yes, this is correct. Following this advice, we have replaced the
+term $\psi'(y, x, \theta)$ by $\frac{\partial \psi(y, x,\theta)}{\partial\theta}$
+in Equations~2 and~6.
 
-Term $\psi(y, x, \theta)$ is meant to be the first derivative of an objective function $\Psi(y, x, \theta)$ (typically the log-likelihood), with respect to a parameter vector $\theta$. As mentioned correctly by the referee, $\psi'(y, x, \theta)$ is the second derivative of the objective function $\Psi(y, x, \theta)$ with respect to $\theta$.
 
-The term $\psi'(y, x, \theta)$ has been replaced by $\frac{\partial \psi(y, x, \theta)}{\partial\theta}$ in Equation~2 as well as in Equation~6.
+\begin{review}
+2. The matrix defined in equation (5) is slightly unclear. I
+guess that the terms ``$\psi(y_i, x_i, \hat\theta)$'' ($i \in \{1, n\}$) in
+equation (5) indicate row-vectors. As vectors are usually assumed to be
+column-vectors (unless stated otherwise) and $\psi(y_i, x_i, \hat\theta)$ seem
+to be column-vectors in equation (7), I recommend to add transformation signs to
+the two vectors in equation (5) so that they become ``$\psi(y_i, x_i,
+\hat\theta)^\top$''.
+\end{review}
 
-\medskip
+Following these suggestions we have added transpose symbols in Equations~5
+and~11. 
 
-\textbf{\textit{2. The matrix defined in equation (5) is slightly unclear. I guess that the terms ``$\psi(y_i, x_i, \hat\theta)$'' ($i \in \{1, n\}$) in equation (5) indicate row-vectors. As vectors are usually assumed to be column-vectors (unless stated otherwise) and $\psi(y_i, x_i, \hat\theta)$ seem to be column-vectors in
-equation (7), I recommend to add transformation signs to the two vectors in equation (5)
-so that they become ``$\psi(y_i, x_i, \hat\theta)^\top$''.}}
 
-\medskip
+\begin{review}
+3. It seems to me that equation (12) is incorrect, because this
+equation is basically identical to equation (7) and, thus, does not take into
+account clustering (as it simply takes the sum over all observations). I guess
+that the correct equation is something like:
+\[
+\hat M_\mathrm{CL} \quad = \quad \frac{1}{n} \sum_{g = 1}^G\bigg(\sum_{i = 1}^{n_{g}}\psi(y_{ig}, x_{ig}, \hat \theta) \bigg)
+  \bigg(\sum_{i = 1}^{n_{g}} \psi(y_{ig}, x_{ig}, \hat \theta) \bigg)^\top.
+\]
+\end{review}
 
-According to the proposal, transformation signs have been added in Equation~5 as well as in Equation~11. 
+Thanks you very much for checking this thoroughly! This is much appreciated
+and we have corrected the equation accordingly.
 
-\medskip
 
-\textbf{\textit{3. It seems to me that equation (12) is incorrect, because this equation is basically identical
-to equation (7) and, thus, does not take into account clustering (as it simply takes the
-sum over all observations). I guess that the correct equation is something like:
-\begin{equation}
-  \hat M_\mathrm{CL} \quad = \quad \frac{1}{n} \sum_{g = 1}^G\bigg(\sum_{i = 1}^{n_{g}}\psi(y_{ig}, x_{ig}, \hat \theta) \bigg) \bigg(\sum_{i = 1}^{n_{g}} \psi(y_{ig}, x_{ig}, \hat \theta) \bigg)^\top.
-\end{equation}}}
+\begin{review}
+4. The ``hat matrix H'' that is mentioned on page 6 is not
+defined in the manuscript. I recommend that the authors define this matrix in
+the manuscript.
+\end{review}
 
-\medskip
+Thank you for pointing this out. While the definition of $H$ is straightforward
+in the linear regression model, the details become somewhat more involved for
+the generalized linear model framework. This is why we had not provided a
+definition in our original submission. Following your suggestion, we now
+include the definition for the linear model (but not the GLM) in Section~3.2.
 
-Thank you for having stressed this, the equation has been corrected. 
 
-\medskip
+\begin{review}
+5. On page 7, several parts in the paragraph that starts with
+``Petersen (2009)'' are unclear to me. I recommend that the authors reformulate
+and perhaps extend this paragraph in order to make it easier understandable.
+\end{review}
 
-\textbf{\textit{4. The ``hat matrix H'' that is mentioned on page 6 is not defined in the manuscript. I
-recommend that the authors define this matrix in the manuscript.}}
+The paragraph has been reformulated and is now hopefully easier to understand.
+In fact, Equation (20) lacked the needed cluster bias corrections for the meat
+matrices, which are now added. Perhaps this caused the confusion in this
+paragraph.
 
-\medskip
 
-Thank you for pointing this out. The definition of the hat matrix $H$ has been included in the manuscript for the linear model.
-A generalization of the hat matrix is also available for generalized linear models, though we refrained to propose a thorough definition.
+\begin{review}
+6. It is not clear to me which of the approaches that are
+described in sections 3.3 and 3.4 of the manuscript (and that are implemented in
+the sandwich package) can deal with clustering of individuals in panel data
+sets, e.g., if the panel data set includes data from T time periods for n
+individuals that are ``clustered'' in G groups of individuals. Please clarify
+this in the manuscript.
 
-\medskip
+7. In equation (21), it is unclear to me how this approach takes
+into account the time dimension of the panel data set (as none of the terms in
+this equation has a subscript t). Furthermore, as subscripts i and j seem to
+indicate individuals (or observations?), it seems to be weird that the ordering
+of the individuals (or of the observations) affects the weights that account for
+``correlation'' between each pair of individuals (or observations). Please
+clarify this in the manuscript.
 
-\textbf{\textit{5. On page 7, several parts in the paragraph that starts with ``Petersen (2009)'' are unclear
-to me. I recommend that the authors reformulate and perhaps extend this paragraph in
-order to make it easier understandable.}}
+8. In equation (22), similarly to equation (21), it seems to be
+weird that the ordering of the individuals affects the weights that account for
+``correlation'' between each pair of individuals. Please clarify this in the
+manuscript.
 
-\medskip
+9. In section 3.4, the use of subscripts for individuals,
+groups, and time periods is confusing and perhaps inconsistent. I recommend that
+the authors considerably revise and extend this section so that it is less
+confusing and easier to understand.
+\end{review}
 
-The paragraph has been reformulated and is now hopefully easier to understand. In fact, Equation (20) lacked the needed cluster bias corrections for the meat matrices, which are now added. Perhaps this caused the confusion in this paragraph.
+We apologize for the confusion our notation caused and tried to remedy the
+issues raised in your points 6--9. The revised Sections~3.3 and~3.4 try to
+better convey that the data are now panel data as also in Millo (2017).
+We have now adopted an index $(g, t)$ consisting of
+\emph{``groups''}~$g = 1, \dots, G$ (without a natural ordering, e.g.,
+individuals, countries, firms, \ldots) for which observations are sampled
+at $t = 1, \ldots, n_g$ points in \emph{time}, yielding $n = n_1 + \dots + n_G$
+observations overall.
 
-\medskip
+We hope that this clarifies the notation and brings out more clearly that
+\emph{groups} and \emph{time} are convenience terms that could pertain to
+different kinds of variables. Moreover, we explicitly point out that
+clustered covariances for panel data account for the average within-cluster
+covariance, where a cluster is any set of observations with can be identified by
+a variable to ``cluster on''. 
 
-\textbf{\textit{6. It is not clear to me which of the approaches that are described in sections 3.3 and 3.4
-of the manuscript (and that are implemented in the sandwich package) can deal with clustering of individuals in panel data sets, e.g., if the panel data set includes data from T time periods for n individuals that are ``clustered'' in G groups of individuals. Please clarify this in the manuscript.}}
+Regarding the notation, an index $t$ is introduced to make the time dimension
+visible.
 
-\medskip
 
-\textbf{\textit{7. In equation (21), it is unclear to me how this approach takes into account the time
-dimension of the panel data set (as none of the terms in this equation has a subscript t).
-Furthermore, as subscripts i and j seem to indicate individuals (or observations?), it
-seems to be weird that the ordering of the individuals (or of the observations) affects the
-weights that account for ``correlation'' between each pair of individuals (or observations).
-Please clarify this in the manuscript.}}
-
-\medskip
-
-\textbf{\textit{8. In equation (22), similarly to equation (21), it seems to be weird that the ordering of
-the individuals affects the weights that account for ``correlation'' between each pair of
-individuals. Please clarify this in the manuscript.}}
-
-\medskip
-
-\textbf{\textit{9. In section 3.4, the use of subscripts for individuals, groups, and time periods is confusing
-and perhaps inconsistent. I recommend that the authors considerably revise and extend
-this section so that it is less confusing and easier to understand.}}
-
-\medskip
-
- Points 6.~to 9.: To reflect that the data are now panel data with a natural time ordering within each entity $g$ labelled \emph{groups} (without a natural ordering, as for example individuals, countries, firms, \ldots) according to Millo (2014), we change our notation
-to an index $(g, t)$ for $g = 1, \dots, G$ observations sampled at $t = 1, \ldots, n_g$ points in \emph{time} (with $n = n_1 + \dots + n_G$).
-
-However, expressions like \emph{groups} and \emph{time} are convenience terms and are used for concreteness to make the concepts more easily comprehensible. Clustered covariances for paned data account for the average within-cluster covariance, where a cluster is any set of observations with can be identified by a variable to ``cluster on''. 
-
-Regarding the notation, an index $t$ is introduced to make the time dimension more visible.
-
-\medskip
-
-\textbf{\textit{10. On page 11, the closing parenthesis behind ``"NW1994"'' needs to be removed.}}
-
-\medskip
+\begin{review}
+10. On page 11, the closing parenthesis behind ``"NW1994"''
+needs to be removed.
+\end{review}
 
 The paranthesis has been removed.
 
-\medskip
 
-\textbf{\textit{11. Equation (25) seems to be inconsistent with equations (29) and (30), because $\beta_1$ and
-$\beta_2$ seem to be scalars in equation (25), while they seem to be vectors in equations (29)
-and (30). This needs either to be corrected or -- if it is correct -- more clearly explained.}}
-
-\medskip
+\begin{review}
+11. Equation (25) seems to be inconsistent with equations (29)
+and (30), because $\beta_1$ and $\beta_2$ seem to be scalars in equation (25),
+while they seem to be vectors in equations (29) and (30). This needs either to
+be corrected or -- if it is correct -- more clearly explained.
+\end{review}
 
 Thank you for pointing that out. The error has been corrected.
 
-\medskip
 
-\textbf{\textit{12. In Figures 1 and 2, the symbols for ``standard'' and ``basic'' (red and pink triangles)
-as well as the symbols for ``random'' and ``gee'' (violet and red plus signs) look very
-similar and cannot be easily distinguished from each other. I recommend to use clearly
-different symbols (e.g., dark red triangle, orange up-side-down triangle, black plus sign,
-grey asterisk).}}
+\begin{review}
+12. In Figures 1 and 2, the symbols for ``standard'' and
+``basic'' (red and pink triangles) as well as the symbols for ``random'' and
+``gee'' (violet and red plus signs) look very similar and cannot be easily
+distinguished from each other. I recommend to use clearly different symbols
+(e.g., dark red triangle, orange up-side-down triangle, black plus sign, grey
+asterisk).
+\end{review}
 
-\medskip
+We have changed the colors as well as symbols in Figures~1 to 3 according to the
+reviewers recommendation and hope to provide a better differentiability of the
+curves.
 
-We have changed the colors as well as symbols in Figures~1 to 3 according to the reviewers recommendation and hope to provide a better differentiability of the curves.
 
-\medskip
+\begin{review}
+13. In the captions of Figures 1, 2, and 3, the meaning of the
+symbol ``$\rho$'' is unclear. Are there typos and the ``$\rho$''s should be in
+fact ``$\rho_x$''s or do the ``$\rho$''s indicate something else? This needs to
+be correct or explained.
+\end{review}
 
-\textbf{\textit{13. In the captions of Figures 1, 2, and 3, the meaning of the symbol ``$\rho$'' is unclear. Are
-there typos and the ``$\rho$''s should be in fact ``$\rho_x$''s or do the ``$\rho$''s indicate something else?
-This needs to be correct or explained.}}
+Apologies again for not being clear enough here. The two symbols are, in fact,
+different pertaining to the correlations of the regressors with the clustering
+($\rho_x$) and in the response distribution ($\rho$), respectively. Both $\rho$ and
+$\rho_x$ can affect the empirical coverage of the methods investigated.
 
-\medskip
+As the amount of cluster correlation in the response distribution is probably of most
+interest we have considered a rather fine grid $\rho = 0, 0.1, \dots, 0.9$ and
+put $\rho$ on the x-axis in most of the plots. For $\rho_x$ we took a different
+approach and fixed $\rho_x = 0.25$ for $x_1$, the main regressor of interest.
+But the extreme cases of $\rho_x = 1$ and $\rho_x = 0$ are also considered through
+regressors $x_2$ and $x_3$, respectively. Section~6.1 has been adapted slightly
+to better bring out the simulation setup.
 
-The cluster correlation of the regressors is controlled by parameter $\rho_x$. Note that the previously introduced cluster correlation of the response distribution is determined by yet another parameter $\rho$. Both $\rho$ and $\rho_x$ can affect the coverage of the methods investigated. In the simulations, $\rho_x$ is fixed to 0.25, such that the corresponding regressor $x1$ is correlated, and in between the effects of the clustered regressor $x2$ with $\rho_x = 1$, and the uncorrelated regressor $x3$, where $\rho_x = 0$.
 
-\medskip
+\begin{review}
+14. Several parts of the manuscript are not easily
+comprehensible for people who have limited prior knowledge about ``sandwich''
+methods and clustering in general. I highly recommend that the authors revise
+and extend their explanations so that the manuscript can be more easily
+understood by practitioners who want to apply the methods that are described in
+the manuscript and are implemented in the sandwich package.
+\end{review}
 
-\textbf{\textit{14. Several parts of the manuscript are not easily comprehensible for people who have limited
-prior knowledge about ``sandwich'' methods and clustering in general. I highly recommend
-that the authors revise and extend their explanations so that the manuscript can be more
-easily understood by practitioners who want to apply the methods that are described in
-the manuscript and are implemented in the sandwich package.}}
+We hope that the revised manuscript is more intelligible. If specific problems
+remain, we appreciate further feedback on these issues and will incorporate
+this into the manuscript as well.
 
-\medskip
-
-We hope that the revision of the manuscript makes it more understandable to the reader.
-With respect to the notation, a time index $t$ is introduced in Section~3.2, pointing closer to the time dimension of clustered covariances for panel data.  
-As already mentioned, we also tried to highlight that expressions like \emph{groups} and \emph{time} are convenience terms that are used to make the concepts more easily comprehensible, and that a group in the panel data context is any set of observations with can be identified by a variable to ``cluster on''. 
 
 \end{document}

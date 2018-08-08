@@ -573,11 +573,11 @@ In the following, panel Newey-West standard errors as well as Driscoll and Kraay
 \citep[see also][for a unifying view]{hac:Millo:2017}.
 
 {\color{New}
-To reflect that the data are now panel data with a natural time ordering within each entity \emph{group}~$g$
+To reflect that the data are now panel data with a natural time ordering within each \emph{group}~$g$
 (without a natural ordering, as for example individuals, countries, or firms, \citealp{hac:Millo:2017}), we change our notation
 to an index $(g, t)$ for $g = 1, \dots, G$ \emph{groups} sampled at $t = 1, \ldots, n_g$ points in \emph{time} (with $n = n_1 + \dots + n_G$).
 
-Clustered covariances for paned data account for the average within-cluster covariance, where a cluster or group is any set of
+Clustered covariances for panel data account for the average within-cluster covariance, where a cluster or group is any set of
 observations with can be identified by a variable to ``cluster on''.
 }%
 
