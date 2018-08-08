@@ -9,7 +9,7 @@ vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, ..., fix =
   ## set up return value with correct dimension and names
   cf <- coef(x)
   k <- length(cf)
-  n <- nobs(x)
+  n <- nobs0(x)
   rval <- matrix(0, nrow = k, ncol = k, dimnames = list(names(cf), names(cf)))
   cf <- matrix(rep.int(NA_real_, k * R), ncol = k, dimnames = list(NULL, names(cf)))
 
