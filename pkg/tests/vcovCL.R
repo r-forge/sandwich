@@ -1,6 +1,7 @@
 library("sandwich")
 data("PetersenCL", package = "sandwich")
 m <- lm(y ~ x, data = PetersenCL)
+b <- glm((y > 0) ~ x, data = PetersenCL, family = binomial(link = "logit"))
 
 ## various versatile variance flavors
 vcovCL(m, cluster = ~ firm, type = "HC0", cadjust = TRUE)
@@ -54,14 +55,19 @@ all.equal(bellmc1, bellmc2)
 
 
 ## comparison with Stata
+## clustered HC2 for OLS and logit
+hc2m <- matrix(c(0.00449449, -0.00006593, -0.00006593, 0.00256824), nrow = 2)
+hc2b <- matrix(c(0.00359275,  0.000015, 0.000015, 0.00276326), nrow = 2)
+rownames(hc2m) <- colnames(hc2m) <- rownames(hc2b) <- colnames(hc2b) <- c("(Intercept)", "x")
 
-## FIXME
+all.equal(vcovCL(m, cluster = ~ firm, type = "HC2"), hc2m, tol = 1e-5)
+all.equal(vcovCL(b, cluster = ~ firm, type = "HC2"), hc2b, tol = 2e-4)
 
 
 ## more examples
 
 data("InstInnovation", package = "sandwich")
-n <- glm(cites ~ institutions, family = "poisson", data = InstInnovation)
+n <- glm(cites ~ institutions, data = InstInnovation, family = poisson)
 
 vcovCL(n, cluster = ~ company, type = "HC0", cadjust = TRUE)
 vcovCL(n, cluster = ~ company, type = "HC0", cadjust = FALSE)
