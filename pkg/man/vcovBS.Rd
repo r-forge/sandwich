@@ -85,6 +85,16 @@ vcovBS(x, \dots)
       model fitting functions and is hence not turned on by default.
   }
   
+  The ``xy'' or ``pairs'' bootstrap converges to the asymptotic solution used in \code{vcovCL}
+  as \code{R} becomes large (see Efron, 1979 or Mammen, 1992 for a discussion of bootstrap
+  asymptotics). This approach to bootstrapping is generally only of interest to the
+  practitioner when the asymptotic solution is unavailable (this can happen when using
+  estimators that have no \code{estfun} function, for example). More generally, bootstrapping
+  is useful when the bootstrap makes different assumptions than the asymptotic
+  estimator, in particular when the number of clusters is small and large \eqn{n} or
+  \eqn{g} assumptions are unreasonable. See Cameron and Miller (2015) for further discussion
+  of bootstrap techniques in practical applications.
+  
   The \code{\link[stats]{lm}} method provides additional bootstrapping \code{type}s
   and computes the bootstrapped coefficient estimates somewhat more efficiently using
   \code{\link[stats]{lm.fit}} (for case-based resampling) or \code{\link[base]{qr.coef}}
@@ -124,7 +134,7 @@ vcovBS(x, \dots)
 
 \references{
 Berger S, Graham N, Zeileis A (2017).
-  \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
+  \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R}
   Technical Report 2017-12,
   \emph{Working Papers in Economics and Statistics, Research Platform Empirical and Experimental Economics, Universitaet Innsbruck.}
   \url{http://EconPapers.RePEc.org/RePEc:inn:wpaper:2017-12}.
@@ -137,12 +147,29 @@ Cameron AC, Gelbach JB, Miller DL (2008).
   
 Cameron AC, Gelbach JB, Miller DL (2011).
   \dQuote{Robust Inference with Multiway Clustering},
-  \emph{Journal of Business & Ecomomic Statistics}, \bold{29}(2),
+  \emph{Journal of Business & Economic Statistics}, \bold{29}(2),
   238--249.
   \doi{10.1198/jbes.2010.07136}
   
+Cameron, AC, Miller, DL (2015). 
+  \dQuote{A practitioner’s guide to cluster-robust inference}, 
+  \emph{Journal of Human Resources}, \bold{50}(2), 
+  317--372.
+  \doi{10.3368/jhr.50.2.317}
+  
+Efron, B (1979). 
+  \dQuote{Bootstrap methods: another look at the jackknife}, 
+  \emph{The Annals of Statistics}, \bold{7}(1),
+  1--26.
+  \doi{10.1214/aos/1176344552}
+  
+Mammen, E (1992). 
+  \dQuote{When does bootstrap work?: asymptotic results and simulations}, 
+  \emph{Lecture Notes in Statistics}, \bold{77},
+  Springer Science & Business Media.
+  
 Mammen, E (1993). 
-  \dQuote{Bootstrap and Wild Bootstrap for High Dimensional Linear Models.}, 
+  \dQuote{Bootstrap and Wild Bootstrap for High Dimensional Linear Models}, 
   \emph{The Annals of Statistics}, \bold{21}(1),
   255--285.
   \doi{10.1214/aos/1176349025}
