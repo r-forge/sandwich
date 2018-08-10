@@ -55,6 +55,15 @@ all.equal(bellmc1, bellmc2)
 
 
 ## comparison with Stata
+
+## clustered for OLS and logit
+clm <- matrix(c(0.0044907, -0.00006474, -0.00006474, 0.00255993), nrow = 2)
+clb <- matrix(c(0.00358954,  0.00001531, 0.00001531, 0.00275766), nrow = 2)
+rownames(clm) <- colnames(clm) <- rownames(clb) <- colnames(clb) <- c("(Intercept)", "x")
+
+all.equal(vcovCL(m, cluster = ~ firm), clm, tol = 1e-5)
+all.equal(vcovCL(b, cluster = ~ firm), clb, tol = 1e-5)
+
 ## clustered HC2 for OLS and logit
 hc2m <- matrix(c(0.00449449, -0.00006593, -0.00006593, 0.00256824), nrow = 2)
 hc2b <- matrix(c(0.00359275,  0.000015, 0.000015, 0.00276326), nrow = 2)
