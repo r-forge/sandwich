@@ -72,14 +72,12 @@ vcovBS(x, \dots)
   extracted, and finally the covariance computed with \code{\link[stats]{cov}}.
   
   The \code{update} model is evaluated in the \code{environment(terms(x))} (if available).
-  To speed up computations some further arguments can be leveraged.
+  To speed up computations two further arguments can be leveraged.
   \enumerate{
     \item Instead of \code{\link[base]{lapply}} a parallelized function such as
       \code{\link[parallel]{parLapply}} or \code{\link[parallel]{mclapply}}
       can be specified to iterate over the bootstrap replications. For the latter,
       specifying \code{cores = ...} is a convenience shortcut.
-    \item The update function is byte-compiled with \code{\link[compiler]{cmpfun}}
-      (if available).
     \item When specifying \code{start = TRUE}, the \code{coef(x)} are passed to
       \code{update} as \code{start = coef(x)}. This may not be supported by all
       model fitting functions and is hence not turned on by default.

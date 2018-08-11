@@ -922,9 +922,6 @@ case-based resampling (\code{type = "xy"}) as in the default method. Alternative
     User-defined function. This should take a single argument \code{n}, the number of
     random values to produce, and return a vector of random factors of corresponding length.
 \end{itemize}  
-%
-If the basic \pkg{compiler} package is available, \code{cmpfun()} is applied to the bootstrap
-refitting function which may slightly speed up computations.
 }
 
 
