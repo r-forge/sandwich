@@ -82,8 +82,8 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
     } else {
       if(.Platform$OS.type == "windows") {
         cl_cores <- parallel::makeCluster(cores)
+        on.exit(parallel::stopCluster(cl_cores))
         function(X, FUN, ...) parallel::parLapply(cl = cl_cores, X, FUN, ...)
-	on.exit(parallel::stopCluster(cl_cores))
       } else {
         function(X, FUN, ...) parallel::mclapply(X, FUN, ..., mc.cores = cores)
       }
@@ -120,7 +120,6 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
 	qr.coef(xfit$qr, xfit$fit + xfit$res * j[cli])
       }
     )
-    if(requireNamespace("compiler")) bootfit <- compiler::cmpfun(bootfit)
     
     ## actually refit
     cf <- applyfun(1L:R, bootfit, ...)
