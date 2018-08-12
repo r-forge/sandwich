@@ -18,7 +18,7 @@ Changes in Version 2.5-0
     or wild bootstrap), (b) computes the bootstrap coefficients more efficiently
     with lm.fit() or qr.coef() rather than update().
 
-  o Both vcovBS() methods (default and lm) facilitate parallel bootstrapping
+  o Both vcovBS() methods (default, glm, and lm) facilitate parallel bootstrapping
     by changing the "applyfun" from the default lapply(). By setting "cores"
     parallel::parLapply (on Windows) or parallel::mclapply() (otherwise)
     are used.

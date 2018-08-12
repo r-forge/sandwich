@@ -2,6 +2,7 @@
 \alias{vcovBS}
 \alias{vcovBS.default}
 \alias{vcovBS.lm}
+\alias{vcovBS.glm}
 \alias{.vcovBSenv}
 
 \title{(Clustered) Bootstrap Covariance Matrix Estimation}
@@ -19,6 +20,9 @@ vcovBS(x, \dots)
   fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL)
 
 \method{vcovBS}{lm}(x, cluster = NULL, R = 250, type = "xy", \dots,
+  fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL)
+
+\method{vcovBS}{glm}(x, cluster = NULL, R = 250, start = FALSE, \dots,
   fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL)
 }
 
@@ -84,7 +88,7 @@ vcovBS(x, \dots)
   }
   
   The ``xy'' or ``pairs'' bootstrap converges to the asymptotic solution used in \code{vcovCL}
-  as \code{R} becomes large (see Efron, 1979 or Mammen, 1992 for a discussion of bootstrap
+  as \code{R} becomes large (see Efron 1979, or Mammen 1992, for a discussion of bootstrap
   asymptotics). This approach to bootstrapping is generally only of interest to the
   practitioner when the asymptotic solution is unavailable (this can happen when using
   estimators that have no \code{estfun} function, for example). More generally, bootstrapping
@@ -92,6 +96,9 @@ vcovBS(x, \dots)
   estimator, in particular when the number of clusters is small and large \eqn{n} or
   \eqn{g} assumptions are unreasonable. See Cameron and Miller (2015) for further discussion
   of bootstrap techniques in practical applications.
+
+  The \code{\link[stats]{glm}} method works essentially like the default method but call
+  \code{\link[stats]{glm.fit}} instead of code{update}.
   
   The \code{\link[stats]{lm}} method provides additional bootstrapping \code{type}s
   and computes the bootstrapped coefficient estimates somewhat more efficiently using
@@ -139,37 +146,32 @@ Berger S, Graham N, Zeileis A (2017).
 
 Cameron AC, Gelbach JB, Miller DL (2008).
   \dQuote{Bootstrap-Based Improvements for Inference with Clustered Errors},
-  \emph{The Review of Economics and Statistics}, \bold{90}(3),
-  414--427.
+  \emph{The Review of Economics and Statistics}, \bold{90}(3), 414--427.
   \doi{10.3386/t0344}
   
 Cameron AC, Gelbach JB, Miller DL (2011).
   \dQuote{Robust Inference with Multiway Clustering},
-  \emph{Journal of Business & Economic Statistics}, \bold{29}(2),
-  238--249.
+  \emph{Journal of Business & Economic Statistics}, \bold{29}(2), 238--249.
   \doi{10.1198/jbes.2010.07136}
   
-Cameron, AC, Miller, DL (2015). 
-  \dQuote{A practitioner’s guide to cluster-robust inference}, 
-  \emph{Journal of Human Resources}, \bold{50}(2), 
-  317--372.
+Cameron AC, Miller DL (2015). 
+  \dQuote{A Practitioner's Guide to Cluster-Robust Inference}, 
+  \emph{Journal of Human Resources}, \bold{50}(2), 317--372.
   \doi{10.3368/jhr.50.2.317}
   
-Efron, B (1979). 
-  \dQuote{Bootstrap methods: another look at the jackknife}, 
-  \emph{The Annals of Statistics}, \bold{7}(1),
-  1--26.
+Efron B (1979). 
+  \dQuote{Bootstrap Methods: Another Look at the Jackknife}, 
+  \emph{The Annals of Statistics}, \bold{7}(1), 1--26.
   \doi{10.1214/aos/1176344552}
   
 Mammen, E (1992). 
-  \dQuote{When does bootstrap work?: asymptotic results and simulations}, 
-  \emph{Lecture Notes in Statistics}, \bold{77},
+  \dQuote{When Does Bootstrap Work?: Asymptotic Results and Simulations}, 
+  \emph{Lecture Notes in Statistics}, \bold{77}.
   Springer Science & Business Media.
   
 Mammen, E (1993). 
   \dQuote{Bootstrap and Wild Bootstrap for High Dimensional Linear Models}, 
-  \emph{The Annals of Statistics}, \bold{21}(1),
-  255--285.
+  \emph{The Annals of Statistics}, \bold{21}(1), 255--285.
   \doi{10.1214/aos/1176349025}
   
 Webb, MD (2014).
