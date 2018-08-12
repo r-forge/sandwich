@@ -54,18 +54,13 @@ rownames(bellmc1) <- colnames(bellmc1) <- c("(Intercept)", "x")
 all.equal(bellmc1, bellmc2)
 
 
-## comparison with Stata (version Stata/MP 12.0)
-
-## clustered for OLS and logit
-## Stata command for OLS: 
+## comparison with Stata/MP 12.0
 ## regress y x, vce(cluster firm)
+clm <- matrix(c(0.0044907, -0.00006474, -0.00006474, 0.00255993), nrow = 2)
 
-## Stata commands for logit: 
+## logit via brl (https://economics.mit.edu/faculty/angrist/data1/mhe/brl)
 ## generate binary = (y > 0)
 ## brl binary x, cluster(firm) logit
-## The brl.ado file is availlable on the website https://economics.mit.edu/faculty/angrist/data1/mhe/brl
-
-clm <- matrix(c(0.0044907, -0.00006474, -0.00006474, 0.00255993), nrow = 2)
 clb <- matrix(c(0.00358954,  0.00001531, 0.00001531, 0.00275766), nrow = 2)
 rownames(clm) <- colnames(clm) <- rownames(clb) <- colnames(clb) <- c("(Intercept)", "x")
 
