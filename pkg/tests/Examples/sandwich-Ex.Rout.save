@@ -603,7 +603,7 @@ x           -0.04395562  0.10690628
 > 
 > ### Name: vcovBS
 > ### Title: (Clustered) Bootstrap Covariance Matrix Estimation
-> ### Aliases: vcovBS vcovBS.default vcovBS.lm .vcovBSenv
+> ### Aliases: vcovBS vcovBS.default vcovBS.lm vcovBS.glm .vcovBSenv
 > ### Keywords: regression bootstrap
 > 
 > ### ** Examples
@@ -1059,7 +1059,7 @@ x           2.055475e-05 1.616308e-02
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  11.602 1.647 13.265 0 0 
+Time elapsed:  8.283 1.107 9.399 0 0 
 > grDevices::dev.off()
 null device 
           1 
