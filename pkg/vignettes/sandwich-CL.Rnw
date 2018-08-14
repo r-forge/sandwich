@@ -891,11 +891,11 @@ Because the ``xy'' or "pairs" method makes the same assumptions as the asymptoti
 the asymptotic results as the number of bootstrap replications $R$ becomes large,
 assuming the same bias adjustments and small sample corrections are applied--see e.g., \cite{hac:Efron:1979} or 
 \cite{hac:Mammen:1992} for a discussion of asymptotic convergence in bootstraps. This makes ``xy'' bootstraps
-unnecessary if the asymptotic estimator is available (this may not be the case if a software package has not implemented
-the \code{estfun()} function, for example). However, the literature has found a number of alternative bootstrapping
-approaches, which make somewhat different assumptions, to be useful in practice.
-The \code{lm} method provides several additional bootstrapping \code{type}s and computes the
-bootstrapped coefficient estimates somewhat more efficiently using \code{lm.fit()} or
+unnecessary if the desired asymptotic estimator is available (this may not be the case if a software package has not implemented
+the \code{estfun()} function, for example, or for some nonlinear models). However, the literature 
+has found a number of alternative bootstrapping approaches, which make somewhat different assumptions, 
+to be useful in practice. The \code{lm} method provides several additional bootstrapping \code{type}s 
+and computes the bootstrapped coefficient estimates somewhat more efficiently using \code{lm.fit()} or
 \code{qr.coef()} rather than \code{update()}. The default \code{type}, however, is also
 case-based resampling (\code{type = "xy"}) as in the default method. Alternative \code{type} specifications are
 %
