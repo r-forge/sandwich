@@ -69,7 +69,12 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \dots)
   see also Petersen (2009) and Thompson (2011).
   
   With the \code{type} argument, HC0 to HC3 types of
-  bias adjustment can be employed.
+  bias adjustment can be employed, following the terminology used by
+  MacKinnon and White (1985) for heteroskedasticity corrections. HC0 applies no small sample bias adjustment.
+  HC1 applies a degrees of freedom-based correction, $(n-1)/(n-k)$ where $n$ is the
+  number of observations and $k$ is the number of explanatory or predictor variables in the model.
+  HC1 is the most commonly used approach, and is the default, though it is less effective
+  than HC2 and HC3 when the number of clusters is relatively small (Cameron et al. 2008).
   HC2 and HC3 types of bias adjustment are geared towards the linear
   model, but they are also applicable for GLMs (see Bell and McCaffrey
   2002, and Kauermann and Carroll 2001, for details).
@@ -106,6 +111,10 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \dots)
 }
 
 \references{
+Bell RM, McCaffrey DF (2002).
+  \dQuote{Bias Reduction in Standard Errors for Linear Regression with Multi-Stage Samples},
+  \emph{Survey Methodology}, \bold{28}(2), 169--181.
+
 Berger S, Graham N, Zeileis A (2017).
   \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
   Technical Report 2017-12,
@@ -137,9 +146,10 @@ Ma MS (2014).
   \emph{Mimeo, Availlable at SSRN:}
    URL \url{http://ssrn.com/abstract=2420421}.
 
-Bell RM, McCaffrey DF (2002).
-  \dQuote{Bias Reduction in Standard Errors for Linear Regression with Multi-Stage Samples},
-  \emph{Survey Methodology}, \bold{28}(2), 169--181.
+MacKinnon, JG, White, H (1985). 
+  \dQuote{Some heteroskedasticity-consistent covariance matrix estimators with improved finite sample properties}
+  \emph{Journal of Econometrics}, \bold{29}(3), 305--325.
+  \doi{10.1016/0304-4076(85)90158-7}
   
 Petersen MA (2009).
   \dQuote{Estimating Standard Errors in Finance Panel Data Sets: Comparing Approaches},

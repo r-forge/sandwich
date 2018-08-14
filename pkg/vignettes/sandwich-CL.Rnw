@@ -887,8 +887,10 @@ The method for \code{glm} method essentially proceeds in the same way but instea
 \code{update()} for estimating the coefficients on the ``xy'' bootstrap sample, \code{glm.fit()}
 is used which speeds up computations somewhat.
 
-Because the ``xy'' method makes the same core assumptions as the asymptotic approach above, its results approach
-the asymptotic results as the number of bootstrap replications $R$ becomes large. This makes ``xy'' bootstraps
+Because the ``xy'' or "pairs" method makes the same assumptions as the asymptotic approach above, its results approach
+the asymptotic results as the number of bootstrap replications $R$ becomes large,
+assuming the same bias adjustments and small sample corrections are applied--see e.g., \cite{hac:Efron:1979} or 
+\cite{hac:Mammen:1992} for a discussion of asymptotic convergence in bootstraps. This makes ``xy'' bootstraps
 unnecessary if the asymptotic estimator is available (this may not be the case if a software package has not implemented
 the \code{estfun()} function, for example). However, the literature has found a number of alternative bootstrapping
 approaches, which make somewhat different assumptions, to be useful in practice.
