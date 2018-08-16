@@ -38,8 +38,9 @@ considerably improved. The most important changes are:
   precise and some errors pointed out by the reviewers have been corrected.
 
 \item Clustered bootstrap covariances are discussed in a new Section~4.4
-  as an alternative to the asymptotic methods. The corresponding \code{vcovBS()}
-  function has been improved and a dedicated method for \code{"lm"} objects
+  as an alternative to the asymptotic methods that are the main focus of the
+  manuscript. The corresponding default \code{vcovBS()}
+  method has been improved and a dedicated method for \code{"lm"} objects
   has been added in order to provide more bootstrapping flavors and more
   efficient computations for the important special case of the linear regression
   model.
@@ -53,8 +54,8 @@ considerably improved. The most important changes are:
 
 All changes and additons are explained in much more detail in the
 point-to-point reply on the next pages. The important changes in the manuscript
-are highlighted in green in the PDF while the changes in the \emph{sandwich}
-package are listed in its \code{NEWS} file.
+are highlighted in green in the PDF with the changes in the \emph{sandwich}
+package also listed in its \code{NEWS} file.
 
 \closing{Best regards,
 \vspace*{1cm}
@@ -173,7 +174,7 @@ Thank you for spotting these: fixed now.
 \newpage
 
 
-\textbf{\LARGE Reviewer 1}
+\textbf{\LARGE Reviewer A}
 
 \begin{review}
 Comparison with Stata (as requested by the editor):
@@ -355,7 +356,7 @@ covariances.
 \newpage
 
 
-\textbf{\LARGE Reviewer 2}
+\textbf{\LARGE Reviewer B}
 
 \begin{review}
 1. In equation (2), the definition of the term ``$\psi'(y, x,
