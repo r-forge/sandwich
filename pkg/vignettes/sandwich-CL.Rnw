@@ -873,7 +873,7 @@ specified so that \code{parLapply()} (on Windows) or \code{mclapply()} (otherwis
 from the basic \pkg{parallel} package are used with the desired number of \code{cores}.
 
 The default method samples clusters (where each observation is its own cluster by default),
-i.e., case-based ``xy'' resampling \citep[see e.g.,][]{hac:Davison+Hinkley:1997}.
+i.e., case-based ``xy'' (or ``pairs'') resampling \citep[see e.g.,][]{hac:Davison+Hinkley:1997}.
 For obtaining a covariance matrix estimate it is assumed that an
 \code{update(x, subset = ...)} of the model with the resampled subset can be obtained, the \code{coef()}
 extracted, and finally the covariance computed with \code{cov()}. In addition to the arguments
@@ -883,30 +883,30 @@ listed above, it sends \code{...} to \code{update()}, and it provides an argumen
 argument in the model's fitting function in addition to the \code{subset} argument.
 If available, this may reduce the computational burden of refitting the model.
 
-The method for \code{glm} method essentially proceeds in the same way but instead of using
+The \code{glm} method essentially proceeds in the same way but instead of using
 \code{update()} for estimating the coefficients on the ``xy'' bootstrap sample, \code{glm.fit()}
 is used which speeds up computations somewhat.
 
-Because the ``xy'' or "pairs" method makes the same assumptions as the asymptotic approach above, its results approach
-the asymptotic results as the number of bootstrap replications $R$ becomes large,
-assuming the same bias adjustments and small sample corrections are applied--see e.g., \cite{hac:Efron:1979} or 
+Because the ``xy'' method makes the same assumptions as the asymptotic approach above, its results approach
+the asymptotic results as the number of bootstrap replications \code{R} becomes large,
+assuming the same bias adjustments and small sample corrections are applied -- see e.g., \cite{hac:Efron:1979} or 
 \cite{hac:Mammen:1992} for a discussion of asymptotic convergence in bootstraps. Bootstrapping will
 often converge to slightly different estimates when the sample size is small due to a limited number
-of distinct iterations--for example, there are 126 distinct ways to resample 5 groups with replacement, 
+of distinct iterations -- for example, there are 126 distinct ways to resample 5 groups with replacement, 
 but many of them occur only rarely (such as drawing group 1 five times); see \cite{hac:Webb:2014} 
 for more details.
 
-This makes xy bootstraps unnecessary if the desired asymptotic estimator is available and performs well
+This makes ``xy'' bootstraps unnecessary if the desired asymptotic estimator is available and performs well
 (\code{vcovCL} may not be available if a software package has not implemented
-the \code{estfun()} function, for example, and is not defined for some nonlinear models). 
+the \code{estfun()} function, for example). 
 Bootstrapping also often improves inference when nonlinear models are applied to smaller samples.
-However, the xy bootstrap is not the only technique available, and the literature 
-has found a number of alternative bootstrapping approaches--which make somewhat different 
-assumptions--to be useful in practice, even for linear models applied to large samples. The 
-\code{lm} method provides several additional bootstrapping \code{type}sand computes the 
+However, the ``xy'' bootstrap is not the only technique available, and the literature 
+has found a number of alternative bootstrapping approaches -- which make somewhat different 
+assumptions -- to be useful in practice, even for linear models applied to large samples. Hence, the 
+\code{vcovBS()} method for \code{lm} objects provides several additional bootstrapping \code{type}s and computes the 
 bootstrapped coefficient estimates somewhat more efficiently using \code{lm.fit()} or 
 \code{qr.coef()} rather than \code{update()}. The default \code{type}, however, is also 
-case-based resampling (\code{type = "xy"}) as in the default method. Alternative \code{type} 
+pair resampling (\code{type = "xy"}) as in the default method. Alternative \code{type} 
 specifications are
 %
 \begin{itemize}
