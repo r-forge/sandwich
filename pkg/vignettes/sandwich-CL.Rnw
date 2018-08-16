@@ -890,14 +890,24 @@ is used which speeds up computations somewhat.
 Because the ``xy'' or "pairs" method makes the same assumptions as the asymptotic approach above, its results approach
 the asymptotic results as the number of bootstrap replications $R$ becomes large,
 assuming the same bias adjustments and small sample corrections are applied--see e.g., \cite{hac:Efron:1979} or 
-\cite{hac:Mammen:1992} for a discussion of asymptotic convergence in bootstraps. This makes ``xy'' bootstraps
-unnecessary if the desired asymptotic estimator is available (this may not be the case if a software package has not implemented
-the \code{estfun()} function, for example, or for some nonlinear models). However, the literature 
-has found a number of alternative bootstrapping approaches, which make somewhat different assumptions, 
-to be useful in practice. The \code{lm} method provides several additional bootstrapping \code{type}s 
-and computes the bootstrapped coefficient estimates somewhat more efficiently using \code{lm.fit()} or
-\code{qr.coef()} rather than \code{update()}. The default \code{type}, however, is also
-case-based resampling (\code{type = "xy"}) as in the default method. Alternative \code{type} specifications are
+\cite{hac:Mammen:1992} for a discussion of asymptotic convergence in bootstraps. Bootstrapping will
+often converge to slightly different estimates when the sample size is small due to a limited number
+of distinct iterations--for example, there are 126 distinct ways to resample 5 groups with replacement, 
+but many of them occur only rarely (such as drawing group 1 five times); see \cite{hac:Webb:2014} 
+for more details.
+
+This makes xy bootstraps unnecessary if the desired asymptotic estimator is available and performs well
+(\code{vcovCL} may not be available if a software package has not implemented
+the \code{estfun()} function, for example, and is not defined for some nonlinear models). 
+Bootstrapping also often improves inference when nonlinear models are applied to smaller samples.
+However, the xy bootstrap is not the only technique available, and the literature 
+has found a number of alternative bootstrapping approaches--which make somewhat different 
+assumptions--to be useful in practice, even for linear models applied to large samples. The 
+\code{lm} method provides several additional bootstrapping \code{type}sand computes the 
+bootstrapped coefficient estimates somewhat more efficiently using \code{lm.fit()} or 
+\code{qr.coef()} rather than \code{update()}. The default \code{type}, however, is also 
+case-based resampling (\code{type = "xy"}) as in the default method. Alternative \code{type} 
+specifications are
 %
 \begin{itemize}
   \item

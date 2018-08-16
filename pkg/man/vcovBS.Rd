@@ -87,15 +87,28 @@ vcovBS(x, \dots)
       model fitting functions and is hence not turned on by default.
   }
   
-  The ``xy'' or ``pairs'' bootstrap converges to the asymptotic solution used in \code{vcovCL}
-  as \code{R} becomes large (see Efron 1979, or Mammen 1992, for a discussion of bootstrap
-  asymptotics). This approach to bootstrapping is generally only of interest to the
+  The ``xy'' or ``pairs'' bootstrap is consistent for heteroskedasticity and clustered errors, 
+  and converges to the asymptotic solution used in \code{vcovCL}
+  as \code{R}, \eqn{n}, and \eqn{g} become large (\eqn{n} and \eqn{g} are the number of
+  observations and the number of clusters, respectively; see Efron 1979, or Mammen 1992, for a 
+  discussion of bootstrap asymptotics). For small \eqn{g}--particularly under 30 groups--the
+  bootstrap will converge to a slightly different value than the asymptotic method, due to
+  the limited number of distinct bootstrap replications possible (see Webb 2014 for a discussion
+  of this phenomonon). The bootstrap will not necessarily converge to an asymptotic estimate
+  that has been corrected for small samples.
+  
+  The xy approach to bootstrapping is generally only of interest to the
   practitioner when the asymptotic solution is unavailable (this can happen when using
-  estimators that have no \code{estfun} function, for example). More generally, bootstrapping
-  is useful when the bootstrap makes different assumptions than the asymptotic
+  estimators that have no \code{estfun} function, for example). The residual bootstrap,
+  by contrast, is rarely of practical interest, because while it provides consistent
+  inference for for clustered standard errors, it is not robust to heteroskedasticity.
+  More generally, bootstrapping is useful when the bootstrap makes different assumptions than the asymptotic
   estimator, in particular when the number of clusters is small and large \eqn{n} or
-  \eqn{g} assumptions are unreasonable. See Cameron and Miller (2015) for further discussion
-  of bootstrap techniques in practical applications.
+  \eqn{g} assumptions are unreasonable. Bootstrapping is also often effective for nonlinear models,
+  particularly in smaller samples, where asymptotic approaches often perform relatively poorly.
+  See Cameron and Miller (2015) for further discussion of bootstrap techniques in practical applications,
+  and Berger et al. (2017) show simulations comparing \code{vcovBS} to \code{vcovCL} in several
+  settings.
 
   The \code{\link[stats]{glm}} method works essentially like the default method but call
   \code{\link[stats]{glm.fit}} instead of code{update}.
