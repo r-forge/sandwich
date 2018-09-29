@@ -54,25 +54,27 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \dots)
   all individuals, first sum over cluster.
  
   A two-way clustered sandwich estimator \eqn{M} (e.g., for cluster dimensions
-  "firm" and "industry") is a linear combination of
+  "firm" and "industry" or "id" and "time") is a linear combination of
   one-way clustered sandwich estimators for both dimensions
-  (\eqn{M_{firm}, M_{time}}) minus the
+  (\eqn{M_{id}, M_{time}}) minus the
   clustered sandwich estimator, with clusters formed out of the
   intersection of both dimensions (\eqn{M_{id \cap time}}):
   \deqn{M = M_{id} + M_{time} - M_{id \cap time}}
-  Instead of substracting \eqn{M_{id \cap time}} as the last
-  substacted matrix, Ma (2014) suggests to substract the basic HC0
+  Additionally, each of the three terms can be weighted by the corresponding
+  cluster bias adjustment factor (see below and Equation 20 in Berger et al. 2017).
+  Instead of subtracting \eqn{M_{id \cap time}} as the last
+  subtracted matrix, Ma (2014) suggests to subtract the basic HC0
   covariance matrix when only a single observation is in each
   intersection of \eqn{id}  and \eqn{time}.
-  Set \code{multi0 = TRUE} to substract the basic HC0 covariance matrix as
-  the last substracted matrix in multi-way clustering. For details,
+  Set \code{multi0 = TRUE} to subtract the basic HC0 covariance matrix as
+  the last subtracted matrix in multi-way clustering. For details,
   see also Petersen (2009) and Thompson (2011).
   
   With the \code{type} argument, HC0 to HC3 types of
   bias adjustment can be employed, following the terminology used by
   MacKinnon and White (1985) for heteroskedasticity corrections. HC0 applies no small sample bias adjustment.
-  HC1 applies a degrees of freedom-based correction, $(n-1)/(n-k)$ where $n$ is the
-  number of observations and $k$ is the number of explanatory or predictor variables in the model.
+  HC1 applies a degrees of freedom-based correction, \eqn{(n-1)/(n-k)} where \eqn{n} is the
+  number of observations and \eqn{k} is the number of explanatory or predictor variables in the model.
   HC1 is the most commonly used approach, and is the default, though it is less effective
   than HC2 and HC3 when the number of clusters is relatively small (Cameron et al. 2008).
   HC2 and HC3 types of bias adjustment are geared towards the linear

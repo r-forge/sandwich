@@ -10,7 +10,7 @@
 \description{
   Object-oriented estimation of basic bootstrap covariances, using
   simple (clustered) case-based resampling, plus more refined methods
-  for \code{\link[stats]{lm}} models.
+  for \code{\link[stats]{lm}} and \code{\link[stats]{glm}} models.
 }
 
 \usage{

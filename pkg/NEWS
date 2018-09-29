@@ -1,9 +1,16 @@
+Changes in Version 2.5-1
+
+  o In various vcov*() functions assuring that the variance-covariance matrix is
+    positive-definite (via fix=TRUE) erroneously dropped the dimnames. Now these
+    are properly preserved. (Reported by Joe Ritter.)
+
+
 Changes in Version 2.5-0
 
   o Enhanced vignette("sandwich-CL", package = "sandwich") by better describing
     the background of clustered covariances and being more precise in the mathematical
-    notation. Documentation for the new features like the formula cluster specification
-    and the vcovBS() methods has been added.
+    notation. Documentation for the new features (see below, e.g., the formula cluster
+    specification and the vcovBS() methods) has been added.
 
   o In vcovCL(), vcovPL(), vcovPC(), and vcovBS(), the "cluster" argument (and
     potentially also "order.by") can be specified by a formula - provided that
@@ -18,7 +25,11 @@ Changes in Version 2.5-0
     or wild bootstrap), (b) computes the bootstrap coefficients more efficiently
     with lm.fit() or qr.coef() rather than update().
 
-  o Both vcovBS() methods (default, glm, and lm) facilitate parallel bootstrapping
+  o New dedicated vcovBS() method for "glm" objects that uses "xy" bootstrap
+    like the default method but uses glm.fit() instead of update() and hence
+    is slightly faster.
+
+  o All vcovBS() methods (default, glm, and lm) facilitate parallel bootstrapping
     by changing the "applyfun" from the default lapply(). By setting "cores"
     parallel::parLapply (on Windows) or parallel::mclapply() (otherwise)
     are used.

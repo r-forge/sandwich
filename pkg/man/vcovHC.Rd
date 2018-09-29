@@ -77,7 +77,7 @@ meatHC(x, type = , omega = NULL, \dots)
 
 \references{
 Cribari-Neto F. (2004), Asymptotic Inference under Heteroskedasticity
-of Unknown Form. \emph{Computational Statistics \& Data Analysis}
+of Unknown Form. \emph{Computational Statistics & Data Analysis}
 \bold{45}, 215--233.
 
 Cribari-Neto F., Da Silva W.B. (2011), A New Heteroskedasticity-Consistent
