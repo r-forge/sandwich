@@ -276,7 +276,8 @@ Covariance estimators in \pkg{car} as well as in \pkg{sandwich} are constructed
 to insert the resulting covariance matrix estimate in different Wald-type
 inference functions, as \code{confint()} from \pkg{stats} \citep{hac:R:2018},
 \code{coeftest()} and \code{waldtest()} from \pkg{lmtest} \citep{hac:Zeileis+Hothorn:2002},
-\code{linearHypothesis()} and \code{deltaMethod()} from \pkg{car} \citep{hac:Fox+Weisberg:2011}.
+\code{Anova()}, \code{Confint()}, \code{S()}, \code{linearHypothesis()}, and \code{deltaMethod()} from \pkg{car} \citep{hac:Fox+Weisberg:2011}.
+
 
 \subsection[R packages for clustered covariances]{\proglang{R} packages for clustered covariances}
 
@@ -477,7 +478,7 @@ $I_{n_{g}}$ is an identity matrix of size $n_{g}$, $H_{gg}$ is the block from th
 matrix $H$ that pertains to cluster~$g$.
 In case of a linear model, the hat
 (or projection) matrix is defined as $H = X (X^\top X)^{-1} X^\top$, with model matrix $X$.
-A generalized hat matrix is available for generalized linear models.
+A generalized hat matrix is available for generalized linear models \citep[GLMs, see Equation~12.3 in][]{hac:McCullagh+Nelder:1989}.
 To apply these factors to $\hat M_\mathrm{CL}$ (Equation~\ref{eq:meatCL}), their square
 root has to be applied to each of the $\psi$ factors in the outer product
 \citep[see][Section~VI.B for the linear regression case]{hac:Cameron+Miller:2015}.
@@ -513,7 +514,6 @@ and \code{model.matrix()} extractors but an extractor for (blocks of) the full h
 are required as well. Currently, no such extractor method is available in base \proglang{R}
 (as \code{hatvalues()} just extracts $\mathrm{diag} H$) and hence HC2 and HC3 in \code{meatCL()}
 are just available for `\code{lm}' and `\code{glm}' objects.
-
 
 \subsubsection{Two-way and multi-way clustered covariances}
 Certainly, there can be more than one cluster dimension, as for example observations that are characterized by housholds within states or companies within industries.
@@ -652,16 +652,15 @@ The new sandwich covariances \code{vcovCL()} for clustered data and \code{vcovPL
 as well as \code{vcovPC()} for panel-corrected covariances all follow this structure and are
 introduced in more detail below.
 
-Model classes which provide the necessary building blocks include `\code{betareg}',
-`\code{clm}', `\code{coxph}', `\code{crch}', `\code{glm}', `\code{hurdle}', `\code{lm}', `\code{mlm}', `\code{mlogit}',
-`\code{nls}', `\code{polr}', `\code{rlm}', `\code{survreg}', or `\code{zeroinfl}' from packages 
-\pkg{stats} \citep{hac:R:2018}, 
-\pkg{betareg} \citep{hac:Cribari-Neto+Zeileis:2010,hac:Gruen+Kosmidis+Zeileis:2012},
-\pkg{crch} \citep{hac:Messner+Mayr+Zeileis:2016},
-\pkg{MASS} \citep{hac:Venables+Ripley:2002},
-\pkg{mlogit} \citep{hac:Croissant:2018}, 
-\pkg{ordinal} \citep{hac:Christensen:2018}, and
-\pkg{survival} \citep{hac:Therneau:2018}.
+Model classes which provide the necessary building blocks include
+`\code{lm}', `\code{glm}', `\code{mlm}', and `\code{nls}' from \pkg{stats} \citep{hac:R:2018}, 
+`\code{betareg}' from \pkg{betareg} \citep{hac:Cribari-Neto+Zeileis:2010,hac:Gruen+Kosmidis+Zeileis:2012},
+`\code{clm}' from \pkg{ordinal} \citep{hac:Christensen:2018},
+`\code{coxph}' and `\code{survreg}' from \pkg{survival} \citep{hac:Therneau:2018},
+`\code{crch}' from \pkg{crch} \citep{hac:Messner+Mayr+Zeileis:2016},
+`\code{hurdle}' and `\code{zeroinfl}' from \pkg{pscl}/\pkg{countreg} \citep{hac:Zeileis+Kleiber+Jackman:2008},
+`\code{mlogit}' from \pkg{mlogit} \citep{hac:Croissant:2018}, 
+and `\code{polr}' and `\code{rlm}' from \pkg{MASS} \citep{hac:Venables+Ripley:2002}.
 For all of these an \code{estfun()} method is available along with a \code{bread()} method
 (or the default method works). In case the models are based on a single linear predictor only,
 they also provide \code{model.matrix()} extractors so that the factorization from Equation~\ref{eq:fact}
