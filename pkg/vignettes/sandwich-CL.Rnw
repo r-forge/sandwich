@@ -294,11 +294,11 @@ includes: \pkg{multiwayvcov} \citep{hac:Graham+Arai+Hagstroemer:2016},
 
 In \pkg{multiwayvcov}, the implementation was object-oriented, in many aspects
 building on \pkg{sandwich} infrastructure. However, certain details assumed
-\code{lm} or \code{glm}-like objects. In \pkg{plm} and \pkg{lfe} several
+`\code{lm}' or `\code{glm}'-like objects. In \pkg{plm} and \pkg{lfe} several
 types of sandwich covariances are available for the packages' \code{plm}
 (panel linear models) and \code{felm} (fixed-effect linear models), respectively.
 The \pkg{geepack} package can estimate independence working models for
-\code{glm}-type models, also supporting clustered covariances for the
+`\code{glm}'-type models, also supporting clustered covariances for the
 resulting `\code{geeglm}' objects. Finally, \pkg{clusterSEs} and
 \pkg{clubSandwich} focus on the case of ordinary or weighted least squares
 regression models.
@@ -1460,7 +1460,10 @@ others]{hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Harden:2011,hac:Camer
 the larger the number of clusters $G$, the better the
 coverage and the less standard errors are underestimated. It can be observed
 that in our study about 50--100 clusters are enough for sufficiently accurate
-coverage rates.
+coverage rates, which is consistent with other authors' findings 
+\citep{hac:Cameron+Miller:2015,hac:Pustejovsky+Tipton:2018}. This is
+not consistent with our results, which indicate that HC3/CR3 adjustments generally
+perform well \citep[see][for a discussion]{hac:Pustejovsky+Tipton:2018}.
 
 Additionally, it can be observed that the higher the number of clusters, the
 less the different types of HC bias correction differ. However, for
@@ -1469,6 +1472,13 @@ and HC0. This is also consistent with the findings for cross-sectional data,
 e.g., \cite{hac:Long+Ervin:2000} suggest to use HC3 in the linear model for
 small samples with fewer than 250 observations. Moreover, bootstrap covariances
 perform somewhat better than HC0/HC1 for a small number of clusters.
+However, \citet{hac:Pustejovsky+Tipton:2018} have argued that HC3 bias corrections for clustered covariances
+(also sometimes referred to ``CR3'' or ``CR3VE'') tend to over-correct for small $G$, and
+recommend HC2 bias corrections (``CR2'') and t-tests using degrees of freedom calculated similar to
+\citet{hac:Satterthwaite:1946}. While Experiment IV finds that HC3 adjustments 
+slightly over-correct for $G = 10$ in binomial models, overall, our findings are 
+not consistent with the suggestion that HC3 is overly aggressive in correcting small
+$G$ bias in clustered standard errors.
 
 
 \section{Summary}
