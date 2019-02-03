@@ -1474,7 +1474,7 @@ small samples with fewer than 250 observations. Moreover, bootstrap covariances
 perform somewhat better than HC0/HC1 for a small number of clusters.
 However, \citet{hac:Pustejovsky+Tipton:2018} have argued that HC3 bias corrections for clustered covariances
 (also sometimes referred to ``CR3'' or ``CR3VE'') tend to over-correct for small $G$, and
-recommend HC2 bias corrections (``CR2'') and t-tests using degrees of freedom calculated similar to
+recommend HC2 bias corrections (``CR2'') and $t$~tests using degrees of freedom calculated similar to
 \citet{hac:Satterthwaite:1946}. While Experiment IV finds that HC3 adjustments 
 slightly over-correct for $G = 10$ in binomial models, overall, our findings are 
 not consistent with the suggestion that HC3 is overly aggressive in correcting small
