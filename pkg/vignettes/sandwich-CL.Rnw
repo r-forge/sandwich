@@ -1456,14 +1456,11 @@ In most cases, all of the standard errors are underestimated for $G = 10$
 clusters (except clustered standard errors with HC3 bias correction for the
 binomial and Poisson response). As found in previous studies for clustered
 HC0/HC1 covariances \citep[][among
-others]{hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Harden:2011,hac:Cameron+Miller:2015},
+others]{hac:Arceneaux+Nickerson:2009,hac:Petersen:2009,hac:Harden:2011,hac:Cameron+Miller:2015,hac:Pustejovsky+Tipton:2018},
 the larger the number of clusters $G$, the better the
-coverage and the less standard errors are underestimated. It can be observed
-that in our study about 50--100 clusters are enough for sufficiently accurate
-coverage rates, which is consistent with other authors' findings 
-\citep{hac:Cameron+Miller:2015,hac:Pustejovsky+Tipton:2018}. This is
-not consistent with our results, which indicate that HC3/CR3 adjustments generally
-perform well \citep[see][for a discussion]{hac:Pustejovsky+Tipton:2018}.
+coverage and the less standard errors are underestimated. In our study about 50--100 clusters are enough for sufficiently accurate
+coverage rates using clustered standard errors without a bias correction (CL-0 in the figure), 
+which is consistent with other authors' findings.
 
 Additionally, it can be observed that the higher the number of clusters, the
 less the different types of HC bias correction differ. However, for
@@ -1473,8 +1470,8 @@ e.g., \cite{hac:Long+Ervin:2000} suggest to use HC3 in the linear model for
 small samples with fewer than 250 observations. Moreover, bootstrap covariances
 perform somewhat better than HC0/HC1 for a small number of clusters.
 However, \citet{hac:Pustejovsky+Tipton:2018} have argued that HC3 bias corrections for clustered covariances
-(also sometimes referred to ``CR3'' or ``CR3VE'') tend to over-correct for small $G$, and
-recommend HC2 bias corrections (``CR2'') and $t$~tests using degrees of freedom calculated similar to
+(CL-3 in the figure, sometimes referred to ``CR3'' or ``CR3VE'') tend to over-correct for small $G$, and
+recommend HC2 bias corrections (``CR2'', CL-2 in the figure) and $t$~tests using degrees of freedom calculated similar to
 \citet{hac:Satterthwaite:1946}. While Experiment IV finds that HC3 adjustments 
 slightly over-correct for $G = 10$ in binomial models, overall, our findings are 
 not consistent with the suggestion that HC3 is overly aggressive in correcting small
