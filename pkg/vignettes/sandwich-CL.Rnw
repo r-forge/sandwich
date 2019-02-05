@@ -1569,8 +1569,9 @@ instead of an exchangeable correlation structure.
 
 Figure~\ref{fig:sim-0607} shows the results from a supplementary simulation
 experiment that is analogous to Experiment~I. The two differences are:
-(1)~The cluster correlation $\rho = 0.25$ is fixed and the number of observations
-per cluster is increased from $5$ up to $50$. (2)~Additionally, an AR(1)
+(1)~The number of observations per cluster is increased from $5$ up to $50$
+and the cluster correlation is fixed at $\rho = 0.25$ (with higher values leading
+to qualitatively the same results). (2)~Additionally, an AR(1)
 correlation structure is considered. Somewhat surprisingly, the standard
 clustered HC0 covariance performs satisfactorily in all scenarios and better
 than the panel estimators (PL and PC). The latter approach the desired coverage
