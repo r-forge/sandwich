@@ -953,6 +953,7 @@ with ``standard'' standard errors and basic (cross-section) sandwich standard
 errors. As an additional reference, a simple clustered bootstrap covariance can
 be computed by \code{vcovBS()} (by default with \code{R = 250} bootstrap samples).
 <<innovation-se, echo=TRUE, eval=FALSE>>= 
+suppressWarnings(RNGversion("3.5.0"))
 set.seed(0)
 vc <- list(
   "standard" = vcov(h_innov),

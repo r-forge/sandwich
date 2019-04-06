@@ -4,6 +4,9 @@ Changes in Version 2.5-1
     positive-definite (via fix=TRUE) erroneously dropped the dimnames. Now these
     are properly preserved. (Reported by Joe Ritter.)
 
+  o Added suppressWarnings(RNGversion("3.5.0")) in those places where set.seed()
+    was used to assure exactly reproducible results from R 3.6.0 onwards.
+
 
 Changes in Version 2.5-0
 
