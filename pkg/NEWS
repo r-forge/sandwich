@@ -1,3 +1,10 @@
+Changes in Version 2.5-2
+
+  o All kernel weights functions in kweights() are made symmetric around zero now
+    (suggested by Christoph Hanck). The quadratic spectral kernal is approximated
+    by exp(-c * x^2) rather than 1 for very small x.
+
+
 Changes in Version 2.5-1
 
   o In various vcov*() functions assuring that the variance-covariance matrix is
