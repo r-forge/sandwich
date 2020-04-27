@@ -374,9 +374,9 @@ whereas $\hat M, \hat M_\mathrm{HAC}, \hat M_\mathrm{HC}$ compute outer product,
   \hat M & = & \frac{1}{n} \sum_{i = 1}^n\psi(y_i, x_i, \hat \theta) \psi(y_i, x_i, \hat \theta)^\top \\ \label{eq:meat-hac}
   \hat M_\mathrm{HAC} & = & \frac{1}{n} \sum_{i, j = 1}^n w_{|i-j|} \, \psi(y_i, x_i, \hat \theta) \psi(y_j, x_j, \hat \theta)^\top \\ \label{eq:meat-hc}
   \hat M_\mathrm{HC} & = & \frac{1}{n} X^\top \left( \begin{array}{ccc} 
-  \omega(r(y_1, x_1^\top \theta)) & \cdots & 0 \\ 
+  \omega(r(y_1, x_1^\top \hat \theta)) & \cdots & 0 \\ 
   \vdots & \ddots & \vdots \\
-  0 & \cdots & \omega(r(y_n, x_n^\top \theta))
+  0 & \cdots & \omega(r(y_n, x_n^\top \hat \theta))
   \end{array} \right) X.
 \end{eqnarray}
 The outer product estimator in Equation~\ref{eq:meat-op} corresponds to the basic sandwich estimator \citep{hac:Eicker:1963,hac:Huber:1967,hac:White:1980}.
