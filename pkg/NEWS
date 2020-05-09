@@ -4,6 +4,12 @@ Changes in Version 2.5-2
     (suggested by Christoph Hanck). The quadratic spectral kernal is approximated
     by exp(-c * x^2) rather than 1 for very small x.
 
+  o The documentation of the HC1 bias correction for clustered covariances
+    in vignette("sandwich-CL", package = "sandwich") has been corrected (Equation 15).
+    While both the code in vcovCL() and the corresponding documentation ?vcovCL
+    always correctly used (n-1)/(n-k), the vignette had incorrectly stated it as
+    n/(n-k). (Reported by Yves Croissant.)
+
 
 Changes in Version 2.5-1
 
