@@ -465,7 +465,7 @@ cross-section data estimators. HC0 to HC3 bias corrections for cluster $g$ are
 defined as
 \begin{eqnarray} \label{eq:biasadj0}
   \mathrm{HC0:} &  & 1 \\  \label{eq:biasadj1}
-  \mathrm{HC1:} &  & \frac{n}{n - k} \\  \label{eq:biasadj2}
+  \mathrm{HC1:} &  & \frac{n - 1}{n - k} \\  \label{eq:biasadj2}
   \mathrm{HC2:} &  & \frac{G - 1}{G} \cdot (I_{n_{g}} - H_{gg})^{-1} \\  \label{eq:biasadj3}
   \mathrm{HC3:} &  & \frac{G - 1}{G} \cdot (I_{n_{g}} - H_{gg})^{-2}, 
 \end{eqnarray}  
