@@ -10,6 +10,11 @@ Changes in Version 2.5-2
     always correctly used (n-1)/(n-k), the vignette had incorrectly stated it as
     n/(n-k). (Reported by Yves Croissant.)
 
+  o In case the "Formula" namespace is loaded, warnings are suppressed now for
+    processing formula specifications like cluster = ~ id in expand.model.frame().
+    Otherwise warnings may occur with the | separator in multi-part formulas with
+    factors (reported by David Hugh-Jones).
+
 
 Changes in Version 2.5-1
 
