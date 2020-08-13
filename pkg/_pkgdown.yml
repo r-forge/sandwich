@@ -3,6 +3,12 @@ destination: "../www/"
 
 template:
   assets: "pkgdown/assets/"
+  opengraph:
+    image:
+      src: logo.png
+    twitter:
+      creator: "@AchimZeileis"
+      card: summary
 
 reference:
   - title: "Covariance estimators"
@@ -19,6 +25,7 @@ reference:
       - vcovPL
       - weave
       - lrvar
+      - meat
   - title: "Object orientation"
     contents: 
       - bread
