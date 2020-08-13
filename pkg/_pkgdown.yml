@@ -1,0 +1,35 @@
+url: "http://sandwich.R-Forge.R-project.org/"
+destination: "../www/"
+
+template:
+  assets: "pkgdown/assets/"
+
+reference:
+  - title: "Covariance estimators"
+    contents: 
+      - sandwich
+      - vcovHC
+      - vcovCL
+      - vcovHAC
+      - kernHAC
+      - NeweyWest
+      - vcovBS
+      - vcovOPG
+      - vcovPC
+      - vcovPL
+      - weave
+      - lrvar
+  - title: "Object orientation"
+    contents: 
+      - bread
+      - estfun
+  - title: "Kernel infrastructure"
+    contents: 
+      - kweights
+      - isoacf
+  - title: "Data sets"
+    contents: 
+      - InstInnovation
+      - Investment
+      - PetersenCL
+      - PublicSchools
