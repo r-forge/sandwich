@@ -41,12 +41,12 @@
   were dropped in the `NA` processing of the model object `x` (provided `x$na.action`
   is available).
   
-* New dedicated `vcovBS()` method for `"lm"` objects that (a) provides many more
+* New dedicated `vcovBS()` method for `lm` objects that (a) provides many more
   bootstrapping techniques applicable to linear models (e.g., residual-based
   or wild bootstrap), (b) computes the bootstrap coefficients more efficiently
   with `lm.fit()` or `qr.coef()` rather than `update()`.
 
-* New dedicated `vcovBS()` method for `"glm"` objects that uses `"xy"` bootstrap
+* New dedicated `vcovBS()` method for `glm` objects that uses `"xy"` bootstrap
   like the default method but uses `glm.fit()` instead of `update()` and hence
   is slightly faster.
 
@@ -125,7 +125,7 @@
 
 # sandwich 2.3-1
 
-* The `estfun()` methods for `"survreg"` and `"coxph"` objects incorrectly
+* The `estfun()` methods for `survreg` and `coxph` objects incorrectly
   returned the unweighted estimating functions in case the objects
   were fitted with weights. Now the weights are properly extracted
   and used.
@@ -160,7 +160,7 @@
 
 # sandwich 2.2-8
 
-* Fixed a bug in `bwNeweyWest()` for `"mlm"` objects that only have
+* Fixed a bug in `bwNeweyWest()` for `mlm` objects that only have
   an intercept.
 
 
@@ -173,30 +173,30 @@
 
 # sandwich 2.2-6
 
-* Bug fix in `estfun()` method for `"survreg"` objects.
+* Bug fix in `estfun()` method for `survreg` objects.
 
 
 # sandwich 2.2-5
 
-* `estfun()` methods for `"hurdle"`/`"zeroinfl"` objects can now
+* `estfun()` methods for `hurdle`/`zeroinfl` objects can now
   handle multiple offset vectors (if any).
 
 
 # sandwich 2.2-4
 
-* new `vcovHC()` method for `"mlm"` objects. This simply
-  combines the `"meat"` for each individual regression and combines
+* new `vcovHC()` method for `mlm` objects. This simply
+  combines the "meat" for each individual regression and combines
   the result.
 
 
 # sandwich 2.2-3
 
-* New `bread()` method for `"mlm"` objects.
+* New `bread()` method for `mlm` objects.
 
 
 # sandwich 2.2-2
 
-* Updates in `estfun()` methods for `"hurdle"`/`"zeroinfl"` objects.
+* Updates in `estfun()` methods for `hurdle`/`zeroinfl` objects.
 
 
 # sandwich 2.2-1
@@ -206,8 +206,8 @@
 
 # sandwich 2.2-0
 
-* Added/enhanced `bread()` and `estfun()` methods for `"rlm"` 
-  and `"mlogit"` objects (from `MASS` and `mlogit`, respectively).
+* Added/enhanced `bread()` and `estfun()` methods for `rlm` 
+  and `mlogit` objects (from `MASS` and `mlogit`, respectively).
   
 * Made `vcovHC()` and `vcovHAC()` generic with previous function
   definitions as default methods.    
@@ -218,18 +218,18 @@
 
 # sandwich 2.1-0
 
-* Added `bread()` and `estfun()` methods for `"hurdle"`/`"zeroinfl"`
+* Added `bread()` and `estfun()` methods for `hurdle`/`zeroinfl`
   objects as computed by `hurdle()`/`zeroinfl()` in package `pscl`.
 
 * Fixed `bread()` and `estfun()` methods for negative binomial
-  `"glm"` objects: Now `dispersion = 1` is used.
+  `glm` objects: Now `dispersion = 1` is used.
 
 
 # sandwich 2.0-3
 
-* `bread()` method for `"lm"` objects now calls `summary.lm()`
+* `bread()` method for `lm` objects now calls `summary.lm()`
   explicitely (rather than the generic) so that it also
-  works with `"aov"` objects.
+  works with `aov` objects.
 
 
 # sandwich 2.0-2
@@ -238,7 +238,7 @@
   product of gradients estimator (works for maximum
   likelihood `estfun()` methods only).
 
-* Scaled `estfun()` and `bread()` method for `"glm"` objects
+* Scaled `estfun()` and `bread()` method for `glm` objects
   by `dispersion` estimate. Hence, this corresponds to
   maximum likelihood and not deviance methods.
 
@@ -278,8 +278,8 @@
 # sandwich 1.1-0
 
 * `sandwich` is made object-oriented, so that various types
-  of sandwich estimators can be computed not only for `"lm"`
-  models, but also `"glm"`, `"survreg"`, etc.
+  of sandwich estimators can be computed not only for `lm`
+  models, but also `glm`, `survreg`, etc.
   To achieve object orientation various changes have
   been made: a `sandwich()` function is provided which needs
   a `bread` and a `meat` matrix. For the `bread`, a generic `bread()`
@@ -294,7 +294,7 @@
   added, explaining the new object-orientation features.
   
 * Various methods to `bread()` and `estfun()` have been added,
-  particularly for `"survreg"` and `"coxph"`.
+  particularly for `survreg` and `coxph`.
 
 
 # sandwich 1.0-1
