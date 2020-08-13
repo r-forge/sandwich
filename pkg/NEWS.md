@@ -252,8 +252,8 @@
 # sandwich 2.0-0
 
 * A paper based on the `"sandwich-OOP"` vignette was accepted
-  for publication in volume 16(9) of Journal of Statistical
-  Software at <https://doi.org/10.18637/jss.v016.i09>.
+  for publication in volume 16(9) of _Journal of Statistical Software_
+  at <https://doi.org/10.18637/jss.v016.i09>.
 
 * A `NAMESPACE` was added for the package.
 
@@ -265,6 +265,8 @@
   
 * Several `estfun()` methods and some of the `meat*()` functions have
   been enhanced and made more consistent.
+
+* Thanks to Henric Nilsson and Giovanni Millo for feedback and testing.
 
 
 # sandwich 1.1-1
@@ -293,3 +295,57 @@
   
 * Various methods to `bread()` and `estfun()` have been added,
   particularly for `"survreg"` and `"coxph"`.
+
+
+# sandwich 1.0-1
+
+* Added `CITATION` file, see `citation("sandwich")`.
+
+* Small documentation improvements.
+
+
+# sandwich 1.0-0
+
+* Release of version 1.0-0 accompanying the publication in the
+  _Journal of Statistcal Software_ at <https://doi.org/10.18637/jss.v011.i10>.
+  The paper is also provided as a vignette in the package as
+  `vignette("sandwich", package = "sandwich")`.
+
+
+# sandwich 0.9-0
+
+* Added bandwidth selection a la Newey & West (1994) in `bwNeweyWest()`.
+  `NeweyWest()` is a new convenience function for `vcovHAC()` with
+  `bwNeweyWest()`.
+
+* Added `estfun()` methods for `rlm` and `coxph`.
+
+* Argument `omega` can also be a function in `vcovHC()`.
+
+* Added data sets from Greene (1993): `Investment` and `PublicSchools`.
+
+
+# sandwich 0.1-3
+
+* Improvements in `vcovHC()` and `vcovHAC()`. Argument `order.by` can now
+  be a `formula` and `ar.method` can be modified (rather than being
+  hard-coded `"ols"` which is still the default).
+
+* Thanks to Hiroyuki Kawakatsu for feedback and testing.
+
+
+# sandwich 0.1-2
+
+* Improvements in `vcovHC()`: The new default is now HC3 and support was
+  added for HC4.
+
+
+# sandwich 0.1-1
+
+* First CRAN release of the `sandwich` package for robust covariance
+  matrix estimators. Provides heteroscedasticity-consistent (HC) and
+  hetereoscedasticity- and autocorrelation-consistent (HAC) covariance
+  matrix estimators. Based on prior work by Thomas Lumley in his
+  `weave` package.
+
+* Thanks to Christian Kleiber for support, feedback, and testing.
