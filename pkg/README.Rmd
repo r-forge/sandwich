@@ -1,0 +1,47 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file and run rmarkdown::render("README.Rmd") -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  fig.path = "man/figures/README-"
+)
+```
+
+## Robust Covariance Matrix Estimators
+
+Model-robust standard error estimators for cross-sectional, time series, clustered, panel, and longitudinal data.
+Modular object-oriented implementation with support for many model objects, including:
+`lm`, `glm`, `survreg`, `coxph`, `mlogit`, `polr`, `hurdle`, `zeroinfl`, and beyond.
+
+**Sandwich covariances for general parametric models:**
+
+```{r sandwich, echo=FALSE, results="hide"}
+exams::tex2image("\\begin{eqnarray*}
+  \\hat \\theta & \\approx & \\mathcal{N}(\\theta_0, \\frac{1}{n} S(\\hat \\theta)) \\\\
+  S(\\theta) & = & B(\\theta) \\, M(\\theta) \\, B(\\theta)
+\\end{eqnarray*}",
+  format = "svg", header = "", pt = 14,
+  dir = file.path(getwd(), "man", "figures"), name = "README-sandwich")
+```
+
+<img alt="Central limit theorem and sandwich estimator" src="man/figures/README-sandwich.svg" style="border:10px solid transparent">
+
+
+**Object-oriented implementation in R:**
+
+```{r, echo = FALSE, results = "hide"}
+library("sandwich")
+library("lmtest")
+```
+
+```{r}
+library("sandwich")
+library("lmtest")
+data("PetersenCL", package = "sandwich")
+m <- lm(y ~ x, data = PetersenCL)
+coeftest(m, vcov = sandwich)
+coeftest(m, vcov = vcovCL, cluster = ~ firm)
+```
