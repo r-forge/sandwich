@@ -1,7 +1,8 @@
-paper
+^README\.Rmd$
+^README\.html$
+^docs$
+^pkgdown$
+^_pkgdown\.yml$
+^logo\.png$
+^paper$
 R/estfunDeriv.R
-pkgdown
-_pkgdown.yml
-logo.png
-README.Rmd
-README.html
