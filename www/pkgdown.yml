@@ -1,0 +1,13 @@
+pandoc: '2.5'
+pkgdown: 1.5.1
+pkgdown_sha: ~
+articles:
+  jss_2004: jss_2004.html
+  jss_2006: jss_2006.html
+  jss_2020: jss_2020.html
+  sandwich: sandwich.html
+last_built: 2020-08-14T02:02Z
+urls:
+  reference: http://sandwich.R-Forge.R-project.org//reference
+  article: http://sandwich.R-Forge.R-project.org//articles
+
