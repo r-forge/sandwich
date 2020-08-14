@@ -1,0 +1,54 @@
+---
+title: "Object-Oriented Computation of Sandwich Estimators"
+author: "Achim Zeileis"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+vignette: >
+  %\VignetteIndexEntry{Object-Oriented Computation of Sandwich Estimators}
+  %\VignetteKeywords{covariance matrix estimators, estimating functions, object orientation, R}
+  %\VignettePackage{sandwich}
+  %\VignetteDepends{sandwich,zoo,AER,survival,MASS,lmtest,utils,tools}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+## Abstract
+
+Sandwich covariance matrix estimators are a popular tool in applied regression
+modeling for performing inference that is robust to certain types of model
+misspecification. Suitable implementations are available in the R system for
+statistical computing for certain model fitting functions only (in particular
+`lm()`), but not for other standard regression functions, such as `glm()`,
+`nls()`, or `survreg()`.
+
+Therefore, conceptual tools and their translation to computational tools in the
+package _sandwich_ are discussed, enabling the computation of sandwich
+estimators in general parametric models. Object orientation can be achieved by
+providing a few extractor functions - most importantly for the empirical
+estimating functions - from which various types of sandwich estimators can be
+computed.
+
+
+## Manuscript
+
+**PDF:** [**sandwich-OOP.pdf**](pdf/sandwich-OOP.pdf) ![](pdf/sandwich-OOP.pdf)
+
+```{r, echo = FALSE, results = "hide", message = FALSE}
+if(!file.exists("pdf")) dir.create("pdf")
+setwd("pdf")
+file.copy("../sandwich-OOP.Rnw", "sandwich-OOP.Rnw")
+file.copy("../hac.bib", "hac.bib")
+utils::Sweave("sandwich-OOP.Rnw")
+tools::texi2pdf("sandwich-OOP.tex")
+f <- list.files()
+f <- f[!(f %in% c("sandwich.pdf", "sandwich-OOP.pdf", "sandwich-CL.pdf"))]
+file.remove(f)
+setwd("..")
+```
+
+**Originally published as:**
+Zeileis A (2006). "Object-Oriented Computation of Sandwich Estimators."
+_Journal of Statistical Software_, **16**(9), 1-16.
+[doi:10.18637/jss.v016.i09](https://doi.org/10.18637/jss.v016.i09).

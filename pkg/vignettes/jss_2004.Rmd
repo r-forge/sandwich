@@ -1,0 +1,57 @@
+---
+title: "Econometric Computing with HC and HAC Covariance Matrix Estimators"
+author: "Achim Zeileis"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+vignette: >
+  %\VignetteIndexEntry{Econometric Computing with HC and HAC Covariance Matrix Estimators}
+  %\VignetteDepends{sandwich,zoo,lmtest,strucchange,scatterplot3d,utils,tools}
+  %\VignetteKeywords{covariance matrix estimator, heteroscedasticity, autocorrelation, estimating functions, econometric computing, R}
+  %\VignettePackage{sandwich}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+## Abstract
+
+Data described by econometric models typically contains autocorrelation  and/or
+heteroscedasticity of unknown form and for inference in such models it is
+essential to use covariance matrix estimators that can consistently estimate the
+covariance of the model parameters. Hence, suitable
+heteroscedasticity-consistent (HC) and heteroscedasticity and autocorrelation
+consistent (HAC) estimators have been receiving attention in the econometric
+literature over the last 20 years. To apply these estimators in practice, an
+implementation is needed that preferably translates the conceptual properties of
+the underlying theoretical frameworks into computational tools. In this paper,
+such an implementation in the package _sandwich_ in the R system for statistical
+computing is described and it is shown how the suggested functions provide
+reusable components that build on readily existing functionality and how they
+can be integrated easily into new inferential procedures or applications. The
+toolbox contained in _sandwich_ is extremely flexible and comprehensive,
+including specific functions for the most important HC and HAC estimators from
+the econometric literature. Several real-world data sets are used to illustrate
+how the functionality can be integrated into applications.
+
+## Manuscript
+
+**PDF:** [**sandwich.pdf**](pdf/sandwich.pdf) ![](pdf/sandwich.pdf)
+
+```{r, echo = FALSE, results = "hide", message = FALSE}
+if(!file.exists("pdf")) dir.create("pdf")
+setwd("pdf")
+file.copy("../sandwich.Rnw", "sandwich.Rnw")
+file.copy("../hac.bib", "hac.bib")
+utils::Sweave("sandwich.Rnw")
+tools::texi2pdf("sandwich.tex")
+f <- list.files()
+f <- f[!(f %in% c("sandwich.pdf", "sandwich-OOP.pdf", "sandwich-CL.pdf"))]
+file.remove(f)
+setwd("..")
+```
+
+**Originally published as:**
+Zeileis A (2004). "Econometric Computing with HC and HAC Covariance Matrix Estimators."
+_Journal of Statistical Software_, **11**(10), 1-17.
+[doi:10.18637/jss.v011.i10](https://doi.org/10.18637/jss.v011.i10).

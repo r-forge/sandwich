@@ -1,0 +1,68 @@
+---
+title: "Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R"
+author: "Susanne Berger, Nathaniel Graham, Achim Zeileis"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+vignette: >
+  %\VignetteIndexEntry{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R}
+  %\VignetteDepends{sandwich,geepack,lattice,lmtest,multiwayvcov,pcse,plm,pscl,tools,utils}
+  %\VignetteKeywords{clustered data, clustered covariance matrix estimators, object orientation, simulation, R}
+  %\VignettePackage{sandwich}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+## Abstract
+
+Clustered covariances or clustered standard errors are very widely used to
+account for correlated or clustered data, especially in economics, political
+sciences, and other social sciences. They are employed to adjust the inference
+following estimation of a standard least-squares regression or generalized
+linear model estimated by maximum likelihood. Although many publications just
+refer to ``the'' clustered standard errors, there is a surprisingly wide
+variety of clustered covariances, particularly due to different flavors of
+bias corrections. Furthermore, while the linear regression model is certainly
+the most important application case, the same strategies can be employed in
+more general models (e.g., for zero-inflated, censored, or limited responses).
+
+In R, functions for covariances in clustered or panel models have been
+somewhat scattered or available only for certain modeling functions, notably
+the (generalized) linear regression model. In contrast, an object-oriented
+approach to "robust" covariance matrix estimation - applicable beyond
+`lm()` and `glm()` - is available in the _sandwich_ package but
+has been limited to the case of cross-section or time series data. Starting with
+_sandwich_ 2.4.0, this shortcoming has been corrected: Based on methods for
+two generic functions (`estfun()` and `bread()`), clustered and panel
+covariances are provided in `vcovCL()`, `vcovPL()`, and `vcovPC()`. 
+Moreover, clustered bootstrap covariances are provided in `vcovBS()`,
+using model `update()` on bootstrap samples. These are directly
+applicable to models from packages including _MASS_, _pscl_, _countreg_,
+and _betareg_, among many others. Some empirical illustrations are provided
+as well as an assessment of the methods' performance in a simulation study.
+
+
+## Manuscript
+
+**PDF:** [**sandwich-CL.pdf**](pdf/sandwich-CL.pdf) ![](pdf/sandwich-CL.pdf)
+
+```{r, echo = FALSE, results = "hide", message = FALSE}
+if(!file.exists("pdf")) dir.create("pdf")
+setwd("pdf")
+file.copy("../sandwich-CL.Rnw", "sandwich-CL.Rnw")
+file.copy("../hac.bib", "hac.bib")
+file.copy("../sim-CL.rda", "sim-CL.rda")
+utils::Sweave("sandwich-CL.Rnw")
+tools::texi2pdf("sandwich-CL.tex")
+f <- list.files()
+f <- f[!(f %in% c("sandwich.pdf", "sandwich-CL.pdf", "sandwich-CL.pdf"))]
+file.remove(f)
+setwd("..")
+```
+
+**Originally published as:**
+Berger S, Graham N, Zeileis A (2020).
+"Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R."
+_Journal of Statistical Software_, **95**(1), 1-36.
+[doi:10.18637/jss.v095.i01](https://doi.org/10.18637/jss.v095.i01).

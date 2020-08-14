@@ -1,0 +1,167 @@
+---
+title: "sandwich: Robust Covariance Matrix Estimators"
+author: "Achim Zeileis, Thomas Lumley, Susanne Berger, Nathaniel Graham"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+vignette: >
+  %\VignetteIndexEntry{sandwich: Robust Covariance Matrix Estimators}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{sandwich,lmtest}
+  %\VignetteKeywords{covariance matrix estimator, object orientation, cross-section data, time series data, clustered data, panel data, longitudinal data}
+  %\VignettePackage{sandwich}
+---
+
+```{r preliminaries, echo=FALSE, message=FALSE}
+library("sandwich")
+library("lmtest")
+options(digits = 3)
+```
+
+## Overview
+
+The [**sandwich**](https://CRAN.R-project.org/package=sandwich) package is designed for obtaining covariance matrix estimators of parameter
+estimates in statistical models where certain model assumptions have been violated.
+More specifically, the estimators are useful in a situation where the model's score
+function was correctly specified (e.g., the mean function in a linear regression model)
+but that the remaining likelihood was potentially misspecified (e.g., due to heteroscedasticity
+or a lack of independence). In this case, the usual parameter estimates are still consistent
+but the associated covariance matrix estimate is not, thus potentially biasing the inference
+such as parameter tests or confidence intervals. Luckily, there are covariance matrix
+estimators that are consistent under these misspecifications and that can simply be plugged
+in to the usual inference based on the central limit theorem. Because the covariance matrix
+estimators are a product of two outer "bread" matrices (based on the Hessian of the log-likelihood)
+and an innter "meat" matrix (based on cross-products of the corresponding score function),
+they are also known as "sandwich" covariances.
+
+The _sandwich_ package provides a wide range of such sandwich covariances in an object-oriented
+framework. This means that it takes the models fitted by another package without any modification
+or adjustment, extracts certain quantities from them, and computes the different covariance matrices
+based on these. For _sandwich_ to work the model class has to provide at least an `estfun()` method
+for extracting the score matrix (containing the gradient contributions per observation) and a
+`bread()` method for extracting the inverse of some estimate of the Fisher information (that most
+of the "usual" covariances are based on). Some sandwich covariances also need further methods, e.g.,
+`model.matrix()` or `hatvalues()` etc. The covariances provided are:
+
+* Basic `sandwich()` for cross-section data.
+* `vcovHC()` for heteroscedasticity-consistent (HC) covariances in (generalized) linear models.
+* `vcovHAC()` for heteroscedastiticy- and autocorrelation-consistent (HAC) covariances in time series
+  data with convenience interfaces `kernHAC()` (Andrews' kernel HAC estimator) and `NeweyWest()`.
+* `vcovCL()` for clustered covariances (including multiway clustering).
+* `vcovPL()` and `vcovPC()` for panel and panel-corrected covariances.
+* `vcovOPG()` for outer-product-of-gradients covariances.
+* `vcovBS()` for bootstrap covariances (with dedicated fast and flexible methods for `lm` and `glm` objects).
+
+These can be applied to many different model classes, including `lm`, `glm`, `survreg`, `coxph`, `mlogit`,
+`polr`, `hurdle`, `zeroinfl`, `ivreg`, `betareg`, and many more. (There are some exceptions, though,
+not all covariances are applicable to all models).
+
+The resulting covariances can be subsequently plugged in to various functions for Wald-type inference,
+including  `coeftest()`, `waldtest()`, and `coefci()` from the
+[**lmtest**](https://CRAN.R-project.org/package=lmtest) package or
+`Anova()`, `Confint()`, `S()`, `linearHypothesis()`, and `deltaMethod()` from 
+[**car**](https://CRAN.R-project.org/package=car) package.
+
+
+## Installation
+
+The stable release version of _sandwich_ is hosted on the Comprehensive R Archive Network
+(CRAN) at <https://CRAN.R-project.org/package=sandwich> and can be installed via
+
+```{r installation-cran, eval=FALSE}
+install.packages("sandwich")
+```
+
+The development version of _sandwich_ is hosted on R-Forge at
+<https://R-Forge.R-project.org/projects/sandwich/> in a Subversion (SVN) repository.
+It can be installed via
+
+```{r installation-rforge, eval=FALSE}
+install.packages("sandwich", repos = "http://R-Forge.R-project.org")
+```
+
+## Publications
+
+The package development was accompanied by three publications in the _Journal of Statistical Software_,
+describing the initial HC and HAC implementation for linear models, the corresponding
+object-oriented extension, and the generalization to clustered and panel covariances, respectively.
+
+* Zeileis A (2004). "Econometric Computing with HC and HAC Covariance Matrix Estimators."
+  _Journal of Statistical Software_, **11**(10), 1-17.
+  [doi:10.18637/jss.v011.i10](https://doi.org/10.18637/jss.v011.i10).
+* Zeileis A (2006). "Object-Oriented Computation of Sandwich Estimators."
+  _Journal of Statistical Software_, **16**(9), 1-16.
+  [doi:10.18637/jss.v016.i09](https://doi.org/10.18637/jss.v016.i09).
+* Berger S, Graham N, Zeileis A (2020).
+  "Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R."
+  _Journal of Statistical Software_, **95**(1), 1-36.
+  [doi:10.18637/jss.v095.i01](https://doi.org/10.18637/jss.v095.i01).
+
+
+
+## Illustrations
+
+To illustrate the functionality of the `sandwich` package we employ a well-known
+data set that was created by Petersen for benchmarking clustered standard errors.
+However, because the data is so simple, we will use it here to illustrate all
+sorts of covariances (not only clustered ones).
+
+The data come from a simple linear regression of a response `y` on an explanatory
+variable `x`, but the data are clustered by `firm` (500 firms) and `year` (10 years).
+The data can be loaded and the model fitted by ordinary least squares (OLS):
+
+```{r}
+data("PetersenCL", package = "sandwich")
+m <- lm(y ~ x, data = PetersenCL)
+summary(m)
+```
+
+The regression summary for a linear model uses the "usual" OLS standard errors, assuming
+that the data are uncorrelated and homoscedastic. The summary provides partial Wald tests
+for the regression coefficients and also an over _F_ test assessing all the regressors,
+i.e., in this case equivalent to a _t_ test of `x`. To obtain the analogous tests and
+corresponding confidence intervals using the basic "robust" sandwich covariance for
+cross-section data we can combine _sandwich_ with the _lmtest_ package:
+
+```{r}
+library("sandwich")
+library("lmtest")
+coeftest(m, vcov = sandwich)
+coefci(m, vcov = sandwich)
+m0 <- lm(y ~ 1, data = PetersenCL)
+waldtest(m0, m)
+```
+
+Other covariances can be plugged in analogously, potentially passing along further
+options for the covariance. For example, the clustered covariance `vcovCL()`
+can be used with the clustering variable `firm` as:
+
+```{r}
+coeftest(m, vcov = vcovCL, cluster = ~ firm)
+```
+
+In the same way we can compute and compare many of the other estimators in the package.
+A selection, mostly just with the default settings, is provided here. First, the
+covarainces are computed and then the corresponding standard errors extracted
+(square root of the diagonal):
+
+```{r}
+vc <- list(
+  "Standard"              = vcov(m),
+  "Sandwich (basic)"      = sandwich(m),
+  "Clustered"             = vcovCL(m, cluster = ~ firm),
+  "Clustered (two-way)"   = vcovCL(m, cluster = ~ firm + year),
+  "HC3"                   = vcovHC(m),
+  "Andrews' kernel HAC"   = kernHAC(m),
+  "Newey-West"            = NeweyWest(m),
+  "Bootstrap"             = vcovBS(m),
+  "Bootstrap (clustered)" = vcovBS(m, cluster = ~ firm)
+)
+t(sapply(vc, function(x) sqrt(diag(x))))
+```
+
+This shows that due to the cluster-correlation in the data, the usual standard errors
+and cross-section covariances are much too small. In contrast, the different types of
+clustered standard errors are much larger and more appropriate here.

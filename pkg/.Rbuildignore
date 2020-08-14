@@ -5,4 +5,9 @@
 ^_pkgdown\.yml$
 ^logo\.png$
 ^paper$
-R/estfunDeriv.R
+R/estfunDeriv\.R$
+vignettes/sandwich\.Rmd$
+vignettes/jss_2004\.Rmd$
+vignettes/jss_2006\.Rmd$
+vignettes/jss_2020\.Rmd$
+vignettes/pdf$
