@@ -1,8 +1,8 @@
 /* Edit pkgdown/extra.css to customize the theme */
 
 /* Colors:
- * logo bread brown:  #e2aa4d;
- * href meat brown:   #554400;
+ * logo yello:  #fbbb00;
+ * href green:  #028735;
  */
 
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,500');
@@ -13,15 +13,15 @@ body {
 }
 
 /* The "default" hyperlinks */
-a:hover { color: #e2aa4d; }
-a       { color: #554400;}
+a:hover { color: #fbbb00; }
+a       { color: #028735;}
 
 /* Font size for the content and the navigation bar (top): increase
  * font size by a factor of 1.3 (1.3 elements, global) */
 #navbar, div.contents { font-size: 1.3em; }
 
 #tocnav > ul > li > a:hover {
-    color: #e2aa4d;
+    color: #fbbb00;
 }
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
@@ -37,8 +37,8 @@ b, strong, th {
     background-image: url('logo_wide.png');
     background-repeat: no-repeat;
     background-position: 12.5px 5px;
-    background-size: 72px auto;
-    width: 175px;
+    background-size: 250px auto;
+    width: 325px;
     height: 58px;
 }
 
@@ -49,7 +49,7 @@ b, strong, th {
     display: block;
     font-size: 1.7em;
     line-height: 1em;
-    width: 100px;
+    width: 250px;
     height: 30px;
     float: left;
 }
@@ -58,11 +58,11 @@ b, strong, th {
  * branding/logo */
 .navbar-brand > .label {
     display: block;
-    margin-left: 100px;
+    margin-left: 250px;
     margin-top: 14px;
     font-weight: normal;
     background-color: transparent;
-    /*color: #e2aa4d;*/
+    /*color: #fbbb00;*/
     color: #777;
 }
 
@@ -70,13 +70,13 @@ b, strong, th {
  * on the collapsed view */
 @media all and (max-width: 550px) {
     .navbar-brand {
-        width: 70px;
-        background-size: 100px;
+        width: 220px;
+        background-size: 200px;
         background-position: 10px 5px;
         height: 39px;
     }
-    .navbar-brand > .navbar-link { height: 25px; width: 100px; }
-    .navbar-brand > .label { margin-top: 10px; margin-left: 100px; }
+    .navbar-brand > .navbar-link { height: 25px; width: 200px; }
+    .navbar-brand > .label { margin-top: 10px; margin-left: 200px; }
 }
 
 .navbar .navbar-nav > li > a {
@@ -93,22 +93,22 @@ b, strong, th {
     background-color: white;
 }
 .dropdown-menu > li > a:hover {
-    color: #e2aa4d;
+    color: #fbbb00;
 }
 .navbar .navbar-nav > li:hover,
 .navbar .navbar-nav > li.dropdown:hover {
-    background-color: #e2aa4d;
+    background-color: #fbbb00;
 }
 .navbar .navbar-nav > li > a:hover, .navbar .navbar-nav > li.dropdown > a:hover,
 .navbar .navbar-nav > li:hover > a, .navbar .navbar-nav > li.dropdown:hover > a {
-    background-color: #e2aa4d;
+    background-color: #fbbb00;
     color: white;
 }
 .navbar .navbar-nav > .active {
     background-color: #ececec;
 }
 .navbar .navbar-nav > .active:hover {
-    background-color: #e2aa4d;
+    background-color: #fbbb00;
 }
 .navbar .navbar-nav > .active:hover > *,
 .navbar .navbar-nav > .active > a:hover {
@@ -117,7 +117,7 @@ b, strong, th {
 }
 .navbar .navbar-nav > li.dropdown.open:hover,
 .navbar .navbar-nav > li.dropdown:hover {
-    background-color: #e2aa4d;
+    background-color: #fbbb00;
 }
 .navbar .navbar-nav > li.dropdown.open:hover,
 .navbar .navbar-nav > li.dropdown:hover,
