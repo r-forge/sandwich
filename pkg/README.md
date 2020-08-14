@@ -15,15 +15,6 @@ beyond.
 
 **Object-oriented implementation in R:**
 
-    ## Loading required package: zoo
-
-    ## 
-    ## Attaching package: 'zoo'
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     as.Date, as.Date.numeric
-
 ``` r
 library("sandwich")
 library("lmtest")

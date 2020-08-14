@@ -9,6 +9,8 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-"
 )
 options(digits = 4)
+library("sandwich")
+library("lmtest")
 ```
 
 ## Robust Covariance Matrix Estimators
@@ -32,11 +34,6 @@ exams::tex2image("\\begin{eqnarray*}
 
 
 **Object-oriented implementation in R:**
-
-```{r, echo = FALSE, results = "hide"}
-library("sandwich")
-library("lmtest")
-```
 
 ```{r}
 library("sandwich")
