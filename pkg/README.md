@@ -15,6 +15,15 @@ beyond.
 
 **Object-oriented implementation in R:**
 
+    ## Loading required package: zoo
+
+    ## 
+    ## Attaching package: 'zoo'
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     as.Date, as.Date.numeric
+
 ``` r
 library("sandwich")
 library("lmtest")
@@ -27,8 +36,8 @@ coeftest(m, vcov = sandwich)
     ## t test of coefficients:
     ## 
     ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept) 0.029680   0.028355  1.0467   0.2953    
-    ## x           1.034833   0.028389 36.4513   <2e-16 ***
+    ## (Intercept)   0.0297     0.0284    1.05      0.3    
+    ## x             1.0348     0.0284   36.45   <2e-16 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -40,7 +49,7 @@ coeftest(m, vcov = vcovCL, cluster = ~ firm)
     ## t test of coefficients:
     ## 
     ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept) 0.029680   0.067013  0.4429   0.6579    
-    ## x           1.034833   0.050596 20.4530   <2e-16 ***
+    ## (Intercept)   0.0297     0.0670    0.44     0.66    
+    ## x             1.0348     0.0506   20.45   <2e-16 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
