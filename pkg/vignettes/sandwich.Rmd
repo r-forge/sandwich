@@ -131,7 +131,7 @@ library("lmtest")
 coeftest(m, vcov = sandwich)
 coefci(m, vcov = sandwich)
 m0 <- lm(y ~ 1, data = PetersenCL)
-waldtest(m0, m)
+waldtest(m0, m, vcov = sandwich)
 ```
 
 Other covariances can be plugged in analogously, potentially passing along further
