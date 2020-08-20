@@ -49,16 +49,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/sandwich.html">Get started</a>
-</li>
-<li>
-  <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -79,7 +70,13 @@
   </ul>
 </li>
 <li>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li>
   <a href="../news/index.html">Changelog</a>
+</li>
+<li>
+  <a href="../contact.html">Contact</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
@@ -190,14 +187,14 @@
 ## (Intercept) -0.0259 0.0853
 ## x            0.9792 1.0905</code></pre>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">m0</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span>(<span class="no">y</span> ~ <span class="fl">1</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">PetersenCL</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/waldtest.html">waldtest</a></span>(<span class="no">m0</span>, <span class="no">m</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/waldtest.html">waldtest</a></span>(<span class="no">m0</span>, <span class="no">m</span>, <span class="kw">vcov</span> <span class="kw">=</span> <span class="no">sandwich</span>)</pre></body></html></div>
 <pre><code>## Wald test
 ## 
 ## Model 1: y ~ 1
 ## Model 2: y ~ x
 ##   Res.Df Df    F Pr(&gt;F)    
 ## 1   4999                   
-## 2   4998  1 1311 &lt;2e-16 ***
+## 2   4998  1 1329 &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>Other covariances can be plugged in analogously, potentially passing along further options for the covariance. For example, the clustered covariance <code><a href="../reference/vcovCL.html">vcovCL()</a></code> can be used with the clustering variable <code>firm</code> as:</p>
@@ -231,8 +228,8 @@
 ## HC3                        0.0284 0.0284
 ## Andrews' kernel HAC        0.0437 0.0351
 ## Newey-West                 0.0660 0.0482
-## Bootstrap                  0.0273 0.0281
-## Bootstrap (clustered)      0.0668 0.0547</code></pre>
+## Bootstrap                  0.0292 0.0291
+## Bootstrap (clustered)      0.0707 0.0506</code></pre>
 <p>This shows that due to the cluster-correlation in the data, the usual standard errors and cross-section covariances are much too small. In contrast, the different types of clustered standard errors are much larger and more appropriate here.</p>
 </div>
   </div>
