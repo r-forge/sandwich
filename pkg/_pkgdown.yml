@@ -10,6 +10,25 @@ template:
       creator: "@AchimZeileis"
       card: summary
 
+navbar:
+  left:
+    - text: "Get started"
+      href: articles/sandwich.html
+    - text: "Articles"
+      menu:
+        - text: "Econometric Computing with HC and HAC Covariance Matrix Estimators"
+          href: articles/jss_2004.html
+        - text: "Object-Oriented Computation of Sandwich Estimators"
+          href: articles/jss_2006.html
+        - text: "Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R"
+          href: articles/jss_2020.html
+    - text: "Reference"
+      href: reference/index.html
+    - text: "Changelog"
+      href: news/index.html
+    - text: "Contact"
+      href: contact.html
+
 reference:
   - title: "Covariance estimators"
     contents: 

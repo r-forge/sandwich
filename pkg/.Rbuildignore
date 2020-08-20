@@ -4,6 +4,7 @@
 ^pkgdown$
 ^_pkgdown\.yml$
 ^logo\.png$
+^contact\.md$
 ^paper$
 R/estfunDeriv\.R$
 vignettes/sandwich\.Rmd$

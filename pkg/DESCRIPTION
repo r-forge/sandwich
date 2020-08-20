@@ -12,3 +12,5 @@ Depends: R (>= 3.0.0)
 Imports: stats, utils, zoo
 Suggests: AER, car, geepack, lattice, lmtest, MASS, multiwayvcov, parallel, pcse, plm, pscl, scatterplot3d, stats4, strucchange, survival
 License: GPL-2 | GPL-3
+URL: http://sandwich.R-Forge.R-project.org/
+BugReports: http://sandwich.R-Forge.R-project.org/contact.html
