@@ -3,7 +3,7 @@
 \alias{NeweyWest}
 \title{Newey-West HAC Covariance Matrix Estimation}
 \description{
- A set of functions implementing the Newey & West (1987, 1994) heteroskedasticity
+ A set of functions implementing the Newey & West (1987, 1994) heteroscedasticity
  and autocorrelation consistent (HAC) covariance matrix estimators.
 }
 
@@ -94,7 +94,7 @@ which is typically just the covariance matrix.
   Zeileis A (2004),
   Econometric Computing with HC and HAC Covariance Matrix Estimators.
   \emph{Journal of Statistical Software}, \bold{11}(10), 1--17.
-  URL \url{http://www.jstatsoft.org/v11/i10/}.
+  \doi{10.18637/jss.v011.i10}
 }
 
 \seealso{\code{\link{vcovHAC}}, \code{\link{weightsAndrews}},

@@ -16,6 +16,11 @@
 \Plainkeywords{clustered data, covariance matrix estimator, object orientation, simulation, R}
 
 \Abstract{
+  This introduction to the object-oriented implementation of clustered covariances
+  in the \proglang{R} package \pkg{sandwich} is a (slightly)
+  modified version of \cite{hac:Berger+Graham+Zeileis:2020}, published in the
+  \emph{Journal of Statistical Software}.
+
   Clustered covariances or clustered standard errors are very widely used to
   account for correlated or clustered data, especially in economics, political
   sciences, and other social sciences. They are employed to adjust the inference
@@ -26,7 +31,7 @@
   bias corrections. Furthermore, while the linear regression model is certainly
   the most important application case, the same strategies can be employed in
   more general models (e.g., for zero-inflated, censored, or limited responses).
-%
+
   In \proglang{R}, functions for covariances in clustered or panel models have been
   somewhat scattered or available only for certain modeling functions, notably
   the (generalized) linear regression model. In contrast, an object-oriented
@@ -51,8 +56,7 @@
   Universit\"atsstr.~15\\
   6020 Innsbruck, Austria\\
   E-mail: \email{Susanne.Berger@student.uibk.ac.at}, \email{Achim.Zeileis@R-project.org}\\
-  URL: \url{https://www.uibk.ac.at/statistics/personal/berger/},\\
-  \phantom{URL: }\url{https://eeecon.uibk.ac.at/~zeileis/}\\
+  URL: \url{https://eeecon.uibk.ac.at/~zeileis/}\\
   
   Nathaniel Graham\\
   Division of International Banking and Finance Studies\\

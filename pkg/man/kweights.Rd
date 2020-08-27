@@ -2,7 +2,7 @@
 \alias{kweights}
 \title{Kernel Weights}
 \description{
- Kernel weights for kernel-based heteroskedasticity
+ Kernel weights for kernel-based heteroscedasticity
  and autocorrelation consistent (HAC) covariance matrix estimators
  as introduced by Andrews (1991).
 }

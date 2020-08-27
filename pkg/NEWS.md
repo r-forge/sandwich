@@ -1,5 +1,12 @@
 # sandwich 3.0-0
 
+* Release of version 3.0-0 accompanying the publication of the paper
+  "Various Versatile Variances: An Object-Oriented Implementation of
+  Clustered Covariances in R." together with Susanne Berger and Nathaniel Graham
+  in the _Journal of Statistcal Software_ at <https://doi.org/10.18637/jss.v095.i01>.
+  The paper is also provided as a vignette in the package as
+  `vignette("sandwich-CL", package = "sandwich")`.
+
 * All kernel weights functions in `kweights()` are made symmetric around zero now
   (suggested by Christoph Hanck). The quadratic spectral kernal is approximated
   by `exp(-c * x^2)` rather than `1` for very small `x`.

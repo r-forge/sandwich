@@ -3,9 +3,9 @@
 \alias{vcovHC.default}
 \alias{vcovHC.mlm}
 \alias{meatHC}
-\title{Heteroskedasticity-Consistent Covariance Matrix Estimation}
+\title{Heteroscedasticity-Consistent Covariance Matrix Estimation}
 \description{
- Heteroskedasticity-consistent estimation of the covariance matrix of the
+ Heteroscedasticity-consistent estimation of the covariance matrix of the
  coefficient estimates in regression models.
 }
 \usage{
@@ -47,7 +47,7 @@ meatHC(x, type = , omega = NULL, \dots)
   \deqn{\hat \sigma^2 (X^\top X)^{-1}}{sigma^2 (X'X)^{-1}}
 
   All other methods do not assume constant variances and are suitable in case of
-  heteroskedasticity. \code{"HC"} (or equivalently \code{"HC0"}) gives White's
+  heteroscedasticity. \code{"HC"} (or equivalently \code{"HC0"}) gives White's
   estimator, the other estimators are refinements of this. They are all of form
   
   \deqn{(X^\top X)^{-1} X^\top \Omega X (X^\top X)^{-1}}{(X'X)^{-1} X' Omega X (X'X)^{-1}}
@@ -102,11 +102,11 @@ a Direct Test for Heteroskedasticity. \emph{Econometrica} \bold{48},
 
 Zeileis A (2004), Econometric Computing with HC and HAC Covariance Matrix
 Estimators. \emph{Journal of Statistical Software}, \bold{11}(10), 1--17.
-URL \url{http://www.jstatsoft.org/v11/i10/}.
+\doi{10.18637/jss.v011.i10}
 
 Zeileis A (2006), Object-Oriented Computation of Sandwich Estimators.
 \emph{Journal of Statistical Software}, \bold{16}(9), 1--16.
-URL \url{http://www.jstatsoft.org/v16/i09/}.
+\doi{10.18637/jss.v016.i09}
 }
 
 \seealso{\code{\link{lm}}, \code{\link[car]{hccm}},
@@ -114,7 +114,7 @@ URL \url{http://www.jstatsoft.org/v16/i09/}.
 
 \examples{
 ## generate linear regression relationship
-## with homoskedastic variances
+## with homoscedastic variances
 x <- sin(1:100)
 y <- 1 + x + rnorm(100)
 ## model fit and HC3 covariance

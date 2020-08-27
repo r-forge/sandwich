@@ -3,7 +3,7 @@
 \alias{weave}
 \title{Weighted Empirical Adaptive Variance Estimation}
 \description{
- A set of functions implementing a class of kernel-based heteroskedasticity
+ A set of functions implementing a class of kernel-based heteroscedasticity
  and autocorrelation consistent (HAC) covariance matrix estimators
  as introduced by Andrews (1991).
 }

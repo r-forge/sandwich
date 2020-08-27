@@ -87,7 +87,7 @@ vcovBS(x, \dots)
       model fitting functions and is hence not turned on by default.
   }
   
-  The ``xy'' or ``pairs'' bootstrap is consistent for heteroskedasticity and clustered errors, 
+  The ``xy'' or ``pairs'' bootstrap is consistent for heteroscedasticity and clustered errors, 
   and converges to the asymptotic solution used in \code{vcovCL}
   as \code{R}, \eqn{n}, and \eqn{g} become large (\eqn{n} and \eqn{g} are the number of
   observations and the number of clusters, respectively; see Efron 1979, or Mammen 1992, for a 
@@ -101,7 +101,7 @@ vcovBS(x, \dots)
   practitioner when the asymptotic solution is unavailable (this can happen when using
   estimators that have no \code{estfun} function, for example). The residual bootstrap,
   by contrast, is rarely of practical interest, because while it provides consistent
-  inference for for clustered standard errors, it is not robust to heteroskedasticity.
+  inference for for clustered standard errors, it is not robust to heteroscedasticity.
   More generally, bootstrapping is useful when the bootstrap makes different assumptions than the asymptotic
   estimator, in particular when the number of clusters is small and large \eqn{n} or
   \eqn{g} assumptions are unreasonable. Bootstrapping is also often effective for nonlinear models,
@@ -153,9 +153,8 @@ vcovBS(x, \dots)
 \references{
 Berger S, Graham N, Zeileis A (2017).
   \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R}
-  Technical Report 2017-12,
-  \emph{Working Papers in Economics and Statistics, Research Platform Empirical and Experimental Economics, Universitaet Innsbruck.}
-  \url{http://EconPapers.RePEc.org/RePEc:inn:wpaper:2017-12}.
+  \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
+  \doi{10.18637/jss.v095.i01}
 
 Cameron AC, Gelbach JB, Miller DL (2008).
   \dQuote{Bootstrap-Based Improvements for Inference with Clustered Errors},

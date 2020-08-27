@@ -98,9 +98,8 @@ Andrews DWK (1991).
 
 Berger S, Graham N, Zeileis A (2017).
   \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
-  Technical Report 2017-12,
-  \emph{Working Papers in Economics and Statistics, Research Platform Empirical and Experimental Economics, Universitaet Innsbruck.}
-  \url{http://EconPapers.RePEc.org/RePEc:inn:wpaper:2017-12}.
+  \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
+  \doi{10.18637/jss.v095.i01}
 
 Driscoll JC &  Kraay AC (1998).
   \dQuote{Consistent Covariance Matrix Estimation with Spatially Dependent Panel Data},

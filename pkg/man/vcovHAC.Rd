@@ -2,9 +2,9 @@
 \alias{vcovHAC}
 \alias{vcovHAC.default}
 \alias{meatHAC}
-\title{Heteroskedasticity and Autocorrelation Consistent (HAC) Covariance Matrix Estimation}
+\title{Heteroscedasticity and Autocorrelation Consistent (HAC) Covariance Matrix Estimation}
 \description{
- Heteroskedasticity and autocorrelation consistent (HAC) estimation
+ Heteroscedasticity and autocorrelation consistent (HAC) estimation
  of the covariance matrix of the coefficient estimates in a (generalized)
  linear regression model.
 }
@@ -105,12 +105,12 @@ with
   Zeileis A (2004),
   Econometric Computing with HC and HAC Covariance Matrix Estimators.
   \emph{Journal of Statistical Software}, \bold{11}(10), 1--17.
-  URL \url{http://www.jstatsoft.org/v11/i10/}.  
+  \doi{10.18637/jss.v011.i10}  
 
   Zeileis A (2006),
   Object-Oriented Computation of Sandwich Estimators.
   \emph{Journal of Statistical Software}, \bold{16}(9), 1--16.
-  URL \url{http://www.jstatsoft.org/v16/i09/}.
+  \doi{10.18637/jss.v016.i09}
 }
 
 \seealso{\code{\link{weightsLumley}}, \code{\link{weightsAndrews}},
