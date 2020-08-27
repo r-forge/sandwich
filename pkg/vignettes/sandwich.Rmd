@@ -52,7 +52,7 @@ of the "usual" covariances are based on). Some sandwich covariances also need fu
 * `vcovCL()` for clustered covariances (including multiway clustering).
 * `vcovPL()` and `vcovPC()` for panel and panel-corrected covariances.
 * `vcovOPG()` for outer-product-of-gradients covariances.
-* `vcovBS()` for bootstrap covariances (with dedicated fast and flexible methods for `lm` and `glm` objects).
+* `vcovBS()` for bootstrap covariances (with default method and dedicated fast and more flexible methods for `lm` and `glm` objects).
 
 These can be applied to many different model classes, including `lm`, `glm`, `survreg`, `coxph`, `mlogit`,
 `polr`, `hurdle`, `zeroinfl`, `ivreg`, `betareg`, and many more. (There are some exceptions, though,
