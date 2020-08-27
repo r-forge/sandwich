@@ -15,6 +15,9 @@
   Otherwise warnings may occur with the `|` separator in multi-part formulas with
   factors. (Reported by David Hugh-Jones.)
 
+* The `bread()` method for `mlm` objects has been improved to also handle
+  _weighted_ `mlm` objects. (Suggested by James Pustejovsky.)
+
 
 # sandwich 2.5-1
 
