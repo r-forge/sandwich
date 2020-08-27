@@ -148,7 +148,7 @@
  in regression models.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vcovOPG</span>(<span class='no'>x</span>, <span class='kw'>adjust</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>vcovOPG</span>(<span class='kw'>x</span>, adjust = <span class='fl'>FALSE</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -193,20 +193,20 @@ likelihood scores (and not a scaled version such as least squares scores for
   Cambridge University Press, Cambridge.</p>
 <p>Zeileis A (2006), Object-Oriented Computation of Sandwich Estimators.
   <em>Journal of Statistical Software</em>, <b>16</b>(9), 1--16.
-  URL <a href='http://www.jstatsoft.org/v16/i09/'>http://www.jstatsoft.org/v16/i09/</a>.</p>
+  doi: <a href='https://doi.org/10.18637/jss.v016.i09'>10.18637/jss.v016.i09</a></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='meat.html'>meat</a></code>, <code><a href='bread.html'>bread</a></code>, <code><a href='sandwich.html'>sandwich</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## generate poisson regression relationship</span>
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='fl'>1</span>:<span class='fl'>100</span>)
-<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span>(<span class='fl'>100</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span>(<span class='fl'>1</span> + <span class='no'>x</span>))
+<span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span>)
+<span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span>(<span class='fl'>100</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span>(<span class='fl'>1</span> <span class='op'>+</span> <span class='kw'>x</span>))
 <span class='co'>## compute usual covariance matrix of coefficient estimates</span>
-<span class='no'>fm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/glm.html'>glm</a></span>(<span class='no'>y</span> ~ <span class='no'>x</span>, <span class='kw'>family</span> <span class='kw'>=</span> <span class='no'>poisson</span>)
-<span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span>(<span class='no'>fm</span>)</div><div class='output co'>#&gt;              (Intercept)            x
+<span class='kw'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/glm.html'>glm</a></span>(<span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>x</span>, family = <span class='kw'>poisson</span>)
+<span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span>(<span class='kw'>fm</span>)</div><div class='output co'>#&gt;              (Intercept)            x
 #&gt; (Intercept)  0.005207071 -0.004485877
-#&gt; x           -0.004485877  0.009167592</div><div class='input'><span class='fu'>vcovOPG</span>(<span class='no'>fm</span>)</div><div class='output co'>#&gt;              (Intercept)            x
+#&gt; x           -0.004485877  0.009167592</div><div class='input'><span class='fu'>vcovOPG</span>(<span class='kw'>fm</span>)</div><div class='output co'>#&gt;              (Intercept)            x
 #&gt; (Intercept)  0.004250562 -0.003237065
 #&gt; x           -0.003237065  0.008336824</div></pre>
   </div>
@@ -224,7 +224,7 @@ likelihood scores (and not a scaled version such as least squares scores for
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>

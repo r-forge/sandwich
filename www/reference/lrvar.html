@@ -148,7 +148,7 @@
   (possibly multivariate) series of observations.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>lrvar</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Andrews"</span>, <span class='st'>"Newey-West"</span>), <span class='kw'>prewhite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>adjust</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>lrvar</span>(<span class='kw'>x</span>, type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Andrews"</span>, <span class='st'>"Newey-West"</span>), prewhite = <span class='fl'>TRUE</span>, adjust = <span class='fl'>TRUE</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -202,16 +202,16 @@
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>1</span>)
 <span class='co'>## iid series (with variance of mean 1/n)</span>
 <span class='co'>## and Andrews kernel HAC (with prewhitening)</span>
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>)
-<span class='fu'>lrvar</span>(<span class='no'>x</span>)</div><div class='output co'>#&gt; [1] 0.007958048</div><div class='input'>
+<span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>)
+<span class='fu'>lrvar</span>(<span class='kw'>x</span>)</div><div class='output co'>#&gt; [1] 0.007958048</div><div class='input'>
 <span class='co'>## analogous multivariate case with Newey-West estimator (without prewhitening)</span>
-<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>200</span>), <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>)
-<span class='fu'>lrvar</span>(<span class='no'>y</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"Newey-West"</span>, <span class='kw'>prewhite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt;              [,1]         [,2]
+<span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>200</span>), ncol = <span class='fl'>2</span>)
+<span class='fu'>lrvar</span>(<span class='kw'>y</span>, type = <span class='st'>"Newey-West"</span>, prewhite = <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt;              [,1]         [,2]
 #&gt; [1,] 0.0097884718 0.0005978738
 #&gt; [2,] 0.0005978738 0.0073428222</div><div class='input'>
 <span class='co'>## AR(1) series with autocorrelation 0.9</span>
-<span class='no'>z</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>), <span class='fl'>0.9</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"recursive"</span>)
-<span class='fu'>lrvar</span>(<span class='no'>z</span>)</div><div class='output co'>#&gt; [1] 0.4385546</div></pre>
+<span class='kw'>z</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>), <span class='fl'>0.9</span>, method = <span class='st'>"recursive"</span>)
+<span class='fu'>lrvar</span>(<span class='kw'>z</span>)</div><div class='output co'>#&gt; [1] 0.4385546</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -227,7 +227,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>

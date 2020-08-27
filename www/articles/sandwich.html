@@ -121,7 +121,7 @@
 <li>
 <code><a href="../reference/vcovOPG.html">vcovOPG()</a></code> for outer-product-of-gradients covariances.</li>
 <li>
-<code><a href="../reference/vcovBS.html">vcovBS()</a></code> for bootstrap covariances (with dedicated fast and flexible methods for <code>lm</code> and <code>glm</code> objects).</li>
+<code><a href="../reference/vcovBS.html">vcovBS()</a></code> for bootstrap covariances (with default method and dedicated fast and more flexible methods for <code>lm</code> and <code>glm</code> objects).</li>
 </ul>
 <p>These can be applied to many different model classes, including <code>lm</code>, <code>glm</code>, <code>survreg</code>, <code>coxph</code>, <code>mlogit</code>, <code>polr</code>, <code>hurdle</code>, <code>zeroinfl</code>, <code>ivreg</code>, <code>betareg</code>, and many more. (There are some exceptions, though, not all covariances are applicable to all models).</p>
 <p>The resulting covariances can be subsequently plugged in to various functions for Wald-type inference, including <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code>, <code><a href="https://rdrr.io/pkg/lmtest/man/waldtest.html">waldtest()</a></code>, and <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coefci()</a></code> from the <a href="https://CRAN.R-project.org/package=lmtest"><strong>lmtest</strong></a> package or <code>Anova()</code>, <code>Confint()</code>, <code>S()</code>, <code>linearHypothesis()</code>, and <code>deltaMethod()</code> from <a href="https://CRAN.R-project.org/package=car"><strong>car</strong></a> package.</p>
@@ -130,9 +130,13 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>The stable release version of <em>sandwich</em> is hosted on the Comprehensive R Archive Network (CRAN) at <a href="https://CRAN.R-project.org/package=sandwich" class="uri">https://CRAN.R-project.org/package=sandwich</a> and can be installed via</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sandwich"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sandwich"</span>)
+</pre></div>
 <p>The development version of <em>sandwich</em> is hosted on R-Forge at <a href="https://R-Forge.R-project.org/projects/sandwich/" class="uri">https://R-Forge.R-project.org/projects/sandwich/</a> in a Subversion (SVN) repository. It can be installed via</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sandwich"</span>, <span class="kw">repos</span> <span class="kw">=</span> <span class="st">"http://R-Forge.R-project.org"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sandwich"</span>, repos = <span class="st">"http://R-Forge.R-project.org"</span>)
+</pre></div>
 </div>
 <div id="publications" class="section level2">
 <h2 class="hasAnchor">
@@ -149,9 +153,11 @@
 <a href="#illustrations" class="anchor"></a>Illustrations</h2>
 <p>To illustrate the functionality of the <code>sandwich</code> package we employ a well-known data set that was created by Petersen for benchmarking clustered standard errors. However, because the data is so simple, we will use it here to illustrate all sorts of covariances (not only clustered ones).</p>
 <p>The data come from a simple linear regression of a response <code>y</code> on an explanatory variable <code>x</code>, but the data are clustered by <code>firm</code> (500 firms) and <code>year</code> (10 years). The data can be loaded and the model fitted by ordinary least squares (OLS):</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"PetersenCL"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"sandwich"</span>)
-<span class="no">m</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span>(<span class="no">y</span> ~ <span class="no">x</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">PetersenCL</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">m</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"PetersenCL"</span>, package = <span class="st">"sandwich"</span>)
+<span class="kw">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span>(<span class="kw">y</span> <span class="op">~</span> <span class="kw">x</span>, data = <span class="kw">PetersenCL</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="kw">m</span>)
+</pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = y ~ x, data = PetersenCL)
@@ -171,9 +177,11 @@
 ## Multiple R-squared:  0.208,  Adjusted R-squared:  0.208 
 ## F-statistic: 1.31e+03 on 1 and 4998 DF,  p-value: &lt;2e-16</code></pre>
 <p>The regression summary for a linear model uses the “usual” OLS standard errors, assuming that the data are uncorrelated and homoscedastic. The summary provides partial Wald tests for the regression coefficients and also an over <em>F</em> test assessing all the regressors, i.e., in this case equivalent to a <em>t</em> test of <code>x</code>. To obtain the analogous tests and corresponding confidence intervals using the basic “robust” sandwich covariance for cross-section data we can combine <em>sandwich</em> with the <em>lmtest</em> package:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"sandwich"</span>)
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st"><a href="http://sandwich.R-Forge.R-project.org">"sandwich"</a></span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"lmtest"</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span>(<span class="no">m</span>, <span class="kw">vcov</span> <span class="kw">=</span> <span class="no">sandwich</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span>(<span class="kw">m</span>, vcov = <span class="kw">sandwich</span>)
+</pre></div>
 <pre><code>## 
 ## t test of coefficients:
 ## 
@@ -182,12 +190,16 @@
 ## x             1.0348     0.0284   36.45   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coefci</a></span>(<span class="no">m</span>, <span class="kw">vcov</span> <span class="kw">=</span> <span class="no">sandwich</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coefci</a></span>(<span class="kw">m</span>, vcov = <span class="kw">sandwich</span>)
+</pre></div>
 <pre><code>##               2.5 % 97.5 %
 ## (Intercept) -0.0259 0.0853
 ## x            0.9792 1.0905</code></pre>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">m0</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span>(<span class="no">y</span> ~ <span class="fl">1</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">PetersenCL</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/waldtest.html">waldtest</a></span>(<span class="no">m0</span>, <span class="no">m</span>, <span class="kw">vcov</span> <span class="kw">=</span> <span class="no">sandwich</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="kw">m0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span>(<span class="kw">y</span> <span class="op">~</span> <span class="fl">1</span>, data = <span class="kw">PetersenCL</span>)
+<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/waldtest.html">waldtest</a></span>(<span class="kw">m0</span>, <span class="kw">m</span>, vcov = <span class="kw">sandwich</span>)
+</pre></div>
 <pre><code>## Wald test
 ## 
 ## Model 1: y ~ 1
@@ -198,7 +210,9 @@
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>Other covariances can be plugged in analogously, potentially passing along further options for the covariance. For example, the clustered covariance <code><a href="../reference/vcovCL.html">vcovCL()</a></code> can be used with the clustering variable <code>firm</code> as:</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span>(<span class="no">m</span>, <span class="kw">vcov</span> <span class="kw">=</span> <span class="no">vcovCL</span>, <span class="kw">cluster</span> <span class="kw">=</span> ~ <span class="no">firm</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb11"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span>(<span class="kw">m</span>, vcov = <span class="kw">vcovCL</span>, cluster = <span class="op">~</span> <span class="kw">firm</span>)
+</pre></div>
 <pre><code>## 
 ## t test of coefficients:
 ## 
@@ -208,18 +222,20 @@
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>In the same way we can compute and compare many of the other estimators in the package. A selection, mostly just with the default settings, is provided here. First, the covarainces are computed and then the corresponding standard errors extracted (square root of the diagonal):</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">vc</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-  <span class="st">"Standard"</span>              <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html">vcov</a></span>(<span class="no">m</span>),
-  <span class="st">"Sandwich (basic)"</span>      <span class="kw">=</span> <span class="fu"><a href="../reference/sandwich.html">sandwich</a></span>(<span class="no">m</span>),
-  <span class="st">"Clustered"</span>             <span class="kw">=</span> <span class="fu"><a href="../reference/vcovCL.html">vcovCL</a></span>(<span class="no">m</span>, <span class="kw">cluster</span> <span class="kw">=</span> ~ <span class="no">firm</span>),
-  <span class="st">"Clustered (two-way)"</span>   <span class="kw">=</span> <span class="fu"><a href="../reference/vcovCL.html">vcovCL</a></span>(<span class="no">m</span>, <span class="kw">cluster</span> <span class="kw">=</span> ~ <span class="no">firm</span> + <span class="no">year</span>),
-  <span class="st">"HC3"</span>                   <span class="kw">=</span> <span class="fu"><a href="../reference/vcovHC.html">vcovHC</a></span>(<span class="no">m</span>),
-  <span class="st">"Andrews' kernel HAC"</span>   <span class="kw">=</span> <span class="fu"><a href="../reference/weightsAndrews.html">kernHAC</a></span>(<span class="no">m</span>),
-  <span class="st">"Newey-West"</span>            <span class="kw">=</span> <span class="fu"><a href="../reference/NeweyWest.html">NeweyWest</a></span>(<span class="no">m</span>),
-  <span class="st">"Bootstrap"</span>             <span class="kw">=</span> <span class="fu"><a href="../reference/vcovBS.html">vcovBS</a></span>(<span class="no">m</span>),
-  <span class="st">"Bootstrap (clustered)"</span> <span class="kw">=</span> <span class="fu"><a href="../reference/vcovBS.html">vcovBS</a></span>(<span class="no">m</span>, <span class="kw">cluster</span> <span class="kw">=</span> ~ <span class="no">firm</span>)
+<div class="sourceCode" id="cb13"><pre class="downlit">
+<span class="kw">vc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+  <span class="st">"Standard"</span>              = <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html">vcov</a></span>(<span class="kw">m</span>),
+  <span class="st">"Sandwich (basic)"</span>      = <span class="fu"><a href="../reference/sandwich.html">sandwich</a></span>(<span class="kw">m</span>),
+  <span class="st">"Clustered"</span>             = <span class="fu"><a href="../reference/vcovCL.html">vcovCL</a></span>(<span class="kw">m</span>, cluster = <span class="op">~</span> <span class="kw">firm</span>),
+  <span class="st">"Clustered (two-way)"</span>   = <span class="fu"><a href="../reference/vcovCL.html">vcovCL</a></span>(<span class="kw">m</span>, cluster = <span class="op">~</span> <span class="kw">firm</span> <span class="op">+</span> <span class="kw">year</span>),
+  <span class="st">"HC3"</span>                   = <span class="fu"><a href="../reference/vcovHC.html">vcovHC</a></span>(<span class="kw">m</span>),
+  <span class="st">"Andrews' kernel HAC"</span>   = <span class="fu"><a href="../reference/weightsAndrews.html">kernHAC</a></span>(<span class="kw">m</span>),
+  <span class="st">"Newey-West"</span>            = <span class="fu"><a href="../reference/NeweyWest.html">NeweyWest</a></span>(<span class="kw">m</span>),
+  <span class="st">"Bootstrap"</span>             = <span class="fu"><a href="../reference/vcovBS.html">vcovBS</a></span>(<span class="kw">m</span>),
+  <span class="st">"Bootstrap (clustered)"</span> = <span class="fu"><a href="../reference/vcovBS.html">vcovBS</a></span>(<span class="kw">m</span>, cluster = <span class="op">~</span> <span class="kw">firm</span>)
 )
-<span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="no">vc</span>, <span class="kw">function</span>(<span class="no">x</span>) <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span>(<span class="no">x</span>))))</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="kw">vc</span>, <span class="fu">function</span>(<span class="kw">x</span>) <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span>(<span class="kw">x</span>))))
+</pre></div>
 <pre><code>##                       (Intercept)      x
 ## Standard                   0.0284 0.0286
 ## Sandwich (basic)           0.0284 0.0284
@@ -228,8 +244,8 @@
 ## HC3                        0.0284 0.0284
 ## Andrews' kernel HAC        0.0437 0.0351
 ## Newey-West                 0.0660 0.0482
-## Bootstrap                  0.0292 0.0291
-## Bootstrap (clustered)      0.0707 0.0506</code></pre>
+## Bootstrap                  0.0285 0.0258
+## Bootstrap (clustered)      0.0673 0.0513</code></pre>
 <p>This shows that due to the cluster-correlation in the data, the usual standard errors and cross-section covariances are much too small. In contrast, the different types of clustered standard errors are much larger and more appropriate here.</p>
 </div>
   </div>
@@ -249,7 +265,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>

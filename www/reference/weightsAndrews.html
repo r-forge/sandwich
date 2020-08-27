@@ -49,7 +49,7 @@
   
 
 <meta property="og:title" content="Kernel-based HAC Covariance Matrix Estimation — weightsAndrews" />
-<meta property="og:description" content="A set of functions implementing a class of kernel-based heteroskedasticity
+<meta property="og:description" content="A set of functions implementing a class of kernel-based heteroscedasticity
  and autocorrelation consistent (HAC) covariance matrix estimators
  as introduced by Andrews (1991)." />
 <meta property="og:image" content="http://sandwich.R-Forge.R-project.org/logo.png" />
@@ -145,23 +145,23 @@
     </div>
 
     <div class="ref-description">
-    <p>A set of functions implementing a class of kernel-based heteroskedasticity
+    <p>A set of functions implementing a class of kernel-based heteroscedasticity
  and autocorrelation consistent (HAC) covariance matrix estimators
  as introduced by Andrews (1991).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>kernHAC</span>(<span class='no'>x</span>, <span class='kw'>order.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>prewhite</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>bw</span> <span class='kw'>=</span> <span class='no'>bwAndrews</span>,
-  <span class='kw'>kernel</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Quadratic Spectral"</span>, <span class='st'>"Truncated"</span>, <span class='st'>"Bartlett"</span>, <span class='st'>"Parzen"</span>, <span class='st'>"Tukey-Hanning"</span>),
-  <span class='kw'>approx</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"AR(1)"</span>, <span class='st'>"ARMA(1,1)"</span>), <span class='kw'>adjust</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>diagnostics</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>sandwich</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>ar.method</span> <span class='kw'>=</span> <span class='st'>"ols"</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-7</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>kernHAC</span>(<span class='kw'>x</span>, order.by = <span class='kw'>NULL</span>, prewhite = <span class='fl'>1</span>, bw = <span class='kw'>bwAndrews</span>,
+  kernel = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Quadratic Spectral"</span>, <span class='st'>"Truncated"</span>, <span class='st'>"Bartlett"</span>, <span class='st'>"Parzen"</span>, <span class='st'>"Tukey-Hanning"</span>),
+  approx = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"AR(1)"</span>, <span class='st'>"ARMA(1,1)"</span>), adjust = <span class='fl'>TRUE</span>, diagnostics = <span class='fl'>FALSE</span>,
+  sandwich = <span class='fl'>TRUE</span>, ar.method = <span class='st'>"ols"</span>, tol = <span class='fl'>1e-7</span>, data = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), verbose = <span class='fl'>FALSE</span>, <span class='kw'>...</span>)
 
-<span class='fu'>weightsAndrews</span>(<span class='no'>x</span>, <span class='kw'>order.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>bw</span> <span class='kw'>=</span> <span class='no'>bwAndrews</span>,
-  <span class='kw'>kernel</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Quadratic Spectral"</span>, <span class='st'>"Truncated"</span>, <span class='st'>"Bartlett"</span>, <span class='st'>"Parzen"</span>, <span class='st'>"Tukey-Hanning"</span>),
-  <span class='kw'>prewhite</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>ar.method</span> <span class='kw'>=</span> <span class='st'>"ols"</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-7</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>weightsAndrews</span>(<span class='kw'>x</span>, order.by = <span class='kw'>NULL</span>, bw = <span class='kw'>bwAndrews</span>,
+  kernel = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Quadratic Spectral"</span>, <span class='st'>"Truncated"</span>, <span class='st'>"Bartlett"</span>, <span class='st'>"Parzen"</span>, <span class='st'>"Tukey-Hanning"</span>),
+  prewhite = <span class='fl'>1</span>, ar.method = <span class='st'>"ols"</span>, tol = <span class='fl'>1e-7</span>, data = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), verbose = <span class='fl'>FALSE</span>, <span class='kw'>...</span>)
 
-<span class='fu'>bwAndrews</span>(<span class='no'>x</span>, <span class='kw'>order.by</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>kernel</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Quadratic Spectral"</span>, <span class='st'>"Truncated"</span>,
-  <span class='st'>"Bartlett"</span>, <span class='st'>"Parzen"</span>, <span class='st'>"Tukey-Hanning"</span>), <span class='kw'>approx</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"AR(1)"</span>, <span class='st'>"ARMA(1,1)"</span>),
-  <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>prewhite</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>ar.method</span> <span class='kw'>=</span> <span class='st'>"ols"</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='no'>...</span>)</pre>
+<span class='fu'>bwAndrews</span>(<span class='kw'>x</span>, order.by = <span class='kw'>NULL</span>, kernel = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Quadratic Spectral"</span>, <span class='st'>"Truncated"</span>,
+  <span class='st'>"Bartlett"</span>, <span class='st'>"Parzen"</span>, <span class='st'>"Tukey-Hanning"</span>), approx = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"AR(1)"</span>, <span class='st'>"ARMA(1,1)"</span>),
+  weights = <span class='kw'>NULL</span>, prewhite = <span class='fl'>1</span>, ar.method = <span class='st'>"ols"</span>, data = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -294,35 +294,35 @@ which is typically just the covariance matrix.</p>
          <code><a href='weightsLumley.html'>weave</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span>(<span class='fu'><a href='kweights.html'>kweights</a></span>(<span class='no'>x</span>, <span class='kw'>kernel</span> <span class='kw'>=</span> <span class='st'>"Quadratic"</span>, <span class='kw'>normalize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),
-      <span class='kw'>from</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>to</span> <span class='kw'>=</span> <span class='fl'>3.2</span>, <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"x"</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"k(x)"</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span>(<span class='fu'><a href='kweights.html'>kweights</a></span>(<span class='no'>x</span>, <span class='kw'>kernel</span> <span class='kw'>=</span> <span class='st'>"Bartlett"</span>, <span class='kw'>normalize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),
-      <span class='kw'>from</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>to</span> <span class='kw'>=</span> <span class='fl'>3.2</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span>(<span class='fu'><a href='kweights.html'>kweights</a></span>(<span class='no'>x</span>, <span class='kw'>kernel</span> <span class='kw'>=</span> <span class='st'>"Parzen"</span>, <span class='kw'>normalize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),
-      <span class='kw'>from</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>to</span> <span class='kw'>=</span> <span class='fl'>3.2</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span>(<span class='fu'><a href='kweights.html'>kweights</a></span>(<span class='no'>x</span>, <span class='kw'>kernel</span> <span class='kw'>=</span> <span class='st'>"Tukey"</span>, <span class='kw'>normalize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),
-      <span class='kw'>from</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>to</span> <span class='kw'>=</span> <span class='fl'>3.2</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span>(<span class='fu'><a href='kweights.html'>kweights</a></span>(<span class='no'>x</span>, <span class='kw'>kernel</span> <span class='kw'>=</span> <span class='st'>"Truncated"</span>, <span class='kw'>normalize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),
-      <span class='kw'>from</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>to</span> <span class='kw'>=</span> <span class='fl'>3.2</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='weightsAndrews-1.png' alt='' width='700' height='433' /></div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span>(<span class='fu'><a href='kweights.html'>kweights</a></span>(<span class='kw'>x</span>, kernel = <span class='st'>"Quadratic"</span>, normalize = <span class='fl'>TRUE</span>),
+      from = <span class='fl'>0</span>, to = <span class='fl'>3.2</span>, xlab = <span class='st'>"x"</span>, ylab = <span class='st'>"k(x)"</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span>(<span class='fu'><a href='kweights.html'>kweights</a></span>(<span class='kw'>x</span>, kernel = <span class='st'>"Bartlett"</span>, normalize = <span class='fl'>TRUE</span>),
+      from = <span class='fl'>0</span>, to = <span class='fl'>3.2</span>, col = <span class='fl'>2</span>, add = <span class='fl'>TRUE</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span>(<span class='fu'><a href='kweights.html'>kweights</a></span>(<span class='kw'>x</span>, kernel = <span class='st'>"Parzen"</span>, normalize = <span class='fl'>TRUE</span>),
+      from = <span class='fl'>0</span>, to = <span class='fl'>3.2</span>, col = <span class='fl'>3</span>, add = <span class='fl'>TRUE</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span>(<span class='fu'><a href='kweights.html'>kweights</a></span>(<span class='kw'>x</span>, kernel = <span class='st'>"Tukey"</span>, normalize = <span class='fl'>TRUE</span>),
+      from = <span class='fl'>0</span>, to = <span class='fl'>3.2</span>, col = <span class='fl'>4</span>, add = <span class='fl'>TRUE</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span>(<span class='fu'><a href='kweights.html'>kweights</a></span>(<span class='kw'>x</span>, kernel = <span class='st'>"Truncated"</span>, normalize = <span class='fl'>TRUE</span>),
+      from = <span class='fl'>0</span>, to = <span class='fl'>3.2</span>, col = <span class='fl'>5</span>, add = <span class='fl'>TRUE</span>)</div><div class='img'><img src='weightsAndrews-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## fit investment equation</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>Investment</span>)
-<span class='no'>fm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='no'>RealInv</span> ~ <span class='no'>RealGNP</span> + <span class='no'>RealInt</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>Investment</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='kw'>Investment</span>)
+<span class='kw'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='kw'>RealInv</span> <span class='op'>~</span> <span class='kw'>RealGNP</span> <span class='op'>+</span> <span class='kw'>RealInt</span>, data = <span class='kw'>Investment</span>)
 
 <span class='co'>## compute quadratic spectral kernel HAC estimator</span>
-<span class='fu'>kernHAC</span>(<span class='no'>fm</span>)</div><div class='output co'>#&gt;             (Intercept)       RealGNP     RealInt
+<span class='fu'>kernHAC</span>(<span class='kw'>fm</span>)</div><div class='output co'>#&gt;             (Intercept)       RealGNP     RealInt
 #&gt; (Intercept) 788.6120652 -0.7502080996 49.78912814
 #&gt; RealGNP      -0.7502081  0.0007483977 -0.06641343
-#&gt; RealInt      49.7891281 -0.0664134303 17.71735491</div><div class='input'><span class='fu'>kernHAC</span>(<span class='no'>fm</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; 
+#&gt; RealInt      49.7891281 -0.0664134303 17.71735491</div><div class='input'><span class='fu'>kernHAC</span>(<span class='kw'>fm</span>, verbose = <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; 
 #&gt; Bandwidth chosen: 1.744749 </div><div class='output co'>#&gt;             (Intercept)       RealGNP     RealInt
 #&gt; (Intercept) 788.6120652 -0.7502080996 49.78912814
 #&gt; RealGNP      -0.7502081  0.0007483977 -0.06641343
 #&gt; RealInt      49.7891281 -0.0664134303 17.71735491</div><div class='input'>
 <span class='co'>## use Parzen kernel instead, VAR(2) prewhitening, no finite sample</span>
 <span class='co'>## adjustment and Newey &amp; West (1994) bandwidth selection</span>
-<span class='fu'>kernHAC</span>(<span class='no'>fm</span>, <span class='kw'>kernel</span> <span class='kw'>=</span> <span class='st'>"Parzen"</span>, <span class='kw'>prewhite</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>adjust</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>bw</span> <span class='kw'>=</span> <span class='no'>bwNeweyWest</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; 
+<span class='fu'>kernHAC</span>(<span class='kw'>fm</span>, kernel = <span class='st'>"Parzen"</span>, prewhite = <span class='fl'>2</span>, adjust = <span class='fl'>FALSE</span>,
+  bw = <span class='kw'>bwNeweyWest</span>, verbose = <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; 
 #&gt; Bandwidth chosen: 2.814444 </div><div class='output co'>#&gt;             (Intercept)       RealGNP      RealInt
 #&gt; (Intercept) 608.3101258 -0.5089107386 -64.93690203
 #&gt; RealGNP      -0.5089107  0.0004340803   0.04689293
 #&gt; RealInt     -64.9369020  0.0468929322  15.58251456</div><div class='input'>
 <span class='co'>## compare with estimate under assumption of spheric errors</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span>(<span class='no'>fm</span>)</div><div class='output co'>#&gt;             (Intercept)       RealGNP     RealInt
+<span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span>(<span class='kw'>fm</span>)</div><div class='output co'>#&gt;             (Intercept)       RealGNP     RealInt
 #&gt; (Intercept) 620.7706170 -0.5038304429  8.47475285
 #&gt; RealGNP      -0.5038304  0.0004229789 -0.01145679
 #&gt; RealInt       8.4747529 -0.0114567949  5.61097245</div></pre>
@@ -341,7 +341,7 @@ which is typically just the covariance matrix.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>

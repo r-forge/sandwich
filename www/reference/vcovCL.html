@@ -148,8 +148,8 @@
   covariance matrices using an object-oriented approach.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vcovCL</span>(<span class='no'>x</span>, <span class='kw'>cluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sandwich</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>fix</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
-<span class='fu'>meatCL</span>(<span class='no'>x</span>, <span class='kw'>cluster</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>cadjust</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>multi0</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>vcovCL</span>(<span class='kw'>x</span>, cluster = <span class='kw'>NULL</span>, type = <span class='kw'>NULL</span>, sandwich = <span class='fl'>TRUE</span>, fix = <span class='fl'>FALSE</span>, <span class='kw'>...</span>)
+<span class='fu'>meatCL</span>(<span class='kw'>x</span>, cluster = <span class='kw'>NULL</span>, type = <span class='kw'>NULL</span>, cadjust = <span class='fl'>TRUE</span>, multi0 = <span class='fl'>FALSE</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -232,7 +232,7 @@
   see also Petersen (2009) and Thompson (2011).</p>  
 <p>With the <code>type</code> argument, HC0 to HC3 types of
   bias adjustment can be employed, following the terminology used by
-  MacKinnon and White (1985) for heteroskedasticity corrections. HC0 applies no small sample bias adjustment.
+  MacKinnon and White (1985) for heteroscedasticity corrections. HC0 applies no small sample bias adjustment.
   HC1 applies a degrees of freedom-based correction, \((n-1)/(n-k)\) where \(n\) is the
   number of observations and \(k\) is the number of explanatory or predictor variables in the model.
   HC1 is the most commonly used approach, and is the default, though it is less effective
@@ -273,9 +273,8 @@
   <em>Survey Methodology</em>, <b>28</b>(2), 169--181.</p>
 <p>Berger S, Graham N, Zeileis A (2017).
   &#8220;Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.&#8221;
-  Technical Report 2017-12,
-  <em>Working Papers in Economics and Statistics, Research Platform Empirical and Experimental Economics, Universitaet Innsbruck.</em>
-  <a href='http://EconPapers.RePEc.org/RePEc:inn:wpaper:2017-12'>http://EconPapers.RePEc.org/RePEc:inn:wpaper:2017-12</a>.</p>
+  <em>Journal of Statistical Software</em>, <b>95</b>(1), 1--36.
+  doi: <a href='https://doi.org/10.18637/jss.v095.i01'>10.18637/jss.v095.i01</a></p>
 <p>Cameron AC, Gelbach JB, Miller DL (2008).
   &#8220;Bootstrap-Based Improvements for Inference with Clustered Errors&#8221;,
   <em>The Review of Economics and Statistics</em>, <b>90</b>(3),
@@ -298,7 +297,7 @@
   <em>Mimeo, Availlable at SSRN:</em>
    URL <a href='http://ssrn.com/abstract=2420421'>http://ssrn.com/abstract=2420421</a>.</p>
 <p>MacKinnon, JG, White, H (1985). 
-  &#8220;Some heteroskedasticity-consistent covariance matrix estimators with improved finite sample properties&#8221;
+  &#8220;Some Heteroskedasticity-Consistent Covariance Matrix Estimators with Improved Finite Sample Properties&#8221;
   <em>Journal of Econometrics</em>, <b>29</b>(3), 305--325.
   doi: <a href='https://doi.org/10.1016/0304-4076(85)90158-7'>10.1016/0304-4076(85)90158-7</a></p>  
 <p>Petersen MA (2009).
@@ -324,61 +323,61 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## Petersen's data</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"PetersenCL"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sandwich"</span>)
-<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='no'>y</span> ~ <span class='no'>x</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>PetersenCL</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"PetersenCL"</span>, package = <span class='st'>"sandwich"</span>)
+<span class='kw'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>x</span>, data = <span class='kw'>PetersenCL</span>)
 
 <span class='co'>## clustered covariances</span>
 <span class='co'>## one-way</span>
-<span class='fu'>vcovCL</span>(<span class='no'>m</span>, <span class='kw'>cluster</span> <span class='kw'>=</span> ~ <span class='no'>firm</span>)</div><div class='output co'>#&gt;               (Intercept)             x
+<span class='fu'>vcovCL</span>(<span class='kw'>m</span>, cluster = <span class='op'>~</span> <span class='kw'>firm</span>)</div><div class='output co'>#&gt;               (Intercept)             x
 #&gt; (Intercept)  4.490702e-03 -6.473517e-05
-#&gt; x           -6.473517e-05  2.559927e-03</div><div class='input'><span class='fu'>vcovCL</span>(<span class='no'>m</span>, <span class='kw'>cluster</span> <span class='kw'>=</span> <span class='no'>PetersenCL</span>$<span class='no'>firm</span>) <span class='co'>## same</span></div><div class='output co'>#&gt;               (Intercept)             x
+#&gt; x           -6.473517e-05  2.559927e-03</div><div class='input'><span class='fu'>vcovCL</span>(<span class='kw'>m</span>, cluster = <span class='kw'>PetersenCL</span><span class='op'>$</span><span class='kw'>firm</span>) <span class='co'>## same</span></div><div class='output co'>#&gt;               (Intercept)             x
 #&gt; (Intercept)  4.490702e-03 -6.473517e-05
 #&gt; x           -6.473517e-05  2.559927e-03</div><div class='input'><span class='co'>## one-way with HC2</span>
-<span class='fu'>vcovCL</span>(<span class='no'>m</span>, <span class='kw'>cluster</span> <span class='kw'>=</span> ~ <span class='no'>firm</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"HC2"</span>)</div><div class='output co'>#&gt;               (Intercept)             x
+<span class='fu'>vcovCL</span>(<span class='kw'>m</span>, cluster = <span class='op'>~</span> <span class='kw'>firm</span>, type = <span class='st'>"HC2"</span>)</div><div class='output co'>#&gt;               (Intercept)             x
 #&gt; (Intercept)  4.494487e-03 -6.592912e-05
 #&gt; x           -6.592912e-05  2.568236e-03</div><div class='input'><span class='co'>## two-way</span>
-<span class='fu'>vcovCL</span>(<span class='no'>m</span>, <span class='kw'>cluster</span> <span class='kw'>=</span> ~ <span class='no'>firm</span> + <span class='no'>year</span>)</div><div class='output co'>#&gt;               (Intercept)             x
+<span class='fu'>vcovCL</span>(<span class='kw'>m</span>, cluster = <span class='op'>~</span> <span class='kw'>firm</span> <span class='op'>+</span> <span class='kw'>year</span>)</div><div class='output co'>#&gt;               (Intercept)             x
 #&gt; (Intercept)  4.233313e-03 -2.845344e-05
-#&gt; x           -2.845344e-05  2.868462e-03</div><div class='input'><span class='fu'>vcovCL</span>(<span class='no'>m</span>, <span class='kw'>cluster</span> <span class='kw'>=</span> <span class='no'>PetersenCL</span>[, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"firm"</span>, <span class='st'>"year"</span>)]) <span class='co'>## same</span></div><div class='output co'>#&gt;               (Intercept)             x
+#&gt; x           -2.845344e-05  2.868462e-03</div><div class='input'><span class='fu'>vcovCL</span>(<span class='kw'>m</span>, cluster = <span class='kw'>PetersenCL</span>[, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"firm"</span>, <span class='st'>"year"</span>)]) <span class='co'>## same</span></div><div class='output co'>#&gt;               (Intercept)             x
 #&gt; (Intercept)  4.233313e-03 -2.845344e-05
 #&gt; x           -2.845344e-05  2.868462e-03</div><div class='input'>
 <span class='co'>## comparison with cross-section sandwiches</span>
 <span class='co'>## HC0</span>
-<span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span>(<span class='fu'><a href='sandwich.html'>sandwich</a></span>(<span class='no'>m</span>), <span class='fu'>vcovCL</span>(<span class='no'>m</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"HC0"</span>, <span class='kw'>cadjust</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='co'>## HC2</span>
-<span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span>(<span class='fu'><a href='vcovHC.html'>vcovHC</a></span>(<span class='no'>m</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"HC2"</span>), <span class='fu'>vcovCL</span>(<span class='no'>m</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"HC2"</span>))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='co'>## HC3</span>
-<span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span>(<span class='fu'><a href='vcovHC.html'>vcovHC</a></span>(<span class='no'>m</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"HC3"</span>), <span class='fu'>vcovCL</span>(<span class='no'>m</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"HC3"</span>))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span>(<span class='fu'><a href='sandwich.html'>sandwich</a></span>(<span class='kw'>m</span>), <span class='fu'>vcovCL</span>(<span class='kw'>m</span>, type = <span class='st'>"HC0"</span>, cadjust = <span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='co'>## HC2</span>
+<span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span>(<span class='fu'><a href='vcovHC.html'>vcovHC</a></span>(<span class='kw'>m</span>, type = <span class='st'>"HC2"</span>), <span class='fu'>vcovCL</span>(<span class='kw'>m</span>, type = <span class='st'>"HC2"</span>))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='co'>## HC3</span>
+<span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span>(<span class='fu'><a href='vcovHC.html'>vcovHC</a></span>(<span class='kw'>m</span>, type = <span class='st'>"HC3"</span>), <span class='fu'>vcovCL</span>(<span class='kw'>m</span>, type = <span class='st'>"HC3"</span>))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
 <span class='co'>## Innovation data</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"InstInnovation"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"sandwich"</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"InstInnovation"</span>, package = <span class='st'>"sandwich"</span>)
 
 <span class='co'>## replication of one-way clustered standard errors for model 3, Table I</span>
 <span class='co'>## and model 1, Table II in Berger et al. (2016)</span>
 
 <span class='co'>## count regression formula</span>
-<span class='no'>f1</span> <span class='kw'>&lt;-</span> <span class='no'>cites</span> ~ <span class='no'>institutions</span> + <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>capital</span>/<span class='no'>employment</span>) + <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>sales</span>) + <span class='no'>industry</span> + <span class='no'>year</span>
+<span class='kw'>f1</span> <span class='op'>&lt;-</span> <span class='kw'>cites</span> <span class='op'>~</span> <span class='kw'>institutions</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='kw'>capital</span><span class='op'>/</span><span class='kw'>employment</span>) <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='kw'>sales</span>) <span class='op'>+</span> <span class='kw'>industry</span> <span class='op'>+</span> <span class='kw'>year</span>
 
 <span class='co'>## model 3, Table I: Poisson model</span>
 <span class='co'>## one-way clustered standard errors</span>
-<span class='no'>tab_I_3_pois</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/glm.html'>glm</a></span>(<span class='no'>f1</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>InstInnovation</span>, <span class='kw'>family</span> <span class='kw'>=</span> <span class='no'>poisson</span>)
-<span class='no'>vcov_pois</span> <span class='kw'>&lt;-</span> <span class='fu'>vcovCL</span>(<span class='no'>tab_I_3_pois</span>, <span class='no'>InstInnovation</span>$<span class='no'>company</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='no'>vcov_pois</span>))[<span class='fl'>2</span>:<span class='fl'>4</span>]</div><div class='output co'>#&gt;            institutions log(capital/employment)              log(sales) 
+<span class='kw'>tab_I_3_pois</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/glm.html'>glm</a></span>(<span class='kw'>f1</span>, data = <span class='kw'>InstInnovation</span>, family = <span class='kw'>poisson</span>)
+<span class='kw'>vcov_pois</span> <span class='op'>&lt;-</span> <span class='fu'>vcovCL</span>(<span class='kw'>tab_I_3_pois</span>, <span class='kw'>InstInnovation</span><span class='op'>$</span><span class='kw'>company</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='kw'>vcov_pois</span>))[<span class='fl'>2</span><span class='op'>:</span><span class='fl'>4</span>]</div><div class='output co'>#&gt;            institutions log(capital/employment)              log(sales) 
 #&gt;             0.002406388             0.135953255             0.041523405 </div><div class='input'>
 <span class='co'>## coefficient tables</span>
-<span class='kw'>if</span>(<span class='fu'><a href='https://rdrr.io/r/base/library.html'>require</a></span>(<span class='st'>"lmtest"</span>)) {
-<span class='fu'><a href='https://rdrr.io/pkg/lmtest/man/coeftest.html'>coeftest</a></span>(<span class='no'>tab_I_3_pois</span>, <span class='kw'>vcov</span> <span class='kw'>=</span> <span class='no'>vcov_pois</span>)[<span class='fl'>2</span>:<span class='fl'>4</span>, ]
+<span class='co'>if</span>(<span class='fu'><a href='https://rdrr.io/r/base/library.html'>require</a></span>(<span class='st'>"lmtest"</span>)) {
+<span class='fu'><a href='https://rdrr.io/pkg/lmtest/man/coeftest.html'>coeftest</a></span>(<span class='kw'>tab_I_3_pois</span>, vcov = <span class='kw'>vcov_pois</span>)[<span class='fl'>2</span><span class='op'>:</span><span class='fl'>4</span>, ]
 }</div><div class='output co'>#&gt;                            Estimate  Std. Error   z value     Pr(&gt;|z|)
 #&gt; institutions            0.009687237 0.002406388  4.025634 5.682195e-05
 #&gt; log(capital/employment) 0.482883549 0.135953255  3.551835 3.825545e-04
 #&gt; log(sales)              0.820317600 0.041523405 19.755548 7.187199e-87</div><div class='input'>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'>## model 1, Table II: negative binomial hurdle model</span>
 <span class='co'>## (requires "pscl" or alternatively "countreg" from R-Forge)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"pscl"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'><a href='http://github.com/atahk/pscl'>"pscl"</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"lmtest"</span>)
-<span class='no'>tab_II_3_hurdle</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/pscl/man/hurdle.html'>hurdle</a></span>(<span class='no'>f1</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>InstInnovation</span>, <span class='kw'>dist</span> <span class='kw'>=</span> <span class='st'>"negbin"</span>)
+<span class='kw'>tab_II_3_hurdle</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/pscl/man/hurdle.html'>hurdle</a></span>(<span class='kw'>f1</span>, data = <span class='kw'>InstInnovation</span>, dist = <span class='st'>"negbin"</span>)
 <span class='co'>#  dist = "negbin", zero.dist = "negbin", separate = FALSE)</span>
-<span class='no'>vcov_hurdle</span> <span class='kw'>&lt;-</span> <span class='fu'>vcovCL</span>(<span class='no'>tab_II_3_hurdle</span>, <span class='no'>InstInnovation</span>$<span class='no'>company</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='no'>vcov_hurdle</span>))[<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>:<span class='fl'>4</span>, <span class='fl'>149</span>:<span class='fl'>151</span>)]
-<span class='fu'><a href='https://rdrr.io/pkg/lmtest/man/coeftest.html'>coeftest</a></span>(<span class='no'>tab_II_3_hurdle</span>, <span class='kw'>vcov</span> <span class='kw'>=</span> <span class='no'>vcov_hurdle</span>)[<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>:<span class='fl'>4</span>, <span class='fl'>149</span>:<span class='fl'>151</span>), ]
+<span class='kw'>vcov_hurdle</span> <span class='op'>&lt;-</span> <span class='fu'>vcovCL</span>(<span class='kw'>tab_II_3_hurdle</span>, <span class='kw'>InstInnovation</span><span class='op'>$</span><span class='kw'>company</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='kw'>vcov_hurdle</span>))[<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span><span class='op'>:</span><span class='fl'>4</span>, <span class='fl'>149</span><span class='op'>:</span><span class='fl'>151</span>)]
+<span class='fu'><a href='https://rdrr.io/pkg/lmtest/man/coeftest.html'>coeftest</a></span>(<span class='kw'>tab_II_3_hurdle</span>, vcov = <span class='kw'>vcov_hurdle</span>)[<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span><span class='op'>:</span><span class='fl'>4</span>, <span class='fl'>149</span><span class='op'>:</span><span class='fl'>151</span>), ]
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -395,7 +394,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>

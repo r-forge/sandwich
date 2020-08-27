@@ -98,11 +98,13 @@
 <p><strong>Sandwich covariances for general parametric models:</strong></p>
 <p><img alt="Central limit theorem and sandwich estimator" src="reference/figures/README-sandwich.svg" style="border:10px solid transparent"></p>
 <p><strong>Object-oriented implementation in R:</strong></p>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"sandwich"</span>)
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st"><a href="http://sandwich.R-Forge.R-project.org">"sandwich"</a></span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"lmtest"</span>)
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"PetersenCL"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"sandwich"</span>)
-<span class="no">m</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span>(<span class="no">y</span> ~ <span class="no">x</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">PetersenCL</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span>(<span class="no">m</span>, <span class="kw">vcov</span> <span class="kw">=</span> <span class="no">sandwich</span>)</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"PetersenCL"</span>, package = <span class="st">"sandwich"</span>)
+<span class="kw">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span>(<span class="kw">y</span> <span class="op">~</span> <span class="kw">x</span>, data = <span class="kw">PetersenCL</span>)
+<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span>(<span class="kw">m</span>, vcov = <span class="kw">sandwich</span>)
+</pre></div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co">## </span></a>
 <a class="sourceLine" id="cb2-2" title="2"><span class="co">## t test of coefficients:</span></a>
 <a class="sourceLine" id="cb2-3" title="3"><span class="co">## </span></a>
@@ -111,7 +113,9 @@
 <a class="sourceLine" id="cb2-6" title="6"><span class="co">## x             1.0348     0.0284   36.45   &lt;2e-16 ***</span></a>
 <a class="sourceLine" id="cb2-7" title="7"><span class="co">## ---</span></a>
 <a class="sourceLine" id="cb2-8" title="8"><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></a></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span>(<span class="no">m</span>, <span class="kw">vcov</span> <span class="kw">=</span> <span class="no">vcovCL</span>, <span class="kw">cluster</span> <span class="kw">=</span> ~ <span class="no">firm</span>)</pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span>(<span class="kw">m</span>, vcov = <span class="kw">vcovCL</span>, cluster = <span class="op">~</span> <span class="kw">firm</span>)
+</pre></div>
 <div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="co">## </span></a>
 <a class="sourceLine" id="cb4-2" title="2"><span class="co">## t test of coefficients:</span></a>
 <a class="sourceLine" id="cb4-3" title="3"><span class="co">## </span></a>
@@ -165,7 +169,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>
