@@ -162,7 +162,7 @@ In the statistics as well as in the econometrics literature a variety of
 strategies are popular for dealing with clustered dependencies in regression models.
 Here we give a a brief overview of clustered covariances methods, some background
 information, as well as a discussion of corresponding software implementations
-in \proglang{R} and \proglang{Stata}.
+in \proglang{R} and \proglang{Stata} \citep{Stata}.
 
 \subsection{Clustered dependencies in regression models}
 
@@ -288,9 +288,9 @@ to either objects from \code{lm()} or dedicated model objects fitting certain
 (generalized) linear models for clustered or panel data. The list of packages
 includes: \pkg{multiwayvcov} \citep{hac:Graham+Arai+Hagstroemer:2016},
 \pkg{plm} \citep{hac:Croissant+Millo:2008}, \pkg{geepack}
-\citep{hac:Halekoh+Hojsgaard+Yan:2002}, \pkg{lfe} \citep{hac:Gaure:2018},
-\pkg{clubSandwich} \citep{hac:Pustejovsky:2018}, and \pkg{clusterSEs}
-\citep{hac:Esarey:2018}, among others.
+\citep{hac:Halekoh+Hojsgaard+Yan:2002}, \pkg{lfe} \citep{hac:Gaure:2013},
+\pkg{clubSandwich} \citep{hac:Pustejovsky+Tipton:2017}, and \pkg{clusterSEs}
+\citep{hac:Esarey+Menger:2019}, among others.
 
 In \pkg{multiwayvcov}, the implementation was object-oriented, in many aspects
 building on \pkg{sandwich} infrastructure. However, certain details assumed
@@ -655,11 +655,11 @@ introduced in more detail below.
 Model classes which provide the necessary building blocks include
 `\code{lm}', `\code{glm}', `\code{mlm}', and `\code{nls}' from \pkg{stats} \citep{hac:R:2018}, 
 `\code{betareg}' from \pkg{betareg} \citep{hac:Cribari-Neto+Zeileis:2010,hac:Gruen+Kosmidis+Zeileis:2012},
-`\code{clm}' from \pkg{ordinal} \citep{hac:Christensen:2018},
-`\code{coxph}' and `\code{survreg}' from \pkg{survival} \citep{hac:Therneau:2018},
+`\code{clm}' from \pkg{ordinal} \citep{hac:Christensen:2019},
+`\code{coxph}' and `\code{survreg}' from \pkg{survival} \citep{hac:Therneau:2020},
 `\code{crch}' from \pkg{crch} \citep{hac:Messner+Mayr+Zeileis:2016},
 `\code{hurdle}' and `\code{zeroinfl}' from \pkg{pscl}/\pkg{countreg} \citep{hac:Zeileis+Kleiber+Jackman:2008},
-`\code{mlogit}' from \pkg{mlogit} \citep{hac:Croissant:2018}, 
+`\code{mlogit}' from \pkg{mlogit} \citep{hac:Croissant:2020}, 
 and `\code{polr}' and `\code{rlm}' from \pkg{MASS} \citep{hac:Venables+Ripley:2002}.
 For all of these an \code{estfun()} method is available along with a \code{bread()} method
 (or the default method works). In case the models are based on a single linear predictor only,
@@ -1250,7 +1250,7 @@ and a GEE with an exchangeable correlation structure (\code{m_gee}, using \pkg{g
 \citealp{hac:Halekoh+Hojsgaard+Yan:2002}) are fitted. For the other (non-GLM)
 responses, the functions
 \code{betareg()} (from \pkg{betareg}, \citealp{hac:Cribari-Neto+Zeileis:2010}),
-\code{zerotrunc()} (from \pkg{countreg}, \citealp{hac:Zeileis+Kleiber:2018}),
+\code{zerotrunc()} (from \pkg{countreg}, \citealp{hac:Zeileis+Kleiber:2020}),
 and \code{zeroinfl()} (from \pkg{pscl}/\pkg{countreg}, \citealp{hac:Zeileis+Kleiber+Jackman:2008}) are used.
 
 \subsection{Results}
