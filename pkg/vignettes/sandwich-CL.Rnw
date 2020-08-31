@@ -350,7 +350,7 @@ Let $(y_{i},x_{i})$ for $i = 1, \ldots, n$ be data with some distribution
 controlled by a parameter vector $\theta$ with $k$ dimensions. For a wide
 range of models the (quasi-)maximum likelihood estimator $\hat \theta$ is
 governed by a central limit theorem \citep{hac:White:1994} so that
-$\hat \theta \approx \mathcal{N}(\theta, n^{-1} S(\theta))$. Moreover, the covariance
+$\hat \theta$ is approximately normally distributed with $\mathcal{N}(\theta, n^{-1} S(\theta))$. Moreover, the covariance
 matrix is of sandwich type with a meat matrix $M(\theta)$ between two slices
 of bread $B(\theta)$:
 \begin{eqnarray} \label{eq:sandwich}
@@ -371,7 +371,7 @@ such that an $n \times k$ matrix is obtained \citep{hac:Zeileis:2006}:
 \end{eqnarray}
 The estimate $\hat B$ for the bread is based on second derivatives, i.e., the empirical version of the inverse Hessian
 \begin{equation} \label{eq:Bhat}
-  \hat B \quad = \quad \left( \frac{1}{n} \sum_{i = 1}^n - \frac{\partial \psi(y, x, \hat \theta)}{\partial \theta} \right)^{-1},
+  \hat B \quad = \quad \left( \frac{1}{n} \sum_{i = 1}^n - \left. \frac{\partial \psi(y_i, x_i, \theta)}{\partial \theta} \right|_{\theta = \hat \theta} \right)^{-1},
 \end{equation}
 whereas $\hat M, \hat M_\mathrm{HAC}, \hat M_\mathrm{HC}$ compute outer product, HAC and HC estimators for the meat, respectively, 
 \begin{eqnarray} \label{eq:meat-op}
@@ -548,7 +548,7 @@ To reflect that the data are now panel data with a natural time ordering within 
 to an index $(g, t)$ for $g = 1, \dots, G$ \emph{groups} sampled at $t = 1, \ldots, n_g$ points in \emph{time} (with $n = n_1 + \dots + n_G$).
 
 Clustered covariances account for the average within-cluster covariance, where a cluster or group is any set of
-observations with can be identified by a variable to ``cluster on''. In the case of panel data, observations are frequently
+observations which can be identified by a variable to ``cluster on''. In the case of panel data, observations are frequently
 grouped by time and by one or more cross-sectional variables such as individuals or countries that have been observed repeatedly
 over time.
 
@@ -558,13 +558,13 @@ A panel Newey-West estimator can be obtained by setting the cross-sectional as w
 effectively assuming that each cross-sectional group is a separate, autocorrelated time-series. The meat is composed of
 %
 \begin{equation} \label{eq:newey2}
-  \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{\ell = 0}^{L} w_{\ell} \, \bigg[\sum_{t = 1}^{n_{g}}\sum_{g = 1}^{G} \psi(y_{g,t}, x_{g,t}, \hat \theta) \psi(y_{g,t-\ell}, x_{g,t-\ell}, \hat \theta)^\top\bigg].
+  \hat M_\mathrm{PL}^{NW} \quad = \quad \frac{1}{n} \sum_{\ell = 0}^{L} w_{\ell} \, \bigg[\sum_{t = 1}^{n_{\max}}\sum_{g = 1}^{G} \psi(y_{g,t}, x_{g,t}, \hat \theta) \psi(y_{g,t-\ell}, x_{g,t-\ell}, \hat \theta)^\top\bigg].
 \end{equation}  
 %
 \cite{hac:Newey+West:1987} employ a Bartlett kernel for obtaining the weights as  
 $w_{\ell} = 1 - \frac{\ell}{L + 1}$ at lag $\ell$ up to lag $L$.
 As \cite{hac:Petersen:2009} noticed, the maximal lag length $L$ in a panel data set is
-$n_g - 1$, i.e., the maximum number of \emph{time} periods per \emph{group} minus one.
+$n_{\max} - 1$, i.e., one less than the maximum number of \emph{time} periods per \emph{group} $n_{\max} = \max_g n_g$.
 
 \subsubsection{Driscoll and Kraay}
 
@@ -581,7 +581,7 @@ within each time period $t$. This yields a panel
 sandwich estimator where the meat is computed as
 %
 \begin{equation} \label{eq:driscoll}
-  \hat M_\mathrm{PL} \quad = \quad \frac{1}{n} \sum_{\ell = 0}^L w_\ell \, \bigg[ \sum_{t = 1}^{n_g} \bigg(
+  \hat M_\mathrm{PL} \quad = \quad \frac{1}{n} \sum_{\ell = 0}^L w_\ell \, \bigg[ \sum_{t = 1}^{n_{\max}} \bigg(
     \sum_{g = 1}^{G} \psi(y_{g,t}, x_{g,t}, \hat \theta) \bigg) \bigg(
     \sum_{g = 1}^{G} \psi(y_{g,t-\ell}, x_{g,t-\ell}, \hat \theta) \bigg)^\top \bigg],
 \end{equation}  

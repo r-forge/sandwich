@@ -7,6 +7,9 @@
   The paper is also provided as a vignette in the package as
   `vignette("sandwich-CL", package = "sandwich")`.
 
+* Improved or clarified notation in Equations 6, 9, 21, and 22 (based on
+  feedback from Bettina Gruen).
+
 * All kernel weights functions in `kweights()` are made symmetric around zero now
   (suggested by Christoph Hanck). The quadratic spectral kernal is approximated
   by `exp(-c * x^2)` rather than `1` for very small `x`.
