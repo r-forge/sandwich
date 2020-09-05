@@ -25,7 +25,7 @@ For discussions we also try to follow these channels:
   <a href="https://unidirectory.auckland.ac.nz/people/profile/t-lumley"><span class="fa fa-user"></span></a>
   <a href="http://github.com/tslumley"><span class="fa fa-github"></span></a>
   <a href="https://twitter.com/tslumley"><span class="fa fa-twitter-square"></span></a>
-- Susanne Berger
-- Nathaniel P. Graham
+- Nathaniel Graham
   <a href="https://sites.google.com/site/npgraham1/"><span class="fa fa-user"></span></a>
   <a href="http://github.com/npgraham1"><span class="fa fa-github"></span></a>
+- Susanne Berger
