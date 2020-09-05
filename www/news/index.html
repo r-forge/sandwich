@@ -146,8 +146,19 @@
 </h1>
 <ul>
 <li><p>Release of version 3.0-0 accompanying the publication of the paper “Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.” together with Susanne Berger and Nathaniel Graham in the <em>Journal of Statistcal Software</em> at <a href="https://doi.org/10.18637/jss.v095.i01" class="uri">https://doi.org/10.18637/jss.v095.i01</a>. The paper is also provided as a vignette in the package as <code>vignette("sandwich-CL", package = "sandwich")</code>.</p></li>
-<li><p>All kernel weights functions in <code><a href="../reference/kweights.html">kweights()</a></code> are made symmetric around zero now (suggested by Christoph Hanck). The quadratic spectral kernal is approximated by <code><a href="https://rdrr.io/r/base/Log.html">exp(-c * x^2)</a></code> rather than <code>1</code> for very small <code>x</code>.</p></li>
+<li><p>Improved or clarified notation in Equations 6, 9, 21, and 22 (based on feedback from Bettina Gruen).</p></li>
 <li><p>The documentation of the HC1 bias correction for clustered covariances in <code>vignette("sandwich-CL", package = "sandwich")</code> has been corrected (Equation 15). While both the code in <code><a href="../reference/vcovCL.html">vcovCL()</a></code> and the corresponding documentation <code><a href="../reference/vcovCL.html">?vcovCL</a></code> always correctly used (n-1)/(n-k), the vignette had incorrectly stated it as n/(n-k). (Reported by Yves Croissant.)</p></li>
+<li>
+<p>The package is also accompanied by a <code>pkgdown</code> website on R-Forge now:<br><a href="http://sandwich.R-Forge.R-project.org/" class="uri">http://sandwich.R-Forge.R-project.org/</a><br>
+This essentially uses the previous content of the package (documentation, vignettes, NEWS) and just formatting was enhanced. But a few new features were also added:</p>
+<ul>
+<li>A “Get started” vignette for the <code>pkgdown</code> page (but not shipped in the package) providing an introduction to the package and listing all variance-covariance functions provided with links to further details.</li>
+<li>R/Markdown overview vignettes for the <code>pkgdown</code> page (but also not shipped in the package) linking the <code>Sweave</code>-based PDF vignettes so that they are easily accessible online.</li>
+<li>A <code>README</code> with very brief overview for the <code>pkgdown</code> title page.</li>
+<li>A nice logo, kindly provided by Reto Stauffer.</li>
+</ul>
+</li>
+<li><p>All kernel weights functions in <code><a href="../reference/kweights.html">kweights()</a></code> are made symmetric around zero now (suggested by Christoph Hanck). The quadratic spectral kernal is approximated by <code><a href="https://rdrr.io/r/base/Log.html">exp(-c * x^2)</a></code> rather than <code>1</code> for very small <code>x</code>.</p></li>
 <li><p>In case the <code>Formula</code> namespace is loaded, warnings are suppressed now for processing formula specifications like <code>cluster = ~ id</code> in <code><a href="https://rdrr.io/r/stats/expand.model.frame.html">expand.model.frame()</a></code>. Otherwise warnings may occur with the <code><a href="https://rdrr.io/r/base/Logic.html">|</a></code> separator in multi-part formulas with factors. (Reported by David Hugh-Jones.)</p></li>
 <li><p>The <code><a href="../reference/bread.html">bread()</a></code> method for <code>mlm</code> objects has been improved to also handle <em>weighted</em> <code>mlm</code> objects. (Suggested by James Pustejovsky.)</p></li>
 </ul>
@@ -330,7 +341,7 @@
 <a href="#sandwich-21-0" class="anchor"></a>sandwich 2.1-0<small> 2008-01-26 </small>
 </h1>
 <ul>
-<li><p>Added <code><a href="../reference/bread.html">bread()</a></code> and <code><a href="../reference/estfun.html">estfun()</a></code> methods for <code>hurdle</code>/<code>zeroinfl</code> objects as computed by <code><a href="https://rdrr.io/pkg/pscl/man/hurdle.html">hurdle()</a></code>/<code><a href="https://rdrr.io/pkg/pscl/man/zeroinfl.html">zeroinfl()</a></code> in package <code>pscl</code>.</p></li>
+<li><p>Added <code><a href="../reference/bread.html">bread()</a></code> and <code><a href="../reference/estfun.html">estfun()</a></code> methods for <code>hurdle</code>/<code>zeroinfl</code> objects as computed by <code>hurdle()</code>/<code>zeroinfl()</code> in package <code>pscl</code>.</p></li>
 <li><p>Fixed <code><a href="../reference/bread.html">bread()</a></code> and <code><a href="../reference/estfun.html">estfun()</a></code> methods for negative binomial <code>glm</code> objects: Now <code>dispersion = 1</code> is used.</p></li>
 </ul>
 </div>

@@ -10,15 +10,30 @@
 * Improved or clarified notation in Equations 6, 9, 21, and 22 (based on
   feedback from Bettina Gruen).
 
-* All kernel weights functions in `kweights()` are made symmetric around zero now
-  (suggested by Christoph Hanck). The quadratic spectral kernal is approximated
-  by `exp(-c * x^2)` rather than `1` for very small `x`.
-
 * The documentation of the HC1 bias correction for clustered covariances
   in `vignette("sandwich-CL", package = "sandwich")` has been corrected (Equation 15).
   While both the code in `vcovCL()` and the corresponding documentation `?vcovCL`
   always correctly used (n-1)/(n-k), the vignette had incorrectly stated it as
   n/(n-k). (Reported by Yves Croissant.)
+
+* The package is also accompanied by a `pkgdown` website on R-Forge now:  
+  <http://sandwich.R-Forge.R-project.org/>  
+  This essentially uses the previous content of the package (documentation,
+  vignettes, NEWS) and just formatting was enhanced. But a few new features
+  were also added:
+  
+  - A "Get started" vignette for the `pkgdown` page (but not shipped in the
+    package) providing an introduction to the package and listing all
+    variance-covariance functions provided with links to further details.
+  - R/Markdown overview vignettes for the `pkgdown` page (but also not shipped
+    in the package) linking the `Sweave`-based PDF vignettes so that they are
+    easily accessible online.
+  - A `README` with very brief overview for the `pkgdown` title page.
+  - A nice logo, kindly provided by Reto Stauffer.
+
+* All kernel weights functions in `kweights()` are made symmetric around zero now
+  (suggested by Christoph Hanck). The quadratic spectral kernal is approximated
+  by `exp(-c * x^2)` rather than `1` for very small `x`.
 
 * In case the `Formula` namespace is loaded, warnings are suppressed now for
   processing formula specifications like `cluster = ~ id` in `expand.model.frame()`.
