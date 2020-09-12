@@ -287,9 +287,11 @@ with</p>
     <pre class="examples"><div class='input'><span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span>)
 <span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='kw'>x</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>)
 <span class='kw'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>x</span>)
-<span class='fu'>vcovHAC</span>(<span class='kw'>fm</span>)</div><div class='output co'>#&gt;             (Intercept)           x
+<span class='fu'>vcovHAC</span>(<span class='kw'>fm</span>)
+</div><div class='output co'>#&gt;             (Intercept)           x
 #&gt; (Intercept) 0.009716252 0.004740023
-#&gt; x           0.004740023 0.023346936</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span>(<span class='kw'>fm</span>)</div><div class='output co'>#&gt;              (Intercept)            x
+#&gt; x           0.004740023 0.023346936</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span>(<span class='kw'>fm</span>)
+</div><div class='output co'>#&gt;              (Intercept)            x
 #&gt; (Intercept) 1.114254e-02 2.818886e-05
 #&gt; x           2.818886e-05 2.216611e-02</div></pre>
   </div>
@@ -307,7 +309,7 @@ with</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

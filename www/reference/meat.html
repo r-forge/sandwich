@@ -197,11 +197,14 @@ the scaled cross products of the empirical estimating functions.</p>
 <span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span>)
 <span class='kw'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>x</span>)
 
-<span class='fu'>meat</span>(<span class='kw'>fm</span>)</div><div class='output co'>#&gt;             (Intercept)         x
+<span class='fu'>meat</span>(<span class='kw'>fm</span>)
+</div><div class='output co'>#&gt;             (Intercept)         x
 #&gt; (Intercept)   0.5500547 0.3489064
-#&gt; x             0.3489064 0.3073370</div><div class='input'><span class='fu'><a href='vcovHC.html'>meatHC</a></span>(<span class='kw'>fm</span>, type = <span class='st'>"HC"</span>)</div><div class='output co'>#&gt;             (Intercept)         x
+#&gt; x             0.3489064 0.3073370</div><div class='input'><span class='fu'><a href='vcovHC.html'>meatHC</a></span>(<span class='kw'>fm</span>, type = <span class='st'>"HC"</span>)
+</div><div class='output co'>#&gt;             (Intercept)         x
 #&gt; (Intercept)   0.5500547 0.3489064
-#&gt; x             0.3489064 0.3073370</div><div class='input'><span class='fu'><a href='vcovHAC.html'>meatHAC</a></span>(<span class='kw'>fm</span>)</div><div class='output co'>#&gt;             (Intercept)         x
+#&gt; x             0.3489064 0.3073370</div><div class='input'><span class='fu'><a href='vcovHAC.html'>meatHAC</a></span>(<span class='kw'>fm</span>)
+</div><div class='output co'>#&gt;             (Intercept)         x
 #&gt; (Intercept)   0.5870363 0.4398522
 #&gt; x             0.4398522 0.4492865</div></pre>
   </div>
@@ -219,7 +222,7 @@ the scaled cross products of the empirical estimating functions.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

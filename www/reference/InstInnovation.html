@@ -269,14 +269,17 @@ al. (2013) and Bushee (1998)).</p>
 <span class='kw'>vCL_I_5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vcovCL.html'>vcovCL</a></span>(<span class='kw'>tab_I_5_pois</span>, cluster = <span class='op'>~</span> <span class='kw'>company</span>)
 
 <span class='co'>## replication of columns 3 to 5 from Table I in Aghion et al. (2013)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>tab_I_3_pois</span>), <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='kw'>vCL_I_3</span>)))[<span class='fl'>2</span><span class='op'>:</span><span class='fl'>4</span>, ]</div><div class='output co'>#&gt;                                [,1]        [,2]
+<span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>tab_I_3_pois</span>), <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='kw'>vCL_I_3</span>)))[<span class='fl'>2</span><span class='op'>:</span><span class='fl'>4</span>, ]
+</div><div class='output co'>#&gt;                                [,1]        [,2]
 #&gt; institutions            0.009687237 0.002406388
 #&gt; log(capital/employment) 0.482883549 0.135953255
-#&gt; log(sales)              0.820317600 0.041523405</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>tab_I_4_pois</span>), <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='kw'>vCL_I_4</span>)))[<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span><span class='op'>:</span><span class='fl'>4</span>, <span class='fl'>148</span>), ]</div><div class='output co'>#&gt;                                [,1]        [,2]
+#&gt; log(sales)              0.820317600 0.041523405</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>tab_I_4_pois</span>), <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='kw'>vCL_I_4</span>)))[<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span><span class='op'>:</span><span class='fl'>4</span>, <span class='fl'>148</span>), ]
+</div><div class='output co'>#&gt;                                [,1]        [,2]
 #&gt; institutions            0.008460789 0.002242345
 #&gt; log(capital/employment) 0.346008637 0.165274677
 #&gt; log(sales)              0.349190437 0.117219737
-#&gt; lograndd                0.492667825 0.140473107</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>tab_I_5_pois</span>), <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='kw'>vCL_I_5</span>)))[<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span><span class='op'>:</span><span class='fl'>4</span>, <span class='fl'>148</span>), ]</div><div class='output co'>#&gt;                                [,1]        [,2]
+#&gt; lograndd                0.492667825 0.140473107</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>tab_I_5_pois</span>), <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='kw'>vCL_I_5</span>)))[<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span><span class='op'>:</span><span class='fl'>4</span>, <span class='fl'>148</span>), ]
+</div><div class='output co'>#&gt;                                [,1]        [,2]
 #&gt; institutions            0.007381543 0.002443707
 #&gt; log(capital/employment) 0.440056227 0.131984715
 #&gt; log(sales)              0.183853108 0.063364163
@@ -296,7 +299,7 @@ al. (2013) and Bushee (1998)).</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

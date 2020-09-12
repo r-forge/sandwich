@@ -206,9 +206,11 @@ to \(k\) parameters.</p>
 <span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span>)
 <span class='kw'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>x</span>)
 
-<span class='fu'>sandwich</span>(<span class='kw'>fm</span>)</div><div class='output co'>#&gt;             (Intercept)           x
+<span class='fu'>sandwich</span>(<span class='kw'>fm</span>)
+</div><div class='output co'>#&gt;             (Intercept)           x
 #&gt; (Intercept)  0.09828472 -0.04786662
-#&gt; x           -0.04786662  0.13846884</div><div class='input'><span class='fu'><a href='vcovHC.html'>vcovHC</a></span>(<span class='kw'>fm</span>, type = <span class='st'>"HC"</span>)</div><div class='output co'>#&gt;             (Intercept)           x
+#&gt; x           -0.04786662  0.13846884</div><div class='input'><span class='fu'><a href='vcovHC.html'>vcovHC</a></span>(<span class='kw'>fm</span>, type = <span class='st'>"HC"</span>)
+</div><div class='output co'>#&gt;             (Intercept)           x
 #&gt; (Intercept)  0.09828472 -0.04786662
 #&gt; x           -0.04786662  0.13846884</div></pre>
   </div>
@@ -226,7 +228,7 @@ to \(k\) parameters.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

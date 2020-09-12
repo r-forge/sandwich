@@ -193,7 +193,8 @@ and the estimated parameters (of dimension \(k\)).</p>
 <span class='kw'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>x</span>)
 
 <span class='co'>## estimating function: (y - x'beta) * x</span>
-<span class='fu'>estfun</span>(<span class='kw'>fm</span>)</div><div class='output co'>#&gt;    (Intercept)          x
+<span class='fu'>estfun</span>(<span class='kw'>fm</span>)
+</div><div class='output co'>#&gt;    (Intercept)          x
 #&gt; 1   -0.7015578 -0.5903406
 #&gt; 2    0.4494980  0.4087274
 #&gt; 3    2.2437203  0.3166338
@@ -203,7 +204,8 @@ and the estimated parameters (of dimension \(k\)).</p>
 #&gt; 7   -0.5838511 -0.3835824
 #&gt; 8   -0.2694160 -0.2665489
 #&gt; 9    0.5953328  0.2453477
-#&gt; 10  -0.4159175  0.2262679</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/residuals.html'>residuals</a></span>(<span class='kw'>fm</span>) <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fl'>1</span>, <span class='kw'>x</span>)</div><div class='output co'>#&gt;                           x
+#&gt; 10  -0.4159175  0.2262679</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/residuals.html'>residuals</a></span>(<span class='kw'>fm</span>) <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fl'>1</span>, <span class='kw'>x</span>)
+</div><div class='output co'>#&gt;                           x
 #&gt;  [1,] -0.7015578 -0.5903406
 #&gt;  [2,]  0.4494980  0.4087274
 #&gt;  [3,]  2.2437203  0.3166338
@@ -229,7 +231,7 @@ and the estimated parameters (of dimension \(k\)).</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

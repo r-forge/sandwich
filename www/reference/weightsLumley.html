@@ -260,9 +260,11 @@ which is typically just the covariance matrix.</p>
     <pre class="examples"><div class='input'><span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span>)
 <span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='kw'>x</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>)
 <span class='kw'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>x</span>)
-<span class='fu'>weave</span>(<span class='kw'>fm</span>)</div><div class='output co'>#&gt;               (Intercept)             x
+<span class='fu'>weave</span>(<span class='kw'>fm</span>)
+</div><div class='output co'>#&gt;               (Intercept)             x
 #&gt; (Intercept)  0.0113474272 -0.0002016924
-#&gt; x           -0.0002016924  0.0205963399</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span>(<span class='kw'>fm</span>)</div><div class='output co'>#&gt;              (Intercept)            x
+#&gt; x           -0.0002016924  0.0205963399</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span>(<span class='kw'>fm</span>)
+</div><div class='output co'>#&gt;              (Intercept)            x
 #&gt; (Intercept) 1.157960e-02 2.929455e-05
 #&gt; x           2.929455e-05 2.303555e-02</div></pre>
   </div>
@@ -280,7 +282,7 @@ which is typically just the covariance matrix.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

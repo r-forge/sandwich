@@ -280,19 +280,22 @@ which is typically just the covariance matrix.</p>
 <span class='kw'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='kw'>RealInv</span> <span class='op'>~</span> <span class='kw'>RealGNP</span> <span class='op'>+</span> <span class='kw'>RealInt</span>, data = <span class='kw'>Investment</span>)
 
 <span class='co'>## Newey &amp; West (1994) compute this type of estimator</span>
-<span class='fu'>NeweyWest</span>(<span class='kw'>fm</span>)</div><div class='output co'>#&gt;             (Intercept)       RealGNP     RealInt
+<span class='fu'>NeweyWest</span>(<span class='kw'>fm</span>)
+</div><div class='output co'>#&gt;             (Intercept)       RealGNP     RealInt
 #&gt; (Intercept) 594.1004817 -0.5617817294 36.04992496
 #&gt; RealGNP      -0.5617817  0.0005563172 -0.04815937
 #&gt; RealInt      36.0499250 -0.0481593694 13.24912546</div><div class='input'>
 <span class='co'>## The Newey &amp; West (1987) estimator requires specification</span>
 <span class='co'>## of the lag and suppression of prewhitening</span>
-<span class='fu'>NeweyWest</span>(<span class='kw'>fm</span>, lag = <span class='fl'>4</span>, prewhite = <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt;             (Intercept)       RealGNP      RealInt
+<span class='fu'>NeweyWest</span>(<span class='kw'>fm</span>, lag = <span class='fl'>4</span>, prewhite = <span class='fl'>FALSE</span>)
+</div><div class='output co'>#&gt;             (Intercept)       RealGNP      RealInt
 #&gt; (Intercept) 359.4170681 -0.3115505035 -4.089319305
 #&gt; RealGNP      -0.3115505  0.0002805888 -0.005355931
 #&gt; RealInt      -4.0893193 -0.0053559312 11.171472998</div><div class='input'>
 <span class='co'>## bwNeweyWest() can also be passed to kernHAC(), e.g.</span>
 <span class='co'>## for the quadratic spectral kernel</span>
-<span class='fu'><a href='weightsAndrews.html'>kernHAC</a></span>(<span class='kw'>fm</span>, bw = <span class='kw'>bwNeweyWest</span>)</div><div class='output co'>#&gt;             (Intercept)       RealGNP     RealInt
+<span class='fu'><a href='weightsAndrews.html'>kernHAC</a></span>(<span class='kw'>fm</span>, bw = <span class='kw'>bwNeweyWest</span>)
+</div><div class='output co'>#&gt;             (Intercept)       RealGNP     RealInt
 #&gt; (Intercept)  794.986166 -0.7562570101 48.19485118
 #&gt; RealGNP       -0.756257  0.0007537517 -0.06485461
 #&gt; RealInt       48.194851 -0.0648546058 17.58798679</div></pre>
@@ -311,7 +314,7 @@ which is typically just the covariance matrix.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
