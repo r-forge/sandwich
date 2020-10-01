@@ -48,7 +48,8 @@ of the "usual" covariances are based on). Some sandwich covariances also need fu
 * Basic `sandwich()` for cross-section data.
 * `vcovHC()` for heteroscedasticity-consistent (HC) covariances in (generalized) linear models.
 * `vcovHAC()` for heteroscedastiticy- and autocorrelation-consistent (HAC) covariances in time series
-  data with convenience interfaces `kernHAC()` (Andrews' kernel HAC estimator) and `NeweyWest()`.
+  data with convenience interfaces `kernHAC()` (Andrews' kernel HAC estimator), `NeweyWest()`,
+  and `weave()` (weighted empirical adaptive variance estimation by Lumley and Heagerty).
 * `vcovCL()` for clustered covariances (including multiway clustering).
 * `vcovPL()` and `vcovPC()` for panel and panel-corrected covariances.
 * `vcovOPG()` for outer-product-of-gradients covariances.
