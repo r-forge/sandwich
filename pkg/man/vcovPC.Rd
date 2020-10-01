@@ -86,11 +86,6 @@ Beck N, Katz JN (1995).
   \emph{American Political Science Review}, \bold{89}(3), 634--647.
   \url{http://www.jstor.org/stable/2082979}
   
-Zeileis A, Köll S, Graham N (2020).
-  \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
-  \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
-  \doi{10.18637/jss.v095.i01}
-
 Zeileis A (2004).
   \dQuote{Econometric Computing with HC and HAC Covariance Matrix Estimator},
   \emph{Journal of Statistical Software}, \bold{11}(10), 1--17.
@@ -100,6 +95,11 @@ Zeileis A (2006).
   \dQuote{Object-Oriented Computation of Sandwich Estimators},
   \emph{Journal of Statistical Software}, \bold{16}(9), 1--16.
   \doi{10.18637/jss.v016.i09}
+
+Zeileis A, Köll S, Graham N (2020).
+  \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
+  \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
+  \doi{10.18637/jss.v095.i01}
 }
 
 \seealso{\code{\link{vcovCL}}, \code{\link{vcovPL}}}

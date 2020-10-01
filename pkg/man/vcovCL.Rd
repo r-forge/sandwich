@@ -118,11 +118,6 @@ Bell RM, McCaffrey DF (2002).
   \dQuote{Bias Reduction in Standard Errors for Linear Regression with Multi-Stage Samples},
   \emph{Survey Methodology}, \bold{28}(2), 169--181.
 
-Zeileis A, Köll S, Graham N (2020).
-  \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
-  \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
-  \doi{10.18637/jss.v095.i01}
-
 Cameron AC, Gelbach JB, Miller DL (2008).
   \dQuote{Bootstrap-Based Improvements for Inference with Clustered Errors},
   \emph{The Review of Economics and Statistics}, \bold{90}(3),
@@ -173,6 +168,11 @@ Zeileis A (2006).
   \dQuote{Object-Oriented Computation of Sandwich Estimators},
   \emph{Journal of Statistical Software}, \bold{16}(9), 1--16.
   \doi{10.18637/jss.v016.i09}
+
+Zeileis A, Köll S, Graham N (2020).
+  \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
+  \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
+  \doi{10.18637/jss.v095.i01}
 }
 
 \seealso{\code{\link{vcovHC}}}

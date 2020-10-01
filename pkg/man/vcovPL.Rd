@@ -96,11 +96,6 @@ Andrews DWK (1991).
   \dQuote{Heteroscedasticity and Autocorrelation Consistent Covariance Matrix Estimation},
   \emph{Econometrica}, 817--858.
 
-Zeileis A, Köll S, Graham N (2020).
-  \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
-  \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
-  \doi{10.18637/jss.v095.i01}
-
 Driscoll JC &  Kraay AC (1998).
   \dQuote{Consistent Covariance Matrix Estimation with Spatially Dependent Panel Data},
   \emph{The Review of Economics and Statistics}, \bold{80}(4), 549--560.
@@ -131,6 +126,11 @@ Zeileis A (2006).
   \dQuote{Object-Oriented Computation of Sandwich Estimators},
   \emph{Journal of Statistical Software}, \bold{16}(9), 1--16.
   \doi{10.18637/jss.v016.i09}
+
+Zeileis A, Köll S, Graham N (2020).
+  \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
+  \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
+  \doi{10.18637/jss.v095.i01}
 }
 
 \seealso{\code{\link{vcovCL}}, \code{\link{vcovPC}}}

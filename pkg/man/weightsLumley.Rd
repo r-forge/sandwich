@@ -81,8 +81,8 @@ which is typically just the covariance matrix.
 
 
 \references{
-  Lumley T & Heagerty P (1999),
-  Weighted Empirical Adaptive Variance Estimators for Correlated Data Regression.
+  Lumley T & Heagerty P (1999).
+  \dQuote{Weighted Empirical Adaptive Variance Estimators for Correlated Data Regression.}
   \emph{Journal of the Royal Statistical Society B}, \bold{61},
   459--477.
 }

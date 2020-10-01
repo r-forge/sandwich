@@ -152,11 +152,6 @@ vcovBS(x, \dots)
 }
 
 \references{
-Zeileis A, Köll S, Graham N (2020).
-  \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R}
-  \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
-  \doi{10.18637/jss.v095.i01}
-
 Cameron AC, Gelbach JB, Miller DL (2008).
   \dQuote{Bootstrap-Based Improvements for Inference with Clustered Errors},
   \emph{The Review of Economics and Statistics}, \bold{90}(3), 414--427.
@@ -191,6 +186,11 @@ Webb, MD (2014).
   \dQuote{Reworking Wild Bootstrap Based Inference for Clustered Errors},
   Working Paper 1315, \emph{Queen's Economics Department.}
   \url{http://qed.econ.queensu.ca/working_papers/papers/qed_wp_1315.pdf}.
+
+Zeileis A, Köll S, Graham N (2020).
+  \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
+  \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
+  \doi{10.18637/jss.v095.i01}
 }
 
 \seealso{\code{\link{vcovCL}}}

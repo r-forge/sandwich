@@ -25,8 +25,8 @@ Value of the kernel function at \code{x}.
 }
 
 \references{
-  Andrews DWK (1991),
-  Heteroskedasticity and Autocorrelation Consistent Covariance Matrix Estimation.
+  Andrews DWK (1991).
+  \dQuote{Heteroskedasticity and Autocorrelation Consistent Covariance Matrix Estimation.}
   \emph{Econometrica}, \bold{59},
   817--858.
 }

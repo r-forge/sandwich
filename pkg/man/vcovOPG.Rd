@@ -42,10 +42,10 @@ likelihood scores (and not a scaled version such as least squares scores for
 }
 
 \references{
-Cameron AC and Trivedi PK (2005), \emph{Microeconometrics: Methods and Applications}.
+Cameron AC and Trivedi PK (2005). \emph{Microeconometrics: Methods and Applications}.
   Cambridge University Press, Cambridge.
 
-Zeileis A (2006), Object-Oriented Computation of Sandwich Estimators.
+Zeileis A (2006). \dQuote{Object-Oriented Computation of Sandwich Estimators.}
   \emph{Journal of Statistical Software}, \bold{16}(9), 1--16.
   \doi{10.18637/jss.v016.i09}
 }
