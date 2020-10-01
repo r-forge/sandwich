@@ -85,7 +85,7 @@ Covariance Matrix Estimator for the Linear Regression Model.}
 \emph{Advances in Statistical Analysis}, \bold{95}(2), 129--146.
 
 Cribari-Neto F., Souza T.C., Vasconcellos, K.L.P. (2007). \dQuote{Inference under
-Heteroskedasticity and Leveraged Data. \emph{Communications in Statistics -- Theory and
+Heteroskedasticity and Leveraged Data.} \emph{Communications in Statistics -- Theory and
 Methods}, \bold{36}, 1877--1888. Errata: \bold{37}, 3329--3330, 2008.
 
 Long J. S., Ervin L. H. (2000). \dQuote{Using Heteroscedasticity Consistent Standard
@@ -94,7 +94,7 @@ Errors in the Linear Regression Model.} \emph{The American Statistician},
 
 MacKinnon J. G., White H. (1985). \dQuote{Some Heteroskedasticity-Consistent
 Covariance Matrix Estimators with Improved Finite Sample Properties.}
-\emph{Journal of Econometrics} \bold{29}, 305--325.
+\emph{Journal of Econometrics}, \bold{29}, 305--325.
 
 White H. (1980). \dQuote{A Heteroskedasticity-Consistent Covariance Matrix and
 a Direct Test for Heteroskedasticity.} \emph{Econometrica} \bold{48},
