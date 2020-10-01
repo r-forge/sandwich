@@ -3,9 +3,12 @@
 \alias{weave}
 \title{Weighted Empirical Adaptive Variance Estimation}
 \description{
- A set of functions implementing a class of kernel-based heteroscedasticity
- and autocorrelation consistent (HAC) covariance matrix estimators
- as introduced by Andrews (1991).
+ A set of functions implementing weighted empirical adaptive
+ variance estimation (WEAVE) as introduced by Lumley and Heagerty (1999).
+ This is implemented as a special case of the general class of
+ kernel-based heteroscedasticity and autocorrelation consistent (HAC)
+ covariance matrix estimators as introduced by Andrews (1991), using
+ a special choice of weights.
 }
 
 \usage{
