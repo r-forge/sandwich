@@ -84,7 +84,7 @@ Bailey D, Katz JN (2011).
 Beck N, Katz JN (1995).
   \dQuote{What To Do (and Not To Do) with Time-Series-Cross-Section Data in Comparative Politics},
   \emph{American Political Science Review}, \bold{89}(3), 634--647.
-  \url{http://www.jstor.org/stable/2082979}
+  \doi{10.2307/2082979}
   
 Zeileis A (2004).
   \dQuote{Econometric Computing with HC and HAC Covariance Matrix Estimator},

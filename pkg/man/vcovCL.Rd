@@ -141,7 +141,7 @@ Ma MS (2014).
   \dQuote{Are We Really Doing What We Think We Are Doing? A Note on
     Finite-Sample Estimates of Two-Way Cluster-Robust Standard Errors},
   \emph{Mimeo, Availlable at SSRN:}
-   URL \url{http://ssrn.com/abstract=2420421}.
+   URL \url{https://www.ssrn.com/abstract=2420421}.
 
 MacKinnon, JG, White, H (1985). 
   \dQuote{Some Heteroskedasticity-Consistent Covariance Matrix Estimators with Improved Finite Sample Properties}
