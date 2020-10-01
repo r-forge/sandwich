@@ -1,6 +1,7 @@
 \name{vcovPC}
 \alias{vcovPC}
 \alias{meatPC}
+\encoding{UTF-8}
 
 \title{Panel-Corrected Covariance Matrix Estimation}
 
@@ -85,7 +86,7 @@ Beck N, Katz JN (1995).
   \emph{American Political Science Review}, \bold{89}(3), 634--647.
   \url{http://www.jstor.org/stable/2082979}
   
-Berger S, Graham N, Zeileis A (2017).
+Zeileis A, Köll S, Graham N (2020).
   \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
   \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
   \doi{10.18637/jss.v095.i01}

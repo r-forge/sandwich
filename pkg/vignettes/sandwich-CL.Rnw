@@ -3,12 +3,12 @@
 \usepackage{amsmath,amssymb,bm,thumbpdf,lmodern,soul}
 %% need no \usepackage{Sweave}
 
-\author{Susanne Berger\\Universit\"at Innsbruck \And 
-        Nathaniel Graham\\Texas A\&M\\International University \And
-        Achim Zeileis\\Universit\"at Innsbruck}
+\author{Achim Zeileis\\Universit\"at Innsbruck \And
+        Susanne K\"oll\\Universit\"at Innsbruck \And 
+        Nathaniel Graham\\Texas A\&M\\International University}
 \title{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in \proglang{R}}
 
-\Plainauthor{Susanne Berger, Nathaniel Graham, Achim Zeileis}
+\Plainauthor{Achim Zeileis, Susanne K\"oll, Nathaniel Graham}
 \Plaintitle{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R}
 \Shorttitle{Various Versatile Variances}
 
@@ -18,7 +18,7 @@
 \Abstract{
   This introduction to the object-oriented implementation of clustered covariances
   in the \proglang{R} package \pkg{sandwich} is a (slightly)
-  modified version of \cite{hac:Berger+Graham+Zeileis:2020}, published in the
+  modified version of \cite{hac:Zeileis+Koell+Graham:2020}, published in the
   \emph{Journal of Statistical Software}.
 
   Clustered covariances or clustered standard errors are very widely used to
@@ -49,13 +49,13 @@
 }
 
 \Address{
-  Susanne Berger, Achim Zeileis\\
+  Achim Zeileis, Susanne K\"oll\\
   Department of Statistics\\
   Faculty of Economics and Statistics\\
   Universit\"at Innsbruck\\
   Universit\"atsstr.~15\\
   6020 Innsbruck, Austria\\
-  E-mail: \email{Susanne.Berger@student.uibk.ac.at}, \email{Achim.Zeileis@R-project.org}\\
+  E-mail: \email{Achim.Zeileis@R-project.org}\\
   URL: \url{https://eeecon.uibk.ac.at/~zeileis/}\\
   
   Nathaniel Graham\\

@@ -2,7 +2,7 @@
 
 * Release of version 3.0-0 accompanying the publication of the paper
   "Various Versatile Variances: An Object-Oriented Implementation of
-  Clustered Covariances in R." together with Susanne Berger and Nathaniel Graham
+  Clustered Covariances in R." together with Susanne Koell and Nathaniel Graham
   in the _Journal of Statistcal Software_ at <https://doi.org/10.18637/jss.v095.i01>.
   The paper is also provided as a vignette in the package as
   `vignette("sandwich-CL", package = "sandwich")`.

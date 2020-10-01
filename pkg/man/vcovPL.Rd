@@ -1,7 +1,7 @@
 \name{vcovPL}
 \alias{vcovPL}
 \alias{meatPL}
-
+\encoding{UTF-8}
 
 \title{Clustered Covariance Matrix Estimation for Panel Data}
 
@@ -96,7 +96,7 @@ Andrews DWK (1991).
   \dQuote{Heteroscedasticity and Autocorrelation Consistent Covariance Matrix Estimation},
   \emph{Econometrica}, 817--858.
 
-Berger S, Graham N, Zeileis A (2017).
+Zeileis A, Köll S, Graham N (2020).
   \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
   \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
   \doi{10.18637/jss.v095.i01}

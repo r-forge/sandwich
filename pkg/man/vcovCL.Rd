@@ -1,6 +1,7 @@
 \name{vcovCL}
 \alias{vcovCL}
 \alias{meatCL}
+\encoding{UTF-8}
 
 \title{Clustered Covariance Matrix Estimation}
 
@@ -61,7 +62,7 @@ meatCL(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALSE, \dots)
   intersection of both dimensions (\eqn{M_{id \cap time}}):
   \deqn{M = M_{id} + M_{time} - M_{id \cap time}}
   Additionally, each of the three terms can be weighted by the corresponding
-  cluster bias adjustment factor (see below and Equation 20 in Berger et al. 2017).
+  cluster bias adjustment factor (see below and Equation 20 in Zeileis et al. 2020).
   Instead of subtracting \eqn{M_{id \cap time}} as the last
   subtracted matrix, Ma (2014) suggests to subtract the basic HC0
   covariance matrix when only a single observation is in each
@@ -117,7 +118,7 @@ Bell RM, McCaffrey DF (2002).
   \dQuote{Bias Reduction in Standard Errors for Linear Regression with Multi-Stage Samples},
   \emph{Survey Methodology}, \bold{28}(2), 169--181.
 
-Berger S, Graham N, Zeileis A (2017).
+Zeileis A, Köll S, Graham N (2020).
   \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
   \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
   \doi{10.18637/jss.v095.i01}
@@ -203,7 +204,7 @@ all.equal(vcovHC(m, type = "HC3"), vcovCL(m, type = "HC3"))
 data("InstInnovation", package = "sandwich")
 
 ## replication of one-way clustered standard errors for model 3, Table I
-## and model 1, Table II in Berger et al. (2016)
+## and model 1, Table II in Berger et al. (2017), see ?InstInnovation
 
 ## count regression formula
 f1 <- cites ~ institutions + log(capital/employment) + log(sales) + industry + year

@@ -1,6 +1,9 @@
 \name{meat}
 \alias{meat}
+\encoding{UTF-8}
+
 \title{A Simple Meat Matrix Estimator}
+
 \description{
  Estimating the variance of the estimating functions of
  a regression model by cross products of the empirical
@@ -32,7 +35,7 @@ Zeileis A (2006), Object-Oriented Computation of Sandwich Estimators.
   \emph{Journal of Statistical Software}, \bold{16}(9), 1--16.
   \doi{10.18637/jss.v016.i09}
 
-Berger S, Graham N, Zeileis A (2017).
+Zeileis A, Köll S, Graham N (2020).
   \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
   \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
   \doi{10.18637/jss.v095.i01}

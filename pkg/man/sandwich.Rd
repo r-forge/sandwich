@@ -1,10 +1,14 @@
 \name{sandwich}
 \alias{sandwich}
+\encoding{UTF-8}
+
 \title{Making Sandwiches with Bread and Meat}
+
 \description{
  Constructing sandwich covariance matrix estimators by
  multiplying bread and meat matrices.
 }
+
 \usage{
 sandwich(x, bread. = bread, meat. = meat, \dots)
 }
@@ -24,8 +28,8 @@ estimator of the variance of the estimating functions) and multiplies
 them to a sandwich with meat between two slices of bread. By default
 \code{\link{bread}} and \code{\link{meat}} are called. 
 
-Some theoretical background along with implementation details is given
-in Zeileis (2006).
+Some theoretical background along with implementation details is introduced
+in Zeileis (2006) and also used in Zeileis et al. (2020).
 }
 
 \value{A matrix containing the sandwich covariance matrix estimate.
@@ -39,7 +43,7 @@ Zeileis A (2006), Object-Oriented Computation of Sandwich Estimators.
   \emph{Journal of Statistical Software}, \bold{16}(9), 1--16.
   \doi{10.18637/jss.v016.i09}
 
-Berger S, Graham N, Zeileis A (2017).
+Zeileis A, Köll S, Graham N (2020).
   \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
   \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
   \doi{10.18637/jss.v095.i01}

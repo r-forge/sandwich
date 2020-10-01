@@ -28,4 +28,4 @@ For discussions we also try to follow these channels:
 - Nathaniel Graham
   <a href="https://sites.google.com/site/npgraham1/"><span class="fa fa-user"></span></a>
   <a href="http://github.com/npgraham1"><span class="fa fa-github"></span></a>
-- Susanne Berger
+- Susanne Köll

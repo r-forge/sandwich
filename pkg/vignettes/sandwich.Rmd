@@ -1,6 +1,6 @@
 ---
 title: "sandwich: Robust Covariance Matrix Estimators"
-author: "Achim Zeileis, Thomas Lumley, Susanne Berger, Nathaniel Graham"
+author: "Achim Zeileis, Thomas Lumley, Nathaniel Graham, Susanne Köll"
 output:
   html_document:
     toc: true
@@ -95,7 +95,7 @@ object-oriented extension, and the generalization to clustered and panel covaria
 * Zeileis A (2006). "Object-Oriented Computation of Sandwich Estimators."
   _Journal of Statistical Software_, **16**(9), 1-16.
   [doi:10.18637/jss.v016.i09](https://doi.org/10.18637/jss.v016.i09).
-* Berger S, Graham N, Zeileis A (2020).
+* Zeileis A, Köll S, Graham N (2020).
   "Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R."
   _Journal of Statistical Software_, **95**(1), 1-36.
   [doi:10.18637/jss.v095.i01](https://doi.org/10.18637/jss.v095.i01).

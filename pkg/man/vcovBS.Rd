@@ -4,6 +4,7 @@
 \alias{vcovBS.lm}
 \alias{vcovBS.glm}
 \alias{.vcovBSenv}
+\encoding{UTF-8}
 
 \title{(Clustered) Bootstrap Covariance Matrix Estimation}
 
@@ -107,7 +108,7 @@ vcovBS(x, \dots)
   \eqn{g} assumptions are unreasonable. Bootstrapping is also often effective for nonlinear models,
   particularly in smaller samples, where asymptotic approaches often perform relatively poorly.
   See Cameron and Miller (2015) for further discussion of bootstrap techniques in practical applications,
-  and Berger et al. (2017) show simulations comparing \code{vcovBS} to \code{vcovCL} in several
+  and Zeileis et al. (2020) show simulations comparing \code{vcovBS} to \code{vcovCL} in several
   settings.
 
   The \code{\link[stats]{glm}} method works essentially like the default method but call
@@ -151,7 +152,7 @@ vcovBS(x, \dots)
 }
 
 \references{
-Berger S, Graham N, Zeileis A (2017).
+Zeileis A, Köll S, Graham N (2020).
   \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R}
   \emph{Journal of Statistical Software}, \bold{95}(1), 1--36.
   \doi{10.18637/jss.v095.i01}
