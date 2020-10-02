@@ -274,7 +274,7 @@
   \(g\) assumptions are unreasonable. Bootstrapping is also often effective for nonlinear models,
   particularly in smaller samples, where asymptotic approaches often perform relatively poorly.
   See Cameron and Miller (2015) for further discussion of bootstrap techniques in practical applications,
-  and Berger et al. (2017) show simulations comparing <code>vcovBS</code> to <code>vcovCL</code> in several
+  and Zeileis et al. (2020) show simulations comparing <code>vcovBS</code> to <code>vcovCL</code> in several
   settings.</p>
 <p>The <code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> method works essentially like the default method but call
   <code><a href='https://rdrr.io/r/stats/glm.html'>glm.fit</a></code> instead of codeupdate.</p>  
@@ -314,11 +314,7 @@
     <p>A matrix containing the covariance matrix estimate.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Berger S, Graham N, Zeileis A (2017).
-  &#8220;Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R&#8221;
-  <em>Journal of Statistical Software</em>, <b>95</b>(1), 1--36.
-  doi: <a href='https://doi.org/10.18637/jss.v095.i01'>10.18637/jss.v095.i01</a></p>
-<p>Cameron AC, Gelbach JB, Miller DL (2008).
+    <p>Cameron AC, Gelbach JB, Miller DL (2008).
   &#8220;Bootstrap-Based Improvements for Inference with Clustered Errors&#8221;,
   <em>The Review of Economics and Statistics</em>, <b>90</b>(3), 414--427.
   doi: <a href='https://doi.org/10.3386/t0344'>10.3386/t0344</a></p>  
@@ -346,6 +342,10 @@
   &#8220;Reworking Wild Bootstrap Based Inference for Clustered Errors&#8221;,
   Working Paper 1315, <em>Queen's Economics Department.</em>
   <a href='http://qed.econ.queensu.ca/working_papers/papers/qed_wp_1315.pdf'>http://qed.econ.queensu.ca/working_papers/papers/qed_wp_1315.pdf</a>.</p>
+<p>Zeileis A, Köll S, Graham N (2020).
+  &#8220;Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.&#8221;
+  <em>Journal of Statistical Software</em>, <b>95</b>(1), 1--36.
+  doi: <a href='https://doi.org/10.18637/jss.v095.i01'>10.18637/jss.v095.i01</a></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='vcovCL.html'>vcovCL</a></code></p></div>

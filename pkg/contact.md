@@ -9,8 +9,8 @@ _&#x3c;&#x41;&#x63;&#x68;&#x69;&#x6d;&#x2e;&#x5a;&#x65;&#x69;&#x6c;&#x65;&#x69;&
 
 For discussions we also try to follow these channels:
 
-- [StackOverflow](https://stackoverflow.com/questions/tagged/standard-error) with `standard-error` and `r` tags (for questions about code/programming)
-- [StackExchange](https://stats.stackexchange.com/questions/tagged/robust-standard-error) with `robust-standard-error` and `r` tags (for questions about methods)
+- [StackOverflow](https://stackoverflow.com/questions/tagged/standard-error) with `[standard-error]` and `[r]` tags (for questions about code/programming)
+- [StackExchange](https://stats.stackexchange.com/questions/tagged/robust-standard-error) with `[robust-standard-error]` and `[r]` tags (for questions about methods)
 - [Twitter](https://twitter.com/AchimZeileis) (include `@AchimZeileis`)
 - [R-help](https://stat.ethz.ch/mailman/listinfo/R-help) mailing list
 

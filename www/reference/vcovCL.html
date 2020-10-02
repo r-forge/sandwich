@@ -222,7 +222,7 @@
   intersection of both dimensions (\(M_{id \cap time}\)):
   $$M = M_{id} + M_{time} - M_{id \cap time}$$
   Additionally, each of the three terms can be weighted by the corresponding
-  cluster bias adjustment factor (see below and Equation 20 in Berger et al. 2017).
+  cluster bias adjustment factor (see below and Equation 20 in Zeileis et al. 2020).
   Instead of subtracting \(M_{id \cap time}\) as the last
   subtracted matrix, Ma (2014) suggests to subtract the basic HC0
   covariance matrix when only a single observation is in each
@@ -271,10 +271,6 @@
     <p>Bell RM, McCaffrey DF (2002).
   &#8220;Bias Reduction in Standard Errors for Linear Regression with Multi-Stage Samples&#8221;,
   <em>Survey Methodology</em>, <b>28</b>(2), 169--181.</p>
-<p>Berger S, Graham N, Zeileis A (2017).
-  &#8220;Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.&#8221;
-  <em>Journal of Statistical Software</em>, <b>95</b>(1), 1--36.
-  doi: <a href='https://doi.org/10.18637/jss.v095.i01'>10.18637/jss.v095.i01</a></p>
 <p>Cameron AC, Gelbach JB, Miller DL (2008).
   &#8220;Bootstrap-Based Improvements for Inference with Clustered Errors&#8221;,
   <em>The Review of Economics and Statistics</em>, <b>90</b>(3),
@@ -295,7 +291,7 @@
   &#8220;Are We Really Doing What We Think We Are Doing? A Note on
     Finite-Sample Estimates of Two-Way Cluster-Robust Standard Errors&#8221;,
   <em>Mimeo, Availlable at SSRN:</em>
-   URL <a href='http://ssrn.com/abstract=2420421'>http://ssrn.com/abstract=2420421</a>.</p>
+   URL <a href='https://www.ssrn.com/abstract=2420421'>https://www.ssrn.com/abstract=2420421</a>.</p>
 <p>MacKinnon, JG, White, H (1985). 
   &#8220;Some Heteroskedasticity-Consistent Covariance Matrix Estimators with Improved Finite Sample Properties&#8221;
   <em>Journal of Econometrics</em>, <b>29</b>(3), 305--325.
@@ -317,6 +313,10 @@
   &#8220;Object-Oriented Computation of Sandwich Estimators&#8221;,
   <em>Journal of Statistical Software</em>, <b>16</b>(9), 1--16.
   doi: <a href='https://doi.org/10.18637/jss.v016.i09'>10.18637/jss.v016.i09</a></p>
+<p>Zeileis A, Köll S, Graham N (2020).
+  &#8220;Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.&#8221;
+  <em>Journal of Statistical Software</em>, <b>95</b>(1), 1--36.
+  doi: <a href='https://doi.org/10.18637/jss.v095.i01'>10.18637/jss.v095.i01</a></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='vcovHC.html'>vcovHC</a></code></p></div>
@@ -358,7 +358,7 @@
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"InstInnovation"</span>, package = <span class='st'>"sandwich"</span>)
 
 <span class='co'>## replication of one-way clustered standard errors for model 3, Table I</span>
-<span class='co'>## and model 1, Table II in Berger et al. (2016)</span>
+<span class='co'>## and model 1, Table II in Berger et al. (2017), see ?InstInnovation</span>
 
 <span class='co'>## count regression formula</span>
 <span class='kw'>f1</span> <span class='op'>&lt;-</span> <span class='kw'>cites</span> <span class='op'>~</span> <span class='kw'>institutions</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='kw'>capital</span><span class='op'>/</span><span class='kw'>employment</span>) <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='kw'>sales</span>) <span class='op'>+</span> <span class='kw'>industry</span> <span class='op'>+</span> <span class='kw'>year</span>

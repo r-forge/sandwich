@@ -19,7 +19,15 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="Robust Covariance Matrix Estimators">
-<meta property="og:description" content="Model-robust standard error estimators for cross-sectional, time series, clustered, panel, and longitudinal data.">
+<meta property="og:description" content="Object-oriented software for model-robust covariance matrix estimators. Starting out from the basic 
+             robust Eicker-Huber-White sandwich covariance methods include: heteroscedasticity-consistent (HC)
+	     covariances for cross-section data; heteroscedasticity- and autocorrelation-consistent (HAC)
+	     covariances for time series data (such as Andrews' kernel HAC, Newey-West, and WEAVE estimators);
+	     clustered covariances (one-way and multi-way); panel and panel-corrected covariances;
+	     outer-product-of-gradients covariances; and (clustered) bootstrap covariances. All methods are
+	     applicable to (generalized) linear model objects fitted by lm() and glm() but can also be adapted
+	     to other classes through S3 methods. Details can be found in Zeileis et al. (2020) &lt;doi:10.18637/jss.v095.i01&gt;,
+	     Zeileis (2004) &lt;doi:10.18637/jss.v011.i10&gt; and Zeileis (2006) &lt;doi:10.18637/jss.v016.i09&gt;.">
 <meta property="og:image" content="http://sandwich.R-Forge.R-project.org/logo.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:creator" content="@AchimZeileis">
@@ -105,25 +113,25 @@
 <span class="kw">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span>(<span class="kw">y</span> <span class="op">~</span> <span class="kw">x</span>, data = <span class="kw">PetersenCL</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span>(<span class="kw">m</span>, vcov = <span class="kw">sandwich</span>)
 </pre></div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co">## </span></a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="co">## t test of coefficients:</span></a>
-<a class="sourceLine" id="cb2-3" title="3"><span class="co">## </span></a>
-<a class="sourceLine" id="cb2-4" title="4"><span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></a>
-<a class="sourceLine" id="cb2-5" title="5"><span class="co">## (Intercept)   0.0297     0.0284    1.05      0.3    </span></a>
-<a class="sourceLine" id="cb2-6" title="6"><span class="co">## x             1.0348     0.0284   36.45   &lt;2e-16 ***</span></a>
-<a class="sourceLine" id="cb2-7" title="7"><span class="co">## ---</span></a>
-<a class="sourceLine" id="cb2-8" title="8"><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="co">## </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="co">## t test of coefficients:</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a><span class="co">## </span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a><span class="co">## (Intercept)   0.0297     0.0284    1.05      0.3    </span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a><span class="co">## x             1.0348     0.0284   36.45   &lt;2e-16 ***</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a><span class="co">## ---</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span>(<span class="kw">m</span>, vcov = <span class="kw">vcovCL</span>, cluster = <span class="op">~</span> <span class="kw">firm</span>)
 </pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="co">## </span></a>
-<a class="sourceLine" id="cb4-2" title="2"><span class="co">## t test of coefficients:</span></a>
-<a class="sourceLine" id="cb4-3" title="3"><span class="co">## </span></a>
-<a class="sourceLine" id="cb4-4" title="4"><span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></a>
-<a class="sourceLine" id="cb4-5" title="5"><span class="co">## (Intercept)   0.0297     0.0670    0.44     0.66    </span></a>
-<a class="sourceLine" id="cb4-6" title="6"><span class="co">## x             1.0348     0.0506   20.45   &lt;2e-16 ***</span></a>
-<a class="sourceLine" id="cb4-7" title="7"><span class="co">## ---</span></a>
-<a class="sourceLine" id="cb4-8" title="8"><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="co">## </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="co">## t test of coefficients:</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="co">## </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a><span class="co">## (Intercept)   0.0297     0.0670    0.44     0.66    </span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a><span class="co">## x             1.0348     0.0506   20.45   &lt;2e-16 ***</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a><span class="co">## ---</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
 </div>
   </div>
 

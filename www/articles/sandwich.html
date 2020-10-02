@@ -89,11 +89,11 @@
 
       
 
-      </header><div class="row">
+      </header><script src="sandwich_files/header-attrs-2.3/header-attrs.js"></script><script src="sandwich_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>sandwich: Robust Covariance Matrix Estimators</h1>
-                        <h4 class="author">Achim Zeileis, Thomas Lumley, Susanne Berger, Nathaniel Graham</h4>
+                        <h4 class="author">Achim Zeileis, Thomas Lumley, Nathaniel Graham, Susanne Köll</h4>
             
       
       
@@ -113,7 +113,7 @@
 <li>
 <code><a href="../reference/vcovHC.html">vcovHC()</a></code> for heteroscedasticity-consistent (HC) covariances in (generalized) linear models.</li>
 <li>
-<code><a href="../reference/vcovHAC.html">vcovHAC()</a></code> for heteroscedastiticy- and autocorrelation-consistent (HAC) covariances in time series data with convenience interfaces <code><a href="../reference/weightsAndrews.html">kernHAC()</a></code> (Andrews’ kernel HAC estimator) and <code><a href="../reference/NeweyWest.html">NeweyWest()</a></code>.</li>
+<code><a href="../reference/vcovHAC.html">vcovHAC()</a></code> for heteroscedastiticy- and autocorrelation-consistent (HAC) covariances in time series data with convenience interfaces <code><a href="../reference/weightsAndrews.html">kernHAC()</a></code> (Andrews’ kernel HAC estimator), <code><a href="../reference/NeweyWest.html">NeweyWest()</a></code>, and <code><a href="../reference/weightsLumley.html">weave()</a></code> (weighted empirical adaptive variance estimation by Lumley and Heagerty).</li>
 <li>
 <code><a href="../reference/vcovCL.html">vcovCL()</a></code> for clustered covariances (including multiway clustering).</li>
 <li>
@@ -145,7 +145,7 @@
 <ul>
 <li>Zeileis A (2004). “Econometric Computing with HC and HAC Covariance Matrix Estimators.” <em>Journal of Statistical Software</em>, <strong>11</strong>(10), 1-17. <a href="https://doi.org/10.18637/jss.v011.i10">doi:10.18637/jss.v011.i10</a>.</li>
 <li>Zeileis A (2006). “Object-Oriented Computation of Sandwich Estimators.” <em>Journal of Statistical Software</em>, <strong>16</strong>(9), 1-16. <a href="https://doi.org/10.18637/jss.v016.i09">doi:10.18637/jss.v016.i09</a>.</li>
-<li>Berger S, Graham N, Zeileis A (2020). “Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.” <em>Journal of Statistical Software</em>, <strong>95</strong>(1), 1-36. <a href="https://doi.org/10.18637/jss.v095.i01">doi:10.18637/jss.v095.i01</a>.</li>
+<li>Zeileis A, Köll S, Graham N (2020). “Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.” <em>Journal of Statistical Software</em>, <strong>95</strong>(1), 1-36. <a href="https://doi.org/10.18637/jss.v095.i01">doi:10.18637/jss.v095.i01</a>.</li>
 </ul>
 </div>
 <div id="illustrations" class="section level2">
@@ -244,8 +244,8 @@
 ## HC3                        0.0284 0.0284
 ## Andrews' kernel HAC        0.0437 0.0351
 ## Newey-West                 0.0660 0.0482
-## Bootstrap                  0.0280 0.0311
-## Bootstrap (clustered)      0.0655 0.0496</code></pre>
+## Bootstrap                  0.0307 0.0249
+## Bootstrap (clustered)      0.0645 0.0473</code></pre>
 <p>This shows that due to the cluster-correlation in the data, the usual standard errors and cross-section covariances are much too small. In contrast, the different types of clustered standard errors are much larger and more appropriate here.</p>
 </div>
   </div>
