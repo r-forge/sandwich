@@ -65,6 +65,13 @@ including  `coeftest()`, `waldtest()`, and `coefci()` from the
 `Anova()`, `Confint()`, `S()`, `linearHypothesis()`, and `deltaMethod()` from 
 [**car**](https://CRAN.R-project.org/package=car) package.
 
+Several R packages can be used to create model summary tables or visualizations based
+on the covariance and inference functions above. In particular [**broom**](https://broom.tidymodels.org/)
+provides a unified interface for collecting information about models, including a method for
+`coeftest()` objects. Based on _broom_ several packages provide model summary tables with the
+[**modelsummary**](https://vincentarelbundock.github.io/modelsummary/) package being particularly
+versatile, including a graphical `modelplot()` to go along with the tabular `msummary()`.
+
 
 ## Installation
 
@@ -166,3 +173,48 @@ t(sapply(vc, function(x) sqrt(diag(x))))
 This shows that due to the cluster-correlation in the data, the usual standard errors
 and cross-section covariances are much too small. In contrast, the different types of
 clustered standard errors are much larger and more appropriate here.
+
+
+## Tables and visualizations
+
+For creating publication-quality tables of the model summaries using _sandwich_-based standard errors,
+we use the `msummary()` function from the _modelsummary_ package. One possible way to use this is
+based on the unmodified `lm()` object `m` and then to override the default covariance matrix with
+a sandwich covariance. This can be done with either a list with a covariance extracto function or
+an estimated covariance matrix. Given that we already computed a list of covariance matrices `vc`
+above, we simply use the sub-list with the clustered covariance:
+
+```{r}
+library("modelsummary")
+msummary(m, statistic_override = vc["Clustered"], stars = TRUE)
+```
+
+The result is a nicely formatted table with content similar to the verbatim output from the
+corresponding `coeftest()` call above.
+
+Moreover, we can also easily produce such a model summary directly from the `coeftest()`
+output including the modified standard errors and test statistics. Even more nicely, this
+can also be done for a list of objects. Therefore, we use `lapply()` below to apply `coeftest()`
+always to the same model `x = m` but with the different `vcov` matrices from `vc`. The resulting
+list of `coeftest()` objects can then be displayed directly with `msummary()`.
+
+```{r, message = FALSE, warning = FALSE}
+mlist <- lapply(vc, coeftest, x = m)
+msummary(mlist)
+```
+
+Note that this includes a reduced list of summary statistics, e.g., no R-squared. This could be
+changed by adding the argument `save = TRUE` in the `lapply()` call above. This would save the
+full model object in addition to the `coeftest()` output.
+
+Finally, the different coefficients with corresponding confidence intervals can be displayed
+using `modelplot(mlist)`. In the figure shown below we add some _ggplot2_-based customizations to
+the plot: omit the display for the intercepts (i.e., only show the `x` coefficients), flip the
+axes, and use a custom color palette that highlights the confidence intervals based on the
+disfferent clustered standard errors which are more appropriate for this data.
+
+```{r, message = FALSE, warning = FALSE, fig.align = "left", fig.height = 4.5, fig.width = 7, out.width = "100%"}
+library("ggplot2")
+pal <- hcl.colors(9, "Dark 3", alpha = c(0.3, 0.3, 1, 1, 0.3, 0.3, 0.3, 0.3, 1))
+modelplot(mlist, coef_omit = "(Intercept)") + coord_flip() + scale_color_manual(values = pal)
+```

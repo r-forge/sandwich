@@ -1,3 +1,11 @@
+# sandwich 3.0-1
+
+* Extended the "Getting started" page with information on how to use _sandwich_ in
+  combination with the _modelsummary_ package (Arel-Bundock) based on _broom_
+  infrastructure (Robinson, Hayes, Couch). (Based on ideas from Grant McDermott.)
+  <http://sandwich.R-Forge.R-project.org/articles/sandwich.html>
+
+
 # sandwich 3.0-0
 
 * Release of version 3.0-0 accompanying the publication of the paper

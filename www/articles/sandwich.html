@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sandwich</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.0-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.0-1</span>
       </span>
     </div>
 
@@ -89,7 +89,8 @@
 
       
 
-      </header><script src="sandwich_files/header-attrs-2.3/header-attrs.js"></script><script src="sandwich_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="sandwich_files/header-attrs-2.3/header-attrs.js"></script><script src="sandwich_files/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="sandwich_files/kePrint-0.0.1/kePrint.js"></script><link href="sandwich_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>sandwich: Robust Covariance Matrix Estimators</h1>
@@ -125,6 +126,7 @@
 </ul>
 <p>These can be applied to many different model classes, including <code>lm</code>, <code>glm</code>, <code>survreg</code>, <code>coxph</code>, <code>mlogit</code>, <code>polr</code>, <code>hurdle</code>, <code>zeroinfl</code>, <code>ivreg</code>, <code>betareg</code>, and many more. (There are some exceptions, though, not all covariances are applicable to all models).</p>
 <p>The resulting covariances can be subsequently plugged in to various functions for Wald-type inference, including <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code>, <code><a href="https://rdrr.io/pkg/lmtest/man/waldtest.html">waldtest()</a></code>, and <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coefci()</a></code> from the <a href="https://CRAN.R-project.org/package=lmtest"><strong>lmtest</strong></a> package or <code>Anova()</code>, <code>Confint()</code>, <code>S()</code>, <code>linearHypothesis()</code>, and <code>deltaMethod()</code> from <a href="https://CRAN.R-project.org/package=car"><strong>car</strong></a> package.</p>
+<p>Several R packages can be used to create model summary tables or visualizations based on the covariance and inference functions above. In particular <a href="https://broom.tidymodels.org/"><strong>broom</strong></a> provides a unified interface for collecting information about models, including a method for <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code> objects. Based on <em>broom</em> several packages provide model summary tables with the <a href="https://vincentarelbundock.github.io/modelsummary/"><strong>modelsummary</strong></a> package being particularly versatile, including a graphical <code><a href="https://rdrr.io/pkg/modelsummary/man/modelplot.html">modelplot()</a></code> to go along with the tabular <code><a href="https://rdrr.io/pkg/modelsummary/man/msummary.html">msummary()</a></code>.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -244,9 +246,423 @@
 ## HC3                        0.0284 0.0284
 ## Andrews' kernel HAC        0.0437 0.0351
 ## Newey-West                 0.0660 0.0482
-## Bootstrap                  0.0307 0.0249
-## Bootstrap (clustered)      0.0645 0.0473</code></pre>
+## Bootstrap                  0.0296 0.0271
+## Bootstrap (clustered)      0.0636 0.0476</code></pre>
 <p>This shows that due to the cluster-correlation in the data, the usual standard errors and cross-section covariances are much too small. In contrast, the different types of clustered standard errors are much larger and more appropriate here.</p>
+</div>
+<div id="tables-and-visualizations" class="section level2">
+<h2 class="hasAnchor">
+<a href="#tables-and-visualizations" class="anchor"></a>Tables and visualizations</h2>
+<p>For creating publication-quality tables of the model summaries using <em>sandwich</em>-based standard errors, we use the <code><a href="https://rdrr.io/pkg/modelsummary/man/msummary.html">msummary()</a></code> function from the <em>modelsummary</em> package. One possible way to use this is based on the unmodified <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> object <code>m</code> and then to override the default covariance matrix with a sandwich covariance. This can be done with either a list with a covariance extracto function or an estimated covariance matrix. Given that we already computed a list of covariance matrices <code>vc</code> above, we simply use the sub-list with the clustered covariance:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st"><a href="https://vincentarelbundock.github.io/modelsummary">"modelsummary"</a></span>)
+<span class="fu"><a href="https://rdrr.io/pkg/modelsummary/man/msummary.html">msummary</a></span>(<span class="kw">m</span>, statistic_override = <span class="kw">vc</span>[<span class="st">"Clustered"</span>], stars = <span class="fl">TRUE</span>)
+</pre></div>
+<table class="table table">
+<thead><tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+Model 1
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:left;">
+0.030
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+(0.067)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+x
+</td>
+<td style="text-align:left;">
+1.035***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+(0.051)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Num.Obs.
+</td>
+<td style="text-align:left;">
+5000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+R2
+</td>
+<td style="text-align:left;">
+0.208
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+R2 Adj.
+</td>
+<td style="text-align:left;">
+0.208
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AIC
+</td>
+<td style="text-align:left;">
+21151.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BIC
+</td>
+<td style="text-align:left;">
+21170.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Log.Lik.
+</td>
+<td style="text-align:left;">
+-10572.604
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+F
+</td>
+<td style="text-align:left;">
+1310.740
+</td>
+</tr>
+</tbody>
+<tfoot><tr>
+<td style="padding: 0; border:0;" colspan="100%">
+<sup></sup> * p &lt; 0.1, ** p &lt; 0.05, *** p &lt; 0.01
+</td>
+</tr></tfoot>
+</table>
+<p>The result is a nicely formatted table with content similar to the verbatim output from the corresponding <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code> call above.</p>
+<p>Moreover, we can also easily produce such a model summary directly from the <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code> output including the modified standard errors and test statistics. Even more nicely, this can also be done for a list of objects. Therefore, we use <code><a href="https://rdrr.io/r/base/lapply.html">lapply()</a></code> below to apply <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code> always to the same model <code>x = m</code> but with the different <code>vcov</code> matrices from <code>vc</code>. The resulting list of <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code> objects can then be displayed directly with <code><a href="https://rdrr.io/pkg/modelsummary/man/msummary.html">msummary()</a></code>.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit">
+<span class="kw">mlist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="kw">vc</span>, <span class="kw">coeftest</span>, x = <span class="kw">m</span>)
+<span class="fu"><a href="https://rdrr.io/pkg/modelsummary/man/msummary.html">msummary</a></span>(<span class="kw">mlist</span>)
+</pre></div>
+<table class="table table">
+<thead><tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+Standard
+</th>
+<th style="text-align:left;">
+Sandwich (basic)
+</th>
+<th style="text-align:left;">
+Clustered
+</th>
+<th style="text-align:left;">
+Clustered (two-way)
+</th>
+<th style="text-align:left;">
+HC3
+</th>
+<th style="text-align:left;">
+Andrews’ kernel HAC
+</th>
+<th style="text-align:left;">
+Newey-West
+</th>
+<th style="text-align:left;">
+Bootstrap
+</th>
+<th style="text-align:left;">
+Bootstrap (clustered)
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:left;">
+0.030
+</td>
+<td style="text-align:left;">
+0.030
+</td>
+<td style="text-align:left;">
+0.030
+</td>
+<td style="text-align:left;">
+0.030
+</td>
+<td style="text-align:left;">
+0.030
+</td>
+<td style="text-align:left;">
+0.030
+</td>
+<td style="text-align:left;">
+0.030
+</td>
+<td style="text-align:left;">
+0.030
+</td>
+<td style="text-align:left;">
+0.030
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+(0.028)
+</td>
+<td style="text-align:left;">
+(0.028)
+</td>
+<td style="text-align:left;">
+(0.067)
+</td>
+<td style="text-align:left;">
+(0.065)
+</td>
+<td style="text-align:left;">
+(0.028)
+</td>
+<td style="text-align:left;">
+(0.044)
+</td>
+<td style="text-align:left;">
+(0.066)
+</td>
+<td style="text-align:left;">
+(0.030)
+</td>
+<td style="text-align:left;">
+(0.064)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+x
+</td>
+<td style="text-align:left;">
+1.035
+</td>
+<td style="text-align:left;">
+1.035
+</td>
+<td style="text-align:left;">
+1.035
+</td>
+<td style="text-align:left;">
+1.035
+</td>
+<td style="text-align:left;">
+1.035
+</td>
+<td style="text-align:left;">
+1.035
+</td>
+<td style="text-align:left;">
+1.035
+</td>
+<td style="text-align:left;">
+1.035
+</td>
+<td style="text-align:left;">
+1.035
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+(0.029)
+</td>
+<td style="text-align:left;">
+(0.028)
+</td>
+<td style="text-align:left;">
+(0.051)
+</td>
+<td style="text-align:left;">
+(0.054)
+</td>
+<td style="text-align:left;">
+(0.028)
+</td>
+<td style="text-align:left;">
+(0.035)
+</td>
+<td style="text-align:left;">
+(0.048)
+</td>
+<td style="text-align:left;">
+(0.027)
+</td>
+<td style="text-align:left;">
+(0.048)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Num.Obs.
+</td>
+<td style="text-align:left;">
+5000
+</td>
+<td style="text-align:left;">
+5000
+</td>
+<td style="text-align:left;">
+5000
+</td>
+<td style="text-align:left;">
+5000
+</td>
+<td style="text-align:left;">
+5000
+</td>
+<td style="text-align:left;">
+5000
+</td>
+<td style="text-align:left;">
+5000
+</td>
+<td style="text-align:left;">
+5000
+</td>
+<td style="text-align:left;">
+5000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AIC
+</td>
+<td style="text-align:left;">
+21151.2
+</td>
+<td style="text-align:left;">
+21151.2
+</td>
+<td style="text-align:left;">
+21151.2
+</td>
+<td style="text-align:left;">
+21151.2
+</td>
+<td style="text-align:left;">
+21151.2
+</td>
+<td style="text-align:left;">
+21151.2
+</td>
+<td style="text-align:left;">
+21151.2
+</td>
+<td style="text-align:left;">
+21151.2
+</td>
+<td style="text-align:left;">
+21151.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BIC
+</td>
+<td style="text-align:left;">
+21170.8
+</td>
+<td style="text-align:left;">
+21170.8
+</td>
+<td style="text-align:left;">
+21170.8
+</td>
+<td style="text-align:left;">
+21170.8
+</td>
+<td style="text-align:left;">
+21170.8
+</td>
+<td style="text-align:left;">
+21170.8
+</td>
+<td style="text-align:left;">
+21170.8
+</td>
+<td style="text-align:left;">
+21170.8
+</td>
+<td style="text-align:left;">
+21170.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Log.Lik.
+</td>
+<td style="text-align:left;">
+-10572.604
+</td>
+<td style="text-align:left;">
+-10572.604
+</td>
+<td style="text-align:left;">
+-10572.604
+</td>
+<td style="text-align:left;">
+-10572.604
+</td>
+<td style="text-align:left;">
+-10572.604
+</td>
+<td style="text-align:left;">
+-10572.604
+</td>
+<td style="text-align:left;">
+-10572.604
+</td>
+<td style="text-align:left;">
+-10572.604
+</td>
+<td style="text-align:left;">
+-10572.604
+</td>
+</tr>
+</tbody>
+</table>
+<p>Note that this includes a reduced list of summary statistics, e.g., no R-squared. This could be changed by adding the argument <code>save = TRUE</code> in the <code><a href="https://rdrr.io/r/base/lapply.html">lapply()</a></code> call above. This would save the full model object in addition to the <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code> output.</p>
+<p>Finally, the different coefficients with corresponding confidence intervals can be displayed using <code><a href="https://rdrr.io/pkg/modelsummary/man/modelplot.html">modelplot(mlist)</a></code>. In the figure shown below we add some <em>ggplot2</em>-based customizations to the plot: omit the display for the intercepts (i.e., only show the <code>x</code> coefficients), flip the axes, and use a custom color palette that highlights the confidence intervals based on the disfferent clustered standard errors which are more appropriate for this data.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st"><a href="http://ggplot2.tidyverse.org">"ggplot2"</a></span>)
+<span class="kw">pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">hcl.colors</a></span>(<span class="fl">9</span>, <span class="st">"Dark 3"</span>, alpha = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1</span>))
+<span class="fu"><a href="https://rdrr.io/pkg/modelsummary/man/modelplot.html">modelplot</a></span>(<span class="kw">mlist</span>, coef_omit = <span class="st">"(Intercept)"</span>) <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html">coord_flip</a></span>() <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span>(values = <span class="kw">pal</span>)
+</pre></div>
+<p><img src="sandwich_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto auto auto 0;"></p>
 </div>
   </div>
 
