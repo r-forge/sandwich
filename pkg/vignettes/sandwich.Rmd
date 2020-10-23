@@ -9,7 +9,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{sandwich: Robust Covariance Matrix Estimators}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{sandwich,lmtest}
+  %\VignetteDepends{sandwich,lmtest,modelsummary,ggplot2}
   %\VignetteKeywords{covariance matrix estimator, object orientation, cross-section data, time series data, clustered data, panel data, longitudinal data}
   %\VignettePackage{sandwich}
 ---
