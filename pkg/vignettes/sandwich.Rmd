@@ -180,7 +180,7 @@ clustered standard errors are much larger and more appropriate here.
 For creating publication-quality tables of the model summaries using _sandwich_-based standard errors,
 we use the `msummary()` function from the _modelsummary_ package. One possible way to use this is
 based on the unmodified `lm()` object `m` and then to override the default covariance matrix with
-a sandwich covariance. This can be done with either a list with a covariance extracto function or
+a sandwich covariance. This can be done with either a list with a covariance extractor function or
 an estimated covariance matrix. Given that we already computed a list of covariance matrices `vc`
 above, we simply use the sub-list with the clustered covariance:
 

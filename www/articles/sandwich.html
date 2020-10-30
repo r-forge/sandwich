@@ -246,14 +246,14 @@
 ## HC3                        0.0284 0.0284
 ## Andrews' kernel HAC        0.0437 0.0351
 ## Newey-West                 0.0660 0.0482
-## Bootstrap                  0.0296 0.0271
-## Bootstrap (clustered)      0.0636 0.0476</code></pre>
+## Bootstrap                  0.0275 0.0279
+## Bootstrap (clustered)      0.0672 0.0488</code></pre>
 <p>This shows that due to the cluster-correlation in the data, the usual standard errors and cross-section covariances are much too small. In contrast, the different types of clustered standard errors are much larger and more appropriate here.</p>
 </div>
 <div id="tables-and-visualizations" class="section level2">
 <h2 class="hasAnchor">
 <a href="#tables-and-visualizations" class="anchor"></a>Tables and visualizations</h2>
-<p>For creating publication-quality tables of the model summaries using <em>sandwich</em>-based standard errors, we use the <code><a href="https://rdrr.io/pkg/modelsummary/man/msummary.html">msummary()</a></code> function from the <em>modelsummary</em> package. One possible way to use this is based on the unmodified <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> object <code>m</code> and then to override the default covariance matrix with a sandwich covariance. This can be done with either a list with a covariance extracto function or an estimated covariance matrix. Given that we already computed a list of covariance matrices <code>vc</code> above, we simply use the sub-list with the clustered covariance:</p>
+<p>For creating publication-quality tables of the model summaries using <em>sandwich</em>-based standard errors, we use the <code><a href="https://rdrr.io/pkg/modelsummary/man/msummary.html">msummary()</a></code> function from the <em>modelsummary</em> package. One possible way to use this is based on the unmodified <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> object <code>m</code> and then to override the default covariance matrix with a sandwich covariance. This can be done with either a list with a covariance extractor function or an estimated covariance matrix. Given that we already computed a list of covariance matrices <code>vc</code> above, we simply use the sub-list with the clustered covariance:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st"><a href="https://vincentarelbundock.github.io/modelsummary">"modelsummary"</a></span>)
 <span class="fu"><a href="https://rdrr.io/pkg/modelsummary/man/msummary.html">msummary</a></span>(<span class="kw">m</span>, statistic_override = <span class="kw">vc</span>[<span class="st">"Clustered"</span>], stars = <span class="fl">TRUE</span>)
@@ -456,10 +456,10 @@ Bootstrap (clustered)
 (0.066)
 </td>
 <td style="text-align:left;">
-(0.030)
+(0.027)
 </td>
 <td style="text-align:left;">
-(0.064)
+(0.067)
 </td>
 </tr>
 <tr>
@@ -519,10 +519,10 @@ x
 (0.048)
 </td>
 <td style="text-align:left;">
-(0.027)
+(0.028)
 </td>
 <td style="text-align:left;">
-(0.048)
+(0.049)
 </td>
 </tr>
 <tr>
