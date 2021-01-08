@@ -178,19 +178,20 @@ clustered standard errors are much larger and more appropriate here.
 ## Tables and visualizations
 
 For creating publication-quality tables of the model summaries using _sandwich_-based standard errors,
-we use the `msummary()` function from the _modelsummary_ package. One possible way to use this is
-based on the unmodified `lm()` object `m` and then to override the default covariance matrix with
-a sandwich covariance. This can be done with either a list with a covariance extractor function or
-an estimated covariance matrix. Given that we already computed a list of covariance matrices `vc`
-above, we simply use the sub-list with the clustered covariance:
+we use the `msummary()` function from the _modelsummary_ package. Similar to `coeftest()` this takes the
+unmodified `lm()` object `m` along with a `vcov` specification (starting from version 0.6.5 of the package).
+The latter might be specified via a covariance extractor function, certain strings (like `"robust"` or `"HC3"`),
+a clustering formula (like `~ firm`), or simply a covariance matrix. Given that we already computed a list
+of covariance matrices `vc` above, we simply use the list element with the clustered covariance:
 
 ```{r}
 library("modelsummary")
-msummary(m, statistic_override = vc["Clustered"], stars = TRUE)
+msummary(m, vcov = vc$Clustered, stars = TRUE)
 ```
 
 The result is a nicely formatted table with content similar to the verbatim output from the
-corresponding `coeftest()` call above.
+corresponding `coeftest()` call above. (Note that in previous versions of `msummary()` the `vcov`
+argument was called `statistic_override` which is still supported for backward compatibility.)
 
 Moreover, we can also easily produce such a model summary directly from the `coeftest()`
 output including the modified standard errors and test statistics. Even more nicely, this
