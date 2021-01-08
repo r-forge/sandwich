@@ -87,7 +87,7 @@ The development version of _sandwich_ is hosted on R-Forge at
 It can be installed via
 
 ```{r installation-rforge, eval=FALSE}
-install.packages("sandwich", repos = "http://R-Forge.R-project.org")
+install.packages("sandwich", repos = "https://R-Forge.R-project.org")
 ```
 
 ## Publications

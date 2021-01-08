@@ -18,7 +18,7 @@ For discussions we also try to follow these channels:
 
 - Achim Zeileis
   <a href="https://orcid.org/0000-0003-0918-3766" target="orcid.widget"><span class="fab fa-orcid orcid"></span></a>
-  <a href="https://eeecon.uibk.ac.at/~zeileis/"><span class="fa fa-user"></span></a>
+  <a href="https://www.zeileis.org/"><span class="fa fa-user"></span></a>
   <a href="http://github.com/zeileis/"><span class="fa fa-github"></span></a>
   <a href="https://twitter.com/AchimZeileis"><span class="fa fa-twitter-square"></span></a>
 - Thomas Lumley

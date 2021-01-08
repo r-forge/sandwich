@@ -3,7 +3,7 @@
 * Extended the "Getting started" page with information on how to use _sandwich_ in
   combination with the _modelsummary_ package (Arel-Bundock) based on _broom_
   infrastructure (Robinson, Hayes, Couch). (Based on ideas from Grant McDermott.)
-  <http://sandwich.R-Forge.R-project.org/articles/sandwich.html>
+  <https://sandwich.R-Forge.R-project.org/articles/sandwich.html>
 
 
 # sandwich 3.0-0
@@ -25,7 +25,7 @@
   n/(n-k). (Reported by Yves Croissant.)
 
 * The package is also accompanied by a `pkgdown` website on R-Forge now:  
-  <http://sandwich.R-Forge.R-project.org/>  
+  <https://sandwich.R-Forge.R-project.org/>  
   This essentially uses the previous content of the package (documentation,
   vignettes, NEWS) and just formatting was enhanced. But a few new features
   were also added:
