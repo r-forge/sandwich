@@ -5,6 +5,13 @@
   infrastructure (Robinson, Hayes, Couch). (Based on ideas from Grant McDermott.)
   <https://sandwich.R-Forge.R-project.org/articles/sandwich.html>
 
+* Catch `NA` observations in `cluster` and/or `order.by` indexes for `vcovCL()`,
+  `vcovBS()`, `vcovPL()`, and `vcovPC()`. Such missing observations cannot be
+  handled in the covariance extractor functions but need to be addressed prior
+  to fitting the model object, either by omitting these observations or by
+  imputing the missing values. (Raised by Alexander Fischer on StackOverflow
+  <https://stackoverflow.com/questions/64849935/clustered-standard-errors-and-missing-values>.)
+
 
 # sandwich 3.0-0
 
