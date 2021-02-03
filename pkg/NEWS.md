@@ -12,6 +12,11 @@
   imputing the missing values. (Raised by Alexander Fischer on StackOverflow
   <https://stackoverflow.com/questions/64849935/clustered-standard-errors-and-missing-values>.)
 
+* In `vcovHC()` if there are `estfun()` rows that are all zero and `type = "const"`,
+  then the working residuals for `lm` and `glm` objects are obtained via
+  `residuals()` rather than `estfun()`. (Prompted by an issue raised by
+  Alex Torgovitsky.)
+
 
 # sandwich 3.0-0
 
