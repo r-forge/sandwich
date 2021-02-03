@@ -20,7 +20,7 @@
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="sandwich: Robust Covariance Matrix Estimators">
 <meta property="og:description" content="sandwich">
-<meta property="og:image" content="http://sandwich.R-Forge.R-project.org/logo.png">
+<meta property="og:image" content="https://sandwich.R-Forge.R-project.org/logo.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:creator" content="@AchimZeileis">
 <meta name="twitter:site" content="@AchimZeileis">
@@ -138,7 +138,7 @@
 </pre></div>
 <p>The development version of <em>sandwich</em> is hosted on R-Forge at <a href="https://R-Forge.R-project.org/projects/sandwich/" class="uri">https://R-Forge.R-project.org/projects/sandwich/</a> in a Subversion (SVN) repository. It can be installed via</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sandwich"</span>, repos = <span class="st">"http://R-Forge.R-project.org"</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"sandwich"</span>, repos = <span class="st">"https://R-Forge.R-project.org"</span>)
 </pre></div>
 </div>
 <div id="publications" class="section level2">
@@ -181,7 +181,7 @@
 ## F-statistic: 1.31e+03 on 1 and 4998 DF,  p-value: &lt;2e-16</code></pre>
 <p>The regression summary for a linear model uses the “usual” OLS standard errors, assuming that the data are uncorrelated and homoscedastic. The summary provides partial Wald tests for the regression coefficients and also an over <em>F</em> test assessing all the regressors, i.e., in this case equivalent to a <em>t</em> test of <code>x</code>. To obtain the analogous tests and corresponding confidence intervals using the basic “robust” sandwich covariance for cross-section data we can combine <em>sandwich</em> with the <em>lmtest</em> package:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st"><a href="http://sandwich.R-Forge.R-project.org">"sandwich"</a></span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st"><a href="https://sandwich.R-Forge.R-project.org">"sandwich"</a></span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"lmtest"</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span>(<span class="kw">m</span>, vcov = <span class="kw">sandwich</span>)
 </pre></div>
@@ -247,8 +247,8 @@
 ## HC3                        0.0284 0.0284
 ## Andrews' kernel HAC        0.0437 0.0351
 ## Newey-West                 0.0660 0.0482
-## Bootstrap                  0.0289 0.0298
-## Bootstrap (clustered)      0.0627 0.0523</code></pre>
+## Bootstrap                  0.0280 0.0282
+## Bootstrap (clustered)      0.0655 0.0479</code></pre>
 <p>This shows that due to the cluster-correlation in the data, the usual standard errors and cross-section covariances are much too small. In contrast, the different types of clustered standard errors are much larger and more appropriate here.</p>
 </div>
 <div id="tables-and-visualizations" class="section level2">
@@ -457,10 +457,10 @@ Bootstrap (clustered)
 (0.066)
 </td>
 <td style="text-align:center;">
-(0.029)
+(0.028)
 </td>
 <td style="text-align:center;">
-(0.063)
+(0.066)
 </td>
 </tr>
 <tr>
@@ -520,10 +520,10 @@ x
 (0.048)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.030)
+(0.028)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.052)
+(0.048)
 </td>
 </tr>
 <tr>

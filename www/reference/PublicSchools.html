@@ -51,7 +51,7 @@
 <meta property="og:title" content="US Expenditures for Public Schools — PublicSchools" />
 <meta property="og:description" content="Per capita expenditure on public schools and per capita income
 by state in 1979." />
-<meta property="og:image" content="http://sandwich.R-Forge.R-project.org/logo.png" />
+<meta property="og:image" content="https://sandwich.R-Forge.R-project.org/logo.png" />
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="@AchimZeileis" />
 <meta name="twitter:site" content="@AchimZeileis" />
@@ -208,7 +208,7 @@ by state in 1979.</p>
 #&gt; </div><div class='input'>
 <span class='co'>## compare standard and HC0 standard errors</span>
 <span class='co'>## p. 391, Table 14.3</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://sandwich.R-Forge.R-project.org'>sandwich</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://sandwich.R-Forge.R-project.org'>sandwich</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>fmq</span>)
 </div><div class='output co'>#&gt; (Intercept)      Income I(Income^2) 
 #&gt;    832.9144  -1834.2029   1587.0423 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fu'><a href='vcovHC.html'>vcovHC</a></span>(<span class='kw'>fmq</span>, type = <span class='st'>"const"</span>)))

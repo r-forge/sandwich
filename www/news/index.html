@@ -147,6 +147,7 @@
 <ul>
 <li><p>Extended the “Getting started” page with information on how to use <em>sandwich</em> in combination with the <em>modelsummary</em> package (Arel-Bundock) based on <em>broom</em> infrastructure (Robinson, Hayes, Couch). (Based on ideas from Grant McDermott.) <a href="https://sandwich.R-Forge.R-project.org/articles/sandwich.html" class="uri">https://sandwich.R-Forge.R-project.org/articles/sandwich.html</a></p></li>
 <li><p>Catch <code>NA</code> observations in <code>cluster</code> and/or <code>order.by</code> indexes for <code><a href="../reference/vcovCL.html">vcovCL()</a></code>, <code><a href="../reference/vcovBS.html">vcovBS()</a></code>, <code><a href="../reference/vcovPL.html">vcovPL()</a></code>, and <code><a href="../reference/vcovPC.html">vcovPC()</a></code>. Such missing observations cannot be handled in the covariance extractor functions but need to be addressed prior to fitting the model object, either by omitting these observations or by imputing the missing values. (Raised by Alexander Fischer on StackOverflow <a href="https://stackoverflow.com/questions/64849935/clustered-standard-errors-and-missing-values" class="uri">https://stackoverflow.com/questions/64849935/clustered-standard-errors-and-missing-values</a>.)</p></li>
+<li><p>In <code><a href="../reference/vcovHC.html">vcovHC()</a></code> if there are <code><a href="../reference/estfun.html">estfun()</a></code> rows that are all zero and <code>type = "const"</code>, then the working residuals for <code>lm</code> and <code>glm</code> objects are obtained via <code><a href="https://rdrr.io/r/stats/residuals.html">residuals()</a></code> rather than <code><a href="../reference/estfun.html">estfun()</a></code>. (Prompted by an issue raised by Alex Torgovitsky.)</p></li>
 </ul>
 </div>
     <div id="sandwich-30-0" class="section level1">
@@ -350,7 +351,7 @@ This essentially uses the previous content of the package (documentation, vignet
 <a href="#sandwich-21-0" class="anchor"></a>sandwich 2.1-0<small> 2008-01-26 </small>
 </h1>
 <ul>
-<li><p>Added <code><a href="../reference/bread.html">bread()</a></code> and <code><a href="../reference/estfun.html">estfun()</a></code> methods for <code>hurdle</code>/<code>zeroinfl</code> objects as computed by <code>hurdle()</code>/<code>zeroinfl()</code> in package <code>pscl</code>.</p></li>
+<li><p>Added <code><a href="../reference/bread.html">bread()</a></code> and <code><a href="../reference/estfun.html">estfun()</a></code> methods for <code>hurdle</code>/<code>zeroinfl</code> objects as computed by <code><a href="https://rdrr.io/pkg/pscl/man/hurdle.html">hurdle()</a></code>/<code><a href="https://rdrr.io/pkg/pscl/man/zeroinfl.html">zeroinfl()</a></code> in package <code>pscl</code>.</p></li>
 <li><p>Fixed <code><a href="../reference/bread.html">bread()</a></code> and <code><a href="../reference/estfun.html">estfun()</a></code> methods for negative binomial <code>glm</code> objects: Now <code>dispersion = 1</code> is used.</p></li>
 </ul>
 </div>
