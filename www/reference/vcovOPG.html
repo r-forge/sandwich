@@ -148,7 +148,7 @@
  in regression models.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vcovOPG</span>(<span class='kw'>x</span>, adjust = <span class='fl'>FALSE</span>, <span class='kw'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>vcovOPG</span><span class='op'>(</span><span class='va'>x</span>, adjust <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -200,14 +200,14 @@ likelihood scores (and not a scaled version such as least squares scores for
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## generate poisson regression relationship</span>
-<span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span>)
-<span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span>(<span class='fl'>100</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span>(<span class='fl'>1</span> <span class='op'>+</span> <span class='kw'>x</span>))
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>)</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span><span class='fl'>100</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>+</span> <span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>
 <span class='co'>## compute usual covariance matrix of coefficient estimates</span>
-<span class='kw'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/glm.html'>glm</a></span>(<span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>x</span>, family = <span class='kw'>poisson</span>)
-<span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span>(<span class='kw'>fm</span>)
+<span class='va'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/glm.html'>glm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span>, family <span class='op'>=</span> <span class='va'>poisson</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;              (Intercept)            x
 #&gt; (Intercept)  0.005207071 -0.004485877
-#&gt; x           -0.004485877  0.009167592</div><div class='input'><span class='fu'>vcovOPG</span>(<span class='kw'>fm</span>)
+#&gt; x           -0.004485877  0.009167592</div><div class='input'><span class='fu'>vcovOPG</span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;              (Intercept)            x
 #&gt; (Intercept)  0.004250562 -0.003237065
 #&gt; x           -0.003237065  0.008336824</div></pre>

@@ -156,12 +156,12 @@
  a special choice of weights.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>weave</span>(<span class='kw'>x</span>, order.by = <span class='kw'>NULL</span>, prewhite = <span class='fl'>FALSE</span>, C = <span class='kw'>NULL</span>,
-  method = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"truncate"</span>, <span class='st'>"smooth"</span>), acf = <span class='kw'>isoacf</span>, adjust = <span class='fl'>FALSE</span>,
-  diagnostics = <span class='fl'>FALSE</span>, sandwich = <span class='fl'>TRUE</span>, tol = <span class='fl'>1e-7</span>, data = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>...</span>)
+    <pre class="usage"><span class='fu'>weave</span><span class='op'>(</span><span class='va'>x</span>, order.by <span class='op'>=</span> <span class='cn'>NULL</span>, prewhite <span class='op'>=</span> <span class='cn'>FALSE</span>, C <span class='op'>=</span> <span class='cn'>NULL</span>,
+  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"truncate"</span>, <span class='st'>"smooth"</span><span class='op'>)</span>, acf <span class='op'>=</span> <span class='va'>isoacf</span>, adjust <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  diagnostics <span class='op'>=</span> <span class='cn'>FALSE</span>, sandwich <span class='op'>=</span> <span class='cn'>TRUE</span>, tol <span class='op'>=</span> <span class='fl'>1e-7</span>, data <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>weightsLumley</span>(<span class='kw'>x</span>, order.by = <span class='kw'>NULL</span>, C = <span class='kw'>NULL</span>,
-  method = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"truncate"</span>, <span class='st'>"smooth"</span>), acf = <span class='kw'>isoacf</span>, tol = <span class='fl'>1e-7</span>, data = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>...</span>)</pre>
+<span class='fu'>weightsLumley</span><span class='op'>(</span><span class='va'>x</span>, order.by <span class='op'>=</span> <span class='cn'>NULL</span>, C <span class='op'>=</span> <span class='cn'>NULL</span>,
+  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"truncate"</span>, <span class='st'>"smooth"</span><span class='op'>)</span>, acf <span class='op'>=</span> <span class='va'>isoacf</span>, tol <span class='op'>=</span> <span class='fl'>1e-7</span>, data <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -263,13 +263,13 @@ which is typically just the covariance matrix.</p>
          <code><a href='weightsAndrews.html'>kernHAC</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span>)
-<span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='kw'>x</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>)
-<span class='kw'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>x</span>)
-<span class='fu'>weave</span>(<span class='kw'>fm</span>)
+    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>)</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='va'>x</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>
+<span class='va'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span><span class='op'>)</span>
+<span class='fu'>weave</span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;               (Intercept)             x
 #&gt; (Intercept)  0.0113474272 -0.0002016924
-#&gt; x           -0.0002016924  0.0205963399</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span>(<span class='kw'>fm</span>)
+#&gt; x           -0.0002016924  0.0205963399</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;              (Intercept)            x
 #&gt; (Intercept) 1.157960e-02 2.929455e-05
 #&gt; x           2.929455e-05 2.303555e-02</div></pre>

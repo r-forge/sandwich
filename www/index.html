@@ -106,13 +106,12 @@
 <p><strong>Sandwich covariances for general parametric models:</strong></p>
 <p><img alt="Central limit theorem and sandwich estimator" src="reference/figures/README-sandwich.svg" style="border:10px solid transparent"></p>
 <p><strong>Object-oriented implementation in R:</strong></p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st"><a href="https://sandwich.R-Forge.R-project.org">"sandwich"</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"lmtest"</span>)
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"PetersenCL"</span>, package = <span class="st">"sandwich"</span>)
-<span class="kw">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span>(<span class="kw">y</span> <span class="op">~</span> <span class="kw">x</span>, data = <span class="kw">PetersenCL</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span>(<span class="kw">m</span>, vcov = <span class="kw">sandwich</span>)
-</pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://sandwich.R-Forge.R-project.org/">"sandwich"</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st">"lmtest"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"PetersenCL"</span>, package <span class="op">=</span> <span class="st">"sandwich"</span><span class="op">)</span>
+<span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="co">## </span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="co">## t test of coefficients:</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a><span class="co">## </span></span>
@@ -121,9 +120,8 @@
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a><span class="co">## x             1.0348     0.0284   36.45   &lt;2e-16 ***</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a><span class="co">## ---</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span>(<span class="kw">m</span>, vcov = <span class="kw">vcovCL</span>, cluster = <span class="op">~</span> <span class="kw">firm</span>)
-</pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">vcovCL</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="co">## </span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="co">## t test of coefficients:</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="co">## </span></span>

@@ -150,15 +150,15 @@
  linear regression model.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vcovHAC</span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
+    <pre class="usage"><span class='fu'>vcovHAC</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>vcovHAC</span>(<span class='kw'>x</span>, order.by = <span class='kw'>NULL</span>, prewhite = <span class='fl'>FALSE</span>, weights = <span class='kw'>weightsAndrews</span>,
-  adjust = <span class='fl'>TRUE</span>, diagnostics = <span class='fl'>FALSE</span>, sandwich = <span class='fl'>TRUE</span>, ar.method = <span class='st'>"ols"</span>,
-  data = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>...</span>)
+<span class='fu'>vcovHAC</span><span class='op'>(</span><span class='va'>x</span>, order.by <span class='op'>=</span> <span class='cn'>NULL</span>, prewhite <span class='op'>=</span> <span class='cn'>FALSE</span>, weights <span class='op'>=</span> <span class='va'>weightsAndrews</span>,
+  adjust <span class='op'>=</span> <span class='cn'>TRUE</span>, diagnostics <span class='op'>=</span> <span class='cn'>FALSE</span>, sandwich <span class='op'>=</span> <span class='cn'>TRUE</span>, ar.method <span class='op'>=</span> <span class='st'>"ols"</span>,
+  data <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>meatHAC</span>(<span class='kw'>x</span>, order.by = <span class='kw'>NULL</span>, prewhite = <span class='fl'>FALSE</span>, weights = <span class='kw'>weightsAndrews</span>,
-  adjust = <span class='fl'>TRUE</span>, diagnostics = <span class='fl'>FALSE</span>, ar.method = <span class='st'>"ols"</span>, data = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>...</span>)</pre>
+<span class='fu'>meatHAC</span><span class='op'>(</span><span class='va'>x</span>, order.by <span class='op'>=</span> <span class='cn'>NULL</span>, prewhite <span class='op'>=</span> <span class='cn'>FALSE</span>, weights <span class='op'>=</span> <span class='va'>weightsAndrews</span>,
+  adjust <span class='op'>=</span> <span class='cn'>TRUE</span>, diagnostics <span class='op'>=</span> <span class='cn'>FALSE</span>, ar.method <span class='op'>=</span> <span class='st'>"ols"</span>, data <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -284,13 +284,13 @@ with</p>
          <code><a href='weightsLumley.html'>weave</a></code>, <code><a href='weightsAndrews.html'>kernHAC</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span>)
-<span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='kw'>x</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>)
-<span class='kw'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>x</span>)
-<span class='fu'>vcovHAC</span>(<span class='kw'>fm</span>)
+    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>)</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='va'>x</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>
+<span class='va'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span><span class='op'>)</span>
+<span class='fu'>vcovHAC</span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;             (Intercept)           x
 #&gt; (Intercept) 0.009716252 0.004740023
-#&gt; x           0.004740023 0.023346936</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span>(<span class='kw'>fm</span>)
+#&gt; x           0.004740023 0.023346936</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;              (Intercept)            x
 #&gt; (Intercept) 1.114254e-02 2.818886e-05
 #&gt; x           2.818886e-05 2.216611e-02</div></pre>

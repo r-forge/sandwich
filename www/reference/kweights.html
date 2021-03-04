@@ -150,8 +150,8 @@
  as introduced by Andrews (1991).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>kweights</span>(<span class='kw'>x</span>, kernel = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Truncated"</span>, <span class='st'>"Bartlett"</span>, <span class='st'>"Parzen"</span>,
-  <span class='st'>"Tukey-Hanning"</span>, <span class='st'>"Quadratic Spectral"</span>), normalize = <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>kweights</span><span class='op'>(</span><span class='va'>x</span>, kernel <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Truncated"</span>, <span class='st'>"Bartlett"</span>, <span class='st'>"Parzen"</span>,
+  <span class='st'>"Tukey-Hanning"</span>, <span class='st'>"Quadratic Spectral"</span><span class='op'>)</span>, normalize <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -186,16 +186,16 @@
     <div class='dont-index'><p><code><a href='weightsAndrews.html'>kernHAC</a></code>, <code><a href='weightsAndrews.html'>weightsAndrews</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span>(<span class='fu'>kweights</span>(<span class='kw'>x</span>, kernel = <span class='st'>"Quadratic"</span>, normalize = <span class='fl'>TRUE</span>),
-      from = <span class='fl'>0</span>, to = <span class='fl'>3.2</span>, xlab = <span class='st'>"x"</span>, ylab = <span class='st'>"k(x)"</span>)
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span>(<span class='fu'>kweights</span>(<span class='kw'>x</span>, kernel = <span class='st'>"Bartlett"</span>, normalize = <span class='fl'>TRUE</span>),
-      from = <span class='fl'>0</span>, to = <span class='fl'>3.2</span>, col = <span class='fl'>2</span>, add = <span class='fl'>TRUE</span>)
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span>(<span class='fu'>kweights</span>(<span class='kw'>x</span>, kernel = <span class='st'>"Parzen"</span>, normalize = <span class='fl'>TRUE</span>),
-      from = <span class='fl'>0</span>, to = <span class='fl'>3.2</span>, col = <span class='fl'>3</span>, add = <span class='fl'>TRUE</span>)
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span>(<span class='fu'>kweights</span>(<span class='kw'>x</span>, kernel = <span class='st'>"Tukey"</span>, normalize = <span class='fl'>TRUE</span>),
-      from = <span class='fl'>0</span>, to = <span class='fl'>3.2</span>, col = <span class='fl'>4</span>, add = <span class='fl'>TRUE</span>)
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span>(<span class='fu'>kweights</span>(<span class='kw'>x</span>, kernel = <span class='st'>"Truncated"</span>, normalize = <span class='fl'>TRUE</span>),
-      from = <span class='fl'>0</span>, to = <span class='fl'>3.2</span>, col = <span class='fl'>5</span>, add = <span class='fl'>TRUE</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'>kweights</span><span class='op'>(</span><span class='va'>x</span>, kernel <span class='op'>=</span> <span class='st'>"Quadratic"</span>, normalize <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+      from <span class='op'>=</span> <span class='fl'>0</span>, to <span class='op'>=</span> <span class='fl'>3.2</span>, xlab <span class='op'>=</span> <span class='st'>"x"</span>, ylab <span class='op'>=</span> <span class='st'>"k(x)"</span><span class='op'>)</span>
+</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'>kweights</span><span class='op'>(</span><span class='va'>x</span>, kernel <span class='op'>=</span> <span class='st'>"Bartlett"</span>, normalize <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+      from <span class='op'>=</span> <span class='fl'>0</span>, to <span class='op'>=</span> <span class='fl'>3.2</span>, col <span class='op'>=</span> <span class='fl'>2</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'>kweights</span><span class='op'>(</span><span class='va'>x</span>, kernel <span class='op'>=</span> <span class='st'>"Parzen"</span>, normalize <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+      from <span class='op'>=</span> <span class='fl'>0</span>, to <span class='op'>=</span> <span class='fl'>3.2</span>, col <span class='op'>=</span> <span class='fl'>3</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'>kweights</span><span class='op'>(</span><span class='va'>x</span>, kernel <span class='op'>=</span> <span class='st'>"Tukey"</span>, normalize <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+      from <span class='op'>=</span> <span class='fl'>0</span>, to <span class='op'>=</span> <span class='fl'>3.2</span>, col <span class='op'>=</span> <span class='fl'>4</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'>kweights</span><span class='op'>(</span><span class='va'>x</span>, kernel <span class='op'>=</span> <span class='st'>"Truncated"</span>, normalize <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+      from <span class='op'>=</span> <span class='fl'>0</span>, to <span class='op'>=</span> <span class='fl'>3.2</span>, col <span class='op'>=</span> <span class='fl'>5</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 </div><div class='img'><img src='kweights-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

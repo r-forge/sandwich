@@ -146,7 +146,7 @@
     <p>Autocorrelation function (forced to be decreasing by isotonic regression).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>isoacf</span>(<span class='kw'>x</span>, lagmax = <span class='kw'>NULL</span>, weave1 = <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>isoacf</span><span class='op'>(</span><span class='va'>x</span>, lagmax <span class='op'>=</span> <span class='cn'>NULL</span>, weave1 <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -190,8 +190,8 @@ See also Robertson et al. (1988).</p>
     <div class='dont-index'><p><code><a href='weightsLumley.html'>weave</a></code>, <code><a href='weightsLumley.html'>weightsLumley</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>), <span class='fl'>0.9</span>, <span class='st'>"recursive"</span>)
-<span class='fu'>isoacf</span>(<span class='kw'>x</span>)
+    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>, <span class='fl'>0.9</span>, <span class='st'>"recursive"</span><span class='op'>)</span>
+<span class='fu'>isoacf</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;   [1]  1.00000000  0.83607856  0.67522910  0.52866639  0.37729032  0.29098700
 #&gt;   [7]  0.21391037  0.13691679  0.03162908 -0.03407320 -0.03951841 -0.03951841
 #&gt;  [13] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
@@ -208,7 +208,7 @@ See also Robertson et al. (1988).</p>
 #&gt;  [79] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
 #&gt;  [85] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
 #&gt;  [91] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
-#&gt;  [97] -0.03951841 -0.03951841 -0.03951841 -0.03951841</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/acf.html'>acf</a></span>(<span class='kw'>x</span>, plot = <span class='fl'>FALSE</span>)<span class='op'>$</span><span class='kw'>acf</span>
+#&gt;  [97] -0.03951841 -0.03951841 -0.03951841 -0.03951841</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/acf.html'>acf</a></span><span class='op'>(</span><span class='va'>x</span>, plot <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>$</span><span class='va'>acf</span>
 </div><div class='output co'>#&gt; , , 1
 #&gt; 
 #&gt;               [,1]

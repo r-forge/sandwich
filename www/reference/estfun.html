@@ -148,7 +148,7 @@
  of a fitted model.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>estfun</span>(<span class='kw'>x</span>, <span class='kw'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>estfun</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -189,12 +189,12 @@ and the estimated parameters (of dimension \(k\)).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## linear regression</span>
-<span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>)
-<span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span>)
-<span class='kw'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>x</span>)
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>)</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>
+<span class='va'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span><span class='op'>)</span>
 
 <span class='co'>## estimating function: (y - x'beta) * x</span>
-<span class='fu'>estfun</span>(<span class='kw'>fm</span>)
+<span class='fu'>estfun</span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;    (Intercept)          x
 #&gt; 1   -0.7015578 -0.5903406
 #&gt; 2    0.4494980  0.4087274
@@ -205,7 +205,7 @@ and the estimated parameters (of dimension \(k\)).</p>
 #&gt; 7   -0.5838511 -0.3835824
 #&gt; 8   -0.2694160 -0.2665489
 #&gt; 9    0.5953328  0.2453477
-#&gt; 10  -0.4159175  0.2262679</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/residuals.html'>residuals</a></span>(<span class='kw'>fm</span>) <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fl'>1</span>, <span class='kw'>x</span>)
+#&gt; 10  -0.4159175  0.2262679</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/residuals.html'>residuals</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span> <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='va'>x</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;                           x
 #&gt;  [1,] -0.7015578 -0.5903406
 #&gt;  [2,]  0.4494980  0.4087274

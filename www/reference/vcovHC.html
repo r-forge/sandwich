@@ -148,14 +148,14 @@
  coefficient estimates in regression models.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vcovHC</span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
+    <pre class="usage"><span class='fu'>vcovHC</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>vcovHC</span>(<span class='kw'>x</span>,
-  type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"HC3"</span>, <span class='st'>"const"</span>, <span class='st'>"HC"</span>, <span class='st'>"HC0"</span>, <span class='st'>"HC1"</span>, <span class='st'>"HC2"</span>, <span class='st'>"HC4"</span>, <span class='st'>"HC4m"</span>, <span class='st'>"HC5"</span>),
-  omega = <span class='kw'>NULL</span>, sandwich = <span class='fl'>TRUE</span>, <span class='kw'>...</span>)
+<span class='fu'>vcovHC</span><span class='op'>(</span><span class='va'>x</span>,
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"HC3"</span>, <span class='st'>"const"</span>, <span class='st'>"HC"</span>, <span class='st'>"HC0"</span>, <span class='st'>"HC1"</span>, <span class='st'>"HC2"</span>, <span class='st'>"HC4"</span>, <span class='st'>"HC4m"</span>, <span class='st'>"HC5"</span><span class='op'>)</span>,
+  omega <span class='op'>=</span> <span class='cn'>NULL</span>, sandwich <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>meatHC</span>(<span class='kw'>x</span>, type = , omega = <span class='kw'>NULL</span>, <span class='kw'>...</span>)</pre>
+<span class='fu'>meatHC</span><span class='op'>(</span><span class='va'>x</span>, type <span class='op'>=</span> , omega <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -197,7 +197,10 @@
   <code><a href='sandwich.html'>sandwich</a></code> and <code><a href='bread.html'>bread</a></code>. See Zeileis (2006) for
   more implementation details. The theoretical background, exemplified
   for the linear regression model, is described below and in Zeileis (2004).
-  Analogous formulas are employed for other types of models.</p>
+  Analogous formulas are employed for other types of models, provided that
+  they depend on a single linear predictor and the estimating functions
+  can be represented as a product of &#8220;working residual&#8221; and regressor
+  vector (Zeileis 2006, Equation 7).</p>
 <p>When <code>type = "const"</code> constant variances are assumed and
   and <code>vcovHC</code> gives the usual estimate of the covariance matrix of
   the coefficient estimates:</p>
@@ -257,23 +260,23 @@ doi: <a href='https://doi.org/10.18637/jss.v016.i09'>10.18637/jss.v016.i09</a></
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## generate linear regression relationship</span>
 <span class='co'>## with homoscedastic variances</span>
-<span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span>)
-<span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='kw'>x</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>)
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>)</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='va'>x</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>
 <span class='co'>## model fit and HC3 covariance</span>
-<span class='kw'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>x</span>)
-<span class='fu'>vcovHC</span>(<span class='kw'>fm</span>)
+<span class='va'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span><span class='op'>)</span>
+<span class='fu'>vcovHC</span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;              (Intercept)            x
 #&gt; (Intercept)  0.013240282 -0.007646095
 #&gt; x           -0.007646095  0.024425977</div><div class='input'><span class='co'>## usual covariance matrix</span>
-<span class='fu'>vcovHC</span>(<span class='kw'>fm</span>, type = <span class='st'>"const"</span>)
+<span class='fu'>vcovHC</span><span class='op'>(</span><span class='va'>fm</span>, type <span class='op'>=</span> <span class='st'>"const"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;              (Intercept)            x
 #&gt; (Intercept) 1.301490e-02 3.292563e-05
-#&gt; x           3.292563e-05 2.589083e-02</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span>(<span class='kw'>fm</span>)
+#&gt; x           3.292563e-05 2.589083e-02</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;              (Intercept)            x
 #&gt; (Intercept) 1.301490e-02 3.292563e-05
 #&gt; x           3.292563e-05 2.589083e-02</div><div class='input'>
-<span class='kw'>sigma2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/residuals.html'>residuals</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>x</span>))<span class='op'>^</span><span class='fl'>2</span>)<span class='op'>/</span><span class='fl'>98</span>
-<span class='kw'>sigma2</span> <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/solve.html'>solve</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/crossprod.html'>crossprod</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fl'>1</span>, <span class='kw'>x</span>)))
+<span class='va'>sigma2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/residuals.html'>residuals</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span><span class='op'>)</span><span class='op'>)</span><span class='op'>^</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>/</span><span class='fl'>98</span>
+<span class='va'>sigma2</span> <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/solve.html'>solve</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/crossprod.html'>crossprod</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='va'>x</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;                           x
 #&gt;   1.301490e-02 3.292563e-05
 #&gt; x 3.292563e-05 2.589083e-02</div></pre>
