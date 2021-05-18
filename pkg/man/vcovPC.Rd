@@ -123,6 +123,7 @@ pu_lm <- lm(y ~ x, data = PU)
 sqrt(diag(vcovPC(pu_lm, cluster = ~ firm + year, pairwise = TRUE)))
 sqrt(diag(vcovPC(pu_lm, cluster = ~ firm + year, pairwise = FALSE)))
 
+\donttest{
 ## the following specifications of cluster/order.by are equivalent
 vcovPC(m, cluster = ~ firm + year)
 vcovPC(m, cluster = PetersenCL[, c("firm", "year")])
@@ -133,6 +134,7 @@ vcovPC(m, cluster = PetersenCL$firm, order.by = PetersenCL$year)
 ## cluster are already ordered
 vcovPC(m, cluster = ~ firm)
 vcovPC(m, cluster = PetersenCL$firm)
+}
 }
 
 \keyword{regression}
