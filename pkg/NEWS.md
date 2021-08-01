@@ -1,3 +1,11 @@
+# sandwich 3.0-2
+
+* Issue a warning in `vcovHC()` for HC2/HC3/HC4/HC4m/HC5 if any of the hat values
+  are numerically equal to 1. This leads to numerically unstable covariances,
+  in the most extreme case `NaN` because the associated residuals are equal to
+  0 and divided by 0. (Suggested by Ding Peng and John Fox.)
+
+
 # sandwich 3.0-1
 
 * Extended the "Getting started" page with information on how to use _sandwich_ in
