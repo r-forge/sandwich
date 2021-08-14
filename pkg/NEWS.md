@@ -5,6 +5,9 @@
   in the most extreme case `NaN` because the associated residuals are equal to
   0 and divided by 0. (Suggested by Ding Peng and John Fox.)
 
+* Use `.lm.fit()` rather than `lm.fit()` inside `vcovBS.lm()` to be somewaht more
+  efficient in some situations.
+
 
 # sandwich 3.0-1
 

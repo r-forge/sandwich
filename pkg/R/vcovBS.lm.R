@@ -116,7 +116,7 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
     bootfit <- switch(type,
       "xy" = function(j, ...) {
         j <- unlist(cli[sample(names(cli), length(cli), replace = TRUE)])
-        lm.fit(xfit[j, , drop = FALSE], y[j], ...)$coefficients
+        .lm.fit(xfit[j, , drop = FALSE], y[j], ...)$coefficients
       },
       "residual" = function(j, ...) {
         j <- unlist(cli[sample(names(cli), length(cli), replace = TRUE)])
