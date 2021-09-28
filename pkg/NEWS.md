@@ -1,5 +1,11 @@
 # sandwich 3.0-2
 
+* Added new argument `aggregate = TRUE` to `meatPL()` which is thus inherited by
+  `vcovPL()`. By default, this still yields the Driscoll & Kraay (1998) covariance
+  matrix. When setting `aggregate = FALSE` the cross-sectional and cross-serial
+  correlation is set to zero, yielding the "pure" panel Newey-West covariance
+  matrix.
+
 * Issue a warning in `vcovHC()` for HC2/HC3/HC4/HC4m/HC5 if any of the hat values
   are numerically equal to 1. This leads to numerically unstable covariances,
   in the most extreme case `NaN` because the associated residuals are equal to
