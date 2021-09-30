@@ -94,9 +94,13 @@ meatPL <- function(x, cluster = NULL, order.by = NULL,
   if(aggregate) {
     if(length(unique(order.by)) < n) ef <- apply(ef, 2L, tapply, order.by, sum)
     nt <- NROW(ef)
+    nc <- length(unique(cluster))
   } else {
     order.by <- as.integer(factor(order.by))
     nt <- order.by[length(order.by)]
+    cluster <- as.integer(factor(cluster))
+    nc <- cluster[length(cluster)]
+    rownames(ef) <- paste(order.by, cluster, sep = "-")
   }  
 
   ## lag/bandwidth selection
@@ -126,9 +130,15 @@ meatPL <- function(x, cluster = NULL, order.by = NULL,
   if(length(weights) > 1L) {
     for (ii in 2L:length(weights)) {
       rval <- rval + weights[ii] * if(aggregate) {
-        crossprod(ef[1L:(nt - ii + 1L), , drop = FALSE], ef[ii:nt, , drop = FALSE]) ## Driscoll & Kraay (1998)
+        ## Driscoll & Kraay (1998)
+        crossprod(ef[1L:(nt - ii + 1L), , drop = FALSE], ef[ii:nt, , drop = FALSE])
       } else {
-        crossprod(ef[order.by %in% (1L:(nt - ii + 1L)), , drop = FALSE], ef[order.by %in% (ii:nt), , drop = FALSE]) ## restricting cross-sectional and cross-serial correlation to zero
+        ## restricting cross-sectional and cross-serial correlation to zero
+        ## assure to use only clusters where both lags in the crossprod exist
+        ix1 <- paste(rep(1L:(nt - ii + 1L), each = nc), rep(1L:nc, nt - ii + 1L), sep = "-")
+        ix2 <- paste(rep(ii:nt, each = nc), rep(1L:nc, nt - ii + 1L), sep = "-")
+        ok <- (ix1 %in% rownames(ef)) & (ix2 %in% rownames(ef))
+        crossprod(ef[ix1[ok], , drop = FALSE], ef[ix2[ok], , drop = FALSE])
       }
     }
  }
@@ -139,6 +149,3 @@ meatPL <- function(x, cluster = NULL, order.by = NULL,
 
   return(rval/n)
 }
-
-
-
