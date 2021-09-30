@@ -14,6 +14,11 @@
 * Use `.lm.fit()` rather than `lm.fit()` inside `vcovBS.lm()` to be somewaht more
   efficient in some situations.
 
+* Enable passing score matrix (as computed by `estfun()`) directly to
+  `bwAndrews()` and `bwNeweyWest()`. If this is used, the score matrix should
+  either have a column `(Intercept)` or the `weights` argument should be set
+  appropriately to identify the column pertaining to the intercept (if any).
+
 
 # sandwich 3.0-1
 
