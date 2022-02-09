@@ -11,8 +11,14 @@
   in the most extreme case `NaN` because the associated residuals are equal to
   0 and divided by 0. (Suggested by Ding Peng and John Fox.)
 
-* Use `.lm.fit()` rather than `lm.fit()` inside `vcovBS.lm()` to be somewaht more
-  efficient in some situations.
+* Speed improvement in `vcovBS.lm()`: For `"xy"` bootstrap, `.lm.fit()` rather than
+  `lm.fit()` is used which is somewhat more efficient in some situations (suggested
+  by Grant McDermott). For `"residual"` and wild bootstrap, the bootstrap now
+  samples the dependent variable and applies the QR decomposition jointly only
+  once (`qrjoint = TRUE`) rather than sampling coefficients by applying the
+  QR decomposition separately in each iteration (`qrjoint = FALSE`). The joint
+  QR needs somewhat more memory but is somewhat faster, especially if the number
+  of coefficients is large (proposed by Alexander Fischer).
 
 * Enable passing score matrix (as computed by `estfun()`) directly to
   `bwAndrews()` and `bwNeweyWest()`. If this is used, the score matrix should
