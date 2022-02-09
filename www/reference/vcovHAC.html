@@ -179,7 +179,7 @@
       <th>prewhite</th>
       <td><p>logical or integer. Should the estimating functions
     be prewhitened? If <code>TRUE</code> or greater than 0 a VAR model of
-    order <code><a href='https://rdrr.io/r/base/integer.html'>as.integer(prewhite)</a></code> is fitted via <code>ar</code> with
+    order <code>as.integer(prewhite)</code> is fitted via <code>ar</code> with
     method <code>"ols"</code> and <code>demean = FALSE</code>.</p></td>
     </tr>
     <tr>
@@ -284,16 +284,18 @@ with</p>
          <code><a href='weightsLumley.html'>weave</a></code>, <code><a href='weightsAndrews.html'>kernHAC</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>)</span>
-<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='va'>x</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>
-<span class='va'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span><span class='op'>)</span>
-<span class='fu'>vcovHAC</span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;             (Intercept)           x
-#&gt; (Intercept) 0.009716252 0.004740023
-#&gt; x           0.004740023 0.023346936</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;              (Intercept)            x
-#&gt; (Intercept) 1.114254e-02 2.818886e-05
-#&gt; x           2.818886e-05 2.216611e-02</div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='va'>x</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>vcovHAC</span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             (Intercept)           x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept) 0.009716252 0.004740023</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> x           0.004740023 0.023346936</span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>              (Intercept)            x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept) 1.114254e-02 2.818886e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> x           2.818886e-05 2.216611e-02</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

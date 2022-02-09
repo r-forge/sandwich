@@ -179,7 +179,7 @@ Typically, an empirical version of the bread is used for estimation of the infor
 but alternatively it is also possible to use the meat. This method is also known as
 the outer product of gradients (OPG) estimator (Cameron &amp; Trivedi 2005).</p>
 <p>Using the <span class="pkg">sandwich</span> infrastructure, the OPG estimator could easily be computed via
-<code><a href='https://rdrr.io/r/base/solve.html'>solve(meat(obj))</a></code> (modulo scaling). To employ numerically more stable implementation
+<code>solve(meat(obj))</code> (modulo scaling). To employ numerically more stable implementation
 of the inversion, this simple convenience function can be used: <code>vcovOPG(obj)</code>.</p>
 <p>Note that this only works if the <code><a href='estfun.html'>estfun()</a></code> method computes the maximum
 likelihood scores (and not a scaled version such as least squares scores for
@@ -199,18 +199,20 @@ likelihood scores (and not a scaled version such as least squares scores for
     <div class='dont-index'><p><code><a href='meat.html'>meat</a></code>, <code><a href='bread.html'>bread</a></code>, <code><a href='sandwich.html'>sandwich</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## generate poisson regression relationship</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>)</span>
-<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span><span class='fl'>100</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>+</span> <span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>
-<span class='co'>## compute usual covariance matrix of coefficient estimates</span>
-<span class='va'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/glm.html'>glm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span>, family <span class='op'>=</span> <span class='va'>poisson</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;              (Intercept)            x
-#&gt; (Intercept)  0.005207071 -0.004485877
-#&gt; x           -0.004485877  0.009167592</div><div class='input'><span class='fu'>vcovOPG</span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;              (Intercept)            x
-#&gt; (Intercept)  0.004250562 -0.003237065
-#&gt; x           -0.003237065  0.008336824</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>## generate poisson regression relationship</span></span>
+<span class='r-in'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span><span class='fl'>100</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>exp</a></span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>+</span> <span class='va'>x</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>## compute usual covariance matrix of coefficient estimates</span></span>
+<span class='r-in'><span class='va'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/glm.html'>glm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span>, family <span class='op'>=</span> <span class='va'>poisson</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>              (Intercept)            x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)  0.005207071 -0.004485877</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> x           -0.004485877  0.009167592</span>
+<span class='r-in'><span class='fu'>vcovOPG</span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>              (Intercept)            x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)  0.004250562 -0.003237065</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> x           -0.003237065  0.008336824</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -198,23 +198,26 @@
     <div class='dont-index'><p><code><a href='weightsAndrews.html'>kernHAC</a></code>, <code><a href='NeweyWest.html'>NeweyWest</a></code>, <code><a href='vcovHAC.html'>vcovHAC</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>RNGversion</a></span><span class='op'>(</span><span class='st'>"3.5.0"</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>
-<span class='co'>## iid series (with variance of mean 1/n)</span>
-<span class='co'>## and Andrews kernel HAC (with prewhitening)</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>
-<span class='fu'>lrvar</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 0.007958048</div><div class='input'>
-<span class='co'>## analogous multivariate case with Newey-West estimator (without prewhitening)</span>
-<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>200</span><span class='op'>)</span>, ncol <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-<span class='fu'>lrvar</span><span class='op'>(</span><span class='va'>y</span>, type <span class='op'>=</span> <span class='st'>"Newey-West"</span>, prewhite <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;              [,1]         [,2]
-#&gt; [1,] 0.0097884718 0.0005978738
-#&gt; [2,] 0.0005978738 0.0073428222</div><div class='input'>
-<span class='co'>## AR(1) series with autocorrelation 0.9</span>
-<span class='va'>z</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>, <span class='fl'>0.9</span>, method <span class='op'>=</span> <span class='st'>"recursive"</span><span class='op'>)</span>
-<span class='fu'>lrvar</span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 0.4385546</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/warning.html'>suppressWarnings</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>RNGversion</a></span><span class='op'>(</span><span class='st'>"3.5.0"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>## iid series (with variance of mean 1/n)</span></span>
+<span class='r-in'><span class='co'>## and Andrews kernel HAC (with prewhitening)</span></span>
+<span class='r-in'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>lrvar</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.007958048</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## analogous multivariate case with Newey-West estimator (without prewhitening)</span></span>
+<span class='r-in'><span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>200</span><span class='op'>)</span>, ncol <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>lrvar</span><span class='op'>(</span><span class='va'>y</span>, type <span class='op'>=</span> <span class='st'>"Newey-West"</span>, prewhite <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>              [,1]         [,2]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] 0.0097884718 0.0005978738</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,] 0.0005978738 0.0073428222</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## AR(1) series with autocorrelation 0.9</span></span>
+<span class='r-in'><span class='va'>z</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>, <span class='fl'>0.9</span>, method <span class='op'>=</span> <span class='st'>"recursive"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>lrvar</span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.4385546</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

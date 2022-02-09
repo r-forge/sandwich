@@ -188,35 +188,37 @@ and the estimated parameters (of dimension \(k\)).</p>
   doi: <a href='https://doi.org/10.18637/jss.v095.i01'>10.18637/jss.v095.i01</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## linear regression</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>)</span>
-<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>
-<span class='va'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span><span class='op'>)</span>
-
-<span class='co'>## estimating function: (y - x'beta) * x</span>
-<span class='fu'>estfun</span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;    (Intercept)          x
-#&gt; 1   -0.7015578 -0.5903406
-#&gt; 2    0.4494980  0.4087274
-#&gt; 3    2.2437203  0.3166338
-#&gt; 4   -1.0336182  0.7822448
-#&gt; 5    1.2040418 -1.1545849
-#&gt; 6   -1.4882323  0.4158352
-#&gt; 7   -0.5838511 -0.3835824
-#&gt; 8   -0.2694160 -0.2665489
-#&gt; 9    0.5953328  0.2453477
-#&gt; 10  -0.4159175  0.2262679</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/residuals.html'>residuals</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span> <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                           x
-#&gt;  [1,] -0.7015578 -0.5903406
-#&gt;  [2,]  0.4494980  0.4087274
-#&gt;  [3,]  2.2437203  0.3166338
-#&gt;  [4,] -1.0336182  0.7822448
-#&gt;  [5,]  1.2040418 -1.1545849
-#&gt;  [6,] -1.4882323  0.4158352
-#&gt;  [7,] -0.5838511 -0.3835824
-#&gt;  [8,] -0.2694160 -0.2665489
-#&gt;  [9,]  0.5953328  0.2453477
-#&gt; [10,] -0.4159175  0.2262679</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>## linear regression</span></span>
+<span class='r-in'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## estimating function: (y - x'beta) * x</span></span>
+<span class='r-in'><span class='fu'>estfun</span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    (Intercept)          x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1   -0.7015578 -0.5903406</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2    0.4494980  0.4087274</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3    2.2437203  0.3166338</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4   -1.0336182  0.7822448</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5    1.2040418 -1.1545849</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6   -1.4882323  0.4158352</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7   -0.5838511 -0.3835824</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8   -0.2694160 -0.2665489</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9    0.5953328  0.2453477</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10  -0.4159175  0.2262679</span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/stats/residuals.html'>residuals</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span> <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='va'>x</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                           x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1,] -0.7015578 -0.5903406</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [2,]  0.4494980  0.4087274</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [3,]  2.2437203  0.3166338</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [4,] -1.0336182  0.7822448</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5,]  1.2040418 -1.1545849</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [6,] -1.4882323  0.4158352</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [7,] -0.5838511 -0.3835824</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [8,] -0.2694160 -0.2665489</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9,]  0.5953328  0.2453477</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [10,] -0.4159175  0.2262679</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -190,50 +190,52 @@ See also Robertson et al. (1988).</p>
     <div class='dont-index'><p><code><a href='weightsLumley.html'>weave</a></code>, <code><a href='weightsLumley.html'>weightsLumley</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>, <span class='fl'>0.9</span>, <span class='st'>"recursive"</span><span class='op'>)</span>
-<span class='fu'>isoacf</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;   [1]  1.00000000  0.83607856  0.67522910  0.52866639  0.37729032  0.29098700
-#&gt;   [7]  0.21391037  0.13691679  0.03162908 -0.03407320 -0.03951841 -0.03951841
-#&gt;  [13] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
-#&gt;  [19] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
-#&gt;  [25] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
-#&gt;  [31] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
-#&gt;  [37] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
-#&gt;  [43] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
-#&gt;  [49] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
-#&gt;  [55] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
-#&gt;  [61] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
-#&gt;  [67] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
-#&gt;  [73] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
-#&gt;  [79] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
-#&gt;  [85] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
-#&gt;  [91] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841
-#&gt;  [97] -0.03951841 -0.03951841 -0.03951841 -0.03951841</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/acf.html'>acf</a></span><span class='op'>(</span><span class='va'>x</span>, plot <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>$</span><span class='va'>acf</span>
-</div><div class='output co'>#&gt; , , 1
-#&gt; 
-#&gt;               [,1]
-#&gt;  [1,]  1.000000000
-#&gt;  [2,]  0.836078563
-#&gt;  [3,]  0.675229096
-#&gt;  [4,]  0.528666391
-#&gt;  [5,]  0.377290320
-#&gt;  [6,]  0.290987004
-#&gt;  [7,]  0.213910372
-#&gt;  [8,]  0.136916787
-#&gt;  [9,]  0.031629080
-#&gt; [10,] -0.034073198
-#&gt; [11,] -0.087291127
-#&gt; [12,] -0.126776541
-#&gt; [13,] -0.098471268
-#&gt; [14,] -0.062312072
-#&gt; [15,] -0.017117297
-#&gt; [16,]  0.011035167
-#&gt; [17,] -0.010138866
-#&gt; [18,] -0.007860938
-#&gt; [19,] -0.038367467
-#&gt; [20,] -0.093829942
-#&gt; [21,] -0.100467770
-#&gt; </div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>, <span class='fl'>0.9</span>, <span class='st'>"recursive"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>isoacf</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [1]  1.00000000  0.83607856  0.67522910  0.52866639  0.37729032  0.29098700</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [7]  0.21391037  0.13691679  0.03162908 -0.03407320 -0.03951841 -0.03951841</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [13] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [19] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [25] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [31] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [37] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [43] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [49] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [55] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [61] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [67] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [73] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [79] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [85] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [91] -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841 -0.03951841</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [97] -0.03951841 -0.03951841 -0.03951841 -0.03951841</span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/stats/acf.html'>acf</a></span><span class='op'>(</span><span class='va'>x</span>, plot <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>$</span><span class='va'>acf</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> , , 1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>               [,1]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1,]  1.000000000</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [2,]  0.836078563</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [3,]  0.675229096</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [4,]  0.528666391</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5,]  0.377290320</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [6,]  0.290987004</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [7,]  0.213910372</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [8,]  0.136916787</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9,]  0.031629080</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [10,] -0.034073198</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [11,] -0.087291127</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [12,] -0.126776541</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13,] -0.098471268</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [14,] -0.062312072</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [15,] -0.017117297</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [16,]  0.011035167</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [17,] -0.010138866</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [18,] -0.007860938</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [19,] -0.038367467</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [20,] -0.093829942</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [21,] -0.100467770</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

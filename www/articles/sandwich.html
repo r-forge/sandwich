@@ -89,7 +89,7 @@
 
       
 
-      </header><script src="sandwich_files/header-attrs-2.8/header-attrs.js"></script><script src="sandwich_files/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="sandwich_files/kePrint-0.0.1/kePrint.js"></script><link href="sandwich_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+      </header><script src="sandwich_files/header-attrs-2.11/header-attrs.js"></script><script src="sandwich_files/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="sandwich_files/kePrint-0.0.1/kePrint.js"></script><link href="sandwich_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -238,8 +238,8 @@
 ## HC3                        0.0284 0.0284
 ## Andrews' kernel HAC        0.0437 0.0351
 ## Newey-West                 0.0660 0.0482
-## Bootstrap                  0.0285 0.0282
-## Bootstrap (clustered)      0.0683 0.0493</code></pre>
+## Bootstrap                  0.0264 0.0286
+## Bootstrap (clustered)      0.0661 0.0541</code></pre>
 <p>This shows that due to the cluster-correlation in the data, the usual standard errors and cross-section covariances are much too small. In contrast, the different types of clustered standard errors are much larger and more appropriate here.</p>
 </div>
 <div id="tables-and-visualizations" class="section level2">
@@ -335,7 +335,7 @@ BIC
 Log.Lik.
 </td>
 <td style="text-align:center;">
--10572.604
+−10572.604
 </td>
 </tr>
 <tr>
@@ -448,10 +448,10 @@ Bootstrap (clustered)
 (0.066)
 </td>
 <td style="text-align:center;">
-(0.029)
+(0.026)
 </td>
 <td style="text-align:center;">
-(0.068)
+(0.066)
 </td>
 </tr>
 <tr>
@@ -511,10 +511,10 @@ x
 (0.048)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.028)
+(0.029)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.049)
+(0.054)
 </td>
 </tr>
 <tr>
@@ -648,7 +648,7 @@ Log.Lik.
 </tbody>
 </table>
 <p>Note that this includes a reduced list of summary statistics, e.g., no R-squared. This could be changed by adding the argument <code>save = TRUE</code> in the <code><a href="https://rdrr.io/r/base/lapply.html">lapply()</a></code> call above. This would save the full model object in addition to the <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code> output.</p>
-<p>Finally, the different coefficients with corresponding confidence intervals can be displayed using <code><a href="https://vincentarelbundock.github.io/modelsummary/reference/modelplot.html">modelplot(mlist)</a></code>. In the figure shown below we add some <em>ggplot2</em>-based customizations to the plot: omit the display for the intercepts (i.e., only show the <code>x</code> coefficients), flip the axes, and use a custom color palette that highlights the confidence intervals based on the disfferent clustered standard errors which are more appropriate for this data.</p>
+<p>Finally, the different coefficients with corresponding confidence intervals can be displayed using <code>modelplot(mlist)</code>. In the figure shown below we add some <em>ggplot2</em>-based customizations to the plot: omit the display for the intercepts (i.e., only show the <code>x</code> coefficients), flip the axes, and use a custom color palette that highlights the confidence intervals based on the disfferent clustered standard errors which are more appropriate for this data.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org">"ggplot2"</a></span><span class="op">)</span>
 <span class="va">pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">hcl.colors</a></span><span class="op">(</span><span class="fl">9</span>, <span class="st">"Dark 3"</span>, alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>

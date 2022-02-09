@@ -167,13 +167,13 @@
     be used (see examples). In case two variables are specified, the second variable
     is assumed to provide the time ordering (instead of using the argument
     <code>order.by</code>).
-    By default (<code>cluster = NULL</code>), either <code><a href='https://rdrr.io/r/base/attr.html'>attr(x, "cluster")</a></code> is used
+    By default (<code>cluster = NULL</code>), either <code>attr(x, "cluster")</code> is used
     (if any) or otherwise every observation is assumed to be its own cluster.</p></td>
     </tr>
     <tr>
       <th>order.by</th>
       <td><p>a variable, list/data.frame, or formula indicating the
-    aggregation within time periods. By default <code><a href='https://rdrr.io/r/base/attr.html'>attr(x, "order.by")</a></code> is used
+    aggregation within time periods. By default <code>attr(x, "order.by")</code> is used
     (if any) or specified through the second variable in <code>cluster</code> (see above).
     If neither is available,  observations within clusters are assumed to be ordered.</p></td>
     </tr>
@@ -225,7 +225,7 @@
   If <code><a href='https://rdrr.io/r/stats/expand.model.frame.html'>expand.model.frame</a></code> works for the model object <code>x</code>,
   the <code>cluster</code> (and potentially additionally <code>order.by</code>) can also be
   a <code>formula</code>. By default (<code>cluster = NULL, order.by = NULL</code>),
-  <code><a href='https://rdrr.io/r/base/attr.html'>attr(x, "cluster")</a></code> and <code><a href='https://rdrr.io/r/base/attr.html'>attr(x, "order.by")</a></code> are checked and
+  <code>attr(x, "cluster")</code> and <code>attr(x, "order.by")</code> are checked and
   used if available. If not, every observation is assumed to be its own cluster,
   and observations within clusters are assumed to be ordered accordingly.
   If the number of observations in the model <code>x</code> is smaller than in the
@@ -262,48 +262,57 @@
     <div class='dont-index'><p><code><a href='vcovCL.html'>vcovCL</a></code>, <code><a href='vcovPL.html'>vcovPL</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Petersen's data</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"PetersenCL"</span>, package <span class='op'>=</span> <span class='st'>"sandwich"</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span>, data <span class='op'>=</span> <span class='va'>PetersenCL</span><span class='op'>)</span>
-
-<span class='co'>## Beck and Katz (1995) standard errors</span>
-<span class='co'>## balanced panel</span>
-<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>m</span>, cluster <span class='op'>=</span> <span class='op'>~</span> <span class='va'>firm</span> <span class='op'>+</span> <span class='va'>year</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; (Intercept)           x 
-#&gt;  0.02220064  0.02527598 </div><div class='input'>
-<span class='co'>## unbalanced panel</span>
-<span class='va'>PU</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>PetersenCL</span>, <span class='op'>!</span><span class='op'>(</span><span class='va'>firm</span> <span class='op'>==</span> <span class='fl'>1</span> <span class='op'>&amp;</span> <span class='va'>year</span> <span class='op'>==</span> <span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>pu_lm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span>, data <span class='op'>=</span> <span class='va'>PU</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>pu_lm</span>, cluster <span class='op'>=</span> <span class='op'>~</span> <span class='va'>firm</span> <span class='op'>+</span> <span class='va'>year</span>, pairwise <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; (Intercept)           x 
-#&gt;  0.02206979  0.02533772 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>pu_lm</span>, cluster <span class='op'>=</span> <span class='op'>~</span> <span class='va'>firm</span> <span class='op'>+</span> <span class='va'>year</span>, pairwise <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; (Intercept)           x 
-#&gt;  0.02260277  0.02524119 </div><div class='input'>
-<span class='co'># \donttest{</span>
-<span class='co'>## the following specifications of cluster/order.by are equivalent</span>
-<span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>m</span>, cluster <span class='op'>=</span> <span class='op'>~</span> <span class='va'>firm</span> <span class='op'>+</span> <span class='va'>year</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;               (Intercept)             x
-#&gt; (Intercept)  4.928685e-04 -4.396037e-05
-#&gt; x           -4.396037e-05  6.388754e-04</div><div class='input'><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>m</span>, cluster <span class='op'>=</span> <span class='va'>PetersenCL</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"firm"</span>, <span class='st'>"year"</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;               (Intercept)             x
-#&gt; (Intercept)  4.928685e-04 -4.396037e-05
-#&gt; x           -4.396037e-05  6.388754e-04</div><div class='input'><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>m</span>, cluster <span class='op'>=</span> <span class='op'>~</span> <span class='va'>firm</span>, order.by <span class='op'>=</span> <span class='op'>~</span> <span class='va'>year</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;               (Intercept)             x
-#&gt; (Intercept)  4.928685e-04 -4.396037e-05
-#&gt; x           -4.396037e-05  6.388754e-04</div><div class='input'><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>m</span>, cluster <span class='op'>=</span> <span class='va'>PetersenCL</span><span class='op'>$</span><span class='va'>firm</span>, order.by <span class='op'>=</span> <span class='va'>PetersenCL</span><span class='op'>$</span><span class='va'>year</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;               (Intercept)             x
-#&gt; (Intercept)  4.928685e-04 -4.396037e-05
-#&gt; x           -4.396037e-05  6.388754e-04</div><div class='input'>
-<span class='co'>## these are also the same when observations within each</span>
-<span class='co'>## cluster are already ordered</span>
-<span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>m</span>, cluster <span class='op'>=</span> <span class='op'>~</span> <span class='va'>firm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;               (Intercept)             x
-#&gt; (Intercept)  4.928685e-04 -4.396037e-05
-#&gt; x           -4.396037e-05  6.388754e-04</div><div class='input'><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>m</span>, cluster <span class='op'>=</span> <span class='va'>PetersenCL</span><span class='op'>$</span><span class='va'>firm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;               (Intercept)             x
-#&gt; (Intercept)  4.928685e-04 -4.396037e-05
-#&gt; x           -4.396037e-05  6.388754e-04</div><div class='input'><span class='co'># }</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>## Petersen's data</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"PetersenCL"</span>, package <span class='op'>=</span> <span class='st'>"sandwich"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span>, data <span class='op'>=</span> <span class='va'>PetersenCL</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## Beck and Katz (1995) standard errors</span></span>
+<span class='r-in'><span class='co'>## balanced panel</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>m</span>, cluster <span class='op'>=</span> <span class='op'>~</span> <span class='va'>firm</span> <span class='op'>+</span> <span class='va'>year</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)           x </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  0.02220064  0.02527598 </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## unbalanced panel</span></span>
+<span class='r-in'><span class='va'>PU</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>PetersenCL</span>, <span class='op'>!</span><span class='op'>(</span><span class='va'>firm</span> <span class='op'>==</span> <span class='fl'>1</span> <span class='op'>&amp;</span> <span class='va'>year</span> <span class='op'>==</span> <span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>pu_lm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>x</span>, data <span class='op'>=</span> <span class='va'>PU</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>pu_lm</span>, cluster <span class='op'>=</span> <span class='op'>~</span> <span class='va'>firm</span> <span class='op'>+</span> <span class='va'>year</span>, pairwise <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)           x </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  0.02206979  0.02533772 </span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>pu_lm</span>, cluster <span class='op'>=</span> <span class='op'>~</span> <span class='va'>firm</span> <span class='op'>+</span> <span class='va'>year</span>, pairwise <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)           x </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  0.02260277  0.02524119 </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># \donttest{</span></span>
+<span class='r-in'><span class='co'>## the following specifications of cluster/order.by are equivalent</span></span>
+<span class='r-in'><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>m</span>, cluster <span class='op'>=</span> <span class='op'>~</span> <span class='va'>firm</span> <span class='op'>+</span> <span class='va'>year</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>               (Intercept)             x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)  4.928685e-04 -4.396037e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> x           -4.396037e-05  6.388754e-04</span>
+<span class='r-in'><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>m</span>, cluster <span class='op'>=</span> <span class='va'>PetersenCL</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"firm"</span>, <span class='st'>"year"</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>               (Intercept)             x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)  4.928685e-04 -4.396037e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> x           -4.396037e-05  6.388754e-04</span>
+<span class='r-in'><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>m</span>, cluster <span class='op'>=</span> <span class='op'>~</span> <span class='va'>firm</span>, order.by <span class='op'>=</span> <span class='op'>~</span> <span class='va'>year</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>               (Intercept)             x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)  4.928685e-04 -4.396037e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> x           -4.396037e-05  6.388754e-04</span>
+<span class='r-in'><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>m</span>, cluster <span class='op'>=</span> <span class='va'>PetersenCL</span><span class='op'>$</span><span class='va'>firm</span>, order.by <span class='op'>=</span> <span class='va'>PetersenCL</span><span class='op'>$</span><span class='va'>year</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>               (Intercept)             x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)  4.928685e-04 -4.396037e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> x           -4.396037e-05  6.388754e-04</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## these are also the same when observations within each</span></span>
+<span class='r-in'><span class='co'>## cluster are already ordered</span></span>
+<span class='r-in'><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>m</span>, cluster <span class='op'>=</span> <span class='op'>~</span> <span class='va'>firm</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>               (Intercept)             x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)  4.928685e-04 -4.396037e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> x           -4.396037e-05  6.388754e-04</span>
+<span class='r-in'><span class='fu'>vcovPC</span><span class='op'>(</span><span class='va'>m</span>, cluster <span class='op'>=</span> <span class='va'>PetersenCL</span><span class='op'>$</span><span class='va'>firm</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>               (Intercept)             x</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)  4.928685e-04 -4.396037e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> x           -4.396037e-05  6.388754e-04</span>
+<span class='r-in'><span class='co'># }</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
