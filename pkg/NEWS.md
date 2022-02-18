@@ -13,12 +13,12 @@
 
 * Speed improvement in `vcovBS.lm()`: For `"xy"` bootstrap, `.lm.fit()` rather than
   `lm.fit()` is used which is somewhat more efficient in some situations (suggested
-  by Grant McDermott). For `"residual"` and wild bootstrap, the bootstrap now
-  samples the dependent variable and applies the QR decomposition jointly only
-  once (`qrjoint = TRUE`) rather than sampling coefficients by applying the
-  QR decomposition separately in each iteration (`qrjoint = FALSE`). The joint
-  QR needs somewhat more memory but is somewhat faster, especially if the number
-  of coefficients is large (proposed by Alexander Fischer).
+  by Grant McDermott). For `"residual"` and wild bootstrap, the bootstrap by default
+  still samples coefficients via QR decomposition in each iteration (`qrjoint = FALSE`)
+  but may alternatively sample the dependent variable and then apply the QR
+  decomposition jointly only once (`qrjoint = TRUE`). If the sample size (and the
+  number of coefficients) is large, then `qrjoint = TRUE` maybe significantly faster
+  while requiring much more memory (proposed by Alexander Fischer).
 
 * Enable passing score matrix (as computed by `estfun()`) directly to
   `bwAndrews()` and `bwNeweyWest()`. If this is used, the score matrix should

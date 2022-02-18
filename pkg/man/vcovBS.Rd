@@ -22,7 +22,7 @@ vcovBS(x, \dots)
 
 \method{vcovBS}{lm}(x, cluster = NULL, R = 250, type = "xy", \dots,
   fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL,
-  qrjoint = TRUE)
+  qrjoint = FALSE)
 
 \method{vcovBS}{glm}(x, cluster = NULL, R = 250, start = FALSE, \dots,
   fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL)
@@ -64,7 +64,9 @@ vcovBS(x, \dots)
     \code{type != "xy"}), should the bootstrap sample the dependent variable
     and then apply the QR decomposition jointly only once? If \code{FALSE},
     the boostrap applies the QR decomposition separately in each iteration
-    and samples coefficients directly.}
+    and samples coefficients directly. If the sample size (and the number of
+    coefficients) is large, then \code{qrjoint = TRUE} maybe significantly
+    faster while requiring much more memory.}
 }
 
 \details{
