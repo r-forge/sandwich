@@ -113,15 +113,6 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
       ## working residuals
       res <- rowMeans(ef/X, na.rm = TRUE)
       res[apply(abs(ef) < .Machine$double.eps, 1L, all)] <- 0
-
-      ## matrix square root
-      matpower <- function(X, p) {
-        if((ncol(X) == 1L) && (nrow(X) == 1L)) return(X^p)
-        Xeig <- eigen(X, symmetric = TRUE)
-        if(any(Xeig$values < 0)) stop("matrix is not positive semidefinite")
-        sqomega <- diag(Xeig$values^p)
-        return(Xeig$vectors %*% sqomega %*% t(Xeig$vectors))
-      }
     }
   }
   
@@ -156,7 +147,7 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
 	    X[ij, , drop = FALSE] %*% XX1 %*% t(X[ij, , drop = FALSE]) %*% diag(w[ij], nrow = length(ij), ncol = length(ij))
 	  }
           Hij <- if(type == "HC2") {
-	    matpower(diag(length(ij)) - Hij, -0.5)
+	    matrixpower(diag(length(ij)) - Hij, -0.5, symmetric = is.null(w) || any(abs(w - w[1L]) > 0))
 	  } else {
 	    solve(diag(length(ij)) - Hij)
 	  }
@@ -181,4 +172,17 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
   if(type == "HC1") rval <- (n - 1L)/(n - k) * rval
 
   return(rval)
+}
+
+## matrix power (for square root and inverse square root)
+matrixpower <- function(X, p, symmetric = NULL) {
+  if((ncol(X) == 1L) && (nrow(X) == 1L)) return(X^p)
+  if(is.null(symmetric)) symmetric <- isSymmetric(X)
+  Xeig <- eigen(X, symmetric = symmetric)
+  if(any(Xeig$values < 0)) stop("matrix is not positive semidefinite")
+  if(symmetric) {
+    Xeig$vectors %*% ((Xeig$values^p) * t(Xeig$vectors))
+  } else {
+    Xeig$vectors %*% ((Xeig$values^p) * solve(Xeig$vectors))
+  }
 }

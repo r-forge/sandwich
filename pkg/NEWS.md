@@ -6,6 +6,11 @@
   correlation is set to zero, yielding the "pure" panel Newey-West covariance
   matrix.
 
+* Bug fix in `vcovCL(..., type = "HC2")` for `glm` objects or `lm` objects
+  with weights. The code had erroneously assumed that the hat matrices were
+  all symmetric (as in the `lm` case without weights). This is corrected now.
+  (Detected and reported by Bixi Zhang.)
+
 * Issue a warning in `vcovHC()` for HC2/HC3/HC4/HC4m/HC5 if any of the hat values
   are numerically equal to 1. This leads to numerically unstable covariances,
   in the most extreme case `NaN` because the associated residuals are equal to
