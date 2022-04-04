@@ -147,7 +147,7 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
 	    X[ij, , drop = FALSE] %*% XX1 %*% t(X[ij, , drop = FALSE]) %*% diag(w[ij], nrow = length(ij), ncol = length(ij))
 	  }
           Hij <- if(type == "HC2") {
-	    matrixpower(diag(length(ij)) - Hij, -0.5, symmetric = is.null(w) || any(abs(w - w[1L]) > 0))
+	    matrixpower(diag(length(ij)) - Hij, -0.5)
 	  } else {
 	    solve(diag(length(ij)) - Hij)
 	  }
@@ -175,14 +175,25 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
 }
 
 ## matrix power (for square root and inverse square root)
-matrixpower <- function(X, p, symmetric = NULL) {
+matrixpower <- function(X, p, symmetric = NULL, tol = .Machine$double.eps^(1/1.3)) {
   if((ncol(X) == 1L) && (nrow(X) == 1L)) return(X^p)
   if(is.null(symmetric)) symmetric <- isSymmetric(X)
   Xeig <- eigen(X, symmetric = symmetric)
-  if(any(Xeig$values < 0)) stop("matrix is not positive semidefinite")
+  Xeig$values[Xeig$values < tol] <- 0
+  # if(any(Xeig$values < 0)) stop("matrix is not positive semidefinite")
   if(symmetric) {
     Xeig$vectors %*% ((Xeig$values^p) * t(Xeig$vectors))
   } else {
-    Xeig$vectors %*% ((Xeig$values^p) * solve(Xeig$vectors))
+    Xeig$vectors %*% ((Xeig$values^p) * matrixinverse(Xeig$vectors))
   }
+}
+
+matrixinverse <- function(X, tol = .Machine$double.eps^(1/1.3)) {
+  if((ncol(X) == 1L) && (nrow(X) == 1L)) return(1/X)
+  inv <- try(solve(X), silent = TRUE)
+  if(!inherits(inv, "try-error")) return(inv)
+  Xsvd <- svd(X)
+  ok <- Xsvd$d > max(tol * Xsvd$d[1L], 0)
+  inv <- Xsvd$v[, ok, drop = FALSE] %*% ((1/Xsvd$d[ok]) * t(Xsvd$u[, ok, drop = FALSE]))
+  return(inv)
 }
