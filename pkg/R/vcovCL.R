@@ -179,6 +179,11 @@ matrixpower <- function(X, p, symmetric = NULL, tol = .Machine$double.eps^(1/1.3
   if((ncol(X) == 1L) && (nrow(X) == 1L)) return(X^p)
   if(is.null(symmetric)) symmetric <- isSymmetric(X)
   Xeig <- eigen(X, symmetric = symmetric)
+  if(is.complex(Xeig$values)) {
+    if(any(abs(Im(Xeig$values)) > tol)) warning("complex eigen values of X")
+    Xeig$values <- Re(Xeig$values)
+    Xeig$vectors <- Re(Xeig$vectors)
+  }
   Xeig$values[Xeig$values < tol] <- 0
   # if(any(Xeig$values < 0)) stop("matrix is not positive semidefinite")
   if(symmetric) {
