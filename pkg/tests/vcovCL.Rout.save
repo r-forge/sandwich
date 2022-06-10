@@ -1,6 +1,6 @@
 
-R version 3.5.1 (2018-07-02) -- "Feather Spray"
-Copyright (C) 2018 The R Foundation for Statistical Computing
+R version 4.2.0 (2022-04-22) -- "Vigorous Calisthenics"
+Copyright (C) 2022 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -89,7 +89,8 @@ x           -2.797984e-05  2.886048e-03
 > 
 > 
 > ## comparison with multiwayvcov::cluster.vcov
-> 
+> if(!require("multiwayvcov")) q()
+Loading required package: multiwayvcov
 > all.equal(
 +   vcovCL(m, cluster = ~ firm),
 +   multiwayvcov::cluster.vcov(m, ~ firm)
@@ -150,7 +151,7 @@ x           -6.592912e-05  2.568236e-03
 > all.equal(vcovCL(m, cluster = ~ firm, type = "HC2"), hc2m, tol = 1e-5)
 [1] TRUE
 > all.equal(vcovCL(b, cluster = ~ firm, type = "HC2"), hc2b, tol = 2e-4)
-[1] TRUE
+[1] "Mean relative difference: 0.0002815118"
 > 
 > 
 > ## more examples
@@ -176,12 +177,12 @@ institutions -0.00217881  3.571562e-05
 institutions -0.002176097  3.567114e-05
 > vcovCL(n, cluster = ~ company, type = "HC2", cadjust = TRUE)
               (Intercept)  institutions
-(Intercept)   0.158861902 -2.183752e-03
-institutions -0.002183752  3.580287e-05
+(Intercept)   0.158866230 -2.183796e-03
+institutions -0.002183796  3.580316e-05
 > vcovCL(n, cluster = ~ company, type = "HC2", cadjust = FALSE)
               (Intercept)  institutions
-(Intercept)   0.158664066 -2.181032e-03
-institutions -0.002181032  3.575829e-05
+(Intercept)   0.158668389 -2.181076e-03
+institutions -0.002181076  3.575858e-05
 > vcovCL(n, cluster = ~ company, type = "HC3", cadjust = TRUE)
               (Intercept)  institutions
 (Intercept)   0.159391059 -2.191881e-03
@@ -209,12 +210,12 @@ institutions -0.001732082  3.753134e-05
 institutions -0.001733953  3.652056e-05
 > vcovCL(n, cluster = ~ company + year, type = "HC2", cadjust = TRUE)
               (Intercept)  institutions
-(Intercept)   0.139564717 -1.744788e-03
-institutions -0.001744788  3.794807e-05
+(Intercept)   0.139696665 -1.751419e-03
+institutions -0.001751419  3.815207e-05
 > vcovCL(n, cluster = ~ company + year, type = "HC2", cadjust = FALSE)
               (Intercept)  institutions
-(Intercept)   0.138390873 -1.745785e-03
-institutions -0.001745785  3.690047e-05
+(Intercept)   0.138508637 -1.751684e-03
+institutions -0.001751684  3.708183e-05
 > vcovCL(n, cluster = ~ company + year, type = "HC3", cadjust = TRUE)
              (Intercept)  institutions
 (Intercept)   0.14163927 -1.782220e-03
@@ -295,4 +296,4 @@ institutions -0.0003015997  1.512079e-05
 > 
 > proc.time()
    user  system elapsed 
- 24.538   0.183  24.719 
+ 65.259   0.123  65.398 

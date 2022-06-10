@@ -24,7 +24,7 @@ vcovCL(m, cluster = ~ firm + year, type = "HC3", cadjust = FALSE)
 
 
 ## comparison with multiwayvcov::cluster.vcov
-
+if(!require("multiwayvcov")) q()
 all.equal(
   vcovCL(m, cluster = ~ firm),
   multiwayvcov::cluster.vcov(m, ~ firm)
