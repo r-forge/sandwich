@@ -38,6 +38,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -50,7 +52,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">sandwich</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.0-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.0-2</span>
       </span>
     </div>
 
@@ -60,7 +62,7 @@
   <a href="articles/sandwich.html">Get started</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -99,83 +101,89 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="robust-covariance-matrix-estimators" class="section level2">
-<h2 class="hasAnchor">
-<a href="#robust-covariance-matrix-estimators" class="anchor"></a>Robust Covariance Matrix Estimators</h2>
+<div class="section level2">
+<h2 id="robust-covariance-matrix-estimators">Robust Covariance Matrix Estimators<a class="anchor" aria-label="anchor" href="#robust-covariance-matrix-estimators"></a>
+</h2>
 <p>Model-robust standard error estimators for cross-sectional, time series, clustered, panel, and longitudinal data. Modular object-oriented implementation with support for many model objects, including: <code>lm</code>, <code>glm</code>, <code>survreg</code>, <code>coxph</code>, <code>mlogit</code>, <code>polr</code>, <code>hurdle</code>, <code>zeroinfl</code>, and beyond.</p>
 <p><strong>Sandwich covariances for general parametric models:</strong></p>
 <p><img alt="Central limit theorem and sandwich estimator" src="reference/figures/README-sandwich.svg" style="border:10px solid transparent"></p>
 <p><strong>Object-oriented implementation in R:</strong></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://sandwich.R-Forge.R-project.org/">"sandwich"</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st">"lmtest"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"PetersenCL"</span>, package <span class="op">=</span> <span class="st">"sandwich"</span><span class="op">)</span>
-<span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="co">## </span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="co">## t test of coefficients:</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a><span class="co">## </span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a><span class="co">## (Intercept)   0.0297     0.0284    1.05      0.3    </span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a><span class="co">## x             1.0348     0.0284   36.45   &lt;2e-16 ***</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a><span class="co">## ---</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://sandwich.R-Forge.R-project.org/">"sandwich"</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"lmtest"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"PetersenCL"</span>, package <span class="op">=</span> <span class="st">"sandwich"</span><span class="op">)</span>
+<span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="do">## t test of coefficients:</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="do">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="do">## (Intercept)   0.0297     0.0284    1.05      0.3    </span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="do">## x             1.0348     0.0284   36.45   &lt;2e-16 ***</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="do">## ---</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="do">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">vcovCL</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="co">## </span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="co">## t test of coefficients:</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="co">## </span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a><span class="co">## (Intercept)   0.0297     0.0670    0.44     0.66    </span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a><span class="co">## x             1.0348     0.0506   20.45   &lt;2e-16 ***</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a><span class="co">## ---</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">vcovCL</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="do">## t test of coefficients:</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="do">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="do">## (Intercept)   0.0297     0.0670    0.44     0.66    </span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="do">## x             1.0348     0.0506   20.45   &lt;2e-16 ***</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="do">## ---</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="do">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=sandwich">https://​cloud.r-project.org/​package=sandwich</a>
-</li>
-<li>Report a bug at <br><a href="https://sandwich.R-Forge.R-project.org/contact.html">https://​sandwich.R-Forge.R-project.org/​contact.html</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=sandwich" class="external-link">View on CRAN</a></li>
+<li><a href="https://sandwich.R-Forge.R-project.org/contact.html">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://www.r-project.org/Licenses/GPL-2">GPL-2</a> | <a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a>
+<a href="https://www.r-project.org/Licenses/GPL-2" class="external-link">GPL-2</a> | <a href="https://www.r-project.org/Licenses/GPL-3" class="external-link">GPL-3</a>
 </li>
 </ul>
 </div>
+
+
 <div class="citation">
-<h2>Citation</h2>
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html">Citing sandwich</a></li>
+<li><a href="authors.html#citation">Citing sandwich</a></li>
 </ul>
 </div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Achim Zeileis <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-0918-3766" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Achim Zeileis <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-0918-3766" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Thomas Lumley <br><small class="roles"> Author </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
+
+
 
   </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Achim Zeileis, Thomas Lumley.</p>
+  <p></p>
+<p>Developed by Achim Zeileis, Thomas Lumley.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>
@@ -183,6 +191,8 @@
 
   
 
+
+  
 
   </body>
 </html>

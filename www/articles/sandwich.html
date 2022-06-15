@@ -30,6 +30,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -42,7 +44,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sandwich</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.0-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.0-2</span>
       </span>
     </div>
 
@@ -52,7 +54,7 @@
   <a href="../articles/sandwich.html">Get started</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -89,12 +91,14 @@
 
       
 
-      </header><script src="sandwich_files/header-attrs-2.11/header-attrs.js"></script><script src="sandwich_files/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="sandwich_files/kePrint-0.0.1/kePrint.js"></script><link href="sandwich_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+      </header><script src="sandwich_files/kePrint-0.0.1/kePrint.js"></script><link href="sandwich_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>sandwich: Robust Covariance Matrix Estimators</h1>
-                        <h4 class="author">Achim Zeileis, Thomas Lumley, Nathaniel Graham, Susanne Köll</h4>
+      <h1 data-toc-skip>sandwich: Robust Covariance Matrix
+Estimators</h1>
+                        <h4 data-toc-skip class="author">Achim Zeileis,
+Thomas Lumley, Nathaniel Graham, Susanne Köll</h4>
             
       
       
@@ -104,122 +108,217 @@
 
     
     
-<div id="overview" class="section level2">
-<h2 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h2>
-<p>The <a href="https://CRAN.R-project.org/package=sandwich"><strong>sandwich</strong></a> package is designed for obtaining covariance matrix estimators of parameter estimates in statistical models where certain model assumptions have been violated. More specifically, the estimators are useful in a situation where the model’s score function was correctly specified (e.g., the mean function in a linear regression model) but that the remaining likelihood was potentially misspecified (e.g., due to heteroscedasticity or a lack of independence). In this case, the usual parameter estimates are still consistent but the associated covariance matrix estimate is not, thus potentially biasing the inference such as parameter tests or confidence intervals. Luckily, there are covariance matrix estimators that are consistent under these misspecifications and that can simply be plugged in to the usual inference based on the central limit theorem. Because the covariance matrix estimators are a product of two outer “bread” matrices (based on the Hessian of the log-likelihood) and an innter “meat” matrix (based on cross-products of the corresponding score function), they are also known as “sandwich” covariances.</p>
-<p>The <em>sandwich</em> package provides a wide range of such sandwich covariances in an object-oriented framework. This means that it takes the models fitted by another package without any modification or adjustment, extracts certain quantities from them, and computes the different covariance matrices based on these. For <em>sandwich</em> to work the model class has to provide at least an <code><a href="../reference/estfun.html">estfun()</a></code> method for extracting the score matrix (containing the gradient contributions per observation) and a <code><a href="../reference/bread.html">bread()</a></code> method for extracting the inverse of some estimate of the Fisher information (that most of the “usual” covariances are based on). Some sandwich covariances also need further methods, e.g., <code><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix()</a></code> or <code><a href="https://rdrr.io/r/stats/influence.measures.html">hatvalues()</a></code> etc. The covariances provided are:</p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>The <a href="https://CRAN.R-project.org/package=sandwich" class="external-link"><strong>sandwich</strong></a>
+package is designed for obtaining covariance matrix estimators of
+parameter estimates in statistical models where certain model
+assumptions have been violated. More specifically, the estimators are
+useful in a situation where the model’s score function was correctly
+specified (e.g., the mean function in a linear regression model) but
+that the remaining likelihood was potentially misspecified (e.g., due to
+heteroscedasticity or a lack of independence). In this case, the usual
+parameter estimates are still consistent but the associated covariance
+matrix estimate is not, thus potentially biasing the inference such as
+parameter tests or confidence intervals. Luckily, there are covariance
+matrix estimators that are consistent under these misspecifications and
+that can simply be plugged in to the usual inference based on the
+central limit theorem. Because the covariance matrix estimators are a
+product of two outer “bread” matrices (based on the Hessian of the
+log-likelihood) and an innter “meat” matrix (based on cross-products of
+the corresponding score function), they are also known as “sandwich”
+covariances.</p>
+<p>The <em>sandwich</em> package provides a wide range of such sandwich
+covariances in an object-oriented framework. This means that it takes
+the models fitted by another package without any modification or
+adjustment, extracts certain quantities from them, and computes the
+different covariance matrices based on these. For <em>sandwich</em> to
+work the model class has to provide at least an <code><a href="../reference/estfun.html">estfun()</a></code>
+method for extracting the score matrix (containing the gradient
+contributions per observation) and a <code><a href="../reference/bread.html">bread()</a></code> method for
+extracting the inverse of some estimate of the Fisher information (that
+most of the “usual” covariances are based on). Some sandwich covariances
+also need further methods, e.g., <code><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix()</a></code> or
+<code><a href="https://rdrr.io/r/stats/influence.measures.html" class="external-link">hatvalues()</a></code> etc. The covariances provided are:</p>
 <ul>
 <li>Basic <code><a href="../reference/sandwich.html">sandwich()</a></code> for cross-section data.</li>
 <li>
-<code><a href="../reference/vcovHC.html">vcovHC()</a></code> for heteroscedasticity-consistent (HC) covariances in (generalized) linear models.</li>
+<code><a href="../reference/vcovHC.html">vcovHC()</a></code> for heteroscedasticity-consistent (HC)
+covariances in (generalized) linear models.</li>
 <li>
-<code><a href="../reference/vcovHAC.html">vcovHAC()</a></code> for heteroscedastiticy- and autocorrelation-consistent (HAC) covariances in time series data with convenience interfaces <code><a href="../reference/weightsAndrews.html">kernHAC()</a></code> (Andrews’ kernel HAC estimator), <code><a href="../reference/NeweyWest.html">NeweyWest()</a></code>, and <code><a href="../reference/weightsLumley.html">weave()</a></code> (weighted empirical adaptive variance estimation by Lumley and Heagerty).</li>
+<code><a href="../reference/vcovHAC.html">vcovHAC()</a></code> for heteroscedastiticy- and
+autocorrelation-consistent (HAC) covariances in time series data with
+convenience interfaces <code><a href="../reference/weightsAndrews.html">kernHAC()</a></code> (Andrews’ kernel HAC
+estimator), <code><a href="../reference/NeweyWest.html">NeweyWest()</a></code>, and <code><a href="../reference/weightsLumley.html">weave()</a></code> (weighted
+empirical adaptive variance estimation by Lumley and Heagerty).</li>
 <li>
-<code><a href="../reference/vcovCL.html">vcovCL()</a></code> for clustered covariances (including multiway clustering).</li>
+<code><a href="../reference/vcovCL.html">vcovCL()</a></code> for clustered covariances (including multiway
+clustering).</li>
 <li>
-<code><a href="../reference/vcovPL.html">vcovPL()</a></code> and <code><a href="../reference/vcovPC.html">vcovPC()</a></code> for panel and panel-corrected covariances.</li>
+<code><a href="../reference/vcovPL.html">vcovPL()</a></code> and <code><a href="../reference/vcovPC.html">vcovPC()</a></code> for panel and
+panel-corrected covariances.</li>
 <li>
-<code><a href="../reference/vcovOPG.html">vcovOPG()</a></code> for outer-product-of-gradients covariances.</li>
+<code><a href="../reference/vcovOPG.html">vcovOPG()</a></code> for outer-product-of-gradients
+covariances.</li>
 <li>
-<code><a href="../reference/vcovBS.html">vcovBS()</a></code> for bootstrap covariances (with default method and dedicated fast and more flexible methods for <code>lm</code> and <code>glm</code> objects).</li>
+<code><a href="../reference/vcovBS.html">vcovBS()</a></code> for bootstrap covariances (with default method
+and dedicated fast and more flexible methods for <code>lm</code> and
+<code>glm</code> objects).</li>
 </ul>
-<p>These can be applied to many different model classes, including <code>lm</code>, <code>glm</code>, <code>survreg</code>, <code>coxph</code>, <code>mlogit</code>, <code>polr</code>, <code>hurdle</code>, <code>zeroinfl</code>, <code>ivreg</code>, <code>betareg</code>, and many more. (There are some exceptions, though, not all covariances are applicable to all models).</p>
-<p>The resulting covariances can be subsequently plugged in to various functions for Wald-type inference, including <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code>, <code><a href="https://rdrr.io/pkg/lmtest/man/waldtest.html">waldtest()</a></code>, and <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coefci()</a></code> from the <a href="https://CRAN.R-project.org/package=lmtest"><strong>lmtest</strong></a> package or <code>Anova()</code>, <code>Confint()</code>, <code>S()</code>, <code>linearHypothesis()</code>, and <code>deltaMethod()</code> from <a href="https://CRAN.R-project.org/package=car"><strong>car</strong></a> package.</p>
-<p>Several R packages can be used to create model summary tables or visualizations based on the covariance and inference functions above. In particular <a href="https://broom.tidymodels.org/"><strong>broom</strong></a> provides a unified interface for collecting information about models, including a method for <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code> objects. Based on <em>broom</em> several packages provide model summary tables with the <a href="https://vincentarelbundock.github.io/modelsummary/"><strong>modelsummary</strong></a> package being particularly versatile, including a graphical <code><a href="https://vincentarelbundock.github.io/modelsummary/reference/modelplot.html">modelplot()</a></code> to go along with the tabular <code><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html">msummary()</a></code>.</p>
+<p>These can be applied to many different model classes, including
+<code>lm</code>, <code>glm</code>, <code>survreg</code>,
+<code>coxph</code>, <code>mlogit</code>, <code>polr</code>,
+<code>hurdle</code>, <code>zeroinfl</code>, <code>ivreg</code>,
+<code>betareg</code>, and many more. (There are some exceptions, though,
+not all covariances are applicable to all models).</p>
+<p>The resulting covariances can be subsequently plugged in to various
+functions for Wald-type inference, including <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest()</a></code>,
+<code><a href="https://rdrr.io/pkg/lmtest/man/waldtest.html" class="external-link">waldtest()</a></code>, and <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coefci()</a></code> from the <a href="https://CRAN.R-project.org/package=lmtest" class="external-link"><strong>lmtest</strong></a>
+package or <code>Anova()</code>, <code>Confint()</code>,
+<code>S()</code>, <code>linearHypothesis()</code>, and
+<code>deltaMethod()</code> from <a href="https://CRAN.R-project.org/package=car" class="external-link"><strong>car</strong></a>
+package.</p>
+<p>Several R packages can be used to create model summary tables or
+visualizations based on the covariance and inference functions above. In
+particular <a href="https://broom.tidymodels.org/" class="external-link"><strong>broom</strong></a> provides
+a unified interface for collecting information about models, including a
+method for <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest()</a></code> objects. Based on <em>broom</em>
+several packages provide model summary tables with the <a href="https://vincentarelbundock.github.io/modelsummary/" class="external-link"><strong>modelsummary</strong></a>
+package being particularly versatile, including a graphical
+<code><a href="https://vincentarelbundock.github.io/modelsummary/reference/modelplot.html" class="external-link">modelplot()</a></code> to go along with the tabular
+<code><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary()</a></code>.</p>
 </div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>The stable release version of <em>sandwich</em> is hosted on the Comprehensive R Archive Network (CRAN) at <a href="https://CRAN.R-project.org/package=sandwich" class="uri">https://CRAN.R-project.org/package=sandwich</a> and can be installed via</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>The stable release version of <em>sandwich</em> is hosted on the
+Comprehensive R Archive Network (CRAN) at <a href="https://CRAN.R-project.org/package=sandwich" class="external-link uri">https://CRAN.R-project.org/package=sandwich</a> and can be
+installed via</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"sandwich"</span><span class="op">)</span></code></pre></div>
-<p>The development version of <em>sandwich</em> is hosted on R-Forge at <a href="https://R-Forge.R-project.org/projects/sandwich/" class="uri">https://R-Forge.R-project.org/projects/sandwich/</a> in a Subversion (SVN) repository. It can be installed via</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"sandwich"</span><span class="op">)</span></code></pre></div>
+<p>The development version of <em>sandwich</em> is hosted on R-Forge at
+<a href="https://R-Forge.R-project.org/projects/sandwich/" class="external-link uri">https://R-Forge.R-project.org/projects/sandwich/</a> in a
+Subversion (SVN) repository. It can be installed via</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"sandwich"</span>, repos <span class="op">=</span> <span class="st">"https://R-Forge.R-project.org"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"sandwich"</span>, repos <span class="op">=</span> <span class="st">"https://R-Forge.R-project.org"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="publications" class="section level2">
-<h2 class="hasAnchor">
-<a href="#publications" class="anchor"></a>Publications</h2>
-<p>The package development was accompanied by three publications in the <em>Journal of Statistical Software</em>, describing the initial HC and HAC implementation for linear models, the corresponding object-oriented extension, and the generalization to clustered and panel covariances, respectively.</p>
+<div class="section level2">
+<h2 id="publications">Publications<a class="anchor" aria-label="anchor" href="#publications"></a>
+</h2>
+<p>The package development was accompanied by three publications in the
+<em>Journal of Statistical Software</em>, describing the initial HC and
+HAC implementation for linear models, the corresponding object-oriented
+extension, and the generalization to clustered and panel covariances,
+respectively.</p>
 <ul>
-<li>Zeileis A (2004). “Econometric Computing with HC and HAC Covariance Matrix Estimators.” <em>Journal of Statistical Software</em>, <strong>11</strong>(10), 1-17. <a href="https://doi.org/10.18637/jss.v011.i10">doi:10.18637/jss.v011.i10</a>.</li>
-<li>Zeileis A (2006). “Object-Oriented Computation of Sandwich Estimators.” <em>Journal of Statistical Software</em>, <strong>16</strong>(9), 1-16. <a href="https://doi.org/10.18637/jss.v016.i09">doi:10.18637/jss.v016.i09</a>.</li>
-<li>Zeileis A, Köll S, Graham N (2020). “Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.” <em>Journal of Statistical Software</em>, <strong>95</strong>(1), 1-36. <a href="https://doi.org/10.18637/jss.v095.i01">doi:10.18637/jss.v095.i01</a>.</li>
+<li>Zeileis A (2004). “Econometric Computing with HC and HAC Covariance
+Matrix Estimators.” <em>Journal of Statistical Software</em>,
+<strong>11</strong>(10), 1-17. <a href="https://doi.org/10.18637/jss.v011.i10" class="external-link">doi:10.18637/jss.v011.i10</a>.</li>
+<li>Zeileis A (2006). “Object-Oriented Computation of Sandwich
+Estimators.” <em>Journal of Statistical Software</em>,
+<strong>16</strong>(9), 1-16. <a href="https://doi.org/10.18637/jss.v016.i09" class="external-link">doi:10.18637/jss.v016.i09</a>.</li>
+<li>Zeileis A, Köll S, Graham N (2020). “Various Versatile Variances: An
+Object-Oriented Implementation of Clustered Covariances in R.”
+<em>Journal of Statistical Software</em>, <strong>95</strong>(1), 1-36.
+<a href="https://doi.org/10.18637/jss.v095.i01" class="external-link">doi:10.18637/jss.v095.i01</a>.</li>
 </ul>
 </div>
-<div id="illustrations" class="section level2">
-<h2 class="hasAnchor">
-<a href="#illustrations" class="anchor"></a>Illustrations</h2>
-<p>To illustrate the functionality of the <code>sandwich</code> package we employ a well-known data set that was created by Petersen for benchmarking clustered standard errors. However, because the data is so simple, we will use it here to illustrate all sorts of covariances (not only clustered ones).</p>
-<p>The data come from a simple linear regression of a response <code>y</code> on an explanatory variable <code>x</code>, but the data are clustered by <code>firm</code> (500 firms) and <code>year</code> (10 years). The data can be loaded and the model fitted by ordinary least squares (OLS):</p>
+<div class="section level2">
+<h2 id="illustrations">Illustrations<a class="anchor" aria-label="anchor" href="#illustrations"></a>
+</h2>
+<p>To illustrate the functionality of the <code>sandwich</code> package
+we employ a well-known data set that was created by Petersen for
+benchmarking clustered standard errors. However, because the data is so
+simple, we will use it here to illustrate all sorts of covariances (not
+only clustered ones).</p>
+<p>The data come from a simple linear regression of a response
+<code>y</code> on an explanatory variable <code>x</code>, but the data
+are clustered by <code>firm</code> (500 firms) and <code>year</code> (10
+years). The data can be loaded and the model fitted by ordinary least
+squares (OLS):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"PetersenCL"</span>, package <span class="op">=</span> <span class="st">"sandwich"</span><span class="op">)</span>
-<span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></code></pre></div>
-<pre><code>## 
-## Call:
-## lm(formula = y ~ x, data = PetersenCL)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -6.761 -1.368 -0.017  1.339  8.678 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)   0.0297     0.0284    1.05      0.3    
-## x             1.0348     0.0286   36.20   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 2.01 on 4998 degrees of freedom
-## Multiple R-squared:  0.208,  Adjusted R-squared:  0.208 
-## F-statistic: 1.31e+03 on 1 and 4998 DF,  p-value: &lt;2e-16</code></pre>
-<p>The regression summary for a linear model uses the “usual” OLS standard errors, assuming that the data are uncorrelated and homoscedastic. The summary provides partial Wald tests for the regression coefficients and also an over <em>F</em> test assessing all the regressors, i.e., in this case equivalent to a <em>t</em> test of <code>x</code>. To obtain the analogous tests and corresponding confidence intervals using the basic “robust” sandwich covariance for cross-section data we can combine <em>sandwich</em> with the <em>lmtest</em> package:</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"PetersenCL"</span>, package <span class="op">=</span> <span class="st">"sandwich"</span><span class="op">)</span>
+<span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## </span>
+<span class="co">## Call:</span>
+<span class="co">## lm(formula = y ~ x, data = PetersenCL)</span>
+<span class="co">## </span>
+<span class="co">## Residuals:</span>
+<span class="co">##    Min     1Q Median     3Q    Max </span>
+<span class="co">## -6.761 -1.368 -0.017  1.339  8.678 </span>
+<span class="co">## </span>
+<span class="co">## Coefficients:</span>
+<span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)    </span>
+<span class="co">## (Intercept)   0.0297     0.0284    1.05      0.3    </span>
+<span class="co">## x             1.0348     0.0286   36.20   &lt;2e-16 ***</span>
+<span class="co">## ---</span>
+<span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
+<span class="co">## </span>
+<span class="co">## Residual standard error: 2.01 on 4998 degrees of freedom</span>
+<span class="co">## Multiple R-squared:  0.208,  Adjusted R-squared:  0.208 </span>
+<span class="co">## F-statistic: 1.31e+03 on 1 and 4998 DF,  p-value: &lt;2e-16</span></code></pre>
+<p>The regression summary for a linear model uses the “usual” OLS
+standard errors, assuming that the data are uncorrelated and
+homoscedastic. The summary provides partial Wald tests for the
+regression coefficients and also an over <em>F</em> test assessing all
+the regressors, i.e., in this case equivalent to a <em>t</em> test of
+<code>x</code>. To obtain the analogous tests and corresponding
+confidence intervals using the basic “robust” sandwich covariance for
+cross-section data we can combine <em>sandwich</em> with the
+<em>lmtest</em> package:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://sandwich.R-Forge.R-project.org/">"sandwich"</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st">"lmtest"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></code></pre></div>
-<pre><code>## 
-## t test of coefficients:
-## 
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)   0.0297     0.0284    1.05      0.3    
-## x             1.0348     0.0284   36.45   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://sandwich.R-Forge.R-project.org/">"sandwich"</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"lmtest"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## </span>
+<span class="co">## t test of coefficients:</span>
+<span class="co">## </span>
+<span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)    </span>
+<span class="co">## (Intercept)   0.0297     0.0284    1.05      0.3    </span>
+<span class="co">## x             1.0348     0.0284   36.45   &lt;2e-16 ***</span>
+<span class="co">## ---</span>
+<span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coefci</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></code></pre></div>
-<pre><code>##               2.5 % 97.5 %
-## (Intercept) -0.0259 0.0853
-## x            0.9792 1.0905</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coefci</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##               2.5 % 97.5 %</span>
+<span class="co">## (Intercept) -0.0259 0.0853</span>
+<span class="co">## x            0.9792 1.0905</span></code></pre>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">m0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/waldtest.html">waldtest</a></span><span class="op">(</span><span class="va">m0</span>, <span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></code></pre></div>
-<pre><code>## Wald test
-## 
-## Model 1: y ~ 1
-## Model 2: y ~ x
-##   Res.Df Df    F Pr(&gt;F)    
-## 1   4999                   
-## 2   4998  1 1329 &lt;2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
-<p>Other covariances can be plugged in analogously, potentially passing along further options for the covariance. For example, the clustered covariance <code><a href="../reference/vcovCL.html">vcovCL()</a></code> can be used with the clustering variable <code>firm</code> as:</p>
+<code class="sourceCode R"><span class="va">m0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/waldtest.html" class="external-link">waldtest</a></span><span class="op">(</span><span class="va">m0</span>, <span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Wald test</span>
+<span class="co">## </span>
+<span class="co">## Model 1: y ~ 1</span>
+<span class="co">## Model 2: y ~ x</span>
+<span class="co">##   Res.Df Df    F Pr(&gt;F)    </span>
+<span class="co">## 1   4999                   </span>
+<span class="co">## 2   4998  1 1329 &lt;2e-16 ***</span>
+<span class="co">## ---</span>
+<span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></code></pre>
+<p>Other covariances can be plugged in analogously, potentially passing
+along further options for the covariance. For example, the clustered
+covariance <code><a href="../reference/vcovCL.html">vcovCL()</a></code> can be used with the clustering
+variable <code>firm</code> as:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">vcovCL</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span></code></pre></div>
-<pre><code>## 
-## t test of coefficients:
-## 
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)   0.0297     0.0670    0.44     0.66    
-## x             1.0348     0.0506   20.45   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
-<p>In the same way we can compute and compare many of the other estimators in the package. A selection, mostly just with the default settings, is provided here. First, the covarainces are computed and then the corresponding standard errors extracted (square root of the diagonal):</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">vcovCL</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## </span>
+<span class="co">## t test of coefficients:</span>
+<span class="co">## </span>
+<span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)    </span>
+<span class="co">## (Intercept)   0.0297     0.0670    0.44     0.66    </span>
+<span class="co">## x             1.0348     0.0506   20.45   &lt;2e-16 ***</span>
+<span class="co">## ---</span>
+<span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></code></pre>
+<p>In the same way we can compute and compare many of the other
+estimators in the package. A selection, mostly just with the default
+settings, is provided here. First, the covarainces are computed and then
+the corresponding standard errors extracted (square root of the
+diagonal):</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">vc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-  <span class="st">"Standard"</span>              <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html">vcov</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,
+<code class="sourceCode R"><span class="va">vc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
+  <span class="st">"Standard"</span>              <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,
   <span class="st">"Sandwich (basic)"</span>      <span class="op">=</span> <span class="fu"><a href="../reference/sandwich.html">sandwich</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,
   <span class="st">"Clustered"</span>             <span class="op">=</span> <span class="fu"><a href="../reference/vcovCL.html">vcovCL</a></span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span>,
   <span class="st">"Clustered (two-way)"</span>   <span class="op">=</span> <span class="fu"><a href="../reference/vcovCL.html">vcovCL</a></span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span> <span class="op">+</span> <span class="va">year</span><span class="op">)</span>,
@@ -229,29 +328,40 @@
   <span class="st">"Bootstrap"</span>             <span class="op">=</span> <span class="fu"><a href="../reference/vcovBS.html">vcovBS</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,
   <span class="st">"Bootstrap (clustered)"</span> <span class="op">=</span> <span class="fu"><a href="../reference/vcovBS.html">vcovBS</a></span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span>
 <span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">vc</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##                       (Intercept)      x
-## Standard                   0.0284 0.0286
-## Sandwich (basic)           0.0284 0.0284
-## Clustered                  0.0670 0.0506
-## Clustered (two-way)        0.0651 0.0536
-## HC3                        0.0284 0.0284
-## Andrews' kernel HAC        0.0437 0.0351
-## Newey-West                 0.0660 0.0482
-## Bootstrap                  0.0264 0.0286
-## Bootstrap (clustered)      0.0661 0.0541</code></pre>
-<p>This shows that due to the cluster-correlation in the data, the usual standard errors and cross-section covariances are much too small. In contrast, the different types of clustered standard errors are much larger and more appropriate here.</p>
+<span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">vc</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##                       (Intercept)      x</span>
+<span class="co">## Standard                   0.0284 0.0286</span>
+<span class="co">## Sandwich (basic)           0.0284 0.0284</span>
+<span class="co">## Clustered                  0.0670 0.0506</span>
+<span class="co">## Clustered (two-way)        0.0651 0.0536</span>
+<span class="co">## HC3                        0.0284 0.0284</span>
+<span class="co">## Andrews' kernel HAC        0.0437 0.0351</span>
+<span class="co">## Newey-West                 0.0660 0.0482</span>
+<span class="co">## Bootstrap                  0.0291 0.0278</span>
+<span class="co">## Bootstrap (clustered)      0.0651 0.0482</span></code></pre>
+<p>This shows that due to the cluster-correlation in the data, the usual
+standard errors and cross-section covariances are much too small. In
+contrast, the different types of clustered standard errors are much
+larger and more appropriate here.</p>
 </div>
-<div id="tables-and-visualizations" class="section level2">
-<h2 class="hasAnchor">
-<a href="#tables-and-visualizations" class="anchor"></a>Tables and visualizations</h2>
-<p>For creating publication-quality tables of the model summaries using <em>sandwich</em>-based standard errors, we use the <code><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html">msummary()</a></code> function from the <em>modelsummary</em> package. Similar to <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code> this takes the unmodified <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> object <code>m</code> along with a <code>vcov</code> specification (starting from version 0.6.5 of the package). The latter might be specified via a covariance extractor function, certain strings (like <code>"robust"</code> or <code>"HC3"</code>), a clustering formula (like <code>~ firm</code>), or simply a covariance matrix. Given that we already computed a list of covariance matrices <code>vc</code> above, we simply use the list element with the clustered covariance:</p>
+<div class="section level2">
+<h2 id="tables-and-visualizations">Tables and visualizations<a class="anchor" aria-label="anchor" href="#tables-and-visualizations"></a>
+</h2>
+<p>For creating publication-quality tables of the model summaries using
+<em>sandwich</em>-based standard errors, we use the
+<code><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary()</a></code> function from the <em>modelsummary</em> package.
+Similar to <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest()</a></code> this takes the unmodified
+<code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code> object <code>m</code> along with a <code>vcov</code>
+specification (starting from version 0.6.5 of the package). The latter
+might be specified via a covariance extractor function, certain strings
+(like <code>"robust"</code> or <code>"HC3"</code>), a clustering formula
+(like <code>~ firm</code>), or simply a covariance matrix. Given that we
+already computed a list of covariance matrices <code>vc</code> above, we
+simply use the list element with the clustered covariance:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://vincentarelbundock.github.io/modelsummary/">"modelsummary"</a></span><span class="op">)</span>
-<span class="fu"><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html">msummary</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">vc</span><span class="op">$</span><span class="va">Clustered</span>, stars <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<pre><code>## Warning: In version 0.8.0 of the `modelsummary` package, the default significance markers produced by the `stars=TRUE` argument were changed to be consistent with R's defaults.
-## This warning is displayed once per session.</code></pre>
-<table class="table table">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://vincentarelbundock.github.io/modelsummary/" class="external-link">"modelsummary"</a></span><span class="op">)</span>
+<span class="fu"><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">vc</span><span class="op">$</span><span class="va">Clustered</span>, stars <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table table">
 <thead><tr>
 <th style="text-align:left;">
 </th>
@@ -338,27 +448,30 @@ Log.Lik.
 −10572.604
 </td>
 </tr>
-<tr>
-<td style="text-align:left;">
-F
-</td>
-<td style="text-align:center;">
-1310.740
-</td>
-</tr>
 </tbody>
 <tfoot><tr>
 <td style="padding: 0; " colspan="100%">
-<sup></sup> + p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001
+<sup></sup> + p
 </td>
 </tr></tfoot>
 </table>
-<p>The result is a nicely formatted table with content similar to the verbatim output from the corresponding <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code> call above. (Note that in previous versions of <code><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html">msummary()</a></code> the <code>vcov</code> argument was called <code>statistic_override</code> which is still supported for backward compatibility.)</p>
-<p>Moreover, we can also easily produce such a model summary directly from the <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code> output including the modified standard errors and test statistics. Even more nicely, this can also be done for a list of objects. Therefore, we use <code><a href="https://rdrr.io/r/base/lapply.html">lapply()</a></code> below to apply <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code> always to the same model <code>x = m</code> but with the different <code>vcov</code> matrices from <code>vc</code>. The resulting list of <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code> objects can then be displayed directly with <code><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html">msummary()</a></code>.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mlist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">vc</span>, <span class="va">coeftest</span>, x <span class="op">=</span> <span class="va">m</span><span class="op">)</span>
-<span class="fu"><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html">msummary</a></span><span class="op">(</span><span class="va">mlist</span><span class="op">)</span></code></pre></div>
-<table class="table table">
+<p>The result is a nicely formatted table with content similar to the
+verbatim output from the corresponding <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest()</a></code> call
+above. (Note that in previous versions of <code><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary()</a></code> the
+<code>vcov</code> argument was called <code>statistic_override</code>
+which is still supported for backward compatibility.)</p>
+<p>Moreover, we can also easily produce such a model summary directly
+from the <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest()</a></code> output including the modified standard
+errors and test statistics. Even more nicely, this can also be done for
+a list of objects. Therefore, we use <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply()</a></code> below to
+apply <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest()</a></code> always to the same model
+<code>x = m</code> but with the different <code>vcov</code> matrices
+from <code>vc</code>. The resulting list of <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest()</a></code>
+objects can then be displayed directly with <code><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary()</a></code>.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mlist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">vc</span>, <span class="va">coeftest</span>, x <span class="op">=</span> <span class="va">m</span><span class="op">)</span>
+<span class="fu"><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary</a></span><span class="op">(</span><span class="va">mlist</span><span class="op">)</span></code></pre></div>
+<table class="table table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead><tr>
 <th style="text-align:left;">
 </th>
@@ -448,10 +561,10 @@ Bootstrap (clustered)
 (0.066)
 </td>
 <td style="text-align:center;">
-(0.026)
+(0.029)
 </td>
 <td style="text-align:center;">
-(0.066)
+(0.065)
 </td>
 </tr>
 <tr>
@@ -511,10 +624,10 @@ x
 (0.048)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.029)
+(0.028)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.054)
+(0.048)
 </td>
 </tr>
 <tr>
@@ -647,12 +760,22 @@ Log.Lik.
 </tr>
 </tbody>
 </table>
-<p>Note that this includes a reduced list of summary statistics, e.g., no R-squared. This could be changed by adding the argument <code>save = TRUE</code> in the <code><a href="https://rdrr.io/r/base/lapply.html">lapply()</a></code> call above. This would save the full model object in addition to the <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html">coeftest()</a></code> output.</p>
-<p>Finally, the different coefficients with corresponding confidence intervals can be displayed using <code>modelplot(mlist)</code>. In the figure shown below we add some <em>ggplot2</em>-based customizations to the plot: omit the display for the intercepts (i.e., only show the <code>x</code> coefficients), flip the axes, and use a custom color palette that highlights the confidence intervals based on the disfferent clustered standard errors which are more appropriate for this data.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org">"ggplot2"</a></span><span class="op">)</span>
-<span class="va">pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">hcl.colors</a></span><span class="op">(</span><span class="fl">9</span>, <span class="st">"Dark 3"</span>, alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://vincentarelbundock.github.io/modelsummary/reference/modelplot.html">modelplot</a></span><span class="op">(</span><span class="va">mlist</span>, coef_omit <span class="op">=</span> <span class="st">"(Intercept)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">pal</span><span class="op">)</span></code></pre></div>
+<p>Note that this includes a reduced list of summary statistics, e.g.,
+no R-squared. This could be changed by adding the argument
+<code>save = TRUE</code> in the <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply()</a></code> call above. This
+would save the full model object in addition to the
+<code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest()</a></code> output.</p>
+<p>Finally, the different coefficients with corresponding confidence
+intervals can be displayed using <code>modelplot(mlist)</code>. In the
+figure shown below we add some <em>ggplot2</em>-based customizations to
+the plot: omit the display for the intercepts (i.e., only show the
+<code>x</code> coefficients), flip the axes, and use a custom color
+palette that highlights the confidence intervals based on the disfferent
+clustered standard errors which are more appropriate for this data.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span>
+<span class="va">pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">hcl.colors</a></span><span class="op">(</span><span class="fl">9</span>, <span class="st">"Dark 3"</span>, alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://vincentarelbundock.github.io/modelsummary/reference/modelplot.html" class="external-link">modelplot</a></span><span class="op">(</span><span class="va">mlist</span>, coef_omit <span class="op">=</span> <span class="st">"(Intercept)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">pal</span><span class="op">)</span></code></pre></div>
 <p><img src="sandwich_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto auto auto 0;"></p>
 </div>
   </div>
@@ -668,11 +791,13 @@ Log.Lik.
 
 
       <footer><div class="copyright">
-  <p>Developed by Achim Zeileis, Thomas Lumley.</p>
+  <p></p>
+<p>Developed by Achim Zeileis, Thomas Lumley.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>
@@ -680,6 +805,8 @@ Log.Lik.
 
   
 
+
+  
 
   </body>
 </html>

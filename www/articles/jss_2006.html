@@ -30,6 +30,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -42,7 +44,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sandwich</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.0-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.0-2</span>
       </span>
     </div>
 
@@ -52,7 +54,7 @@
   <a href="../articles/sandwich.html">Get started</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -89,11 +91,13 @@
 
       
 
-      </header><script src="jss_2006_files/header-attrs-2.11/header-attrs.js"></script><script src="jss_2006_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Object-Oriented Computation of Sandwich Estimators</h1>
-                        <h4 class="author">Achim Zeileis</h4>
+      <h1 data-toc-skip>Object-Oriented Computation of Sandwich
+Estimators</h1>
+                        <h4 data-toc-skip class="author">Achim
+Zeileis</h4>
             
       
       
@@ -103,17 +107,30 @@
 
     
     
-<div id="abstract" class="section level2">
-<h2 class="hasAnchor">
-<a href="#abstract" class="anchor"></a>Abstract</h2>
-<p>Sandwich covariance matrix estimators are a popular tool in applied regression modeling for performing inference that is robust to certain types of model misspecification. Suitable implementations are available in the R system for statistical computing for certain model fitting functions only (in particular <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code>), but not for other standard regression functions, such as <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code>, <code><a href="https://rdrr.io/r/stats/nls.html">nls()</a></code>, or <code>survreg()</code>.</p>
-<p>Therefore, conceptual tools and their translation to computational tools in the package <em>sandwich</em> are discussed, enabling the computation of sandwich estimators in general parametric models. Object orientation can be achieved by providing a few extractor functions - most importantly for the empirical estimating functions - from which various types of sandwich estimators can be computed.</p>
+<div class="section level2">
+<h2 id="abstract">Abstract<a class="anchor" aria-label="anchor" href="#abstract"></a>
+</h2>
+<p>Sandwich covariance matrix estimators are a popular tool in applied
+regression modeling for performing inference that is robust to certain
+types of model misspecification. Suitable implementations are available
+in the R system for statistical computing for certain model fitting
+functions only (in particular <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>), but not for other
+standard regression functions, such as <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm()</a></code>,
+<code><a href="https://rdrr.io/r/stats/nls.html" class="external-link">nls()</a></code>, or <code>survreg()</code>.</p>
+<p>Therefore, conceptual tools and their translation to computational
+tools in the package <em>sandwich</em> are discussed, enabling the
+computation of sandwich estimators in general parametric models. Object
+orientation can be achieved by providing a few extractor functions -
+most importantly for the empirical estimating functions - from which
+various types of sandwich estimators can be computed.</p>
 </div>
-<div id="manuscript" class="section level2">
-<h2 class="hasAnchor">
-<a href="#manuscript" class="anchor"></a>Manuscript</h2>
+<div class="section level2">
+<h2 id="manuscript">Manuscript<a class="anchor" aria-label="anchor" href="#manuscript"></a>
+</h2>
 <p><strong>PDF:</strong> <a href="pdf/sandwich-OOP.pdf"><strong>sandwich-OOP.pdf</strong></a> <embed src="pdf/sandwich-OOP.pdf"></embed></p>
-<p><strong>Originally published as:</strong> Zeileis A (2006). “Object-Oriented Computation of Sandwich Estimators.” <em>Journal of Statistical Software</em>, <strong>16</strong>(9), 1-16. <a href="https://doi.org/10.18637/jss.v016.i09">doi:10.18637/jss.v016.i09</a>.</p>
+<p><strong>Originally published as:</strong> Zeileis A (2006).
+“Object-Oriented Computation of Sandwich Estimators.” <em>Journal of
+Statistical Software</em>, <strong>16</strong>(9), 1-16. <a href="https://doi.org/10.18637/jss.v016.i09" class="external-link">doi:10.18637/jss.v016.i09</a>.</p>
 </div>
   </div>
 
@@ -128,11 +145,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Achim Zeileis, Thomas Lumley.</p>
+  <p></p>
+<p>Developed by Achim Zeileis, Thomas Lumley.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>
@@ -140,6 +159,8 @@
 
   
 
+
+  
 
   </body>
 </html>
