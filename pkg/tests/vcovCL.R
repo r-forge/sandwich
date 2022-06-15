@@ -3,6 +3,8 @@ data("PetersenCL", package = "sandwich")
 m <- lm(y ~ x, data = PetersenCL)
 b <- glm((y > 0) ~ x, data = PetersenCL, family = binomial(link = "logit"))
 
+options(digits = 4)
+
 ## various versatile variance flavors
 vcovCL(m, cluster = ~ firm, type = "HC0", cadjust = TRUE)
 vcovCL(m, cluster = ~ firm, type = "HC0", cadjust = FALSE)

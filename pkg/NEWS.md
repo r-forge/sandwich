@@ -22,7 +22,7 @@
   still samples coefficients via QR decomposition in each iteration (`qrjoint = FALSE`)
   but may alternatively sample the dependent variable and then apply the QR
   decomposition jointly only once (`qrjoint = TRUE`). If the sample size (and the
-  number of coefficients) is large, then `qrjoint = TRUE` maybe significantly faster
+  number of coefficients) is large, then `qrjoint = TRUE` may be significantly faster
   while requiring much more memory (proposed by Alexander Fischer).
 
 * Enable passing score matrix (as computed by `estfun()`) directly to
@@ -30,6 +30,11 @@
   either have a column `(Intercept)` or the `weights` argument should be set
   appropriately to identify the column pertaining to the intercept (if any).
 
+* The vignettes have been tweaked so that they still "run" without technical errors
+  when suggested packages (listed in the VignetteDepends) are not available. This is
+  achieved by defining replacement functions that do not fail but lead to partially
+  non-sensical output. A warning is added in the vignettes if any of the replacements
+  is used.
 
 # sandwich 3.0-1
 

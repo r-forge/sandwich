@@ -1,6 +1,6 @@
 Package: sandwich
 Version: 3.0-2
-Date: 2022-03-31
+Date: 2022-06-13
 Title: Robust Covariance Matrix Estimators
 Authors@R: c(person(given = "Achim", family = "Zeileis", role = c("aut", "cre"), email = "Achim.Zeileis@R-project.org",
                     comment = c(ORCID = "0000-0003-0918-3766")),
@@ -18,7 +18,7 @@ Description: Object-oriented software for model-robust covariance matrix estimat
 	     Zeileis (2004) <doi:10.18637/jss.v011.i10> and Zeileis (2006) <doi:10.18637/jss.v016.i09>.
 Depends: R (>= 3.0.0)
 Imports: stats, utils, zoo
-Suggests: AER, car, geepack, lattice, lmtest, MASS, multiwayvcov, parallel, pcse, plm, pscl, scatterplot3d, stats4, strucchange, survival
+Suggests: AER, car, geepack, lattice, lme4, lmtest, MASS, multiwayvcov, parallel, pcse, plm, pscl, scatterplot3d, stats4, strucchange, survival
 License: GPL-2 | GPL-3
 URL: https://sandwich.R-Forge.R-project.org/
 BugReports: https://sandwich.R-Forge.R-project.org/contact.html
