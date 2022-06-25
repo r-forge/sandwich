@@ -1,3 +1,10 @@
+# sandwich 3.0-3
+
+* More verbose error messages in `bwAndrews()` and `bwNeweyWest()` when bandwidth
+  cannot be computed, e.g., due to singular regressor variables. (Suggested by
+  Andrei V. Kostyrka.)
+
+
 # sandwich 3.0-2
 
 * Added new argument `aggregate = TRUE` to `meatPL()` which is thus inherited by
