@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sandwich</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.0-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.0-3</span>
       </span>
     </div>
 
@@ -63,6 +63,12 @@
       
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="3.0-3" id="sandwich-30-3">sandwich 3.0-3<a class="anchor" aria-label="anchor" href="#sandwich-30-3"></a></h2>
+<ul><li><p>Added jackknife estimator in all <code><a href="../reference/vcovBS.html">vcovBS()</a></code> methods (suggested by Joe Ritter). This is of particular practical interest in linear regression models where the (clustered) jackknife and the (clustered) HC3 (or CV3, without cluster adjustment) estimator coincide. In nonlinear models (including non-Gaussian GLMs) the jackknife and the HC3 estimator do not coincide but the jackknife might still be a useful alternative when the HC3 cannot be computed.</p></li>
+<li><p>In <code><a href="../reference/vcovCL.html">vcovCL()</a></code> models from <code>feols()</code> (from package <code>fixest</code>) are now also recognized as linear regression models (in addition to models from <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>).</p></li>
+<li><p>More verbose error messages in <code><a href="../reference/weightsAndrews.html">bwAndrews()</a></code> and <code><a href="../reference/NeweyWest.html">bwNeweyWest()</a></code> when bandwidth cannot be computed, e.g., due to singular regressor variables. (Suggested by Andrei V. Kostyrka.)</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="3.0-2" id="sandwich-30-2">sandwich 3.0-2<small>2022-06-15</small><a class="anchor" aria-label="anchor" href="#sandwich-30-2"></a></h2>
 <ul><li><p>Added new argument <code>aggregate = TRUE</code> to <code><a href="../reference/vcovPL.html">meatPL()</a></code> which is thus inherited by <code><a href="../reference/vcovPL.html">vcovPL()</a></code>. By default, this still yields the Driscoll &amp; Kraay (1998) covariance matrix. When setting <code>aggregate = FALSE</code> the cross-sectional and cross-serial correlation is set to zero, yielding the “pure” panel Newey-West covariance matrix.</p></li>

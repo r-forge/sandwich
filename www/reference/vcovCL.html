@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sandwich</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.0-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.0-3</span>
       </span>
     </div>
 
@@ -126,7 +126,7 @@
   (\(M_{id}, M_{time}\)) minus the
   clustered sandwich estimator, with clusters formed out of the
   intersection of both dimensions (\(M_{id \cap time}\)):
-  $$M = M_{id} + M_{time} - M_{id \cap time}$$
+  $$M = M_{id} + M_{time} - M_{id \cap time}$$.
   Additionally, each of the three terms can be weighted by the corresponding
   cluster bias adjustment factor (see below and Equation 20 in Zeileis et al. 2020).
   Instead of subtracting \(M_{id \cap time}\) as the last
@@ -141,7 +141,8 @@
   MacKinnon and White (1985) for heteroscedasticity corrections. HC0 applies no small sample bias adjustment.
   HC1 applies a degrees of freedom-based correction, \((n-1)/(n-k)\) where \(n\) is the
   number of observations and \(k\) is the number of explanatory or predictor variables in the model.
-  HC1 is the most commonly used approach, and is the default, though it is less effective
+  HC1 is the most commonly used approach for linear models, and HC0 otherwise. Hence these
+  are the defaults in <code>vcovCL</code>. However, HC0 and HC1 are less effective
   than HC2 and HC3 when the number of clusters is relatively small (Cameron et al. 2008).
   HC2 and HC3 types of bias adjustment are geared towards the linear
   model, but they are also applicable for GLMs (see Bell and McCaffrey
@@ -150,6 +151,13 @@
   of a hat matrix (or a weighted version therof for GLMs) and hence
   these two types are currently only implemented for <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></code>
   and <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></code> objects.</p>  
+<p>An alternative to the clustered HC3 estimator is the clustered jackknife estimator
+  which is available in <code><a href="vcovBS.html">vcovBS</a></code> with <code>type = "jackknife"</code>. In linear
+  models the HC3 and the jackknife estimator coincide (MacKinnon et al. 2022) with the
+  latter still being computationally feasible if the number of observations per cluster
+  is large. In nonlinear models (including non-Gaussian GLMs) the jackknife and the HC3
+  estimator do not coincide but the jackknife might still be a useful alternative when
+  the HC3 cannot be computed.</p>  
 <p>The <code>cadjust</code> argument allows to
   switch the cluster bias adjustment factor \(G/(G-1)\) on and
   off (where \(G\) is the number of clusters in a cluster dimension \(g\))
@@ -200,7 +208,11 @@
     Finite-Sample Estimates of Two-Way Cluster-Robust Standard Errors”,
   <em>Mimeo, Availlable at SSRN:</em>
    URL <a href="https://www.ssrn.com/abstract=2420421" class="external-link">https://www.ssrn.com/abstract=2420421</a>.</p>
-<p>MacKinnon, JG, White, H (1985). 
+<p>MacKinnon JG, Nielsen MØ, Webb MD (2022). 
+  “Cluster-Robust Inference: A Guide to Empirical Practice”, 
+  <em>Journal of Econometrics</em>, Forthcoming.
+  <a href="https://doi.org/10.1016/j.jeconom.2022.04.001" class="external-link">doi:10.1016/j.jeconom.2022.04.001</a></p>
+<p>MacKinnon JG, White H (1985). 
   “Some Heteroskedasticity-Consistent Covariance Matrix Estimators with Improved Finite Sample Properties”
   <em>Journal of Econometrics</em>, <b>29</b>(3), 305--325.
   <a href="https://doi.org/10.1016/0304-4076%2885%2990158-7" class="external-link">doi:10.1016/0304-4076(85)90158-7</a></p>  
@@ -228,7 +240,7 @@
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="vcovHC.html">vcovHC</a></code></p></div>
+    <div class="dont-index"><p><code><a href="vcovHC.html">vcovHC</a></code>, <code><a href="vcovBS.html">vcovBS</a></code></p></div>
     </div>
 
     <div id="ref-examples">
