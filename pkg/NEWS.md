@@ -1,5 +1,15 @@
 # sandwich 3.0-3
 
+* Added jackknife estimator in all `vcovBS()` methods (suggested by Joe Ritter).
+  This is of particular practical interest in linear regression models where the
+  jackknife and the clustered HC3 (or CV3, without cluster adjustment) estimator
+  coincide. In nonlinear models (including non-Gaussian GLMs) the jackknife and
+  the HC3 estimator do not coincide but the jackknife might still be a useful
+  alternative when the HC3 cannot be computed.
+
+* In `vcovCL()` models from `feols()` (from package `fixest`) are now also recognized
+  as linear regression models (in addition to models from `lm()`).
+
 * More verbose error messages in `bwAndrews()` and `bwNeweyWest()` when bandwidth
   cannot be computed, e.g., due to singular regressor variables. (Suggested by
   Andrei V. Kostyrka.)

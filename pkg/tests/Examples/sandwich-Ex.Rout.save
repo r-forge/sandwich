@@ -1,5 +1,5 @@
 
-R version 4.2.0 (2022-04-22) -- "Vigorous Calisthenics"
+R version 4.2.1 (2022-06-23) -- "Funny-Looking Kid"
 Copyright (C) 2022 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -630,6 +630,14 @@ x           0.02858329 0.05059573 0.04878784
 (Intercept) 0.003535619 0.000488708
 x           0.000488708 0.002589785
 > 
+> ## jackknife estimator coincides with HC3 (aka CV3)
+> all.equal(
++   vcovBS(m, cluster = ~ firm, type = "jackknife"),
++   vcovCL(m, cluster = ~ firm, type = "HC3", cadjust = FALSE),
++   tolerance = 1e-7
++ )
+[1] TRUE
+> 
 > 
 > 
 > cleanEx()
@@ -1032,7 +1040,7 @@ x           2.055475e-05 1.616308e-02
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  5.364 0.152 5.524 0 0 
+Time elapsed:  5.96 0.16 6.12 0 0 
 > grDevices::dev.off()
 null device 
           1 

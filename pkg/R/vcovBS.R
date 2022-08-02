@@ -4,7 +4,7 @@ vcovBS <- function(x, ...) {
   UseMethod("vcovBS")
 }
 
-vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, ..., fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL)
+vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, type = "xy", ..., fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL)
 {
   ## set up return value with correct dimension and names
   cf <- coef(x)
@@ -79,15 +79,20 @@ vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, ..., fix =
   ## use starting values?
   assign(".vcovBSstart", if(isTRUE(start)) coef(x) else NULL, envir = .vcovBSenv)
 
+  ## xy bootstrap vs. jackknife
+  type <- match.arg(tolower(type), c("xy", "jackknife"))
+
   ## bootstrap for each cluster dimension
-  for (i in 1L:length(cl))
-  {
+  for (i in 1L:length(cl)) {
     ## cluster structure
     cli <- split(seq_along(cluster[[i]]), cluster[[i]])
 
     ## bootstrap fitting function via update()
     bootfit <- function(j, ...) {
-        j <- unlist(cli[sample(names(cli), length(cli), replace = TRUE)])
+        j <- switch(type,
+          "xy"        = sample(names(cli), length(cli), replace = TRUE),
+          "jackknife" = -j)
+        j <- unlist(cli[j])
         assign(".vcovBSsubset", j, envir = .vcovBSenv)
         up <- if(is.null(.vcovBSenv$.vcovBSstart)) {
           update(x, subset = .vcovBSenv$.vcovBSsubset, ..., evaluate = FALSE)
@@ -98,12 +103,20 @@ vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, ..., fix =
         coef(up)
     }
     
+    ## for jackknife the number of replications is always the number of "observations" (cluster units)
+    if(type == "jackknife") R <- length(cli)
+    
     ## actually refit
     cf <- applyfun(1L:R, bootfit, ...)
-    cf <- do.call("rbind", cf)
 
     ## aggregate across cluster variables
-    rval <- rval + sign[i] * cov(cf, use = use)
+    if(type == "jackknife") {
+      cf <- do.call("cbind", cf)
+      rval <- rval + sign[i] * (R - 1L)/R * tcrossprod(cf - rowMeans(cf))
+    } else {
+      cf <- do.call("rbind", cf)
+      rval <- rval + sign[i] * cov(cf, use = use)
+    }
   }
   ## clean up starting values again
   remove(".vcovBSstart", envir = .vcovBSenv)
