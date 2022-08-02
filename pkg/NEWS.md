@@ -2,8 +2,8 @@
 
 * Added jackknife estimator in all `vcovBS()` methods (suggested by Joe Ritter).
   This is of particular practical interest in linear regression models where the
-  jackknife and the clustered HC3 (or CV3, without cluster adjustment) estimator
-  coincide. In nonlinear models (including non-Gaussian GLMs) the jackknife and
+  (clustered) jackknife and the (clustered) HC3 (or CV3, without cluster adjustment)
+  estimator coincide. In nonlinear models (including non-Gaussian GLMs) the jackknife and
   the HC3 estimator do not coincide but the jackknife might still be a useful
   alternative when the HC3 cannot be computed.
 
