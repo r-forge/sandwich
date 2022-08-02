@@ -17,7 +17,7 @@ library("lmtest")
 
 Model-robust standard error estimators for cross-sectional, time series, clustered, panel, and longitudinal data.
 Modular object-oriented implementation with support for many model objects, including:
-`lm`, `glm`, `survreg`, `coxph`, `mlogit`, `polr`, `hurdle`, `zeroinfl`, and beyond.
+`lm`, `glm`, `fixest`, `survreg`, `coxph`, `mlogit`, `polr`, `hurdle`, `zeroinfl`, and beyond.
 
 **Sandwich covariances for general parametric models:**
 
