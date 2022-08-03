@@ -122,7 +122,8 @@ vcovBS(x, \dots)
   settings.
   
   The jackknife approach is of particular interest in practice because it can be shown to be
-  exactly equivalent to the HC3 (or CV3) covariance matrix estimator in linear models (see MacKinnon,
+  exactly equivalent to the HC3 (without cluster adjustment, also known as CV3)
+  covariance matrix estimator in linear models (see MacKinnon,
   Nielsen, Webb 2022). If the number of observations per cluster is large it may become
   impossible to compute this estimator via \code{\link{vcovCL}} while using the jackknife
   approach will still be feasible. In nonlinear models (including non-Gaussian GLMs) the
