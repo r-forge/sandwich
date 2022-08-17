@@ -56,8 +56,8 @@ Zeileis A, Köll S, Graham N (2020).
 
 \examples{
 ## linear regression
-x <- sin(1:10)
-y <- rnorm(10)
+x <- 1:10
+y <- sin(1:10)
 fm <- lm(y ~ x)
 
 ## estimating function: (y - x'beta) * x
