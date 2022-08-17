@@ -11,8 +11,8 @@
   default method simply calls `vcovBS(..., type = "jackknife")` (also suggested by
   Joe Ritter, for more details see the previous item).
 
-* Support weighted `lm` and `glm` objects in the respective `vcovBS()` methods
-  (reported by Noah Greifer).
+* Support weights, offsets, and different fitting methods in `lm` and `glm` objects
+  in the respective `vcovBS()` methods (reported by Noah Greifer).
 
 * In `vcovCL()` models from `feols()` (from package `fixest`) are now also recognized
   as linear regression models (in addition to models from `lm()`).

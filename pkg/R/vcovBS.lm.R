@@ -79,7 +79,8 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
   } else {
     model.response(model.frame(x))
   }
-  wts <- x$weights
+  wts <- if(is.null(x$weights)) rep.int(1, n) else x$weights
+  off <- if(is.null(x$offset))  rep.int(0, n) else x$offset
   xfit <- if(type %in% c("xy", "jackknife")) model.matrix(x) else list(fit = x$fitted.values, res = x$residuals, qr = x$qr)
 
   ## apply infrastructure for refitting models
@@ -115,30 +116,22 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
     bootfit <- switch(type,
       "xy" = function(j, ...) {
         j <- unlist(cli[sample(names(cli), length(cli), replace = TRUE)])
-        if(is.null(wts)) {
-          .lm.fit(xfit[j, , drop = FALSE], y[j], ...)$coefficients
-        } else {
-          .lm.fit(xfit[j, , drop = FALSE] * sqrt(wts[j]), y[j] * sqrt(wts[j]), ...)$coefficients
-        }
+        .lm.fit(xfit[j, , drop = FALSE] * sqrt(wts[j]), (y[j] - off[j]) * sqrt(wts[j]), ...)$coefficients
       },
       "jackknife" = function(j, ...) {
         j <- unlist(cli[-j])
-        if(is.null(wts)) {
-          .lm.fit(xfit[j, , drop = FALSE], y[j], ...)$coefficients
-        } else {
-          .lm.fit(xfit[j, , drop = FALSE] * sqrt(wts[j]), y[j] * sqrt(wts[j]), ...)$coefficients
-        }
+        .lm.fit(xfit[j, , drop = FALSE] * sqrt(wts[j]), (y[j] - off[j]) * sqrt(wts[j]), ...)$coefficients
       },
       "residual" = function(j, ...) {
         j <- unlist(cli[sample(names(cli), length(cli), replace = TRUE)])
         yboot <- xfit$fit + xfit$res[j]
-        if(!is.null(wts)) yboot <- yboot * sqrt(wts)
+        yboot <- (yboot - off) * sqrt(wts)
 	if(qrjoint) yboot else qr.coef(xfit$qr, yboot)
       },
       function(j, ...) {
         j <- wild(nlevels(cli))
         yboot <- xfit$fit + xfit$res * j[cli]
-        if(!is.null(wts)) yboot <- yboot * sqrt(wts)
+        yboot <- (yboot - off) * sqrt(wts)
 	if(qrjoint) yboot else qr.coef(xfit$qr, yboot)
       }
     )
@@ -222,7 +215,7 @@ vcovBS.glm <- function(x, cluster = NULL, R = 250, start = FALSE, type = "xy", .
     sign <- 1
   }
 
-  ## model information: original response and design matrix or the corresponding fitted/residuals/QR
+  ## model information: original response, design matrix, fitting method
   y <- if(!is.null(x$y)) {
     x$y
   } else if(!is.null(x$model)) {
@@ -231,6 +224,7 @@ vcovBS.glm <- function(x, cluster = NULL, R = 250, start = FALSE, type = "xy", .
     model.response(model.frame(x))
   }
   xfit <- model.matrix(x)
+  method <- x$method
 
   ## apply infrastructure for refitting models
   if(is.null(applyfun)) {
@@ -257,16 +251,15 @@ vcovBS.glm <- function(x, cluster = NULL, R = 250, start = FALSE, type = "xy", .
     cli <- split(seq_along(cluster[[i]]), cluster[[i]])
 
     ## bootstrap fitting function
-    bootfit <- switch(type,
-      "xy" = function(j, ...) {
-        j <- unlist(cli[sample(names(cli), length(cli), replace = TRUE)])
-        glm.fit(xfit[j, , drop = FALSE], y[j], weights = x$prior.weights[j], family = x$family, start = start, ...)$coefficients
-      },
-      "jackknife" = function(j, ...) {
-        j <- unlist(cli[-j])
-        glm.fit(xfit[j, , drop = FALSE], y[j], weights = x$prior.weights[j], family = x$family, start = start, ...)$coefficients
-      }
-    )
+    bootfit <- function(j, ...) {
+      j <- if(type == "xy") sample(names(cli), length(cli), replace = TRUE) else -j
+      j <- unlist(cli[j])
+      eval(
+        call(if(is.function(method)) "method" else method, 
+          x = xfit[j, , drop = FALSE], y = y[j], weights = x$prior.weights[j], offset = x$offset[j],
+          family = x$family, start = start, control = x$control, intercept = attr(x$terms, "intercept") > 0)
+      )$coefficients
+    }
 
     ## for jackknife the number of replications is always the number of "observations" (cluster units)
     if(type == "jackknife") R <- length(cli)
