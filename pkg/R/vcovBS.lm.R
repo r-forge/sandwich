@@ -132,11 +132,13 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
       "residual" = function(j, ...) {
         j <- unlist(cli[sample(names(cli), length(cli), replace = TRUE)])
         yboot <- xfit$fit + xfit$res[j]
+        if(!is.null(wts)) yboot <- yboot * sqrt(wts)
 	if(qrjoint) yboot else qr.coef(xfit$qr, yboot)
       },
       function(j, ...) {
         j <- wild(nlevels(cli))
         yboot <- xfit$fit + xfit$res * j[cli]
+        if(!is.null(wts)) yboot <- yboot * sqrt(wts)
 	if(qrjoint) yboot else qr.coef(xfit$qr, yboot)
       }
     )
