@@ -18,6 +18,7 @@ vignette: >
 library("sandwich")
 library("lmtest")
 options(digits = 3)
+set.seed(1071)
 ```
 
 ## Overview
