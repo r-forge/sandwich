@@ -39,6 +39,7 @@ reference:
       - kernHAC
       - NeweyWest
       - vcovBS
+      - vcovJK
       - vcovOPG
       - vcovPC
       - vcovPL

@@ -1,4 +1,4 @@
-# sandwich 3.0-3
+# sandwich 3.1-0
 
 * Added jackknife estimator in all `vcovBS()` methods (suggested by Joe Ritter).
   This is of particular practical interest in linear regression models where the
@@ -6,6 +6,10 @@
   estimator coincide. In nonlinear models (including non-Gaussian GLMs) the jackknife and
   the HC3 estimator do not coincide but the jackknife might still be a useful
   alternative when the HC3 cannot be computed.
+
+* Added a new convenience interface `vcovJK()` for the jackknife covariance whose
+  default method simply calls `vcovBS(..., type = "jackknife")` (also suggested by
+  Joe Ritter, for more details see the previous item).
 
 * Support weighted `lm` and `glm` objects in the respective `vcovBS()` methods
   (reported by Noah Greifer).

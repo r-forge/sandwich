@@ -1,4 +1,4 @@
-vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL, qrjoint = FALSE)
+vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL, qrjoint = FALSE, center = "mean")
 {
   ## set up return value with correct dimension and names
   cf0 <- coef(x)
@@ -152,7 +152,8 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
     ## aggregate across cluster variables
     if(type == "jackknife") {
       cf <- do.call("cbind", cf)
-      rval <- rval + sign[i] * (R - 1L)/R * tcrossprod(cf - rowMeans(cf)) ## theoretically: rowMeans(cf) = cf0 but may differ slightly numerically
+      center <- match.arg(center, c("mean", "estimate"))
+      rval <- rval + sign[i] * (R - 1L)/R * tcrossprod(cf - if(center == "mean") rowMeans(cf) else cf0)
     } else {
       cf <- if(qrjoint && type != "xy") t(qr.coef(xfit$qr, do.call("cbind", cf))) else do.call("rbind", cf)
       rval <- rval + sign[i] * cov(cf, use = use)
@@ -167,7 +168,7 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
   return(rval)
 }
 
-vcovBS.glm <- function(x, cluster = NULL, R = 250, start = FALSE, type = "xy", ..., fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL)
+vcovBS.glm <- function(x, cluster = NULL, R = 250, start = FALSE, type = "xy", ..., fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL, center = "mean")
 {
   ## set up return value with correct dimension and names
   cf0 <- coef(x)
@@ -276,7 +277,8 @@ vcovBS.glm <- function(x, cluster = NULL, R = 250, start = FALSE, type = "xy", .
     ## aggregate across cluster variables
     if(type == "jackknife") {
       cf <- do.call("cbind", cf)
-      rval <- rval + sign[i] * (R - 1L)/R * tcrossprod(cf - rowMeans(cf))
+      center <- match.arg(center, c("mean", "estimate"))
+      rval <- rval + sign[i] * (R - 1L)/R * tcrossprod(cf - if(center == "mean") rowMeans(cf) else cf0)
     } else {
       cf <- do.call("rbind", cf)
       rval <- rval + sign[i] * cov(cf, use = use)

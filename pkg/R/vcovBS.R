@@ -4,14 +4,13 @@ vcovBS <- function(x, ...) {
   UseMethod("vcovBS")
 }
 
-vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, type = "xy", ..., fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL)
+vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, type = "xy", ..., fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL, center = "mean")
 {
   ## set up return value with correct dimension and names
-  cf <- coef(x)
-  k <- length(cf)
+  cf0 <- coef(x)
+  k <- length(cf0)
   n <- nobs0(x)
-  rval <- matrix(0, nrow = k, ncol = k, dimnames = list(names(cf), names(cf)))
-  cf <- matrix(rep.int(NA_real_, k * R), ncol = k, dimnames = list(NULL, names(cf)))
+  rval <- matrix(0, nrow = k, ncol = k, dimnames = list(names(cf0), names(cf0)))
 
   ## try to figure out environment for update()
   env <- try(environment(terms(x)))
@@ -112,7 +111,8 @@ vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, type = "xy
     ## aggregate across cluster variables
     if(type == "jackknife") {
       cf <- do.call("cbind", cf)
-      rval <- rval + sign[i] * (R - 1L)/R * tcrossprod(cf - rowMeans(cf))
+      center <- match.arg(center, c("mean", "estimate"))
+      rval <- rval + sign[i] * (R - 1L)/R * tcrossprod(cf - if(center == "mean") rowMeans(cf) else cf0)
     } else {
       cf <- do.call("rbind", cf)
       rval <- rval + sign[i] * cov(cf, use = use)

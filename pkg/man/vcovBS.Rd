@@ -18,14 +18,16 @@
 vcovBS(x, \dots)
 
 \method{vcovBS}{default}(x, cluster = NULL, R = 250, start = FALSE, type = "xy", \dots,
-  fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL)
+  fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL,
+  center = "mean")
 
 \method{vcovBS}{lm}(x, cluster = NULL, R = 250, type = "xy", \dots,
   fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL,
-  qrjoint = FALSE)
+  qrjoint = FALSE, center = "mean")
 
 \method{vcovBS}{glm}(x, cluster = NULL, R = 250, start = FALSE, type = "xy", \dots,
-  fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL)
+  fix = FALSE, use = "pairwise.complete.obs", applyfun = NULL, cores = NULL,
+  center = "mean")
 }
 
 \arguments{
@@ -62,6 +64,10 @@ vcovBS(x, \dots)
     \code{\link[parallel]{mclapply}} with the desired number of \code{cores},
     except on Windows where \code{\link[parallel]{parLapply}} with
     \code{makeCluster(cores)} is used.}
+  \item{center}{character. For \code{type = "jackknife"} the coefficients from
+    all jacknife samples (each dropping one observational unit/cluster) can be
+    centered by their \code{"mean"} (default) or by the original full-sample
+    \code{"estimate"}.}
   \item{qrjoint}{logical. For residual-based and wild boostrap (i.e.,
     \code{type != "xy"}), should the bootstrap sample the dependent variable
     and then apply the QR decomposition jointly only once? If \code{FALSE},
@@ -128,7 +134,8 @@ vcovBS(x, \dots)
   impossible to compute this estimator via \code{\link{vcovCL}} while using the jackknife
   approach will still be feasible. In nonlinear models (including non-Gaussian GLMs) the
   jackknife and the HC3 estimator do not coincide but the jackknife might still be a useful
-  alternative when the HC3 cannot be computed.
+  alternative when the HC3 cannot be computed. A convenience interface \code{\link{vcovJK}}
+  is provided whose default method simply calls \code{vcovBS(..., type = "jackknife")}.
 
   The \code{\link[stats]{glm}} method works essentially like the default method but calls
   \code{\link[stats]{glm.fit}} instead of code{update}.
@@ -217,7 +224,7 @@ Zeileis A, Köll S, Graham N (2020).
   \doi{10.18637/jss.v095.i01}
 }
 
-\seealso{\code{\link{vcovCL}}}
+\seealso{\code{\link{vcovCL}}, \code{\link{vcovJK}}}
 
 \examples{
 ## Petersen's data

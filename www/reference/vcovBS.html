@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">sandwich</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.0-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.1-0</span>
       </span>
     </div>
 
@@ -77,16 +77,18 @@
 
 <span class="co"># S3 method for default</span>
 <span class="fu">vcovBS</span><span class="op">(</span><span class="va">x</span>, cluster <span class="op">=</span> <span class="cn">NULL</span>, R <span class="op">=</span> <span class="fl">250</span>, start <span class="op">=</span> <span class="cn">FALSE</span>, type <span class="op">=</span> <span class="st">"xy"</span>, <span class="va">...</span>,
-  fix <span class="op">=</span> <span class="cn">FALSE</span>, use <span class="op">=</span> <span class="st">"pairwise.complete.obs"</span>, applyfun <span class="op">=</span> <span class="cn">NULL</span>, cores <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
+  fix <span class="op">=</span> <span class="cn">FALSE</span>, use <span class="op">=</span> <span class="st">"pairwise.complete.obs"</span>, applyfun <span class="op">=</span> <span class="cn">NULL</span>, cores <span class="op">=</span> <span class="cn">NULL</span>,
+  center <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span>
 
 <span class="co"># S3 method for lm</span>
 <span class="fu">vcovBS</span><span class="op">(</span><span class="va">x</span>, cluster <span class="op">=</span> <span class="cn">NULL</span>, R <span class="op">=</span> <span class="fl">250</span>, type <span class="op">=</span> <span class="st">"xy"</span>, <span class="va">...</span>,
   fix <span class="op">=</span> <span class="cn">FALSE</span>, use <span class="op">=</span> <span class="st">"pairwise.complete.obs"</span>, applyfun <span class="op">=</span> <span class="cn">NULL</span>, cores <span class="op">=</span> <span class="cn">NULL</span>,
-  qrjoint <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+  qrjoint <span class="op">=</span> <span class="cn">FALSE</span>, center <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span>
 
 <span class="co"># S3 method for glm</span>
 <span class="fu">vcovBS</span><span class="op">(</span><span class="va">x</span>, cluster <span class="op">=</span> <span class="cn">NULL</span>, R <span class="op">=</span> <span class="fl">250</span>, start <span class="op">=</span> <span class="cn">FALSE</span>, type <span class="op">=</span> <span class="st">"xy"</span>, <span class="va">...</span>,
-  fix <span class="op">=</span> <span class="cn">FALSE</span>, use <span class="op">=</span> <span class="st">"pairwise.complete.obs"</span>, applyfun <span class="op">=</span> <span class="cn">NULL</span>, cores <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+  fix <span class="op">=</span> <span class="cn">FALSE</span>, use <span class="op">=</span> <span class="st">"pairwise.complete.obs"</span>, applyfun <span class="op">=</span> <span class="cn">NULL</span>, cores <span class="op">=</span> <span class="cn">NULL</span>,
+  center <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -134,6 +136,11 @@
     <code><a href="https://rdrr.io/r/parallel/mclapply.html" class="external-link">mclapply</a></code> with the desired number of <code>cores</code>,
     except on Windows where <code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parLapply</a></code> with
     <code>makeCluster(cores)</code> is used.</p></dd>
+<dt>center</dt>
+<dd><p>character. For <code>type = "jackknife"</code> the coefficients from
+    all jacknife samples (each dropping one observational unit/cluster) can be
+    centered by their <code>"mean"</code> (default) or by the original full-sample
+    <code>"estimate"</code>.</p></dd>
 <dt>qrjoint</dt>
 <dd><p>logical. For residual-based and wild boostrap (i.e.,
     <code>type != "xy"</code>), should the bootstrap sample the dependent variable
@@ -187,12 +194,14 @@
   and Zeileis et al. (2020) show simulations comparing <code>vcovBS</code> to <code>vcovCL</code> in several
   settings.</p>  
 <p>The jackknife approach is of particular interest in practice because it can be shown to be
-  exactly equivalent to the HC3 (or CV3) covariance matrix estimator in linear models (see MacKinnon,
+  exactly equivalent to the HC3 (without cluster adjustment, also known as CV3)
+  covariance matrix estimator in linear models (see MacKinnon,
   Nielsen, Webb 2022). If the number of observations per cluster is large it may become
   impossible to compute this estimator via <code><a href="vcovCL.html">vcovCL</a></code> while using the jackknife
   approach will still be feasible. In nonlinear models (including non-Gaussian GLMs) the
   jackknife and the HC3 estimator do not coincide but the jackknife might still be a useful
-  alternative when the HC3 cannot be computed.</p>
+  alternative when the HC3 cannot be computed. A convenience interface <code><a href="vcovJK.html">vcovJK</a></code>
+  is provided whose default method simply calls <code>vcovBS(..., type = "jackknife")</code>.</p>
 <p>The <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></code> method works essentially like the default method but calls
   <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm.fit</a></code> instead of codeupdate.</p>  
 <p>The <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></code> method provides additional bootstrapping <code>type</code>s
@@ -269,7 +278,7 @@
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="vcovCL.html">vcovCL</a></code></p></div>
+    <div class="dont-index"><p><code><a href="vcovCL.html">vcovCL</a></code>, <code><a href="vcovJK.html">vcovJK</a></code></p></div>
     </div>
 
     <div id="ref-examples">
