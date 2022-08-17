@@ -7,6 +7,9 @@
   the HC3 estimator do not coincide but the jackknife might still be a useful
   alternative when the HC3 cannot be computed.
 
+* Support weighted `lm` and `glm` objects in the respective `vcovBS()` methods
+  (reported by Noah Greifer).
+
 * In `vcovCL()` models from `feols()` (from package `fixest`) are now also recognized
   as linear regression models (in addition to models from `lm()`).
 

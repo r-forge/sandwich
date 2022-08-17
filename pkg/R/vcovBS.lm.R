@@ -71,7 +71,7 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
     wild
   )
 
-  ## model information: original response and design matrix or the corresponding fitted/residuals/QR
+  ## model information: original response, weights, and design matrix or the corresponding fitted/residuals/QR
   y <- if(!is.null(x$y)) {
     x$y
   } else if(!is.null(x$model)) {
@@ -79,6 +79,7 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
   } else {
     model.response(model.frame(x))
   }
+  wts <- x$weights
   xfit <- if(type %in% c("xy", "jackknife")) model.matrix(x) else list(fit = x$fitted.values, res = x$residuals, qr = x$qr)
 
   ## apply infrastructure for refitting models
@@ -114,11 +115,19 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
     bootfit <- switch(type,
       "xy" = function(j, ...) {
         j <- unlist(cli[sample(names(cli), length(cli), replace = TRUE)])
-        .lm.fit(xfit[j, , drop = FALSE], y[j], ...)$coefficients
+        if(is.null(wts)) {
+          .lm.fit(xfit[j, , drop = FALSE], y[j], ...)$coefficients
+        } else {
+          lm.wfit(xfit[j, , drop = FALSE], y[j], wts[j], ...)$coefficients
+        }
       },
       "jackknife" = function(j, ...) {
         j <- unlist(cli[-j])
-        .lm.fit(xfit[j, , drop = FALSE], y[j], ...)$coefficients
+        if(is.null(wts)) {
+          .lm.fit(xfit[j, , drop = FALSE], y[j], ...)$coefficients
+        } else {
+          lm.wfit(xfit[j, , drop = FALSE], y[j], wts[j], ...)$coefficients
+        }
       },
       "residual" = function(j, ...) {
         j <- unlist(cli[sample(names(cli), length(cli), replace = TRUE)])
@@ -248,11 +257,11 @@ vcovBS.glm <- function(x, cluster = NULL, R = 250, start = FALSE, type = "xy", .
     bootfit <- switch(type,
       "xy" = function(j, ...) {
         j <- unlist(cli[sample(names(cli), length(cli), replace = TRUE)])
-        glm.fit(xfit[j, , drop = FALSE], y[j], family = x$family, start = start, ...)$coefficients
+        glm.fit(xfit[j, , drop = FALSE], y[j], weights = x$prior.weights[j], family = x$family, start = start, ...)$coefficients
       },
       "jackknife" = function(j, ...) {
         j <- unlist(cli[-j])
-        glm.fit(xfit[j, , drop = FALSE], y[j], family = x$family, start = start, ...)$coefficients
+        glm.fit(xfit[j, , drop = FALSE], y[j], weights = x$prior.weights[j], family = x$family, start = start, ...)$coefficients
       }
     )
 
