@@ -118,7 +118,7 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
         if(is.null(wts)) {
           .lm.fit(xfit[j, , drop = FALSE], y[j], ...)$coefficients
         } else {
-          lm.wfit(xfit[j, , drop = FALSE], y[j], wts[j], ...)$coefficients
+          .lm.fit(xfit[j, , drop = FALSE] * sqrt(wts[j]), y[j] * sqrt(wts[j]), ...)$coefficients
         }
       },
       "jackknife" = function(j, ...) {
@@ -126,7 +126,7 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
         if(is.null(wts)) {
           .lm.fit(xfit[j, , drop = FALSE], y[j], ...)$coefficients
         } else {
-          lm.wfit(xfit[j, , drop = FALSE], y[j], wts[j], ...)$coefficients
+          .lm.fit(xfit[j, , drop = FALSE] * sqrt(wts[j]), y[j] * sqrt(wts[j]), ...)$coefficients
         }
       },
       "residual" = function(j, ...) {
