@@ -11,6 +11,14 @@
   default method simply calls `vcovBS(..., type = "jackknife")` (also suggested by
   Joe Ritter, for more details see the previous item).
 
+* Added fractional-random-weight bootstrap, also known as Bayesian bootstrap, in all
+  `vcovBS()` methods (suggested by Noah Greifer and Grant McDermott). This is an
+  alternative to the classical xy bootstrap which has the computational advantage
+  that all observations are always part of the bootstrap samples with positive
+  weights drawn from a Dirichlet distribution. As weights can become close to zero
+  but no observations are excluded completely, this can stabilize the computation of
+  models that are not well-defined on all subsets.
+
 * Support weights, offsets, and different fitting methods in `lm` and `glm` objects
   in the respective `vcovBS()` methods (reported by Noah Greifer).
 

@@ -42,9 +42,9 @@ vcovBS(x, \dots)
     to the \code{update(x, subset = ...)} call? In case the model \code{x}
     is computed by some numeric iteration, this may speed up the bootstrapping.}
   \item{type}{character (or function). The character string specifies the type of
-    bootstrap to use: In the default and \code{glm} method only \code{"xy"}
-    and \code{"jackknife"} are available. In the \code{lm} method there are
-    additionally \code{"residual"}, \code{"wild"}
+    bootstrap to use: In the default and \code{glm} method the three types
+    \code{"xy"}, \code{"fractional"}, and \code{"jackknife"} are available.
+    In the \code{lm} method there are additionally \code{"residual"}, \code{"wild"}
     (or equivalently: \code{"wild-rademacher"} or \code{"rademacher"}),
     \code{"mammen"} (or \code{"wild-mammen"}), \code{"norm"}
     (or \code{"wild-norm"}), \code{"webb"} (or \code{"wild-webb"}).
@@ -137,6 +137,17 @@ vcovBS(x, \dots)
   alternative when the HC3 cannot be computed. A convenience interface \code{\link{vcovJK}}
   is provided whose default method simply calls \code{vcovBS(..., type = "jackknife")}.
 
+  The fractional-random-weight bootstrap (see Xu et al. 2020), first introduced by
+  Rubin (1981) as Bayesian bootstrap, is an alternative to the xy bootstrap when it is
+  computationally challenging or even impractical to reestimate the model on subsets, e.g.,
+  when "successes" in binary responses are rare or when the number of parameters is close
+  to the sample size. In these situations excluding some observations completely is the
+  source of the problems, i.e., giving some observations zero weight while others receive
+  integer weights of one ore more. The fractional bootstrap mitigates this by giving
+  every observation a positive fractional weight, drawn from a Dirichlet distribution.
+  These may become close to zero but never exclude an observation completly, thus stabilizing
+  the computation of the reweighted models.
+
   The \code{\link[stats]{glm}} method works essentially like the default method but calls
   \code{\link[stats]{glm.fit}} instead of code{update}.
   
@@ -212,11 +223,21 @@ Mammen E (1993).
   \dQuote{Bootstrap and Wild Bootstrap for High Dimensional Linear Models}, 
   \emph{The Annals of Statistics}, \bold{21}(1), 255--285.
   \doi{10.1214/aos/1176349025}
+
+Rubin DB (1981).
+  \dQuote{The Bayesian Bootstrap},
+  \emph{The Annals of Statistics}, \bold{9}(1), 130--134.
+  \doi{10.1214/aos/1176345338}
   
 Webb MD (2014).
   \dQuote{Reworking Wild Bootstrap Based Inference for Clustered Errors},
   Working Paper 1315, \emph{Queen's Economics Department.}
   \url{https://www.econ.queensu.ca/sites/econ.queensu.ca/files/qed_wp_1315.pdf}.
+
+Xu L, Gotwalt C, Hong Y, King CB, Meeker WQ (2020).
+  \dQuote{Applications of the Fractional-Random-Weight Bootstrap},
+  \emph{The American Statistician}, \bold{74}(4), 345--358.
+  \doi{10.1080/00031305.2020.1731599}
 
 Zeileis A, Köll S, Graham N (2020).
   \dQuote{Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.}
@@ -237,7 +258,8 @@ set.seed(1)
 cbind(
   "classical" = sqrt(diag(vcov(m))),
   "HC-cluster" = sqrt(diag(vcovCL(m, cluster = ~ firm))),
-  "BS-cluster" = sqrt(diag(vcovBS(m, cluster = ~ firm)))
+  "BS-cluster" = sqrt(diag(vcovBS(m, cluster = ~ firm))),
+  "FW-cluster" = sqrt(diag(vcovBS(m, cluster = ~ firm, type = "fractional")))
 )
 
 ## two-way wild cluster bootstrap with Mammen distribution

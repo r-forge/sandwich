@@ -195,13 +195,13 @@ with</p>
 <span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">vcovHAC</span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             (Intercept)           x</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 0.009716252 0.004740023</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x           0.004740023 0.023346936</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               (Intercept)             x</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.0071677581 -0.0007615085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x           -0.0007615085  0.0116241697</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              (Intercept)            x</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 1.114254e-02 2.818886e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x           2.818886e-05 2.216611e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 7.248941e-03 1.833867e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x           1.833867e-05 1.442048e-02</span>
 </code></pre></div>
     </div>
   </div>

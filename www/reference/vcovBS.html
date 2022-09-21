@@ -109,9 +109,9 @@
     is computed by some numeric iteration, this may speed up the bootstrapping.</p></dd>
 <dt>type</dt>
 <dd><p>character (or function). The character string specifies the type of
-    bootstrap to use: In the default and <code>glm</code> method only <code>"xy"</code>
-    and <code>"jackknife"</code> are available. In the <code>lm</code> method there are
-    additionally <code>"residual"</code>, <code>"wild"</code>
+    bootstrap to use: In the default and <code>glm</code> method the three types
+    <code>"xy"</code>, <code>"fractional"</code>, and <code>"jackknife"</code> are available.
+    In the <code>lm</code> method there are additionally <code>"residual"</code>, <code>"wild"</code>
     (or equivalently: <code>"wild-rademacher"</code> or <code>"rademacher"</code>),
     <code>"mammen"</code> (or <code>"wild-mammen"</code>), <code>"norm"</code>
     (or <code>"wild-norm"</code>), <code>"webb"</code> (or <code>"wild-webb"</code>).
@@ -202,6 +202,16 @@
   jackknife and the HC3 estimator do not coincide but the jackknife might still be a useful
   alternative when the HC3 cannot be computed. A convenience interface <code><a href="vcovJK.html">vcovJK</a></code>
   is provided whose default method simply calls <code>vcovBS(..., type = "jackknife")</code>.</p>
+<p>The fractional-random-weight bootstrap (see Xu et al. 2020), first introduced by
+  Rubin (1981) as Bayesian bootstrap, is an alternative to the xy bootstrap when it is
+  computationally challenging or even impractical to reestimate the model on subsets, e.g.,
+  when "successes" in binary responses are rare or when the number of parameters is close
+  to the sample size. In these situations excluding some observations completely is the
+  source of the problems, i.e., giving some observations zero weight while others receive
+  integer weights of one ore more. The fractional bootstrap mitigates this by giving
+  every observation a positive fractional weight, drawn from a Dirichlet distribution.
+  These may become close to zero but never exclude an observation completly, thus stabilizing
+  the computation of the reweighted models.</p>
 <p>The <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></code> method works essentially like the default method but calls
   <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm.fit</a></code> instead of codeupdate.</p>  
 <p>The <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></code> method provides additional bootstrapping <code>type</code>s
@@ -266,11 +276,19 @@
 <p>Mammen E (1993). 
   “Bootstrap and Wild Bootstrap for High Dimensional Linear Models”, 
   <em>The Annals of Statistics</em>, <b>21</b>(1), 255--285.
-  <a href="https://doi.org/10.1214/aos/1176349025" class="external-link">doi:10.1214/aos/1176349025</a></p>  
+  <a href="https://doi.org/10.1214/aos/1176349025" class="external-link">doi:10.1214/aos/1176349025</a></p>
+<p>Rubin DB (1981).
+  “The Bayesian Bootstrap”,
+  <em>The Annals of Statistics</em>, <b>9</b>(1), 130--134.
+  <a href="https://doi.org/10.1214/aos/1176345338" class="external-link">doi:10.1214/aos/1176345338</a></p>  
 <p>Webb MD (2014).
   “Reworking Wild Bootstrap Based Inference for Clustered Errors”,
   Working Paper 1315, <em>Queen's Economics Department.</em>
   <a href="https://www.econ.queensu.ca/sites/econ.queensu.ca/files/qed_wp_1315.pdf" class="external-link">https://www.econ.queensu.ca/sites/econ.queensu.ca/files/qed_wp_1315.pdf</a>.</p>
+<p>Xu L, Gotwalt C, Hong Y, King CB, Meeker WQ (2020).
+  “Applications of the Fractional-Random-Weight Bootstrap”,
+  <em>The American Statistician</em>, <b>74</b>(4), 345--358.
+  <a href="https://doi.org/10.1080/00031305.2020.1731599" class="external-link">doi:10.1080/00031305.2020.1731599</a></p>
 <p>Zeileis A, Köll S, Graham N (2020).
   “Various Versatile Variances: An Object-Oriented Implementation of Clustered Covariances in R.”
   <em>Journal of Statistical Software</em>, <b>95</b>(1), 1--36.
@@ -293,17 +311,18 @@
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
 <span class="r-in">  <span class="st">"classical"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span class="r-in">  <span class="st">"HC-cluster"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="vcovCL.html">vcovCL</a></span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  <span class="st">"BS-cluster"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovBS</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in">  <span class="st">"BS-cluster"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovBS</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">  <span class="st">"FW-cluster"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovBS</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span>, type <span class="op">=</span> <span class="st">"fractional"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              classical HC-cluster BS-cluster</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 0.02835932 0.06701270 0.07067533</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x           0.02858329 0.05059573 0.04878784</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              classical HC-cluster BS-cluster FW-cluster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 0.02835932 0.06701270 0.07067533 0.06596187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x           0.02858329 0.05059573 0.04878784 0.04965168</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## two-way wild cluster bootstrap with Mammen distribution</span></span>
 <span class="r-in"><span class="fu">vcovBS</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span> <span class="op">+</span> <span class="va">year</span>, type <span class="op">=</span> <span class="st">"wild-mammen"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             (Intercept)           x</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 0.003535619 0.000488708</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x           0.000488708 0.002589785</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 0.004135069 0.000364327</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x           0.000364327 0.002659964</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## jackknife estimator coincides with HC3 (aka CV3)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span></span>

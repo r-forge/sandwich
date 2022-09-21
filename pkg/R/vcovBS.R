@@ -79,24 +79,45 @@ vcovBS.default <- function(x, cluster = NULL, R = 250, start = FALSE, type = "xy
   assign(".vcovBSstart", if(isTRUE(start)) coef(x) else NULL, envir = .vcovBSenv)
 
   ## xy bootstrap vs. jackknife
-  type <- match.arg(tolower(type), c("xy", "jackknife"))
+  type <- match.arg(tolower(type), c("xy", "jackknife", "fractional"))
 
   ## bootstrap for each cluster dimension
   for (i in 1L:length(cl)) {
     ## cluster structure
-    cli <- split(seq_along(cluster[[i]]), cluster[[i]])
+    cli <- if(type != "fractional") {
+      split(seq_along(cluster[[i]]), cluster[[i]])    
+    } else {
+      factor(cluster[[i]], levels = unique(cluster[[i]]))
+    }
 
     ## bootstrap fitting function via update()
     bootfit <- function(j, ...) {
-        j <- switch(type,
-          "xy"        = sample(names(cli), length(cli), replace = TRUE),
-          "jackknife" = -j)
-        j <- unlist(cli[j])
-        assign(".vcovBSsubset", j, envir = .vcovBSenv)
+        clj <- switch(type,
+          "xy" = {
+            unlist(cli[sample(names(cli), length(cli), replace = TRUE)])
+          },
+          "jackknife" = {
+            unlist(cli[-j])
+          },
+          "fractional" = {
+            fw <- rexp(nlevels(cli))
+            fw <- fw[cli]/mean(fw)
+            mw <- weights(x)
+            j <- if(is.null(mw)) fw else mw * fw
+          })
+        assign(".vcovBSsubset", clj, envir = .vcovBSenv)
         up <- if(is.null(.vcovBSenv$.vcovBSstart)) {
-          update(x, subset = .vcovBSenv$.vcovBSsubset, ..., evaluate = FALSE)
+          if(type != "fractional") {
+            update(x, subset = .vcovBSenv$.vcovBSsubset, ..., evaluate = FALSE)
+          } else {
+            update(x, weights = .vcovBSenv$.vcovBSsubset, ..., evaluate = FALSE)
+          }
         } else {
-          update(x, subset = .vcovBSenv$.vcovBSsubset, start = .vcovBSenv$.vcovBSstart, ..., evaluate = FALSE)      
+          if(type != "fractional") {
+            update(x, subset = .vcovBSenv$.vcovBSsubset, start = .vcovBSenv$.vcovBSstart, ..., evaluate = FALSE)      
+          } else {
+            update(x, weights = .vcovBSenv$.vcovBSsubset, start = .vcovBSenv$.vcovBSstart, ..., evaluate = FALSE)                
+          }
         }
         up <- eval(up, envir = env, enclos = parent.frame())
         coef(up)

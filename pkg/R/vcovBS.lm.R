@@ -58,7 +58,7 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
     wild <- function(n) NULL
   }
   type <- match.arg(gsub("wild-", "", tolower(type), fixed = TRUE),
-    c("xy", "jackknife", "residual", "wild", "webb", "rademacher", "mammen", "norm", "user"))
+    c("xy", "jackknife", "fractional", "residual", "wild", "webb", "rademacher", "mammen", "norm", "user"))
   if(type == "wild") type <- "rademacher"
   
   ## set up wild bootstrap function
@@ -81,7 +81,7 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
   }
   wts <- if(is.null(x$weights)) rep.int(1, n) else x$weights
   off <- if(is.null(x$offset))  rep.int(0, n) else x$offset
-  xfit <- if(type %in% c("xy", "jackknife")) model.matrix(x) else list(fit = x$fitted.values, res = x$residuals, qr = x$qr)
+  xfit <- if(type %in% c("xy", "jackknife", "fractional")) model.matrix(x) else list(fit = x$fitted.values, res = x$residuals, qr = x$qr)
 
   ## apply infrastructure for refitting models
   if(is.null(applyfun)) {
@@ -121,6 +121,11 @@ vcovBS.lm <- function(x, cluster = NULL, R = 250, type = "xy", ..., fix = FALSE,
       "jackknife" = function(j, ...) {
         j <- unlist(cli[-j])
         .lm.fit(xfit[j, , drop = FALSE] * sqrt(wts[j]), (y[j] - off[j]) * sqrt(wts[j]), ...)$coefficients
+      },
+      "fractional" = function(j, ...) {
+        fw <- rexp(nlevels(cli))
+        fw <- fw[cli]/mean(fw)
+        .lm.fit(xfit * sqrt(wts * fw), (y - off) * sqrt(wts * fw), ...)$coefficients
       },
       "residual" = function(j, ...) {
         j <- unlist(cli[sample(names(cli), length(cli), replace = TRUE)])
@@ -242,21 +247,34 @@ vcovBS.glm <- function(x, cluster = NULL, R = 250, start = FALSE, type = "xy", .
   }
 
   ## xy bootstrap vs. jackknife
-  type <- match.arg(tolower(type), c("xy", "jackknife"))
+  type <- match.arg(tolower(type), c("xy", "jackknife", "fractional"))
 
   ## bootstrap for each cluster dimension
   for (i in 1L:length(cl))
   {
     ## cluster structure
-    cli <- split(seq_along(cluster[[i]]), cluster[[i]])
+    cli <- if(type != "fractional") {
+      split(seq_along(cluster[[i]]), cluster[[i]])
+    } else {
+      factor(cluster[[i]], levels = unique(cluster[[i]]))
+    }
 
     ## bootstrap fitting function
     bootfit <- function(j, ...) {
-      j <- if(type == "xy") sample(names(cli), length(cli), replace = TRUE) else -j
-      j <- unlist(cli[j])
+      if(type == "xy") {
+        j <- unlist(cli[sample(names(cli), length(cli), replace = TRUE)])
+        wts <- 1
+      } else if(type == "jackknife") {
+        j <- unlist(cli[-j])
+        wts <- 1
+      } else if(type == "fractional") {
+        j <- 1L:n
+        wts <- rexp(nlevels(cli))
+        wts <- wts[cli]/mean(wts)
+      }
       eval(
         call(if(is.function(method)) "method" else method, 
-          x = xfit[j, , drop = FALSE], y = y[j], weights = x$prior.weights[j], offset = x$offset[j],
+          x = xfit[j, , drop = FALSE], y = y[j], weights = x$prior.weights[j] * wts, offset = x$offset[j],
           family = x$family, start = start, control = x$control, intercept = attr(x$terms, "intercept") > 0)
       )$coefficients
     }
