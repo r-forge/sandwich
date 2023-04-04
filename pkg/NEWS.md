@@ -26,8 +26,8 @@
   as linear regression models (in addition to models from `lm()`).
 
 * More verbose error messages in `bwAndrews()` and `bwNeweyWest()` when bandwidth
-  cannot be computed, e.g., due to singular regressor variables. (Suggested by
-  Andrei V. Kostyrka.)
+  cannot be computed, e.g., due to singular regressor variables (suggested by
+  Andrei V. Kostyrka).
 
 
 # sandwich 3.0-2
