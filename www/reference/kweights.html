@@ -73,24 +73,29 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">kweights</span><span class="op">(</span><span class="va">x</span>, kernel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Truncated"</span>, <span class="st">"Bartlett"</span>, <span class="st">"Parzen"</span>,
-  <span class="st">"Tukey-Hanning"</span>, <span class="st">"Quadratic Spectral"</span><span class="op">)</span>, normalize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">kweights</span><span class="op">(</span><span class="va">x</span>, kernel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Truncated"</span>, <span class="st">"Bartlett"</span>, <span class="st">"Parzen"</span>,</span>
+<span>  <span class="st">"Tukey-Hanning"</span>, <span class="st">"Quadratic Spectral"</span><span class="op">)</span>, normalize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>numeric.</p></dd>
-<dt>kernel</dt>
+
+ <dt>kernel</dt>
 <dd><p>a character specifying the kernel used. All kernels used
     are described in Andrews (1991).</p></dd>
-<dt>normalize</dt>
+
+ <dt>normalize</dt>
 <dd><p>logical. If set to <code>TRUE</code> the kernels are
    normalized as described in Andrews (1991).</p></dd>
+    
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Value of the kernel function at <code>x</code>.</p>
+    
+
+<p>Value of the kernel function at <code>x</code>.</p>
     </div>
     <div id="references">
     <h2>References</h2>
@@ -106,16 +111,16 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">kweights</span><span class="op">(</span><span class="va">x</span>, kernel <span class="op">=</span> <span class="st">"Quadratic"</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span class="r-in">      from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">3.2</span>, xlab <span class="op">=</span> <span class="st">"x"</span>, ylab <span class="op">=</span> <span class="st">"k(x)"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">kweights</span><span class="op">(</span><span class="va">x</span>, kernel <span class="op">=</span> <span class="st">"Bartlett"</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span class="r-in">      from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">3.2</span>, col <span class="op">=</span> <span class="fl">2</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">kweights</span><span class="op">(</span><span class="va">x</span>, kernel <span class="op">=</span> <span class="st">"Parzen"</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span class="r-in">      from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">3.2</span>, col <span class="op">=</span> <span class="fl">3</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">kweights</span><span class="op">(</span><span class="va">x</span>, kernel <span class="op">=</span> <span class="st">"Tukey"</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span class="r-in">      from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">3.2</span>, col <span class="op">=</span> <span class="fl">4</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">kweights</span><span class="op">(</span><span class="va">x</span>, kernel <span class="op">=</span> <span class="st">"Truncated"</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span class="r-in">      from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">3.2</span>, col <span class="op">=</span> <span class="fl">5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">kweights</span><span class="op">(</span><span class="va">x</span>, kernel <span class="op">=</span> <span class="st">"Quadratic"</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">3.2</span>, xlab <span class="op">=</span> <span class="st">"x"</span>, ylab <span class="op">=</span> <span class="st">"k(x)"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">kweights</span><span class="op">(</span><span class="va">x</span>, kernel <span class="op">=</span> <span class="st">"Bartlett"</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">3.2</span>, col <span class="op">=</span> <span class="fl">2</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">kweights</span><span class="op">(</span><span class="va">x</span>, kernel <span class="op">=</span> <span class="st">"Parzen"</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">3.2</span>, col <span class="op">=</span> <span class="fl">3</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">kweights</span><span class="op">(</span><span class="va">x</span>, kernel <span class="op">=</span> <span class="st">"Tukey"</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">3.2</span>, col <span class="op">=</span> <span class="fl">4</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">kweights</span><span class="op">(</span><span class="va">x</span>, kernel <span class="op">=</span> <span class="st">"Truncated"</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">3.2</span>, col <span class="op">=</span> <span class="fl">5</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="kweights-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -131,7 +136,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

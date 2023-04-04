@@ -79,56 +79,68 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">weave</span><span class="op">(</span><span class="va">x</span>, order.by <span class="op">=</span> <span class="cn">NULL</span>, prewhite <span class="op">=</span> <span class="cn">FALSE</span>, C <span class="op">=</span> <span class="cn">NULL</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"truncate"</span>, <span class="st">"smooth"</span><span class="op">)</span>, acf <span class="op">=</span> <span class="va">isoacf</span>, adjust <span class="op">=</span> <span class="cn">FALSE</span>,
-  diagnostics <span class="op">=</span> <span class="cn">FALSE</span>, sandwich <span class="op">=</span> <span class="cn">TRUE</span>, tol <span class="op">=</span> <span class="fl">1e-7</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">weightsLumley</span><span class="op">(</span><span class="va">x</span>, order.by <span class="op">=</span> <span class="cn">NULL</span>, C <span class="op">=</span> <span class="cn">NULL</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"truncate"</span>, <span class="st">"smooth"</span><span class="op">)</span>, acf <span class="op">=</span> <span class="va">isoacf</span>, tol <span class="op">=</span> <span class="fl">1e-7</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">weave</span><span class="op">(</span><span class="va">x</span>, order.by <span class="op">=</span> <span class="cn">NULL</span>, prewhite <span class="op">=</span> <span class="cn">FALSE</span>, C <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"truncate"</span>, <span class="st">"smooth"</span><span class="op">)</span>, acf <span class="op">=</span> <span class="va">isoacf</span>, adjust <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  diagnostics <span class="op">=</span> <span class="cn">FALSE</span>, sandwich <span class="op">=</span> <span class="cn">TRUE</span>, tol <span class="op">=</span> <span class="fl">1e-7</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">weightsLumley</span><span class="op">(</span><span class="va">x</span>, order.by <span class="op">=</span> <span class="cn">NULL</span>, C <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"truncate"</span>, <span class="st">"smooth"</span><span class="op">)</span>, acf <span class="op">=</span> <span class="va">isoacf</span>, tol <span class="op">=</span> <span class="fl">1e-7</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>a fitted model object.</p></dd>
-<dt>order.by</dt>
+
+ <dt>order.by</dt>
 <dd><p>Either a vector <code>z</code> or a formula with a single explanatory
     variable like <code>~ z</code>. The observations in the model
     are ordered by the size of <code>z</code>. If set to <code>NULL</code> (the
     default) the observations are assumed to be ordered (e.g., a
     time series).</p></dd>
-<dt>prewhite</dt>
+
+ <dt>prewhite</dt>
 <dd><p>logical or integer. Should the estimating functions
     be prewhitened? If <code>TRUE</code> or greater than 0 a VAR model of
     order <code>as.integer(prewhite)</code> is fitted via <code>ar</code> with
     method <code>"ols"</code> and <code>demean = FALSE</code>.</p></dd>
-<dt>C</dt>
+
+ <dt>C</dt>
 <dd><p>numeric. The cutoff constant <code>C</code> is by default
     4 for method <code>"truncate"</code> and 1 for method <code>"smooth"</code>.</p></dd>
-<dt>method</dt>
+
+ <dt>method</dt>
 <dd><p>a character specifying the method used, see details.</p></dd>
-<dt>acf</dt>
+
+ <dt>acf</dt>
 <dd><p>a function that computes the autocorrelation function of 
     a vector, by default <code><a href="isoacf.html">isoacf</a></code> is used.</p></dd>
-<dt>adjust</dt>
+
+ <dt>adjust</dt>
 <dd><p>logical. Should a finite sample adjustment be made?
     This amounts to multiplication with \(n/(n-k)\) where \(n\) is the
     number of observations and \(k\) the number of estimated parameters.</p></dd>
-<dt>diagnostics</dt>
+
+ <dt>diagnostics</dt>
 <dd><p>logical. Should additional model diagnostics be returned?
    See <code><a href="vcovHAC.html">vcovHAC</a></code> for details.</p></dd>
-<dt>sandwich</dt>
+
+ <dt>sandwich</dt>
 <dd><p>logical. Should the sandwich estimator be computed?
     If set to <code>FALSE</code> only the middle matrix is returned.</p></dd>
-<dt>tol</dt>
+
+ <dt>tol</dt>
 <dd><p>numeric. Weights that exceed <code>tol</code> are used for computing
    the covariance matrix, all other weights are treated as 0.</p></dd>
-<dt>data</dt>
+
+ <dt>data</dt>
 <dd><p>an optional data frame containing the variables in the <code>order.by</code> 
     model. By default the variables are taken from the environment which
     the function is called from.</p></dd>
-<dt>...</dt>
+
+ <dt>...</dt>
 <dd><p>currently not used.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -147,8 +159,15 @@ constant <code>C</code>.</p>
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>weave</code> returns the same type of object as <code><a href="vcovHAC.html">vcovHAC</a></code>which is typically just the covariance matrix.
-<code>weightsLumley</code> returns a vector of weights.</p>
+    
+
+<p><code>weave</code> returns the same type of object as <code><a href="vcovHAC.html">vcovHAC</a></code></p>
+
+
+<p>which is typically just the covariance matrix.</p>
+
+
+<p><code>weightsLumley</code> returns a vector of weights.</p>
     </div>
     <div id="references">
     <h2>References</h2>
@@ -165,14 +184,14 @@ constant <code>C</code>.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">weave</span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">weave</span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             (Intercept)           x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.01003614 -0.00138173</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x           -0.00138173  0.02010650</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              (Intercept)            x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 1.024461e-02 2.591723e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x           2.591723e-05 2.037982e-02</span>
@@ -190,7 +209,7 @@ constant <code>C</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

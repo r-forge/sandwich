@@ -196,12 +196,12 @@ package being particularly versatile, including a graphical
 Comprehensive R Archive Network (CRAN) at <a href="https://CRAN.R-project.org/package=sandwich" class="external-link uri">https://CRAN.R-project.org/package=sandwich</a> and can be
 installed via</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"sandwich"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"sandwich"</span><span class="op">)</span></span></code></pre></div>
 <p>The development version of <em>sandwich</em> is hosted on R-Forge at
 <a href="https://R-Forge.R-project.org/projects/sandwich/" class="external-link uri">https://R-Forge.R-project.org/projects/sandwich/</a> in a
 Subversion (SVN) repository. It can be installed via</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"sandwich"</span>, repos <span class="op">=</span> <span class="st">"https://R-Forge.R-project.org"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"sandwich"</span>, repos <span class="op">=</span> <span class="st">"https://R-Forge.R-project.org"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="publications">Publications<a class="anchor" aria-label="anchor" href="#publications"></a>
@@ -238,27 +238,27 @@ are clustered by <code>firm</code> (500 firms) and <code>year</code> (10
 years). The data can be loaded and the model fitted by ordinary least
 squares (OLS):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"PetersenCL"</span>, package <span class="op">=</span> <span class="st">"sandwich"</span><span class="op">)</span>
-<span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## </span>
-<span class="co">## Call:</span>
-<span class="co">## lm(formula = y ~ x, data = PetersenCL)</span>
-<span class="co">## </span>
-<span class="co">## Residuals:</span>
-<span class="co">##    Min     1Q Median     3Q    Max </span>
-<span class="co">## -6.761 -1.368 -0.017  1.339  8.678 </span>
-<span class="co">## </span>
-<span class="co">## Coefficients:</span>
-<span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)    </span>
-<span class="co">## (Intercept)   0.0297     0.0284    1.05      0.3    </span>
-<span class="co">## x             1.0348     0.0286   36.20   &lt;2e-16 ***</span>
-<span class="co">## ---</span>
-<span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
-<span class="co">## </span>
-<span class="co">## Residual standard error: 2.01 on 4998 degrees of freedom</span>
-<span class="co">## Multiple R-squared:  0.208,  Adjusted R-squared:  0.208 </span>
-<span class="co">## F-statistic: 1.31e+03 on 1 and 4998 DF,  p-value: &lt;2e-16</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"PetersenCL"</span>, package <span class="op">=</span> <span class="st">"sandwich"</span><span class="op">)</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Call:</span></span>
+<span><span class="co">## lm(formula = y ~ x, data = PetersenCL)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Residuals:</span></span>
+<span><span class="co">##    Min     1Q Median     3Q    Max </span></span>
+<span><span class="co">## -6.761 -1.368 -0.017  1.339  8.678 </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Coefficients:</span></span>
+<span><span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span><span class="co">## (Intercept)   0.0297     0.0284    1.05      0.3    </span></span>
+<span><span class="co">## x             1.0348     0.0286   36.20   &lt;2e-16 ***</span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Residual standard error: 2.01 on 4998 degrees of freedom</span></span>
+<span><span class="co">## Multiple R-squared:  0.208,  Adjusted R-squared:  0.208 </span></span>
+<span><span class="co">## F-statistic: 1.31e+03 on 1 and 4998 DF,  p-value: &lt;2e-16</span></span></code></pre>
 <p>The regression summary for a linear model uses the “usual” OLS
 standard errors, assuming that the data are uncorrelated and
 homoscedastic. The summary provides partial Wald tests for the
@@ -269,76 +269,76 @@ confidence intervals using the basic “robust” sandwich covariance for
 cross-section data we can combine <em>sandwich</em> with the
 <em>lmtest</em> package:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://sandwich.R-Forge.R-project.org/">"sandwich"</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"lmtest"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## </span>
-<span class="co">## t test of coefficients:</span>
-<span class="co">## </span>
-<span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)    </span>
-<span class="co">## (Intercept)   0.0297     0.0284    1.05      0.3    </span>
-<span class="co">## x             1.0348     0.0284   36.45   &lt;2e-16 ***</span>
-<span class="co">## ---</span>
-<span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://sandwich.R-Forge.R-project.org/">"sandwich"</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"lmtest"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## t test of coefficients:</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span><span class="co">## (Intercept)   0.0297     0.0284    1.05      0.3    </span></span>
+<span><span class="co">## x             1.0348     0.0284   36.45   &lt;2e-16 ***</span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coefci</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##               2.5 % 97.5 %</span>
-<span class="co">## (Intercept) -0.0259 0.0853</span>
-<span class="co">## x            0.9792 1.0905</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coefci</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##               2.5 % 97.5 %</span></span>
+<span><span class="co">## (Intercept) -0.0259 0.0853</span></span>
+<span><span class="co">## x            0.9792 1.0905</span></span></code></pre>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">m0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/waldtest.html" class="external-link">waldtest</a></span><span class="op">(</span><span class="va">m0</span>, <span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Wald test</span>
-<span class="co">## </span>
-<span class="co">## Model 1: y ~ 1</span>
-<span class="co">## Model 2: y ~ x</span>
-<span class="co">##   Res.Df Df    F Pr(&gt;F)    </span>
-<span class="co">## 1   4999                   </span>
-<span class="co">## 2   4998  1 1329 &lt;2e-16 ***</span>
-<span class="co">## ---</span>
-<span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></code></pre>
+<code class="sourceCode R"><span><span class="va">m0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/waldtest.html" class="external-link">waldtest</a></span><span class="op">(</span><span class="va">m0</span>, <span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Wald test</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Model 1: y ~ 1</span></span>
+<span><span class="co">## Model 2: y ~ x</span></span>
+<span><span class="co">##   Res.Df Df    F Pr(&gt;F)    </span></span>
+<span><span class="co">## 1   4999                   </span></span>
+<span><span class="co">## 2   4998  1 1329 &lt;2e-16 ***</span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre>
 <p>Other covariances can be plugged in analogously, potentially passing
 along further options for the covariance. For example, the clustered
 covariance <code><a href="../reference/vcovCL.html">vcovCL()</a></code> can be used with the clustering
 variable <code>firm</code> as:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">vcovCL</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## </span>
-<span class="co">## t test of coefficients:</span>
-<span class="co">## </span>
-<span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)    </span>
-<span class="co">## (Intercept)   0.0297     0.0670    0.44     0.66    </span>
-<span class="co">## x             1.0348     0.0506   20.45   &lt;2e-16 ***</span>
-<span class="co">## ---</span>
-<span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">vcovCL</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## t test of coefficients:</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span><span class="co">## (Intercept)   0.0297     0.0670    0.44     0.66    </span></span>
+<span><span class="co">## x             1.0348     0.0506   20.45   &lt;2e-16 ***</span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre>
 <p>In the same way we can compute and compare many of the other
 estimators in the package. A selection, mostly just with the default
 settings, is provided here. First, the covarainces are computed and then
 the corresponding standard errors extracted (square root of the
 diagonal):</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">vc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-  <span class="st">"Standard"</span>              <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,
-  <span class="st">"Sandwich (basic)"</span>      <span class="op">=</span> <span class="fu"><a href="../reference/sandwich.html">sandwich</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,
-  <span class="st">"Clustered"</span>             <span class="op">=</span> <span class="fu"><a href="../reference/vcovCL.html">vcovCL</a></span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span>,
-  <span class="st">"Clustered (two-way)"</span>   <span class="op">=</span> <span class="fu"><a href="../reference/vcovCL.html">vcovCL</a></span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span> <span class="op">+</span> <span class="va">year</span><span class="op">)</span>,
-  <span class="st">"HC3"</span>                   <span class="op">=</span> <span class="fu"><a href="../reference/vcovHC.html">vcovHC</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,
-  <span class="st">"Andrews' kernel HAC"</span>   <span class="op">=</span> <span class="fu"><a href="../reference/weightsAndrews.html">kernHAC</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,
-  <span class="st">"Newey-West"</span>            <span class="op">=</span> <span class="fu"><a href="../reference/NeweyWest.html">NeweyWest</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,
-  <span class="st">"Bootstrap"</span>             <span class="op">=</span> <span class="fu"><a href="../reference/vcovBS.html">vcovBS</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,
-  <span class="st">"Bootstrap (clustered)"</span> <span class="op">=</span> <span class="fu"><a href="../reference/vcovBS.html">vcovBS</a></span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">vc</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##                       (Intercept)      x</span>
-<span class="co">## Standard                   0.0284 0.0286</span>
-<span class="co">## Sandwich (basic)           0.0284 0.0284</span>
-<span class="co">## Clustered                  0.0670 0.0506</span>
-<span class="co">## Clustered (two-way)        0.0651 0.0536</span>
-<span class="co">## HC3                        0.0284 0.0284</span>
-<span class="co">## Andrews' kernel HAC        0.0437 0.0351</span>
-<span class="co">## Newey-West                 0.0660 0.0482</span>
-<span class="co">## Bootstrap                  0.0262 0.0292</span>
-<span class="co">## Bootstrap (clustered)      0.0651 0.0544</span></code></pre>
+<code class="sourceCode R"><span><span class="va">vc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Standard"</span>              <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,</span>
+<span>  <span class="st">"Sandwich (basic)"</span>      <span class="op">=</span> <span class="fu"><a href="../reference/sandwich.html">sandwich</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,</span>
+<span>  <span class="st">"Clustered"</span>             <span class="op">=</span> <span class="fu"><a href="../reference/vcovCL.html">vcovCL</a></span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span>,</span>
+<span>  <span class="st">"Clustered (two-way)"</span>   <span class="op">=</span> <span class="fu"><a href="../reference/vcovCL.html">vcovCL</a></span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span> <span class="op">+</span> <span class="va">year</span><span class="op">)</span>,</span>
+<span>  <span class="st">"HC3"</span>                   <span class="op">=</span> <span class="fu"><a href="../reference/vcovHC.html">vcovHC</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,</span>
+<span>  <span class="st">"Andrews' kernel HAC"</span>   <span class="op">=</span> <span class="fu"><a href="../reference/weightsAndrews.html">kernHAC</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,</span>
+<span>  <span class="st">"Newey-West"</span>            <span class="op">=</span> <span class="fu"><a href="../reference/NeweyWest.html">NeweyWest</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,</span>
+<span>  <span class="st">"Bootstrap"</span>             <span class="op">=</span> <span class="fu"><a href="../reference/vcovBS.html">vcovBS</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,</span>
+<span>  <span class="st">"Bootstrap (clustered)"</span> <span class="op">=</span> <span class="fu"><a href="../reference/vcovBS.html">vcovBS</a></span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">vc</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                       (Intercept)      x</span></span>
+<span><span class="co">## Standard                   0.0284 0.0286</span></span>
+<span><span class="co">## Sandwich (basic)           0.0284 0.0284</span></span>
+<span><span class="co">## Clustered                  0.0670 0.0506</span></span>
+<span><span class="co">## Clustered (two-way)        0.0651 0.0536</span></span>
+<span><span class="co">## HC3                        0.0284 0.0284</span></span>
+<span><span class="co">## Andrews' kernel HAC        0.0437 0.0351</span></span>
+<span><span class="co">## Newey-West                 0.0660 0.0482</span></span>
+<span><span class="co">## Bootstrap                  0.0262 0.0292</span></span>
+<span><span class="co">## Bootstrap (clustered)      0.0651 0.0544</span></span></code></pre>
 <p>This shows that due to the cluster-correlation in the data, the usual
 standard errors and cross-section covariances are much too small. In
 contrast, the different types of clustered standard errors are much
@@ -359,14 +359,14 @@ might be specified via a covariance extractor function, certain strings
 already computed a list of covariance matrices <code>vc</code> above, we
 simply use the list element with the clustered covariance:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://vincentarelbundock.github.io/modelsummary/" class="external-link">"modelsummary"</a></span><span class="op">)</span>
-<span class="fu"><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">vc</span><span class="op">$</span><span class="va">Clustered</span>, stars <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://vincentarelbundock.github.io/modelsummary/" class="external-link">"modelsummary"</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">vc</span><span class="op">$</span><span class="va">Clustered</span>, stars <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table table">
 <thead><tr>
 <th style="text-align:left;">
 </th>
 <th style="text-align:center;">
-Model 1
+ (1)
 </th>
 </tr></thead>
 <tbody>
@@ -448,6 +448,22 @@ Log.Lik.
 −10572.604
 </td>
 </tr>
+<tr>
+<td style="text-align:left;">
+RMSE
+</td>
+<td style="text-align:center;">
+2.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Std.Errors
+</td>
+<td style="text-align:center;">
+Custom
+</td>
+</tr>
 </tbody>
 <tfoot><tr>
 <td style="padding: 0; " colspan="100%">
@@ -470,8 +486,8 @@ apply <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="extern
 from <code>vc</code>. The resulting list of <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest()</a></code>
 objects can then be displayed directly with <code><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary()</a></code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mlist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">vc</span>, <span class="va">coeftest</span>, x <span class="op">=</span> <span class="va">m</span><span class="op">)</span>
-<span class="fu"><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary</a></span><span class="op">(</span><span class="va">mlist</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">mlist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">vc</span>, <span class="va">coeftest</span>, x <span class="op">=</span> <span class="va">m</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary</a></span><span class="op">(</span><span class="va">mlist</span><span class="op">)</span></span></code></pre></div>
 <table class="table table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead><tr>
 <th style="text-align:left;">
@@ -489,7 +505,7 @@ Clustered
 Clustered (two-way)
 </th>
 <th style="text-align:center;">
-HC3
+ HC3
 </th>
 <th style="text-align:center;">
 Andrews’ kernel HAC
@@ -668,31 +684,31 @@ Num.Obs.
 AIC
 </td>
 <td style="text-align:center;">
-21151.2
+31141.2
 </td>
 <td style="text-align:center;">
-21151.2
+31141.2
 </td>
 <td style="text-align:center;">
-21151.2
+31141.2
 </td>
 <td style="text-align:center;">
-21151.2
+31141.2
 </td>
 <td style="text-align:center;">
-21151.2
+31141.2
 </td>
 <td style="text-align:center;">
-21151.2
+31141.2
 </td>
 <td style="text-align:center;">
-21151.2
+31141.2
 </td>
 <td style="text-align:center;">
-21151.2
+31141.2
 </td>
 <td style="text-align:center;">
-21151.2
+31141.2
 </td>
 </tr>
 <tr>
@@ -700,63 +716,31 @@ AIC
 BIC
 </td>
 <td style="text-align:center;">
-21170.8
+63714.1
 </td>
 <td style="text-align:center;">
-21170.8
+63714.1
 </td>
 <td style="text-align:center;">
-21170.8
+63714.1
 </td>
 <td style="text-align:center;">
-21170.8
+63714.1
 </td>
 <td style="text-align:center;">
-21170.8
+63714.1
 </td>
 <td style="text-align:center;">
-21170.8
+63714.1
 </td>
 <td style="text-align:center;">
-21170.8
+63714.1
 </td>
 <td style="text-align:center;">
-21170.8
+63714.1
 </td>
 <td style="text-align:center;">
-21170.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Log.Lik.
-</td>
-<td style="text-align:center;">
--10572.604
-</td>
-<td style="text-align:center;">
--10572.604
-</td>
-<td style="text-align:center;">
--10572.604
-</td>
-<td style="text-align:center;">
--10572.604
-</td>
-<td style="text-align:center;">
--10572.604
-</td>
-<td style="text-align:center;">
--10572.604
-</td>
-<td style="text-align:center;">
--10572.604
-</td>
-<td style="text-align:center;">
--10572.604
-</td>
-<td style="text-align:center;">
--10572.604
+63714.1
 </td>
 </tr>
 </tbody>
@@ -774,9 +758,9 @@ the plot: omit the display for the intercepts (i.e., only show the
 palette that highlights the confidence intervals based on the disfferent
 clustered standard errors which are more appropriate for this data.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span>
-<span class="va">pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">hcl.colors</a></span><span class="op">(</span><span class="fl">9</span>, <span class="st">"Dark 3"</span>, alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://vincentarelbundock.github.io/modelsummary/reference/modelplot.html" class="external-link">modelplot</a></span><span class="op">(</span><span class="va">mlist</span>, coef_omit <span class="op">=</span> <span class="st">"(Intercept)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">pal</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span></span>
+<span><span class="va">pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">hcl.colors</a></span><span class="op">(</span><span class="fl">9</span>, <span class="st">"Dark 3"</span>, alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://vincentarelbundock.github.io/modelsummary/reference/modelplot.html" class="external-link">modelplot</a></span><span class="op">(</span><span class="va">mlist</span>, coef_omit <span class="op">=</span> <span class="st">"(Intercept)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">pal</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sandwich_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto auto auto 0;"></p>
 </div>
   </div>
@@ -798,7 +782,7 @@ clustered standard errors which are more appropriate for this data.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

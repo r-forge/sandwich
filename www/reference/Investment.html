@@ -69,7 +69,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Investment</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Investment</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="format">
@@ -113,14 +113,14 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## Willam H. Greene, Econometric Analysis, 2nd Ed.</span></span>
-<span class="r-in"><span class="co">## Chapter 15</span></span>
-<span class="r-in"><span class="co">## load data set, p. 411, Table 15.1</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Investment</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## fit linear model, p. 412, Table 15.2</span></span>
-<span class="r-in"><span class="va">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">RealInv</span> <span class="op">~</span> <span class="va">RealGNP</span> <span class="op">+</span> <span class="va">RealInt</span>, data <span class="op">=</span> <span class="va">Investment</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Willam H. Greene, Econometric Analysis, 2nd Ed.</span></span></span>
+<span class="r-in"><span><span class="co">## Chapter 15</span></span></span>
+<span class="r-in"><span><span class="co">## load data set, p. 411, Table 15.1</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Investment</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## fit linear model, p. 412, Table 15.2</span></span></span>
+<span class="r-in"><span><span class="va">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">RealInv</span> <span class="op">~</span> <span class="va">RealGNP</span> <span class="op">+</span> <span class="va">RealInt</span>, data <span class="op">=</span> <span class="va">Investment</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> lm(formula = RealInv ~ RealGNP + RealInt, data = Investment)</span>
@@ -142,26 +142,26 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> Multiple R-squared:  0.8141,	Adjusted R-squared:  0.7908 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> F-statistic: 35.03 on 2 and 16 DF,  p-value: 1.429e-06</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## visualize residuals, p. 412, Figure 15.1</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/ts.html" class="external-link">ts</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span>, start <span class="op">=</span> <span class="fl">1964</span><span class="op">)</span>,</span>
-<span class="r-in">  type <span class="op">=</span> <span class="st">"b"</span>, pch <span class="op">=</span> <span class="fl">19</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">35</span>, <span class="fl">35</span><span class="op">)</span>, ylab <span class="op">=</span> <span class="st">"Residuals"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">/</span><span class="va">fm</span><span class="op">$</span><span class="va">df.residual</span><span class="op">)</span> <span class="co">## maybe used df = 26 instead of 16 ??</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="va">sigma</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## visualize residuals, p. 412, Figure 15.1</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/ts.html" class="external-link">ts</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span>, start <span class="op">=</span> <span class="fl">1964</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">"b"</span>, pch <span class="op">=</span> <span class="fl">19</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">35</span>, <span class="fl">35</span><span class="op">)</span>, ylab <span class="op">=</span> <span class="st">"Residuals"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">/</span><span class="va">fm</span><span class="op">$</span><span class="va">df.residual</span><span class="op">)</span> <span class="co">## maybe used df = 26 instead of 16 ??</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="va">sigma</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="Investment-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">lmtest</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co">## Newey-West covariances, Example 15.3</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest</a></span><span class="op">(</span><span class="va">fm</span>, vcov <span class="op">=</span> <span class="fu"><a href="NeweyWest.html">NeweyWest</a></span><span class="op">(</span><span class="va">fm</span>, lag <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="co">## Note, that the following is equivalent:</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest</a></span><span class="op">(</span><span class="va">fm</span>, vcov <span class="op">=</span> <span class="fu"><a href="weightsAndrews.html">kernHAC</a></span><span class="op">(</span><span class="va">fm</span>, kernel <span class="op">=</span> <span class="st">"Bartlett"</span>, bw <span class="op">=</span> <span class="fl">5</span>, prewhite <span class="op">=</span> <span class="cn">FALSE</span>, adjust <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## Durbin-Watson test, p. 424, Example 15.4</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/dwtest.html" class="external-link">dwtest</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## Breusch-Godfrey test, p. 427, Example 15.6</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/bgtest.html" class="external-link">bgtest</a></span><span class="op">(</span><span class="va">fm</span>, order <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">lmtest</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co">## Newey-West covariances, Example 15.3</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest</a></span><span class="op">(</span><span class="va">fm</span>, vcov <span class="op">=</span> <span class="fu"><a href="NeweyWest.html">NeweyWest</a></span><span class="op">(</span><span class="va">fm</span>, lag <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## Note, that the following is equivalent:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest</a></span><span class="op">(</span><span class="va">fm</span>, vcov <span class="op">=</span> <span class="fu"><a href="weightsAndrews.html">kernHAC</a></span><span class="op">(</span><span class="va">fm</span>, kernel <span class="op">=</span> <span class="st">"Bartlett"</span>, bw <span class="op">=</span> <span class="fl">5</span>, prewhite <span class="op">=</span> <span class="cn">FALSE</span>, adjust <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Durbin-Watson test, p. 424, Example 15.4</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/dwtest.html" class="external-link">dwtest</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Breusch-Godfrey test, p. 427, Example 15.6</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/bgtest.html" class="external-link">bgtest</a></span><span class="op">(</span><span class="va">fm</span>, order <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: lmtest</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: zoo</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
@@ -175,19 +175,19 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> data:  fm</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> LM test = 12.07, df = 4, p-value = 0.01684</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## visualize fitted series</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">Investment</span><span class="op">[</span>, <span class="st">"RealInv"</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"b"</span>, pch <span class="op">=</span> <span class="fl">19</span>, ylab <span class="op">=</span> <span class="st">"Real investment"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/ts.html" class="external-link">ts</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span>, start <span class="op">=</span> <span class="fl">1964</span><span class="op">)</span>, col <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## visualize fitted series</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">Investment</span><span class="op">[</span>, <span class="st">"RealInv"</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"b"</span>, pch <span class="op">=</span> <span class="fl">19</span>, ylab <span class="op">=</span> <span class="st">"Real investment"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/ts.html" class="external-link">ts</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span>, start <span class="op">=</span> <span class="fl">1964</span><span class="op">)</span>, col <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="Investment-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## 3-d visualization of fitted model</span></span>
-<span class="r-in"><span class="kw">if</span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">scatterplot3d</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">s3d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scatterplot3d/man/scatterplot3d.html" class="external-link">scatterplot3d</a></span><span class="op">(</span><span class="va">Investment</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">7</span>,<span class="fl">6</span><span class="op">)</span><span class="op">]</span>,</span>
-<span class="r-in">  type <span class="op">=</span> <span class="st">"b"</span>, angle <span class="op">=</span> <span class="fl">65</span>, scale.y <span class="op">=</span> <span class="fl">1</span>, pch <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">s3d</span><span class="op">$</span><span class="fu">plane3d</span><span class="op">(</span><span class="va">fm</span>, lty.box <span class="op">=</span> <span class="st">"solid"</span>, col <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## 3-d visualization of fitted model</span></span></span>
+<span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">scatterplot3d</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">s3d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scatterplot3d/man/scatterplot3d.html" class="external-link">scatterplot3d</a></span><span class="op">(</span><span class="va">Investment</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">7</span>,<span class="fl">6</span><span class="op">)</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">"b"</span>, angle <span class="op">=</span> <span class="fl">65</span>, scale.y <span class="op">=</span> <span class="fl">1</span>, pch <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">s3d</span><span class="op">$</span><span class="fu">plane3d</span><span class="op">(</span><span class="va">fm</span>, lty.box <span class="op">=</span> <span class="st">"solid"</span>, col <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: scatterplot3d</span>
 <span class="r-plt img"><img src="Investment-3.png" alt="" width="700" height="433"></span>
 </code></pre></div>
@@ -204,7 +204,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

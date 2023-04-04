@@ -73,57 +73,67 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">vcovHAC</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">vcovHAC</span><span class="op">(</span><span class="va">x</span>, order.by <span class="op">=</span> <span class="cn">NULL</span>, prewhite <span class="op">=</span> <span class="cn">FALSE</span>, weights <span class="op">=</span> <span class="va">weightsAndrews</span>,
-  adjust <span class="op">=</span> <span class="cn">TRUE</span>, diagnostics <span class="op">=</span> <span class="cn">FALSE</span>, sandwich <span class="op">=</span> <span class="cn">TRUE</span>, ar.method <span class="op">=</span> <span class="st">"ols"</span>,
-  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">meatHAC</span><span class="op">(</span><span class="va">x</span>, order.by <span class="op">=</span> <span class="cn">NULL</span>, prewhite <span class="op">=</span> <span class="cn">FALSE</span>, weights <span class="op">=</span> <span class="va">weightsAndrews</span>,
-  adjust <span class="op">=</span> <span class="cn">TRUE</span>, diagnostics <span class="op">=</span> <span class="cn">FALSE</span>, ar.method <span class="op">=</span> <span class="st">"ols"</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vcovHAC</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">vcovHAC</span><span class="op">(</span><span class="va">x</span>, order.by <span class="op">=</span> <span class="cn">NULL</span>, prewhite <span class="op">=</span> <span class="cn">FALSE</span>, weights <span class="op">=</span> <span class="va">weightsAndrews</span>,</span>
+<span>  adjust <span class="op">=</span> <span class="cn">TRUE</span>, diagnostics <span class="op">=</span> <span class="cn">FALSE</span>, sandwich <span class="op">=</span> <span class="cn">TRUE</span>, ar.method <span class="op">=</span> <span class="st">"ols"</span>,</span>
+<span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">meatHAC</span><span class="op">(</span><span class="va">x</span>, order.by <span class="op">=</span> <span class="cn">NULL</span>, prewhite <span class="op">=</span> <span class="cn">FALSE</span>, weights <span class="op">=</span> <span class="va">weightsAndrews</span>,</span>
+<span>  adjust <span class="op">=</span> <span class="cn">TRUE</span>, diagnostics <span class="op">=</span> <span class="cn">FALSE</span>, ar.method <span class="op">=</span> <span class="st">"ols"</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>a fitted model object.</p></dd>
-<dt>order.by</dt>
+
+ <dt>order.by</dt>
 <dd><p>Either a vector <code>z</code> or a formula with a single explanatory
     variable like <code>~ z</code>. The observations in the model
     are ordered by the size of <code>z</code>. If set to <code>NULL</code> (the
     default) the observations are assumed to be ordered (e.g., a
     time series).</p></dd>
-<dt>prewhite</dt>
+
+ <dt>prewhite</dt>
 <dd><p>logical or integer. Should the estimating functions
     be prewhitened? If <code>TRUE</code> or greater than 0 a VAR model of
     order <code>as.integer(prewhite)</code> is fitted via <code>ar</code> with
     method <code>"ols"</code> and <code>demean = FALSE</code>.</p></dd>
-<dt>weights</dt>
+
+ <dt>weights</dt>
 <dd><p>Either a vector of weights for the autocovariances or a
     function to compute these weights based on <code>x</code>, <code>order.by</code>,
     <code>prewhite</code>, <code>ar.method</code> and <code>data</code>. If <code>weights</code>
     is a function it has to take these arguments. See also details.</p></dd>
-<dt>adjust</dt>
+
+ <dt>adjust</dt>
 <dd><p>logical. Should a finite sample adjustment be made?
     This amounts to multiplication with \(n/(n-k)\) where \(n\) is the
     number of observations and \(k\) the number of estimated parameters.</p></dd>
-<dt>diagnostics</dt>
+
+ <dt>diagnostics</dt>
 <dd><p>logical. Should additional model diagnostics be returned?
     See below for details.</p></dd>
-<dt>sandwich</dt>
+
+ <dt>sandwich</dt>
 <dd><p>logical. Should the sandwich estimator be computed?
     If set to <code>FALSE</code> only the meat matrix is returned.</p></dd>
-<dt>ar.method</dt>
+
+ <dt>ar.method</dt>
 <dd><p>character. The <code>method</code> argument passed to
    <code><a href="https://rdrr.io/r/stats/ar.html" class="external-link">ar</a></code> for prewhitening.</p></dd>
-<dt>data</dt>
+
+ <dt>data</dt>
 <dd><p>an optional data frame containing the variables in the <code>order.by</code> 
     model. By default the variables are taken from the environment which
     <code>vcovHAC</code> is called from.</p></dd>
-<dt>...</dt>
+
+ <dt>...</dt>
 <dd><p>arguments passed to <code><a href="sandwich.html">sandwich</a></code> (in <code>vcovHAC</code>)
    and <code><a href="estfun.html">estfun</a></code> (in <code>meatHAC</code>), respectively.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -153,12 +163,17 @@ construction. See Lumley &amp; Heagerty (1999) for details.</p>
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>A matrix containing the covariance matrix estimate. If <code>diagnostics</code>was set to <code>TRUE</code> this has an attribute <code>"diagnostics"</code> which is a list 
+    <p>A matrix containing the covariance matrix estimate. If <code>diagnostics</code></p>
+
+
+<p>was set to <code>TRUE</code> this has an attribute <code>"diagnostics"</code> which is a list 
 with</p>
 <dl><dt>bias.correction</dt>
 <dd><p>multiplicative bias correction</p></dd>
-<dt>df</dt>
+
+  <dt>df</dt>
 <dd><p>Approximate denominator degrees of freedom</p></dd>
+
 </dl></div>
     <div id="references">
     <h2>References</h2>
@@ -191,14 +206,14 @@ with</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">vcovHAC</span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">vcovHAC</span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               (Intercept)             x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.0071677581 -0.0007615085</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x           -0.0007615085  0.0116241697</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              (Intercept)            x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 7.248941e-03 1.833867e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x           1.833867e-05 1.442048e-02</span>
@@ -216,7 +231,7 @@ with</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

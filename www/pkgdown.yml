@@ -1,12 +1,12 @@
-pandoc: 2.17.1.1
-pkgdown: 2.0.3
+pandoc: 2.19.2
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   jss_2004: jss_2004.html
   jss_2006: jss_2006.html
   jss_2020: jss_2020.html
   sandwich: sandwich.html
-last_built: 2022-09-21T07:32Z
+last_built: 2023-04-04T23:19Z
 urls:
   reference: https://sandwich.R-Forge.R-project.org/reference
   article: https://sandwich.R-Forge.R-project.org/articles

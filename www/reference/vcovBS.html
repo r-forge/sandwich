@@ -73,41 +73,45 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">vcovBS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">vcovBS</span><span class="op">(</span><span class="va">x</span>, cluster <span class="op">=</span> <span class="cn">NULL</span>, R <span class="op">=</span> <span class="fl">250</span>, start <span class="op">=</span> <span class="cn">FALSE</span>, type <span class="op">=</span> <span class="st">"xy"</span>, <span class="va">...</span>,
-  fix <span class="op">=</span> <span class="cn">FALSE</span>, use <span class="op">=</span> <span class="st">"pairwise.complete.obs"</span>, applyfun <span class="op">=</span> <span class="cn">NULL</span>, cores <span class="op">=</span> <span class="cn">NULL</span>,
-  center <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span>
-
-<span class="co"># S3 method for lm</span>
-<span class="fu">vcovBS</span><span class="op">(</span><span class="va">x</span>, cluster <span class="op">=</span> <span class="cn">NULL</span>, R <span class="op">=</span> <span class="fl">250</span>, type <span class="op">=</span> <span class="st">"xy"</span>, <span class="va">...</span>,
-  fix <span class="op">=</span> <span class="cn">FALSE</span>, use <span class="op">=</span> <span class="st">"pairwise.complete.obs"</span>, applyfun <span class="op">=</span> <span class="cn">NULL</span>, cores <span class="op">=</span> <span class="cn">NULL</span>,
-  qrjoint <span class="op">=</span> <span class="cn">FALSE</span>, center <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span>
-
-<span class="co"># S3 method for glm</span>
-<span class="fu">vcovBS</span><span class="op">(</span><span class="va">x</span>, cluster <span class="op">=</span> <span class="cn">NULL</span>, R <span class="op">=</span> <span class="fl">250</span>, start <span class="op">=</span> <span class="cn">FALSE</span>, type <span class="op">=</span> <span class="st">"xy"</span>, <span class="va">...</span>,
-  fix <span class="op">=</span> <span class="cn">FALSE</span>, use <span class="op">=</span> <span class="st">"pairwise.complete.obs"</span>, applyfun <span class="op">=</span> <span class="cn">NULL</span>, cores <span class="op">=</span> <span class="cn">NULL</span>,
-  center <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vcovBS</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">vcovBS</span><span class="op">(</span><span class="va">x</span>, cluster <span class="op">=</span> <span class="cn">NULL</span>, R <span class="op">=</span> <span class="fl">250</span>, start <span class="op">=</span> <span class="cn">FALSE</span>, type <span class="op">=</span> <span class="st">"xy"</span>, <span class="va">...</span>,</span>
+<span>  fix <span class="op">=</span> <span class="cn">FALSE</span>, use <span class="op">=</span> <span class="st">"pairwise.complete.obs"</span>, applyfun <span class="op">=</span> <span class="cn">NULL</span>, cores <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  center <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for lm</span></span>
+<span><span class="fu">vcovBS</span><span class="op">(</span><span class="va">x</span>, cluster <span class="op">=</span> <span class="cn">NULL</span>, R <span class="op">=</span> <span class="fl">250</span>, type <span class="op">=</span> <span class="st">"xy"</span>, <span class="va">...</span>,</span>
+<span>  fix <span class="op">=</span> <span class="cn">FALSE</span>, use <span class="op">=</span> <span class="st">"pairwise.complete.obs"</span>, applyfun <span class="op">=</span> <span class="cn">NULL</span>, cores <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  qrjoint <span class="op">=</span> <span class="cn">FALSE</span>, center <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for glm</span></span>
+<span><span class="fu">vcovBS</span><span class="op">(</span><span class="va">x</span>, cluster <span class="op">=</span> <span class="cn">NULL</span>, R <span class="op">=</span> <span class="fl">250</span>, start <span class="op">=</span> <span class="cn">FALSE</span>, type <span class="op">=</span> <span class="st">"xy"</span>, <span class="va">...</span>,</span>
+<span>  fix <span class="op">=</span> <span class="cn">FALSE</span>, use <span class="op">=</span> <span class="st">"pairwise.complete.obs"</span>, applyfun <span class="op">=</span> <span class="cn">NULL</span>, cores <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  center <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>a fitted model object.</p></dd>
-<dt>cluster</dt>
+
+  <dt>cluster</dt>
 <dd><p>a variable indicating the clustering of observations,
     a <code>list</code> (or <code>data.frame</code>) thereof, or a formula specifying
     which variables from the fitted model should be used (see examples).
     By default (<code>cluster = NULL</code>), either <code>attr(x, "cluster")</code> is used
     (if any) or otherwise every observation is assumed to be its own cluster.</p></dd>
-<dt>R</dt>
+
+  <dt>R</dt>
 <dd><p>integer. Number of bootstrap replications.</p></dd>
-<dt>start</dt>
+
+  <dt>start</dt>
 <dd><p>logical. Should <code>coef(x)</code> be passed as <code>start</code>
     to the <code>update(x, subset = ...)</code> call? In case the model <code>x</code>
     is computed by some numeric iteration, this may speed up the bootstrapping.</p></dd>
-<dt>type</dt>
+
+  <dt>type</dt>
 <dd><p>character (or function). The character string specifies the type of
     bootstrap to use: In the default and <code>glm</code> method the three types
     <code>"xy"</code>, <code>"fractional"</code>, and <code>"jackknife"</code> are available.
@@ -117,31 +121,38 @@
     (or <code>"wild-norm"</code>), <code>"webb"</code> (or <code>"wild-webb"</code>).
     Finally, for the <code>lm</code> method <code>type</code> can be a <code>function(n)</code>
     for drawing wild bootstrap factors.</p></dd>
-<dt>...</dt>
+
+  <dt>...</dt>
 <dd><p>arguments passed to methods. For the default method, this is
     passed to <code>update</code>, and for the <code>lm</code> method to <code>lm.fit</code>.</p></dd>
-<dt>fix</dt>
+
+  <dt>fix</dt>
 <dd><p>logical. Should the covariance matrix be fixed to be
     positive semi-definite in case it is not?</p></dd>
-<dt>use</dt>
+
+  <dt>use</dt>
 <dd><p>character. Specification passed to <code><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></code> for
     handling missing coefficients/parameters.</p></dd>
-<dt>applyfun</dt>
+
+  <dt>applyfun</dt>
 <dd><p>an optional <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></code>-style function with arguments
     <code>function(X, FUN, ...)</code>. It is used for refitting the model to the
     bootstrap samples. The default is to use the basic <code>lapply</code>
     function unless the <code>cores</code> argument is specified (see below).</p></dd>
-<dt>cores</dt>
+
+  <dt>cores</dt>
 <dd><p>numeric. If set to an integer the <code>applyfun</code> is set to    
     <code><a href="https://rdrr.io/r/parallel/mclapply.html" class="external-link">mclapply</a></code> with the desired number of <code>cores</code>,
     except on Windows where <code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parLapply</a></code> with
     <code>makeCluster(cores)</code> is used.</p></dd>
-<dt>center</dt>
+
+  <dt>center</dt>
 <dd><p>character. For <code>type = "jackknife"</code> the coefficients from
     all jacknife samples (each dropping one observational unit/cluster) can be
     centered by their <code>"mean"</code> (default) or by the original full-sample
     <code>"estimate"</code>.</p></dd>
-<dt>qrjoint</dt>
+
+  <dt>qrjoint</dt>
 <dd><p>logical. For residual-based and wild boostrap (i.e.,
     <code>type != "xy"</code>), should the bootstrap sample the dependent variable
     and then apply the QR decomposition jointly only once? If <code>FALSE</code>,
@@ -149,6 +160,7 @@
     and samples coefficients directly. If the sample size (and the number of
     coefficients) is large, then <code>qrjoint = TRUE</code> maybe significantly
     faster while requiring much more memory.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -245,7 +257,9 @@
 </ul></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A matrix containing the covariance matrix estimate.</p>
+    
+
+<p>A matrix containing the covariance matrix estimate.</p>
     </div>
     <div id="references">
     <h2>References</h2>
@@ -301,35 +315,35 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## Petersen's data</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"PetersenCL"</span>, package <span class="op">=</span> <span class="st">"sandwich"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## comparison of different standard errors</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">RNGversion</a></span><span class="op">(</span><span class="st">"3.5.0"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="st">"classical"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  <span class="st">"HC-cluster"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="vcovCL.html">vcovCL</a></span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  <span class="st">"BS-cluster"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovBS</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  <span class="st">"FW-cluster"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovBS</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span>, type <span class="op">=</span> <span class="st">"fractional"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Petersen's data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"PetersenCL"</span>, package <span class="op">=</span> <span class="st">"sandwich"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## comparison of different standard errors</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">RNGversion</a></span><span class="op">(</span><span class="st">"3.5.0"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"classical"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"HC-cluster"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="vcovCL.html">vcovCL</a></span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"BS-cluster"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovBS</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"FW-cluster"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovBS</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span>, type <span class="op">=</span> <span class="st">"fractional"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              classical HC-cluster BS-cluster FW-cluster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 0.02835932 0.06701270 0.07067533 0.06596187</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x           0.02858329 0.05059573 0.04878784 0.04965168</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## two-way wild cluster bootstrap with Mammen distribution</span></span>
-<span class="r-in"><span class="fu">vcovBS</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span> <span class="op">+</span> <span class="va">year</span>, type <span class="op">=</span> <span class="st">"wild-mammen"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## two-way wild cluster bootstrap with Mammen distribution</span></span></span>
+<span class="r-in"><span><span class="fu">vcovBS</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span> <span class="op">+</span> <span class="va">year</span>, type <span class="op">=</span> <span class="st">"wild-mammen"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             (Intercept)           x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 0.004135069 0.000364327</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x           0.000364327 0.002659964</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## jackknife estimator coincides with HC3 (aka CV3)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu">vcovBS</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span>, type <span class="op">=</span> <span class="st">"jackknife"</span><span class="op">)</span>,</span>
-<span class="r-in">  <span class="fu"><a href="vcovCL.html">vcovCL</a></span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span>, type <span class="op">=</span> <span class="st">"HC3"</span>, cadjust <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span class="r-in">  tolerance <span class="op">=</span> <span class="fl">1e-7</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## jackknife estimator coincides with HC3 (aka CV3)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu">vcovBS</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span>, type <span class="op">=</span> <span class="st">"jackknife"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="vcovCL.html">vcovCL</a></span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span>, type <span class="op">=</span> <span class="st">"HC3"</span>, cadjust <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  tolerance <span class="op">=</span> <span class="fl">1e-7</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 </code></pre></div>
     </div>
@@ -345,7 +359,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

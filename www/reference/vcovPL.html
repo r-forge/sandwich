@@ -71,19 +71,20 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">vcovPL</span><span class="op">(</span><span class="va">x</span>, cluster <span class="op">=</span> <span class="cn">NULL</span>, order.by <span class="op">=</span> <span class="cn">NULL</span>,
-  kernel <span class="op">=</span> <span class="st">"Bartlett"</span>, sandwich <span class="op">=</span> <span class="cn">TRUE</span>, fix <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">meatPL</span><span class="op">(</span><span class="va">x</span>, cluster <span class="op">=</span> <span class="cn">NULL</span>, order.by <span class="op">=</span> <span class="cn">NULL</span>,
-  kernel <span class="op">=</span> <span class="st">"Bartlett"</span>, lag <span class="op">=</span> <span class="st">"NW1987"</span>, bw <span class="op">=</span> <span class="cn">NULL</span>,
-  adjust <span class="op">=</span> <span class="cn">TRUE</span>, aggregate <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vcovPL</span><span class="op">(</span><span class="va">x</span>, cluster <span class="op">=</span> <span class="cn">NULL</span>, order.by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  kernel <span class="op">=</span> <span class="st">"Bartlett"</span>, sandwich <span class="op">=</span> <span class="cn">TRUE</span>, fix <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">meatPL</span><span class="op">(</span><span class="va">x</span>, cluster <span class="op">=</span> <span class="cn">NULL</span>, order.by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  kernel <span class="op">=</span> <span class="st">"Bartlett"</span>, lag <span class="op">=</span> <span class="st">"NW1987"</span>, bw <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  adjust <span class="op">=</span> <span class="cn">TRUE</span>, aggregate <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>a fitted model object.</p></dd>
-<dt>cluster</dt>
+
+  <dt>cluster</dt>
 <dd><p>a single variable indicating the clustering of observations,
     or a <code>list</code> (or <code>data.frame</code>) of one or two variables, or a
     formula specifying which one ore two variables from the fitted model should
@@ -92,40 +93,50 @@
     <code>order.by</code>).
     By default (<code>cluster = NULL</code>), either <code>attr(x, "cluster")</code> is used
     (if any) or otherwise every observation is assumed to be its own cluster.</p></dd>
-<dt>order.by</dt>
+
+  <dt>order.by</dt>
 <dd><p>a variable, list/data.frame, or formula indicating the
     aggregation within time periods. By default <code>attr(x, "order.by")</code> is used
     (if any) or specified through the second variable in <code>cluster</code> (see above).
     If neither is available,  observations within clusters are assumed to be ordered.</p></dd>
-<dt>kernel</dt>
+
+  <dt>kernel</dt>
 <dd><p>a character specifying the kernel used. All kernels
     described in Andrews (1991) are supported, see <code><a href="kweights.html">kweights</a></code>.</p></dd>
-<dt>lag</dt>
+
+  <dt>lag</dt>
 <dd><p>character or numeric, indicating the lag length used.
     Three rules of thumb (<code>"max"</code> or equivalently <code>"P2009"</code>,
     <code>"NW1987"</code>, or <code>"NW1994"</code>) can be specified, or a numeric
     number of lags can be specified directly. By default, <code>"NW1987"</code> is used.</p></dd>
-<dt>bw</dt>
+
+  <dt>bw</dt>
 <dd><p>numeric. The bandwidth of the kernel which by default corresponds
     to <code>lag + 1</code>. Only one of <code>lag</code> and <code>bw</code> should be
     used.</p></dd>
-<dt>sandwich</dt>
+
+  <dt>sandwich</dt>
 <dd><p>logical. Should the sandwich estimator be computed?
     If set to <code>FALSE</code> only the meat matrix is returned.</p></dd>
-<dt>fix</dt>
+
+  <dt>fix</dt>
 <dd><p>logical. Should the covariance matrix be fixed to be
     positive semi-definite in case it is not?</p></dd>
-<dt>adjust</dt>
+
+  <dt>adjust</dt>
 <dd><p>logical. Should a finite sample adjustment be made? This
     amounts to multiplication with \(n/(n - k)\) where \(n\) is the
     number of observations and \(k\) is the number of estimated parameters.</p></dd>
-<dt>aggregate</dt>
+
+  <dt>aggregate</dt>
 <dd><p>logical. Should the <code>estfun</code> be aggregated within each
     time period (yielding Driscoll and Kraay 1998) or not (restricting cross-sectional
     and cross-serial correlation to zero, yielding panel Newey-West)?</p></dd>
-<dt>...</dt>
+
+  <dt>...</dt>
 <dd><p>arguments passed to the <code>metaPL</code> or <code>estfun</code> function,
     respectively.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -164,7 +175,9 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>A matrix containing the covariance matrix estimate.</p>
+    
+
+<p>A matrix containing the covariance matrix estimate.</p>
     </div>
     <div id="references">
     <h2>References</h2>
@@ -207,54 +220,54 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## Petersen's data</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"PetersenCL"</span>, package <span class="op">=</span> <span class="st">"sandwich"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## Driscoll and Kraay standard errors</span></span>
-<span class="r-in"><span class="co">## lag length set to: T - 1 (maximum lag length)</span></span>
-<span class="r-in"><span class="co">## as proposed by Petersen (2009)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span> <span class="op">+</span> <span class="va">year</span>, lag <span class="op">=</span> <span class="st">"max"</span>, adjust <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Petersen's data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"PetersenCL"</span>, package <span class="op">=</span> <span class="st">"sandwich"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Driscoll and Kraay standard errors</span></span></span>
+<span class="r-in"><span><span class="co">## lag length set to: T - 1 (maximum lag length)</span></span></span>
+<span class="r-in"><span><span class="co">## as proposed by Petersen (2009)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span> <span class="op">+</span> <span class="va">year</span>, lag <span class="op">=</span> <span class="st">"max"</span>, adjust <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)           x </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  0.01618977  0.01426121 </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## lag length set to: floor(4 * (T / 100)^(2/9))</span></span>
-<span class="r-in"><span class="co">## rule of thumb proposed by Hoechle (2007) based on Newey &amp; West (1994)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span> <span class="op">+</span> <span class="va">year</span>, lag <span class="op">=</span> <span class="st">"NW1994"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## lag length set to: floor(4 * (T / 100)^(2/9))</span></span></span>
+<span class="r-in"><span><span class="co">## rule of thumb proposed by Hoechle (2007) based on Newey &amp; West (1994)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span> <span class="op">+</span> <span class="va">year</span>, lag <span class="op">=</span> <span class="st">"NW1994"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)           x </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  0.02289115  0.02441980 </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## lag length set to: floor(T^(1/4))</span></span>
-<span class="r-in"><span class="co">## rule of thumb based on Newey &amp; West (1987)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span> <span class="op">+</span> <span class="va">year</span>, lag <span class="op">=</span> <span class="st">"NW1987"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## lag length set to: floor(T^(1/4))</span></span></span>
+<span class="r-in"><span><span class="co">## rule of thumb based on Newey &amp; West (1987)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span> <span class="op">+</span> <span class="va">year</span>, lag <span class="op">=</span> <span class="st">"NW1987"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)           x </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  0.02436219  0.02816896 </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## the following specifications of cluster/order.by are equivalent</span></span>
-<span class="r-in"><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span> <span class="op">+</span> <span class="va">year</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## the following specifications of cluster/order.by are equivalent</span></span></span>
+<span class="r-in"><span><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span> <span class="op">+</span> <span class="va">year</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              (Intercept)            x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 5.935164e-04 2.222292e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x           2.222292e-05 7.934905e-04</span>
-<span class="r-in"><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"firm"</span>, <span class="st">"year"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"firm"</span>, <span class="st">"year"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              (Intercept)            x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 5.935164e-04 2.222292e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x           2.222292e-05 7.934905e-04</span>
-<span class="r-in"><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span>, order.by <span class="op">=</span> <span class="op">~</span> <span class="va">year</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span>, order.by <span class="op">=</span> <span class="op">~</span> <span class="va">year</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              (Intercept)            x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 5.935164e-04 2.222292e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x           2.222292e-05 7.934905e-04</span>
-<span class="r-in"><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">$</span><span class="va">firm</span>, order.by <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">$</span><span class="va">year</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">$</span><span class="va">firm</span>, order.by <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">$</span><span class="va">year</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              (Intercept)            x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 5.935164e-04 2.222292e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x           2.222292e-05 7.934905e-04</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## these are also the same when observations within each</span></span>
-<span class="r-in"><span class="co">## cluster are already ordered</span></span>
-<span class="r-in"><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## these are also the same when observations within each</span></span></span>
+<span class="r-in"><span><span class="co">## cluster are already ordered</span></span></span>
+<span class="r-in"><span><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              (Intercept)            x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 5.935164e-04 2.222292e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x           2.222292e-05 7.934905e-04</span>
-<span class="r-in"><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">$</span><span class="va">firm</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">vcovPL</span><span class="op">(</span><span class="va">m</span>, cluster <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">$</span><span class="va">firm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              (Intercept)            x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 5.935164e-04 2.222292e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x           2.222292e-05 7.934905e-04</span>
@@ -272,7 +285,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

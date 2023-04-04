@@ -73,19 +73,22 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">meat</span><span class="op">(</span><span class="va">x</span>, adjust <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">meat</span><span class="op">(</span><span class="va">x</span>, adjust <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>a fitted model object.</p></dd>
-<dt>adjust</dt>
+
+ <dt>adjust</dt>
 <dd><p>logical. Should a finite sample adjustment be made?
     This amounts to multiplication with \(n/(n-k)\) where \(n\) is the
     number of observations and \(k\) the number of estimated parameters.</p></dd>
-<dt>...</dt>
+
+ <dt>...</dt>
 <dd><p>arguments passed to the <code><a href="estfun.html">estfun</a></code> function.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -115,19 +118,19 @@ the scaled cross products of the empirical estimating functions.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">meat</span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">meat</span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             (Intercept)         x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)   0.5500547 0.3489064</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x             0.3489064 0.3073370</span>
-<span class="r-in"><span class="fu"><a href="vcovHC.html">meatHC</a></span><span class="op">(</span><span class="va">fm</span>, type <span class="op">=</span> <span class="st">"HC"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="vcovHC.html">meatHC</a></span><span class="op">(</span><span class="va">fm</span>, type <span class="op">=</span> <span class="st">"HC"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             (Intercept)         x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)   0.5500547 0.3489064</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x             0.3489064 0.3073370</span>
-<span class="r-in"><span class="fu"><a href="vcovHAC.html">meatHAC</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="vcovHAC.html">meatHAC</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             (Intercept)         x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)   0.5870363 0.4398522</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x             0.4398522 0.4492865</span>
@@ -145,7 +148,7 @@ the scaled cross products of the empirical estimating functions.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

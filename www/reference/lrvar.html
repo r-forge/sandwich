@@ -71,27 +71,32 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">lrvar</span><span class="op">(</span><span class="va">x</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Andrews"</span>, <span class="st">"Newey-West"</span><span class="op">)</span>, prewhite <span class="op">=</span> <span class="cn">TRUE</span>, adjust <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">lrvar</span><span class="op">(</span><span class="va">x</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Andrews"</span>, <span class="st">"Newey-West"</span><span class="op">)</span>, prewhite <span class="op">=</span> <span class="cn">TRUE</span>, adjust <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>numeric vector, matrix, or time series.</p></dd>
-<dt>type</dt>
+
+  <dt>type</dt>
 <dd><p>character specifying the type of estimator, i.e., whether
     <code><a href="weightsAndrews.html">kernHAC</a></code> for the Andrews quadratic spectral kernel HAC estimator
     is used or <code><a href="NeweyWest.html">NeweyWest</a></code> for the Newey-West Bartlett HAC
     estimator.</p></dd>
-<dt>prewhite</dt>
+
+ <dt>prewhite</dt>
 <dd><p>logical or integer. Should the series be prewhitened?
    Passed to <code><a href="weightsAndrews.html">kernHAC</a></code> or <code><a href="NeweyWest.html">NeweyWest</a></code>.</p></dd>
-<dt>adjust</dt>
+
+ <dt>adjust</dt>
 <dd><p>logical.  Should a finite sample adjustment be made?
    Passed to <code><a href="weightsAndrews.html">kernHAC</a></code> or <code><a href="NeweyWest.html">NeweyWest</a></code>.</p></dd>
-<dt>...</dt>
+
+ <dt>...</dt>
 <dd><p>further arguments passed on to <code><a href="weightsAndrews.html">kernHAC</a></code> or
    <code><a href="NeweyWest.html">NeweyWest</a></code>.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -114,24 +119,24 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">RNGversion</a></span><span class="op">(</span><span class="st">"3.5.0"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="co">## iid series (with variance of mean 1/n)</span></span>
-<span class="r-in"><span class="co">## and Andrews kernel HAC (with prewhitening)</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">lrvar</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">RNGversion</a></span><span class="op">(</span><span class="st">"3.5.0"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## iid series (with variance of mean 1/n)</span></span></span>
+<span class="r-in"><span><span class="co">## and Andrews kernel HAC (with prewhitening)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">lrvar</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.007958048</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## analogous multivariate case with Newey-West estimator (without prewhitening)</span></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">200</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">lrvar</span><span class="op">(</span><span class="va">y</span>, type <span class="op">=</span> <span class="st">"Newey-West"</span>, prewhite <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## analogous multivariate case with Newey-West estimator (without prewhitening)</span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">200</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">lrvar</span><span class="op">(</span><span class="va">y</span>, type <span class="op">=</span> <span class="st">"Newey-West"</span>, prewhite <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              [,1]         [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.0097884718 0.0005978738</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.0005978738 0.0073428222</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## AR(1) series with autocorrelation 0.9</span></span>
-<span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, <span class="fl">0.9</span>, method <span class="op">=</span> <span class="st">"recursive"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">lrvar</span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## AR(1) series with autocorrelation 0.9</span></span></span>
+<span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, <span class="fl">0.9</span>, method <span class="op">=</span> <span class="st">"recursive"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">lrvar</span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4385546</span>
 </code></pre></div>
     </div>
@@ -147,7 +152,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
