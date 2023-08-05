@@ -1,6 +1,6 @@
 
-R version 4.2.1 (2022-06-23) -- "Funny-Looking Kid"
-Copyright (C) 2022 The R Foundation for Statistical Computing
+R version 4.3.1 (2023-06-16) -- "Beagle Scouts"
+Copyright (C) 2023 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -617,17 +617,18 @@ x           -0.04395562  0.10690628
 > cbind(
 +   "classical" = sqrt(diag(vcov(m))),
 +   "HC-cluster" = sqrt(diag(vcovCL(m, cluster = ~ firm))),
-+   "BS-cluster" = sqrt(diag(vcovBS(m, cluster = ~ firm)))
++   "BS-cluster" = sqrt(diag(vcovBS(m, cluster = ~ firm))),
++   "FW-cluster" = sqrt(diag(vcovBS(m, cluster = ~ firm, type = "fractional")))
 + )
-             classical HC-cluster BS-cluster
-(Intercept) 0.02835932 0.06701270 0.07067533
-x           0.02858329 0.05059573 0.04878784
+             classical HC-cluster BS-cluster FW-cluster
+(Intercept) 0.02835932 0.06701270 0.07067533 0.06596187
+x           0.02858329 0.05059573 0.04878784 0.04965168
 > 
 > ## two-way wild cluster bootstrap with Mammen distribution
 > vcovBS(m, cluster = ~ firm + year, type = "wild-mammen")
             (Intercept)           x
-(Intercept) 0.003535619 0.000488708
-x           0.000488708 0.002589785
+(Intercept) 0.004135069 0.000364327
+x           0.000364327 0.002659964
 > 
 > ## jackknife estimator coincides with HC3 (aka CV3)
 > all.equal(
@@ -1082,7 +1083,7 @@ x           2.055475e-05 1.616308e-02
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  6.55 0.416 6.966 0 0 
+Time elapsed:  6.801 0.156 6.968 0 0 
 > grDevices::dev.off()
 null device 
           1 
