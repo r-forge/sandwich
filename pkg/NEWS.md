@@ -29,6 +29,9 @@
   cannot be computed, e.g., due to singular regressor variables (suggested by
   Andrei V. Kostyrka).
 
+* Fix `plm::plm(..., index = ...)` calls which incorrectly used `indexes = ...`
+  (as in `plm.data()`, reported by Kevin Tappe).
+
 
 # sandwich 3.0-2
 
