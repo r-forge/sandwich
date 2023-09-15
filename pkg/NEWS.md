@@ -29,6 +29,10 @@
   cannot be computed, e.g., due to singular regressor variables (suggested by
   Andrei V. Kostyrka).
 
+* Fix `bread()` method for `coxph()` objects in case the latter already used a
+  "robust" sandwich variance. In that case `$naive.var` rather than `$var` has
+  to be used for the bread (reported by Alec Todd).
+
 * Fix `plm::plm(..., index = ...)` calls which incorrectly used `indexes = ...`
   (as in `plm.data()`, reported by Kevin Tappe).
 
