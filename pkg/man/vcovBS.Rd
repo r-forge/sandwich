@@ -149,7 +149,7 @@ vcovBS(x, \dots)
   the computation of the reweighted models.
 
   The \code{\link[stats]{glm}} method works essentially like the default method but calls
-  \code{\link[stats]{glm.fit}} instead of code{update}.
+  \code{\link[stats]{glm.fit}} instead of \code{update}.
   
   The \code{\link[stats]{lm}} method provides additional bootstrapping \code{type}s
   and computes the bootstrapped coefficient estimates somewhat more efficiently using
