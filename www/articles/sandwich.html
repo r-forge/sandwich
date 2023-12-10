@@ -186,8 +186,8 @@ a unified interface for collecting information about models, including a
 method for <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest()</a></code> objects. Based on <em>broom</em>
 several packages provide model summary tables with the <a href="https://vincentarelbundock.github.io/modelsummary/" class="external-link"><strong>modelsummary</strong></a>
 package being particularly versatile, including a graphical
-<code><a href="https://vincentarelbundock.github.io/modelsummary/reference/modelplot.html" class="external-link">modelplot()</a></code> to go along with the tabular
-<code><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary()</a></code>.</p>
+<code><a href="https://rdrr.io/pkg/modelsummary/man/modelplot.html" class="external-link">modelplot()</a></code> to go along with the tabular
+<code><a href="https://rdrr.io/pkg/modelsummary/man/msummary.html" class="external-link">msummary()</a></code>.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -349,7 +349,7 @@ larger and more appropriate here.</p>
 </h2>
 <p>For creating publication-quality tables of the model summaries using
 <em>sandwich</em>-based standard errors, we use the
-<code><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary()</a></code> function from the <em>modelsummary</em> package.
+<code><a href="https://rdrr.io/pkg/modelsummary/man/msummary.html" class="external-link">msummary()</a></code> function from the <em>modelsummary</em> package.
 Similar to <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest()</a></code> this takes the unmodified
 <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code> object <code>m</code> along with a <code>vcov</code>
 specification (starting from version 0.6.5 of the package). The latter
@@ -359,8 +359,8 @@ might be specified via a covariance extractor function, certain strings
 already computed a list of covariance matrices <code>vc</code> above, we
 simply use the list element with the clustered covariance:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://vincentarelbundock.github.io/modelsummary/" class="external-link">"modelsummary"</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">vc</span><span class="op">$</span><span class="va">Clustered</span>, stars <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://modelsummary.com" class="external-link">"modelsummary"</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/modelsummary/man/msummary.html" class="external-link">msummary</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">vc</span><span class="op">$</span><span class="va">Clustered</span>, stars <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table table">
 <thead><tr>
 <th style="text-align:left;">
@@ -394,9 +394,9 @@ x
 </td>
 </tr>
 <tr>
-<td style="text-align:left;box-shadow: 0px 1px">
+<td style="text-align:left;box-shadow: 0px 1.5px">
 </td>
-<td style="text-align:center;box-shadow: 0px 1px">
+<td style="text-align:center;box-shadow: 0px 1.5px">
 (0.051)
 </td>
 </tr>
@@ -474,7 +474,7 @@ Custom
 </table>
 <p>The result is a nicely formatted table with content similar to the
 verbatim output from the corresponding <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest()</a></code> call
-above. (Note that in previous versions of <code><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary()</a></code> the
+above. (Note that in previous versions of <code><a href="https://rdrr.io/pkg/modelsummary/man/msummary.html" class="external-link">msummary()</a></code> the
 <code>vcov</code> argument was called <code>statistic_override</code>
 which is still supported for backward compatibility.)</p>
 <p>Moreover, we can also easily produce such a model summary directly
@@ -484,10 +484,10 @@ a list of objects. Therefore, we use <code><a href="https://rdrr.io/r/base/lappl
 apply <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest()</a></code> always to the same model
 <code>x = m</code> but with the different <code>vcov</code> matrices
 from <code>vc</code>. The resulting list of <code><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest()</a></code>
-objects can then be displayed directly with <code><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary()</a></code>.</p>
+objects can then be displayed directly with <code><a href="https://rdrr.io/pkg/modelsummary/man/msummary.html" class="external-link">msummary()</a></code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mlist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">vc</span>, <span class="va">coeftest</span>, x <span class="op">=</span> <span class="va">m</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://vincentarelbundock.github.io/modelsummary/reference/msummary.html" class="external-link">msummary</a></span><span class="op">(</span><span class="va">mlist</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/modelsummary/man/msummary.html" class="external-link">msummary</a></span><span class="op">(</span><span class="va">mlist</span><span class="op">)</span></span></code></pre></div>
 <table class="table table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead><tr>
 <th style="text-align:left;">
@@ -617,33 +617,33 @@ x
 </td>
 </tr>
 <tr>
-<td style="text-align:left;box-shadow: 0px 1px">
+<td style="text-align:left;box-shadow: 0px 1.5px">
 </td>
-<td style="text-align:center;box-shadow: 0px 1px">
+<td style="text-align:center;box-shadow: 0px 1.5px">
 (0.029)
 </td>
-<td style="text-align:center;box-shadow: 0px 1px">
+<td style="text-align:center;box-shadow: 0px 1.5px">
 (0.028)
 </td>
-<td style="text-align:center;box-shadow: 0px 1px">
+<td style="text-align:center;box-shadow: 0px 1.5px">
 (0.051)
 </td>
-<td style="text-align:center;box-shadow: 0px 1px">
+<td style="text-align:center;box-shadow: 0px 1.5px">
 (0.054)
 </td>
-<td style="text-align:center;box-shadow: 0px 1px">
+<td style="text-align:center;box-shadow: 0px 1.5px">
 (0.028)
 </td>
-<td style="text-align:center;box-shadow: 0px 1px">
+<td style="text-align:center;box-shadow: 0px 1.5px">
 (0.035)
 </td>
-<td style="text-align:center;box-shadow: 0px 1px">
+<td style="text-align:center;box-shadow: 0px 1.5px">
 (0.048)
 </td>
-<td style="text-align:center;box-shadow: 0px 1px">
+<td style="text-align:center;box-shadow: 0px 1.5px">
 (0.029)
 </td>
-<td style="text-align:center;box-shadow: 0px 1px">
+<td style="text-align:center;box-shadow: 0px 1.5px">
 (0.054)
 </td>
 </tr>
@@ -760,7 +760,7 @@ clustered standard errors which are more appropriate for this data.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span></span>
 <span><span class="va">pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">hcl.colors</a></span><span class="op">(</span><span class="fl">9</span>, <span class="st">"Dark 3"</span>, alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://vincentarelbundock.github.io/modelsummary/reference/modelplot.html" class="external-link">modelplot</a></span><span class="op">(</span><span class="va">mlist</span>, coef_omit <span class="op">=</span> <span class="st">"(Intercept)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">pal</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/modelsummary/man/modelplot.html" class="external-link">modelplot</a></span><span class="op">(</span><span class="va">mlist</span>, coef_omit <span class="op">=</span> <span class="st">"(Intercept)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">pal</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sandwich_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto auto auto 0;"></p>
 </div>
   </div>

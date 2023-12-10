@@ -71,6 +71,8 @@
 <li><p>Support weights, offsets, and different fitting methods in <code>lm</code> and <code>glm</code> objects in the respective <code><a href="../reference/vcovBS.html">vcovBS()</a></code> methods (reported by Noah Greifer).</p></li>
 <li><p>In <code><a href="../reference/vcovCL.html">vcovCL()</a></code> models from <code>feols()</code> (from package <code>fixest</code>) are now also recognized as linear regression models (in addition to models from <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>).</p></li>
 <li><p>More verbose error messages in <code><a href="../reference/weightsAndrews.html">bwAndrews()</a></code> and <code><a href="../reference/NeweyWest.html">bwNeweyWest()</a></code> when bandwidth cannot be computed, e.g., due to singular regressor variables (suggested by Andrei V. Kostyrka).</p></li>
+<li><p>Fix <code><a href="../reference/bread.html">bread()</a></code> method for <code>coxph()</code> objects in case the latter already used a “robust” sandwich variance. In that case <code>$naive.var</code> rather than <code>$var</code> has to be used for the bread (reported by Alec Todd).</p></li>
+<li><p>Fix <code>plm::plm(..., index = ...)</code> calls which incorrectly used <code>indexes = ...</code> (as in <code>plm.data()</code>, reported by Kevin Tappe).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="3.0-2" id="sandwich-30-2">sandwich 3.0-2<small>2022-06-15</small><a class="anchor" aria-label="anchor" href="#sandwich-30-2"></a></h2>
