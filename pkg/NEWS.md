@@ -1,3 +1,10 @@
+# sandwich 3.1-1
+
+* In `vcovCL()` models from `feols()` (from package `fixest`) are now also recognized
+  as linear regression models (in addition to models from `lm()`).
+  FIXME: Check df correction and inform Laurent.
+
+
 # sandwich 3.1-0
 
 * Added jackknife estimator in all `vcovBS()` methods (suggested by Joe Ritter).
