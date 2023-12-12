@@ -22,9 +22,6 @@
 * Support weights, offsets, and different fitting methods in `lm` and `glm` objects
   in the respective `vcovBS()` methods (reported by Noah Greifer).
 
-* In `vcovCL()` models from `feols()` (from package `fixest`) are now also recognized
-  as linear regression models (in addition to models from `lm()`).
-
 * More verbose error messages in `bwAndrews()` and `bwNeweyWest()` when bandwidth
   cannot be computed, e.g., due to singular regressor variables (suggested by
   Andrei V. Kostyrka).
