@@ -8,6 +8,10 @@
   being equal) is handled consistently even if `aggregate = TRUE` (reported by
   Christof Schoetz).
 
+* Fix `bread()` method for `survreg()` objects in case the latter already used a
+  "robust" sandwich variance. In that case `$naive.var` rather than `$var` has
+  to be used for the bread (reported by Daniel Klinenberg).
+
 
 # sandwich 3.1-0
 
