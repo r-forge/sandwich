@@ -12,6 +12,9 @@
   "robust" sandwich variance. In that case `$naive.var` rather than `$var` has
   to be used for the bread (reported by Daniel Klinenberg).
 
+* Improve warnings in `vcovHC()` for hat values numerically equal to 1. (Suggested by
+  Sanford Weisberg and John Fox.)
+
 
 # sandwich 3.1-0
 
