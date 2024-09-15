@@ -85,7 +85,7 @@ meatCL <- function(x, cluster = NULL, type = NULL, cadjust = TRUE, multi0 = FALS
   #if(FALSE) g[] <- gmin
 
   ## type of model
-  is_lm <- function(object) (class(object)[1L] == "lm") || (identical(class(object), "fixest") && object$method == "feols") ## FIXME: df correction for fixest
+  is_lm <- function(object) class(object)[1L] == "lm"
   is_glm <- function(object) class(object)[1L] == "glm"
 
   ## type of bias correction

@@ -1,9 +1,5 @@
 # sandwich 3.1-1
 
-* In `vcovCL()` models from `feols()` (from package `fixest`) are now also recognized
-  as linear regression models (in addition to models from `lm()`).
-  FIXME: Check df correction and inform Laurent.
-
 * In `meatPL()` the case of cross-section data (i.e., all elements of `order.by`
   being equal) is handled consistently even if `aggregate = TRUE` (reported by
   Christof Schoetz).
