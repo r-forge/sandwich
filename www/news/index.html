@@ -64,6 +64,11 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="3.1-2" id="sandwich-31-2">sandwich 3.1-2<a class="anchor" aria-label="anchor" href="#sandwich-31-2"></a></h2>
+<ul><li><p>Added <code><a href="../reference/estfun.html">estfun()</a></code> method for <code>multinom()</code> objects (from <code>nnet</code>) so that <code><a href="../reference/sandwich.html">sandwich()</a></code>, <code><a href="../reference/vcovCL.html">vcovCL()</a></code> etc. are also supported.</p></li>
+<li><p>In <code><a href="../reference/vcovCL.html">vcovCL()</a></code> models from <code>feols()</code> (from package <code>fixest</code>) are now also recognized as linear regression models (in addition to models from <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>). FIXME: Check df correction and inform Laurent.</p></li>
+</ul></div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="3.1-1" id="sandwich-31-1">sandwich 3.1-1<small>2024-09-15</small><a class="anchor" aria-label="anchor" href="#sandwich-31-1"></a></h2>
 <ul><li><p>In <code><a href="../reference/vcovPL.html">meatPL()</a></code> the case of cross-section data (i.e., all elements of <code>order.by</code> being equal) is handled consistently even if <code>aggregate = TRUE</code> (reported by Christof Schoetz).</p></li>
 <li><p>Fix <code><a href="../reference/bread.html">bread()</a></code> method for <code>survreg()</code> objects in case the latter already used a “robust” sandwich variance. In that case <code>$naive.var</code> rather than <code>$var</code> has to be used for the bread (reported by Daniel Klinenberg).</p></li>
@@ -210,7 +215,7 @@ This essentially uses the previous content of the package (documentation, vignet
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2.1-0" id="sandwich-21-0">sandwich 2.1-0<small>2008-01-26</small><a class="anchor" aria-label="anchor" href="#sandwich-21-0"></a></h2>
-<ul><li><p>Added <code><a href="../reference/bread.html">bread()</a></code> and <code><a href="../reference/estfun.html">estfun()</a></code> methods for <code>hurdle</code>/<code>zeroinfl</code> objects as computed by <code>hurdle()</code>/<code>zeroinfl()</code> in package <code>pscl</code>.</p></li>
+<ul><li><p>Added <code><a href="../reference/bread.html">bread()</a></code> and <code><a href="../reference/estfun.html">estfun()</a></code> methods for <code>hurdle</code>/<code>zeroinfl</code> objects as computed by <code><a href="https://rdrr.io/pkg/pscl/man/hurdle.html" class="external-link">hurdle()</a></code>/<code><a href="https://rdrr.io/pkg/pscl/man/zeroinfl.html" class="external-link">zeroinfl()</a></code> in package <code>pscl</code>.</p></li>
 <li><p>Fixed <code><a href="../reference/bread.html">bread()</a></code> and <code><a href="../reference/estfun.html">estfun()</a></code> methods for negative binomial <code>glm</code> objects: Now <code>dispersion = 1</code> is used.</p></li>
 </ul></div>
     <div class="section level2">

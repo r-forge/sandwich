@@ -96,7 +96,7 @@
 <div class="section level2">
 <h2 id="robust-covariance-matrix-estimators">Robust Covariance Matrix Estimators<a class="anchor" aria-label="anchor" href="#robust-covariance-matrix-estimators"></a>
 </h2>
-<p>Model-robust standard error estimators for cross-sectional, time series, clustered, panel, and longitudinal data. Modular object-oriented implementation with support for many model objects, including: <code>lm</code>, <code>glm</code>, <code>fixest</code>, <code>survreg</code>, <code>coxph</code>, <code>mlogit</code>, <code>polr</code>, <code>hurdle</code>, <code>zeroinfl</code>, and beyond.</p>
+<p>Model-robust standard error estimators for cross-sectional, time series, clustered, panel, and longitudinal data. Modular object-oriented implementation with support for many model objects, including: <code>lm</code>, <code>glm</code>, <code>fixest</code>, <code>survreg</code>, <code>coxph</code>, <code>mlogit</code>, <code>multinom</code>, <code>polr</code>, <code>clm</code>, <code>hurdle</code>, <code>zeroinfl</code>, and beyond.</p>
 <p><strong>Sandwich covariances for general parametric models:</strong></p>
 <p><img alt="Central limit theorem and sandwich estimator" src="reference/figures/README-sandwich.svg" style="border:10px solid transparent"></p>
 <p><strong>Object-oriented implementation in R:</strong></p>
@@ -106,22 +106,24 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"PetersenCL"</span>, package <span class="op">=</span> <span class="st">"sandwich"</span><span class="op">)</span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">PetersenCL</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">sandwich</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="do">## t test of coefficients:</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="do">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="do">## (Intercept)   0.0297     0.0284    1.05      0.3    </span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="do">## x             1.0348     0.0284   36.45   &lt;2e-16 ***</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="do">## ---</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="do">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="do">## t test of coefficients:</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="do">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="do">## (Intercept)   0.0297     0.0284    1.05      0.3    </span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="do">## x             1.0348     0.0284   36.45   &lt;2e-16 ***</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="do">## ---</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="do">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/lmtest/man/coeftest.html" class="external-link">coeftest</a></span><span class="op">(</span><span class="va">m</span>, vcov <span class="op">=</span> <span class="va">vcovCL</span>, cluster <span class="op">=</span> <span class="op">~</span> <span class="va">firm</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="do">## t test of coefficients:</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="do">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="do">## (Intercept)   0.0297     0.0670    0.44     0.66    </span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="do">## x             1.0348     0.0506   20.45   &lt;2e-16 ***</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="do">## ---</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="do">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="do">## t test of coefficients:</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="do">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="do">## (Intercept)   0.0297     0.0670    0.44     0.66    </span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="do">## x             1.0348     0.0506   20.45   &lt;2e-16 ***</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="do">## ---</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="do">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
 </div>
   </div>
 
